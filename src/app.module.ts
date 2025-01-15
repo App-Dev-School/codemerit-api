@@ -1,15 +1,14 @@
 import { Module, ValidationPipe } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { APP_PIPE } from '@nestjs/core';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { UsersModule } from './users/users.module';
-import { User } from './typeorm/entities/user.entity';
-import { APP_PIPE } from '@nestjs/core';
 import { AuthModule } from './auth/auth.module';
-import { ConfigModule } from '@nestjs/config';
+import { LoggerModule } from './common/services/logger.module';
 import { Profile } from './typeorm/entities/profile.entity';
-import { MailerModule } from '@nestjs-modules/mailer';
-import { MailService } from './common/services/mail.service';
+import { User } from './typeorm/entities/user.entity';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -27,6 +26,7 @@ import { MailService } from './common/services/mail.service';
       entities: [User, Profile],
       synchronize: true
     }),
+    LoggerModule,
     UsersModule,
     AuthModule
   ],
