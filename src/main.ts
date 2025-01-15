@@ -9,7 +9,7 @@ async function bootstrap() {
   //app.useGlobalFilters(new GlobalExceptionFilter());
  /* Add Swagger  */
  const options = new DocumentBuilder()
-    .setTitle('SkillTest API')
+    .setTitle('CodeMerit API')
     .setDescription('Your API description')
     .setVersion('1.0')
     .addServer('http://localhost:3000/', 'Local environment')

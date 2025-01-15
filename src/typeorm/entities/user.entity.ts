@@ -3,6 +3,7 @@ import * as bcrypt from 'bcryptjs';
 import { Exclude, Expose, Transform } from 'class-transformer';
 import { IsEmail, IsEnum, IsNotEmpty, IsString, Length, MaxLength, MinLength } from 'class-validator';
 import { Role } from 'src/auth/utilities/role.enum';
+import { LOG } from 'src/configs/constants';
 import {
     Entity,
     PrimaryGeneratedColumn,
@@ -71,12 +72,11 @@ export class User {
     @BeforeInsert()
     @BeforeUpdate()
     async hashPassword(): Promise<void> {
-        Logger.log("SkillTest UserEnitity hashPassword :: " + this.password);
         try {
             this.salt = await bcrypt.genSalt();
             this.password = await bcrypt.hash(this.password, this.salt);
         } catch (error) {
-            Logger.log("SkillTest UserEnitity hashPasswordErr", error);
+            Logger.log(LOG, "UserEnitity hashPasswordErr", error);
         }
     }
  

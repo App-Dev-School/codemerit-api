@@ -2,6 +2,7 @@ import { Body, Controller, Delete, Get, Logger, Param, ParseIntPipe, Put, Unauth
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AccessTokenGuard } from 'src/auth/guards/accessToken.guard';
 import { TransformInterceptor } from 'src/auth/interceptors/transform.interceptor';
+import { LOG } from 'src/configs/constants';
 import { UpdateUserDto } from 'src/users/dtos/UpdateUser.dto';
 import { UsersService } from 'src/users/services/users/users.service';
 
@@ -10,7 +11,7 @@ import { UsersService } from 'src/users/services/users/users.service';
 @Controller('users')
 export class UsersController {
     constructor(private userService: UsersService) { 
-        Logger.log("SkillTest : UserController Init");
+        Logger.log(LOG, "UserController Init");
     }
 
     @ApiResponse({ status: 201, description: 'List of all users fetched sucessfully.'})

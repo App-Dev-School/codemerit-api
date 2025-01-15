@@ -1,17 +1,19 @@
 import { Transform } from 'class-transformer';
 import { IsNotEmpty, IsString, MaxLength, MinLength } from 'class-validator';
+
 import {
     Column,
     CreateDateColumn,
     Entity,
     ManyToMany,
-    OneToMany,
+    ManyToOne,
     PrimaryGeneratedColumn
 } from 'typeorm';
-import { Topic } from './topic.entity';
+import { Subject } from './subject.entity';
+import { User } from './user.entity';
 
-@Entity({ name: 'subjects' })
-export class Subject {
+@Entity({ name: 'badge' })
+export class Badge {
     @PrimaryGeneratedColumn({ type: 'int' })
     id: number;
 
@@ -30,13 +32,21 @@ export class Subject {
     @Column({ type:"varchar", length: 100})
     description: string;
 
+    @Column({ type:"varchar", length: 100})
+    content: string;
+
+    @IsNotEmpty()
+    @IsString()
+    @Column({ type:"varchar", length: 1000})
+    icon_url: string;
+
     @CreateDateColumn()
     createdAt: Date;
     
-    @OneToMany(() => Topic, (topic) => topic.subject)
-    topics: Topic[];
-    
-    constructor(data: Partial<Subject> = {}) {
+    @ManyToMany(() => User)
+    users: User[];
+
+    constructor(data: Partial<Badge> = {}) {
         Object.assign(this, data);
     }
 }

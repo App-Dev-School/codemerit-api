@@ -1,13 +1,15 @@
 import { Transform } from 'class-transformer';
 import { IsNotEmpty, IsString, MaxLength, MinLength } from 'class-validator';
-import { Subject } from 'rxjs';
+
 import {
     Column,
     CreateDateColumn,
     Entity,
     ManyToMany,
+    ManyToOne,
     PrimaryGeneratedColumn
 } from 'typeorm';
+import { Subject } from './subject.entity';
 
 @Entity({ name: 'topics' })
 export class Topic {
@@ -32,8 +34,8 @@ export class Topic {
     @CreateDateColumn()
     createdAt: Date;
     
-    // @ManyToMany((type) => Subject, (subject) => subject.topics)
-    // subjects: Subject[]
+    @ManyToOne(() => Subject, (subject) => subject.topics)
+    subject: Subject
 
     constructor(data: Partial<Topic> = {}) {
         Object.assign(this, data);
