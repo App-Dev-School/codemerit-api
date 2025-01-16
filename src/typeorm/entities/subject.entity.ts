@@ -18,9 +18,9 @@ export class Subject {
     @IsNotEmpty()
     @IsString()
     @MinLength(2)
-    @MaxLength(30)
+    @MaxLength(40)
     @Transform(({ value }) => value.trim())
-    @Column({ type:"varchar", length: 30})
+    @Column({ type:"varchar", length: 40, unique: true})
     name: string;
 
     @IsNotEmpty()

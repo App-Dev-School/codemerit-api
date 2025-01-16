@@ -7,11 +7,13 @@ import {
     Entity,
     ManyToMany,
     ManyToOne,
+    OneToMany,
     PrimaryGeneratedColumn
 } from 'typeorm';
 import { Subject } from './subject.entity';
+import { Question } from './question.entity';
 
-@Entity({ name: 'topics' })
+@Entity({ name: 'topic' })
 export class Topic {
     @PrimaryGeneratedColumn({ type: 'int' })
     id: number;
@@ -37,6 +39,9 @@ export class Topic {
     @ManyToOne(() => Subject, (subject) => subject.topics)
     subject: Subject
 
+    @OneToMany(() => Question, (question) => question.topic)
+    questions: Question[];
+  
     constructor(data: Partial<Topic> = {}) {
         Object.assign(this, data);
     }

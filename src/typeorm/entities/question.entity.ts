@@ -1,14 +1,18 @@
-import { Exclude, Expose, Transform } from 'class-transformer';
-import { IsEmail, IsEnum, IsNotEmpty, IsString, MaxLength, MinLength } from 'class-validator';
+import { Transform } from 'class-transformer';
+import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
 import { Level } from 'src/auth/utilities/level.enum';
-import { Role } from 'src/auth/utilities/role.enum';
 import {
     Column,
     CreateDateColumn,
     Entity,
+    ManyToOne,
+    OneToMany,
     PrimaryGeneratedColumn,
     UpdateDateColumn
 } from 'typeorm';
+import { Hint } from './hint.entity';
+import { Topic } from './topic.entity';
+import { Option } from './option.entity';
 
 @Entity({ name: 'question' })
 export class Question {
@@ -17,14 +21,13 @@ export class Question {
 
     @IsNotEmpty()
     @IsString()
-    @MinLength(5)
     @Transform(({ value }) => value.trim())
-    @Column({ type:"varchar", length: 200})
-    question: string;
+    @Column({ type: "varchar" })
+    text: string;
 
     @IsNotEmpty()
     @IsEnum(Level)
-    @Column({ type:"varchar", length: 10})
+    @Column({ type: "varchar", length: 10 })
     level: string = Level.Easy;
 
     @CreateDateColumn()
@@ -32,7 +35,16 @@ export class Question {
 
     @UpdateDateColumn()
     updatedAt: Date;
-    
+
+    @ManyToOne(() => Topic, (topic) => topic.questions)
+    topic: Topic;
+
+    @OneToMany(() => Option, (option) => option.question)
+    options: Option[];
+
+    @OneToMany(() => Hint, (hint) => hint.question)
+    hints: Hint[];
+
     constructor(data: Partial<Question> = {}) {
         Object.assign(this, data);
     }
