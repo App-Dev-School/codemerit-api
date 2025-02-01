@@ -1,59 +1,75 @@
 
-import { ExceptionFilter, Catch, ArgumentsHost, HttpException, Logger, HttpStatus, UnauthorizedException, BadRequestException } from '@nestjs/common';
+import { ExceptionFilter, Catch, ArgumentsHost, HttpException, Logger, HttpStatus, UnauthorizedException, BadRequestException, RequestTimeoutException, ConflictException } from '@nestjs/common';
 import { Request, Response } from 'express';
-import { CannotCreateEntityIdMapError, EntityNotFoundError, QueryFailedError } from 'typeorm';
+import { LoggerService } from 'src/common/services/logger.service';
+import { CannotCreateEntityIdMapError, EntityNotFoundError, QueryFailedError, TypeORMError } from 'typeorm';
 
 
 export class GlobalExceptionFilter implements ExceptionFilter {
-    // constructor(private readonly logger : Logger){
-    // }
+    constructor(private readonly logger : LoggerService){
+    }
    
     catch(exception: unknown, host: ArgumentsHost) {
         const ctx = host.switchToHttp();
         const response = ctx.getResponse<Response>();
         const request = ctx.getRequest<Request>();
         let message = (exception as any).message.message;
+        Logger.log("GlobalExceptionFilter #1 exception => "+JSON.stringify(exception));
+        Logger.log("GlobalExceptionFilter #2 exceptionType => "+exception.constructor);
         let code = 'HttpException';
-
-        Logger.error(message, (exception as any).stack, `${request.method} ${request.url}`);
-
+        this.logger.log(`GlobalExceptionFilter #3 message: ${message}`);
         let status = HttpStatus.INTERNAL_SERVER_ERROR;
-        
+        //code = (exception as any).code;
         switch (exception.constructor) {
             case HttpException:
                 status = (exception as HttpException).getStatus();
-                message = "Some error occured! "+JSON.stringify(exception);
+                if(!message){
+                    message = (exception as HttpException).getResponse();
+                }
                 break;
             case BadRequestException:  // this is a TypeOrm error
                 status = HttpStatus.BAD_REQUEST
-                message = (exception as BadRequestException).message;
-                code = (exception as any).code;
-                break;    
+                if(!message)
+                message = (exception as BadRequestException).getResponse();
+                break;
             case QueryFailedError:  // this is a TypeOrm error
                 status = HttpStatus.UNPROCESSABLE_ENTITY
+                if(!message)
                 message = (exception as QueryFailedError).message;
-                code = (exception as any).code;
                 break;
             case EntityNotFoundError:  // this is another TypeOrm error
                 status = HttpStatus.UNPROCESSABLE_ENTITY
+                if(!message)
                 message = (exception as EntityNotFoundError).message;
-                code = (exception as any).code;
                 break;
             case CannotCreateEntityIdMapError: // and another
                 status = HttpStatus.UNPROCESSABLE_ENTITY
+                if(!message)
                 message = (exception as CannotCreateEntityIdMapError).message;
-                code = (exception as any).code;
                 break;
-            //skilltest003 work here
             case UnauthorizedException: // and another
                 status = HttpStatus.UNPROCESSABLE_ENTITY
+                if(!message)
                 message = (exception as UnauthorizedException).message;
-                code = (exception as any).code;
+                break;
+            case RequestTimeoutException: // and another
+                status = HttpStatus.REQUEST_TIMEOUT
+                if(!message)
+                message = (exception as RequestTimeoutException).message;
+                break;
+            case ConflictException: // and another
+                status = HttpStatus.CONFLICT
+                if(!message)
+                message = (exception as ConflictException).message;
+                break;
+            case TypeORMError: // and another
+                status = HttpStatus.INTERNAL_SERVER_ERROR
+                message = 'Error processing query for this request.';
                 break;
             default:
                 status = HttpStatus.INTERNAL_SERVER_ERROR
         }
-        Logger.log("{{{ #SkillTest ExceptionFilter -> }}}}"+JSON.stringify(GlobalResponseError(status, message, code, request)));
+        //Logger.log("{{{ #SkillTest ExceptionFilter -> }}}}"+JSON.stringify(GlobalResponseError(status, message, code, request)));
         response.status(status).json(GlobalResponseError(status, message, code, request));
     }
 }

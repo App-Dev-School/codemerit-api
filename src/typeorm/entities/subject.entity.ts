@@ -1,14 +1,13 @@
 import { Transform } from 'class-transformer';
 import { IsNotEmpty, IsString, MaxLength, MinLength } from 'class-validator';
+import { Topic } from 'src/topics/topic.entity';
 import {
     Column,
     CreateDateColumn,
     Entity,
-    ManyToMany,
     OneToMany,
     PrimaryGeneratedColumn
 } from 'typeorm';
-import { Topic } from './topic.entity';
 
 @Entity({ name: 'subjects' })
 export class Subject {

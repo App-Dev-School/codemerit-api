@@ -13,6 +13,7 @@ export type CreateUserParams = {
     lastName?: string;
     email?: string;
     username?: string;
+    accessToken?:string;
     refreshToken?:string;
   };
   

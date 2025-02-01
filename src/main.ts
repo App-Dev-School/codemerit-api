@@ -3,10 +3,12 @@ import { AppModule } from './app.module';
 import { BadRequestException, Logger, ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { GlobalExceptionFilter } from './filters/global-exception.filter';
+import { LoggerService } from './common/services/logger.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  //app.useGlobalFilters(new GlobalExceptionFilter());
+  const loggerService = app.get<LoggerService>(LoggerService);
+  app.useGlobalFilters(new GlobalExceptionFilter(loggerService));
  /* Add Swagger  */
  const options = new DocumentBuilder()
     .setTitle('CodeMerit API')

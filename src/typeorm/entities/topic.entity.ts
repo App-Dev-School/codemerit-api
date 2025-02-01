@@ -14,7 +14,7 @@ import { Subject } from './subject.entity';
 import { Question } from './question.entity';
 
 @Entity({ name: 'topic' })
-export class Topic {
+export class TopicOrg {
     @PrimaryGeneratedColumn({ type: 'int' })
     id: number;
 
@@ -42,7 +42,7 @@ export class Topic {
     @OneToMany(() => Question, (question) => question.topic)
     questions: Question[];
   
-    constructor(data: Partial<Topic> = {}) {
+    constructor(data: Partial<TopicOrg> = {}) {
         Object.assign(this, data);
     }
 }

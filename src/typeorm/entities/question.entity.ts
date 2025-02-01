@@ -1,6 +1,6 @@
 import { Transform } from 'class-transformer';
 import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
-import { Level } from 'src/auth/utilities/level.enum';
+//import { Level } from 'src/auth/utilities/level.enum';
 import {
     Column,
     CreateDateColumn,
@@ -11,7 +11,7 @@ import {
     UpdateDateColumn
 } from 'typeorm';
 import { Hint } from './hint.entity';
-import { Topic } from './topic.entity';
+import { TopicOrg } from './topic.entity';
 import { Option } from './option.entity';
 
 @Entity({ name: 'question' })
@@ -25,10 +25,10 @@ export class Question {
     @Column({ type: "varchar" })
     text: string;
 
-    @IsNotEmpty()
-    @IsEnum(Level)
-    @Column({ type: "varchar", length: 10 })
-    level: string = Level.Easy;
+    // @IsNotEmpty()
+    // @IsEnum(Level)
+    // @Column({ type: "varchar", length: 10 })
+    // level: string = Level.Easy;
 
     @CreateDateColumn()
     createdAt: Date;
@@ -36,8 +36,8 @@ export class Question {
     @UpdateDateColumn()
     updatedAt: Date;
 
-    @ManyToOne(() => Topic, (topic) => topic.questions)
-    topic: Topic;
+    @ManyToOne(() => TopicOrg, (topic) => topic.questions)
+    topic: TopicOrg;
 
     @OneToMany(() => Option, (option) => option.question)
     options: Option[];

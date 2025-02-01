@@ -7,7 +7,6 @@ export class AppController {
 
   @Get()
   getHello(): string {
-    Logger.log("SkillTest : AppController Init");
     return this.appService.getHello();
   }
 }

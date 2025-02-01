@@ -6,7 +6,7 @@ import {
     JoinColumn,
   } from 'typeorm';
   
-  import { User } from './user.entity';
+  //import { User } from './user.entity';
   
   @Entity()
   export class Profile {
@@ -25,7 +25,7 @@ import {
     @Column()
     designation: string;
   
-    @OneToOne(type => User)
-    @JoinColumn()
-    user: User;
+    // @OneToOne(type => User)
+    // @JoinColumn()
+    // user: User;
   }

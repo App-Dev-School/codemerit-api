@@ -22,7 +22,7 @@ export class MailService {
     //     }
     //   });
     const mailSent = this.mailerService.sendMail({
-        from: 'Vishal <javacheartofmine@gmail.com>',
+        from: 'Test <testing@gmail.com>',
         to: 'digitechgeeksolutions@gmail.com',
         subject: `SkillTest Nest JS AppDev`,
         text: content,

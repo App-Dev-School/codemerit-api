@@ -10,7 +10,7 @@ import {
     PrimaryGeneratedColumn
 } from 'typeorm';
 import { Subject } from './subject.entity';
-import { User } from './user.entity';
+//import { User } from './user.entity';
 
 @Entity({ name: 'badge' })
 export class Badge {
@@ -43,8 +43,8 @@ export class Badge {
     @CreateDateColumn()
     createdAt: Date;
     
-    @ManyToMany(() => User)
-    users: User[];
+    // @ManyToMany(() => User)
+    // users: User[];
 
     constructor(data: Partial<Badge> = {}) {
         Object.assign(this, data);

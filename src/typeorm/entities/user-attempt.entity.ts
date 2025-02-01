@@ -6,7 +6,7 @@ import {
     ManyToMany,
     JoinTable,
   } from 'typeorm';
-import { User } from './user.entity';
+//import { User } from './user.entity';
 import { Question } from './question.entity';
 import { Option } from './option.entity';
   
