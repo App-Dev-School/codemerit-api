@@ -11,7 +11,7 @@ import { Repository } from 'typeorm';
 import { CreateManyUsersDto } from '../dtos/create-many-users.dto';
 import { GetUsersParamDto } from '../dtos/get-users-param.dto';
 import { GoogleUser } from '../interfaces/google-user.inerface';
-import { User } from '../user.entity';
+import { User } from '../../typeorm/entities/user.entity';
 import { CreateUserDto } from './../dtos/create-user.dto';
 import { CreateGoogleUserProvider } from './create-google-user.provider';
 import { CreateUserProvider } from './create-user.provider';

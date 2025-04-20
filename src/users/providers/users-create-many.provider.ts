@@ -6,7 +6,7 @@ import {
 
 import { CreateManyUsersDto } from '../dtos/create-many-users.dto';
 import { DataSource } from 'typeorm';
-import { User } from '../user.entity';
+import { User } from '../../typeorm/entities/user.entity';
 
 @Injectable()
 export class UsersCreateManyProvider {

@@ -5,7 +5,7 @@ import { BadRequestException } from '@nestjs/common';
 import { CreateUserProvider } from './create-user.provider';
 import { HashingProvider } from 'src/auth/providers/hashing.provider';
 import { MailService } from 'src/mail/providers/mail.service';
-import { User } from '../user.entity';
+import { User } from '../../typeorm/entities/user.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 
 type MockRepository<T = any> = Partial<Record<keyof Repository<T>, jest.Mock>>;

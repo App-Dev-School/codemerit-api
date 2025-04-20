@@ -13,7 +13,7 @@ import { TopicsModule } from './topics/topics.module';
 import { UsersModule } from './users/users.module';
 import { PaginationModule } from './common/pagination/pagination.module';
 import { MailModule } from './mail/mail.module';
-import { User } from './users/user.entity';
+import { User } from './typeorm/entities/user.entity';
 import { Post } from './posts/post.entity';
 import { AuthenticationGuard } from './auth/guards/authentication/authentication.guard';
 import { AccessTokenGuard } from './auth/guards/access-token/access-token.guard';

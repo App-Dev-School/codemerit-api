@@ -12,7 +12,7 @@ import { UsersService } from 'src/users/providers/users.service';
 import { GoogleTokenDto } from '../dtos/google-token.dto';
 import { GenerateTokensProvider } from 'src/auth/providers/generate-tokens.provider';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from 'src/users/user.entity';
+import { User } from 'src/typeorm/entities/user.entity';
 
 @Injectable()
 export class GoogleAuthenticationService implements OnModuleInit {

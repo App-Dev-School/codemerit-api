@@ -1,6 +1,6 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
-import { User } from '../user.entity';
+import { User } from '../../typeorm/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { GoogleUser } from '../interfaces/google-user.inerface';
 

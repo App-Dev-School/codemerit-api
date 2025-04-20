@@ -15,7 +15,7 @@ import {
 import { Topic } from 'src/topics/topic.entity';
 import { postStatus } from './enums/postStatus.enum';
 import { postType } from './enums/postType.enum';
-import { User } from 'src/users/user.entity';
+import { User } from 'src/typeorm/entities/user.entity';
 
 @Entity()
 export class Post {

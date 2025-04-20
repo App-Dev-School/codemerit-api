@@ -8,7 +8,7 @@ import { TopicsModule } from 'src/topics/topics.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from 'src/users/users.module';
 import { CreatePostProvider } from './providers/create-post.provider';
-import { User } from 'src/users/user.entity';
+import { User } from 'src/typeorm/entities/user.entity';
 
 @Module({
   controllers: [PostsController],

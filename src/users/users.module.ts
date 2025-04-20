@@ -10,7 +10,7 @@ import { FindOneByGoogleIdProvider } from './providers/find-one-by-google-id.pro
 import { FindOneUserByEmailProvider } from './providers/find-one-user-by-email.provider';
 import { UsersCreateManyProvider } from './providers/users-create-many.provider';
 import { UsersService } from './providers/users.service';
-import { User } from './user.entity';
+import { User } from '../typeorm/entities/user.entity';
 import { UsersController } from './users.controller';
 import { Subject } from 'src/typeorm/entities/subject.entity';
 

@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { CreateUserDto } from '../dtos/create-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from '../user.entity';
+import { User } from '../../typeorm/entities/user.entity';
 import { Repository } from 'typeorm';
 import { HashingProvider } from 'src/auth/providers/hashing.provider';
 import { MailService } from 'src/mail/providers/mail.service';
