@@ -1,72 +1,77 @@
-import { Module, ValidationPipe } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { APP_GUARD, APP_PIPE } from '@nestjs/core';
-import { JwtModule } from '@nestjs/jwt';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { AuthModule } from './auth/auth.module';
-import jwtConfig from './auth/config/jwt.config';
+import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { DatabaseModule } from './common/database/database.module';
+import { databaseConfig } from './config/database-config';
+import { appConfig } from './config/app-config';
+import { jwtConfig } from './config/jwt-config';
 import { LoggerModule } from './common/services/logger.module';
-import { PostsModule } from './posts/posts.module';
-import { TopicsModule } from './topics/topics.module';
-import { UsersModule } from './users/users.module';
-import { PaginationModule } from './common/pagination/pagination.module';
-import { MailModule } from './mail/mail.module';
-import { User } from './typeorm/entities/user.entity';
-import { Post } from './posts/post.entity';
-import { AuthenticationGuard } from './auth/guards/authentication/authentication.guard';
-import { AccessTokenGuard } from './auth/guards/access-token/access-token.guard';
-import { Subject } from './typeorm/entities/subject.entity';
-import { SubjectsModule } from './subjects/subjects.module';
-import { Topic } from './topics/topic.entity';
+import { CoreModule } from './core/core.module';
+import { DomainModule } from './modules/domain.module';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtAuthGuard } from './core/auth/jwt-auth-guard';
+import { RolesGuard } from './core/auth/roles.guard';
 
 @Module({
   imports: [
-    UsersModule,
-    PostsModule,
-    AuthModule,
+    // UsersModule,
+    // PostsModule,
+    CoreModule,
     ConfigModule.forRoot({
+      load: [appConfig, databaseConfig, jwtConfig],
       isGlobal: true,
-      //envFilePath: '.env'
     }),
-    TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
-        type: 'mysql',
-        entities: [User, Subject, Topic, Post],
-        synchronize: true,
-        port: 3306,
-        username: 'codemerit',
-        password: 'codemerit',
-        host: 'localhost',
-        //autoLoadEntities: true,
-        database: 'codemeritdb',
-        
-      }),
-    }),
-    ConfigModule.forFeature(jwtConfig),
-    JwtModule.registerAsync(jwtConfig.asProvider()),
+    // TypeOrmModule.forRootAsync({
+    //   imports: [ConfigModule],
+    //   inject: [ConfigService],
+    //   useFactory: (configService: ConfigService) => ({
+    //     type: 'postgres',
+    //     // entities: [User, Subject, Topic, Post],
+    //     entities: [join(__dirname, '**', 'typeorm', 'entities', '*.{ts,js}')],
+    //     synchronize: true,
+    //     port: 5432,
+    //     username: 'postgres',
+    //     password: '12345678',
+    //     host: 'localhost',
+    //     //autoLoadEntities: true,
+    //     database: 'codemeritdb',
+    //   }),
+    // }),
+    // ConfigModule.forFeature(jwtConfig),
+    // JwtModule.registerAsync(jwtConfig.asProvider()),
     LoggerModule,
-    SubjectsModule,
-    TopicsModule,
-    PaginationModule,
-    MailModule,
+    // SubjectsModule,
+    // TopicsModule,
+    // PaginationModule,
+    // MailModule,
+    DatabaseModule,
+    DomainModule,
+    CoreModule,
   ],
-  controllers: [AppController],
-  providers: [AppService, 
+  // controllers: [AppController],
+  providers: [
     {
       provide: APP_GUARD,
-      useClass: AuthenticationGuard,
+      useClass: JwtAuthGuard,
     },
     {
-    provide: APP_PIPE,
-    useValue: new ValidationPipe({
-      transform: true
-    }),
-  },
-  AccessTokenGuard
-],
+      provide: APP_GUARD,
+      useClass: RolesGuard,
+    },
+  ],
+
+  // providers: [
+  //   AppService,
+  //   {
+  //     provide: APP_GUARD,
+  //     useClass: AuthenticationGuard,
+  //   },
+  //   {
+  //     provide: APP_PIPE,
+  //     useValue: new ValidationPipe({
+  //       transform: true,
+  //     }),
+  //   },
+  //   AccessTokenGuard,
+  // ],
 })
 export class AppModule {}
