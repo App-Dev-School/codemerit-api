@@ -7,11 +7,11 @@ import {
   Request,
   UseGuards,
 } from '@nestjs/common';
-import { Roles } from '../auth/roles.decorator';
-import { RolesGuard } from '../auth/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
 import { UsersService } from './providers/users.service';
 import { UserRoleEnum } from './enums/user-roles.enum';
 import { UpdateProfileDto } from './dtos/update-profile.dto';
+import { RolesGuard } from '../auth/guards/roles.guard';
 
 @Controller('users')
 export class UsersController {

@@ -8,8 +8,8 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './providers/auth.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { Public } from './public.decorator';
-import { LocalAuthGuard } from './local-auth.guard';
+import { Public } from './decorators/public.decorator';
+import { LocalAuthGuard } from './guards/local-auth.guard';
 import { AccountVerificationDto } from './dto/account-verification.dto';
 import { UsersService } from '../users/providers/users.service';
 import { UserOtpTagsEnum } from '../users/enums/user-otp-Tags.enum';
