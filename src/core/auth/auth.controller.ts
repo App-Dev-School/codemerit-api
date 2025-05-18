@@ -13,6 +13,7 @@ import { LocalAuthGuard } from './guards/local-auth.guard';
 import { AccountVerificationDto } from './dto/account-verification.dto';
 import { UsersService } from '../users/providers/users.service';
 import { UserOtpTagsEnum } from '../users/enums/user-otp-Tags.enum';
+import { ApiResponse } from 'src/common/utils/api-response';
 
 @Public()
 @Controller('auth')
@@ -23,35 +24,47 @@ export class AuthController {
   ) {}
 
   @Post('signup')
-  signup(@Body() createUserDto: CreateUserDto) {
-    return this.authService.signup(createUserDto);
+  async signup(
+    @Body() createUserDto: CreateUserDto,
+  ): Promise<ApiResponse<any>> {
+    const result = await this.authService.signup(createUserDto);
+    return new ApiResponse('Succesfully Registered', result);
   }
 
   @UseGuards(LocalAuthGuard)
   @Public()
   @Post('login')
-  login(@Request() req) {
-    return this.authService.login(req.user);
+  async login(@Request() req): Promise<ApiResponse<any>> {
+    const result = await this.authService.login(req.user);
+    return new ApiResponse('Succesfully Logged In', result);
   }
 
   @Post('sent-otp')
-  sendOtp(@Query('email') email: string, @Query('tag') tag: UserOtpTagsEnum) {
-    return this.usersService.sendOtp(email, tag);
+  async sendOtp(
+    @Query('email') email: string,
+    @Query('tag') tag: UserOtpTagsEnum,
+  ): Promise<ApiResponse<any>> {
+    const result = await this.usersService.sendOtp(email, tag);
+    return new ApiResponse('Succesfully Send OTP', result);
   }
 
   @Post('verify')
-  acoountVerification(
+  async acoountVerification(
     @Body()
     accountVerificationDto: AccountVerificationDto,
-  ) {
-    return this.usersService.acoountVerification(accountVerificationDto);
+  ): Promise<ApiResponse<any>> {
+    const result = await this.usersService.acoountVerification(
+      accountVerificationDto,
+    );
+    return new ApiResponse('Succesfully Account Verified', result);
   }
 
   @Post('recover-password')
-  recoverPassword(
+  async recoverPassword(
     @Body()
     recoverPassword: AccountVerificationDto,
-  ) {
-    return this.usersService.acoountVerification(recoverPassword);
+  ): Promise<ApiResponse<any>> {
+    const result = await this.usersService.acoountVerification(recoverPassword);
+    return new ApiResponse('Succesfully Recovered Password', result);
   }
 }

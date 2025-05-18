@@ -5,7 +5,9 @@ import { BadRequestException, Logger, ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { LoggerService } from './common/services/logger.service';
 import { IAppConfig, appConfig } from './config/app-config';
-import { GlobalExceptionFilter } from './common/filters/global-exception.filter';
+import { GlobalExceptionsFilter } from './common/filters/global-exception.filter';
+import { ResponseInterceptor } from './common/interceptors/response.interceptor';
+// import { GlobalExceptionFilter } from './common/filters/global-exception.old.filter';
 
 configDotenv({
   path: `.env`,
@@ -13,11 +15,12 @@ configDotenv({
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  const loggerService = app.get<LoggerService>(LoggerService);
+  // const loggerService = app.get<LoggerService>(LoggerService);
 
   const config: IAppConfig = app.get<IAppConfig>(appConfig.KEY);
 
-  app.useGlobalFilters(new GlobalExceptionFilter(loggerService));
+  app.useGlobalInterceptors(new ResponseInterceptor());
+  app.useGlobalFilters(new GlobalExceptionsFilter());
   /* Add Swagger  */
   const options = new DocumentBuilder()
     .setTitle('CodeMerit API')
