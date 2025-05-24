@@ -74,12 +74,12 @@ export class UsersService {
       user.id,
       tag,
     );
-    if (userOtpList && userOtpList?.length >= 3) {
-      throw new HttpException(
-        'Already applied 3 times.',
-        HttpStatus.NOT_ACCEPTABLE,
-      );
-    }
+    // if (userOtpList && userOtpList?.length >= 3) {
+    //   throw new HttpException(
+    //     'Already applied 3 times.',
+    //     HttpStatus.NOT_ACCEPTABLE,
+    //   );
+    // }
 
     let userOtp: UserOtp = new UserOtp();
     userOtp.otp = generate6DigitNumber();

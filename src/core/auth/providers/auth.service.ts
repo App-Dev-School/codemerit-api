@@ -6,6 +6,7 @@ import { CreateUserDto } from '../dto/create-user.dto';
 import { User } from 'src/common/typeorm/entities/user.entity';
 import { AccountStatusEnum } from 'src/core/users/enums/account-status.enum';
 import { AccountVerificationDto } from '../dto/account-verification.dto';
+import { AppCustomException } from 'src/common/exceptions/app-custom-exception.filter';
 
 @Injectable()
 export class AuthService {
@@ -15,8 +16,20 @@ export class AuthService {
   ) {}
 
   async validateUser(email: string, pass: string) {
-    if(email && pass){
+    if (email && pass) {
       const user = await this.usersService.findByEmail(email);
+      if (!user) {
+        throw new AppCustomException(
+          HttpStatus.BAD_REQUEST,
+          'Email address is not register',
+        );
+      }
+      if (pass !== user?.password) {
+        throw new AppCustomException(
+          HttpStatus.BAD_REQUEST,
+          'Incorrect Password, Please check your password and try again',
+        );
+      }
       if (user && user.password) {
         // if (user && (await bcrypt.compare(pass, user.password))) {
         const { password, ...result } = user;
@@ -29,7 +42,7 @@ export class AuthService {
   async login(user: User) {
     if (user.accountStatus != AccountStatusEnum.ACTIVE) {
       throw new HttpException(
-        'Unable to login. Please Approve your account or contact with admin',
+        'Please verify your account to sign in.',
         HttpStatus.NOT_ACCEPTABLE,
       );
     }

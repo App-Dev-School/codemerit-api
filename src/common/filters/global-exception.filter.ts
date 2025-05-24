@@ -18,7 +18,7 @@ export class GlobalExceptionsFilter implements ExceptionFilter {
     const response = ctx.getResponse<Response>();
 
     let statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
-    let message = 'Internal server error';
+    let message: any = 'Internal server error';
 
     if (exception instanceof HttpException) {
       statusCode = exception.getStatus();
@@ -61,12 +61,13 @@ export class GlobalExceptionsFilter implements ExceptionFilter {
 
     // Log for debugging
     console.error('Error caught:', exception);
+    console.error('Error message:', message);
 
     response.status(statusCode).json({
       error: true,
       statusCode: statusCode,
-      message,
-      values: null,
+      message: message && Array.isArray(message) ? message[0].message : message,
+      data: null,
     });
   }
 }

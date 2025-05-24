@@ -12,10 +12,10 @@ export class UserOtp extends AbstractEntity implements IUserOtp {
   userId: number;
 
   @Column({
-    type: 'integer',
-    default: null,
+    type: 'text',
+    nullable: false,
   })
-  otp: number;
+  otp: string;
 
   @Column({
     type: 'enum',

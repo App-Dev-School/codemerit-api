@@ -27,13 +27,12 @@ export class ResponseInterceptor<T> implements NestInterceptor<T, any> {
     return next.handle().pipe(
       map((response) => {
         const message = response?.message || 'Success';
-        const values = response?.data !== undefined ? response.data : response;
-
+        const data = response?.data !== undefined ? response.data : response;
         return {
           error: false,
           result_code: 200,
           message,
-          values,
+          data,
         };
       }),
     );

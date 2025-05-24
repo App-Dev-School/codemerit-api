@@ -17,8 +17,8 @@ export class AccountVerificationDto {
 
   @ApiProperty()
   @IsNotEmpty()
-  @IsNumber()
-  otp: number;
+  @IsString()
+  otp: string;
 
   @ApiProperty({
     enum: UserOtpTagsEnum,

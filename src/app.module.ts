@@ -21,7 +21,6 @@ import { RolesGuard } from './core/auth/guards/roles.guard';
     LoggerModule,
     DatabaseModule,
     DomainModule,
-    CoreModule,
   ],
   providers: [
     {
