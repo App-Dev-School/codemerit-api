@@ -21,7 +21,7 @@ export class AuthService {
       if (!user) {
         throw new AppCustomException(
           HttpStatus.BAD_REQUEST,
-          'Email address is not register',
+          'E-mail not registered',
         );
       }
       if (pass !== user?.password) {

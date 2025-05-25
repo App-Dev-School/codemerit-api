@@ -18,6 +18,7 @@ import { UsersService } from '../users/providers/users.service';
 import { UserOtpTagsEnum } from '../users/enums/user-otp-Tags.enum';
 import { ApiResponse } from 'src/common/utils/api-response';
 import { LoginDto } from './dto/login.dto';
+import { SendOtpDto } from './dto/send-otp.dto';
 
 @Public()
 @Controller('auth')
@@ -47,11 +48,8 @@ export class AuthController {
   }
 
   @Post('sent-otp')
-  async sendOtp(
-    @Query('email') email: string,
-    @Query('tag') tag: UserOtpTagsEnum,
-  ): Promise<ApiResponse<any>> {
-    const result = await this.usersService.sendOtp(email, tag);
+  async sendOtp(@Query() query: SendOtpDto): Promise<ApiResponse<any>> {
+    const result = await this.usersService.sendOtp(query.email, query.tag);
     return new ApiResponse('Succesfully Send OTP', result);
   }
 

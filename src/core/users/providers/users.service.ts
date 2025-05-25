@@ -10,6 +10,7 @@ import { UserOtpTagsEnum } from '../enums/user-otp-Tags.enum';
 import { AccountVerificationDto } from 'src/core/auth/dto/account-verification.dto';
 import { AccountStatusEnum } from '../enums/account-status.enum';
 import { UpdateProfileDto } from '../dtos/update-profile.dto';
+import { AppCustomException } from 'src/common/exceptions/app-custom-exception.filter';
 
 @Injectable()
 export class UsersService {
@@ -45,8 +46,8 @@ export class UsersService {
     accountStatusEnum: AccountStatusEnum,
   ): Promise<boolean> {
     const result = await this.usersRepo.update(
-      { id: id }, // WHERE condition
-      { accountStatus: accountStatusEnum }, // Column(s) to update
+      { id: id },
+      { accountStatus: accountStatusEnum },
     );
     if (result.affected && result.affected > 0) {
       return true;
@@ -57,8 +58,8 @@ export class UsersService {
 
   async updateUserPassword(id: number, password: string): Promise<boolean> {
     const result = await this.usersRepo.update(
-      { id: id }, // WHERE condition
-      { password: password }, // Column(s) to update
+      { id: id },
+      { password: password },
     );
     if (result.affected && result.affected > 0) {
       return true;
@@ -70,20 +71,33 @@ export class UsersService {
   async sendOtp(email: string, tag: UserOtpTagsEnum): Promise<string | null> {
     const user: User = await this.findByEmail(email);
 
-    const userOtpList: UserOtp[] = await this.userOtpService.findByUserIdTags(
-      user.id,
-      tag,
-    );
+    // const userOtpList: UserOtp[] = await this.userOtpService.findByUserIdTags(
+    //   user.id,
+    //   tag,
+    // );
     // if (userOtpList && userOtpList?.length >= 3) {
     //   throw new HttpException(
     //     'Already applied 3 times.',
     //     HttpStatus.NOT_ACCEPTABLE,
     //   );
     // }
-
+    if (!user) {
+      throw new AppCustomException(
+        HttpStatus.BAD_REQUEST,
+        'E-mail not registered.',
+      );
+    } else if (
+      user.accountStatus == AccountStatusEnum.ACTIVE &&
+      tag == UserOtpTagsEnum.ACC_VERIFY
+    ) {
+      throw new AppCustomException(
+        HttpStatus.BAD_REQUEST,
+        'User Already verified.',
+      );
+    }
     let userOtp: UserOtp = new UserOtp();
     userOtp.otp = generate6DigitNumber();
-    userOtp.userId = user.id;
+    userOtp.userId = user?.id;
     userOtp.tag = tag;
     const result = await this.userOtpService.create(userOtp);
     if (result) {
@@ -96,6 +110,13 @@ export class UsersService {
     accountVerificationDto: AccountVerificationDto,
   ): Promise<string | null> {
     const user: User = await this.findByEmail(accountVerificationDto?.email);
+
+    if (!user) {
+      throw new AppCustomException(
+        HttpStatus.BAD_REQUEST,
+        'E-mail not registered.',
+      );
+    }
     const userOtpList: UserOtp[] = await this.userOtpService.findByUserIdTags(
       user.id,
       accountVerificationDto.tag,
@@ -127,13 +148,14 @@ export class UsersService {
       if (result && userRs) {
         return msg;
       } else {
-        throw new HttpException(
-          'Account not verified. Please try again',
-          HttpStatus.NOT_ACCEPTABLE,
+        throw new AppCustomException(
+          HttpStatus.BAD_REQUEST,
+          'Account not verified. Please try again.',
         );
       }
     } else {
-      throw new HttpException('OTP Mismatch', HttpStatus.NOT_ACCEPTABLE);
+      // throw new HttpException('OTP Mismatch', HttpStatus.NOT_ACCEPTABLE);
+      throw new AppCustomException(HttpStatus.BAD_REQUEST, 'OTP Mismatch.');
     }
   }
 
