@@ -84,7 +84,7 @@ export class UsersService {
     if (!user) {
       throw new AppCustomException(
         HttpStatus.BAD_REQUEST,
-        'E-mail not registered.',
+        'Invalid e-mail address.',
       );
     } else if (
       user.accountStatus == AccountStatusEnum.ACTIVE &&
@@ -114,7 +114,7 @@ export class UsersService {
     if (!user) {
       throw new AppCustomException(
         HttpStatus.BAD_REQUEST,
-        'E-mail not registered.',
+        'Invalid e-mail address.',
       );
     }
     const userOtpList: UserOtp[] = await this.userOtpService.findByUserIdTags(

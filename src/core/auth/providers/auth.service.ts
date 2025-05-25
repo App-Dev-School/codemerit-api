@@ -7,6 +7,7 @@ import { User } from 'src/common/typeorm/entities/user.entity';
 import { AccountStatusEnum } from 'src/core/users/enums/account-status.enum';
 import { AccountVerificationDto } from '../dto/account-verification.dto';
 import { AppCustomException } from 'src/common/exceptions/app-custom-exception.filter';
+import { LoginResponseDto } from '../dto/login-response.dto';
 
 @Injectable()
 export class AuthService {
@@ -21,7 +22,7 @@ export class AuthService {
       if (!user) {
         throw new AppCustomException(
           HttpStatus.BAD_REQUEST,
-          'E-mail not registered',
+          'Invalid e-mail address',
         );
       }
       if (pass !== user?.password) {
@@ -46,10 +47,17 @@ export class AuthService {
         HttpStatus.NOT_ACCEPTABLE,
       );
     }
-    const payload = { username: user.username, sub: user.id, role: user.role };
-    return {
-      access_token: this.jwtService.sign(payload),
+    const payload: any = {
+      username: user.username,
+      sub: user.id,
+      role: user.role,
     };
+    const token = this.jwtService.sign(payload);
+    const response = new LoginResponseDto({
+      ...user,
+      token,
+    });
+    return response;
   }
 
   async signup(createUserDto: CreateUserDto) {
