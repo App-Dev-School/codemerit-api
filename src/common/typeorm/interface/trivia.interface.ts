@@ -2,9 +2,9 @@ import { LabelEnum } from 'src/common/enum/label.enum';
 import { ITimeStamp } from './timestamp.interface';
 import { LavelEnum } from 'src/common/enum/lavel.enum';
 
-export interface IQuestion extends ITimeStamp {
+export interface ITrivia extends ITimeStamp {
   question: string;
-  topicId: number;
+  // topicId: number;
   subjectId: number;
   image: string;
   label: LabelEnum;

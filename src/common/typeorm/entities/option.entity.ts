@@ -1,26 +1,29 @@
-import { IsNotEmpty, IsString, MaxLength } from 'class-validator';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
+import { AbstractEntity } from './abstract.entity';
+import { IOption } from '../interface/option.interface';
+import { TriviaOption } from './trivia-option.entity';
 
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { Question } from './question.entity';
-
-@Entity({ name: 'option' })
-export class Option {
-  @PrimaryGeneratedColumn({ type: 'int' })
-  id: number;
-
-  @IsNotEmpty()
-  @IsString()
-  @MaxLength(100)
-  @Column({ type: 'varchar', length: 100 })
-  name: string;
+@Entity()
+export class Option extends AbstractEntity implements IOption {
+  @Column({ type: 'varchar', length: 100, nullable: false })
+  option: string;
 
   @Column({ default: false })
-  isCorrect: boolean;
+  correct: boolean;
 
-  // @ManyToOne(() => Question, (question) => question.options)
+  
+  @Column({
+    type: 'varchar',
+    nullable: true,
+    default: null,
+    length: 200
+  })
+  comment: string;
+
+  // @ManyToOne(() => Trivia, trivia => trivia.options)
+  // @JoinColumn({ name: 'question_id' })
   // question: Question;
-
-  constructor(data: Partial<Option> = {}) {
-    Object.assign(this, data);
-  }
+  
+  // @OneToMany(() => TriviaOption, triviaOption => triviaOption.option)
+  // triviaOptions: TriviaOption[];
 }

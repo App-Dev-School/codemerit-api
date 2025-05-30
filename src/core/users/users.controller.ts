@@ -14,7 +14,7 @@ import { UpdateProfileDto } from './dtos/update-profile.dto';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { ApiResponse } from 'src/common/utils/api-response';
 
-@Controller('users')
+@Controller('apis/users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
   @Get('me')

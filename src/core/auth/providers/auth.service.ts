@@ -22,7 +22,7 @@ export class AuthService {
       if (!user) {
         throw new AppCustomException(
           HttpStatus.BAD_REQUEST,
-          'Invalid e-mail address',
+          'User not found',
         );
       }
       if (pass !== user?.password) {

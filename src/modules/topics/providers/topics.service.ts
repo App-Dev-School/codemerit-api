@@ -33,4 +33,14 @@ export class TopicsService {
   async remove(id: number): Promise<void> {
     await this.topicRepository.delete(id);
   }
+  findAllBySubjectId(subjectId: number): Promise<Topic[]> {
+    console.log(`Fetching topics for subject ID: ${subjectId}`);
+  return this.topicRepository.find({
+    where: {
+      subject: { id: subjectId }
+    },
+    relations: ['subject'],
+    order: { order: 'ASC' },
+  });
+  }
 }

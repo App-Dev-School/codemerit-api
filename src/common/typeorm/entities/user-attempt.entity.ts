@@ -7,8 +7,8 @@ import {
     JoinTable,
   } from 'typeorm';
 //import { User } from './user.entity';
-import { Question } from './question.entity';
 import { Option } from './option.entity';
+import { Trivia } from './trivia.entity';
   
   @Entity()
   export class UserAttempt {
@@ -17,10 +17,10 @@ import { Option } from './option.entity';
   
     // @ManyToOne(() => User, (user) => user.attempts)
     // user: User;
-  
-    @ManyToOne(() => Question, (question) => question.id)
-    question: Question;
-  
+
+    @ManyToOne(() => Trivia, (trivia) => trivia.id)
+    trivia: Trivia;
+
     @ManyToMany(() => Option)
     @JoinTable()
     selectedOptions: Option[];

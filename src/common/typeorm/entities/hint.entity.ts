@@ -1,14 +1,11 @@
-import { Transform } from 'class-transformer';
 import { IsNotEmpty, IsString, MaxLength, MinLength } from 'class-validator';
 
 import {
   Column,
   CreateDateColumn,
   Entity,
-  ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Question } from './question.entity';
 
 @Entity({ name: 'hint' })
 export class Hint {

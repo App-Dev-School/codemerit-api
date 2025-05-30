@@ -6,7 +6,10 @@ import { Topic } from 'src/common/typeorm/entities/topic.entity';
 import { User } from 'src/common/typeorm/entities/user.entity';
 import { Subject } from 'src/common/typeorm/entities/subject.entity';
 import { UserOtp } from 'src/common/typeorm/entities/user-otp.entity';
-import { Question } from 'src/common/typeorm/entities/question.entity';
+import { Trivia } from 'src/common/typeorm/entities/trivia.entity';
+import { Option } from 'src/common/typeorm/entities/option.entity';
+import { TriviaOption } from 'src/common/typeorm/entities/trivia-option.entity';
+import { TriviaTopic } from 'src/common/typeorm/entities/trivia-topic.entity';
 @Injectable()
 export class TypeormConfigService implements TypeOrmOptionsFactory {
   constructor(private configService: ConfigService) {}
@@ -23,7 +26,7 @@ export class TypeormConfigService implements TypeOrmOptionsFactory {
       username: databaseConfig.username,
       password: databaseConfig.password,
       database: databaseConfig.database,
-      entities: [User, Subject, Topic, UserOtp, Question],
+      entities: [User, Subject, Topic, UserOtp, Trivia, Option, TriviaOption, TriviaTopic],
       // entities: [__dirname + '/../**/*.entity.{ts,js}'],
 
       // entities: ['src/**/*.entity.ts'],

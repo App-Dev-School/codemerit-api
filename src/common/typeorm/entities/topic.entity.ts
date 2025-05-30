@@ -1,8 +1,9 @@
-import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, Column, ManyToOne, JoinColumn, JoinTable, ManyToMany } from 'typeorm';
 import { AbstractEntity } from './abstract.entity';
 import { ITopic } from '../interface/topic.interface';
 import { Subject } from './subject.entity';
 import { LabelEnum } from 'src/common/enum/label.enum';
+import { Trivia } from './trivia.entity';
 
 @Entity()
 export class Topic extends AbstractEntity implements ITopic {
@@ -46,7 +47,7 @@ export class Topic extends AbstractEntity implements ITopic {
   @Column({
     type: 'varchar',
     length: 100,
-    nullable: false,
+    nullable: true,
     unique: true,
   })
   slug: string;
@@ -114,7 +115,21 @@ export class Topic extends AbstractEntity implements ITopic {
   })
   numQuizzes: number;
 
-  @ManyToOne(() => Subject, { eager: true })
-  @JoinColumn({ name: 'subject_id', referencedColumnName: 'id' })
-  subject: Subject;
+  // @ManyToOne(() => Subject, { eager: true })
+  // @JoinColumn({ name: 'subject_id', referencedColumnName: 'id' })
+  // subject: Subject;
+@ManyToOne(() => Subject)
+@JoinColumn({ name: 'subject_id' })
+subject: Subject;
+
+
+// @ManyToMany(() => Topic, { eager: true })
+// @JoinTable({
+//   name: 'question_topic',
+//   joinColumn: { name: 'question_id', referencedColumnName: 'id' },
+//   inverseJoinColumn: { name: 'topic_id', referencedColumnName: 'id' },
+// })
+// topics: Topic[];
+// @ManyToMany(() => Trivia, (question) => question.topics)
+// questions: Trivia[];
 }
