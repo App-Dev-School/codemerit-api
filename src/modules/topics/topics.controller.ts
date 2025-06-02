@@ -13,6 +13,7 @@ import { TopicsService } from './providers/topics.service';
 import { CreateTopicDto } from './dtos/create-topics.dto';
 import { UpdateTopicDto } from './dtos/update-topics.dto';
 import { ApiResponse } from 'src/common/utils/api-response';
+import { Public } from 'src/core/auth/decorators/public.decorator';
 
 @Controller('apis/topics')
 export class TopicsController {
@@ -59,10 +60,11 @@ export class TopicsController {
     return new ApiResponse('Topic Removed', null);
   }
 
+  @Public()
   @Get(':subjectId')
   async findAllTopicListBySubjectId(@Param('subjectId', new ParseIntPipe({ errorHttpStatusCode: 400, exceptionFactory: () => new BadRequestException('Subject Id must be a valid number') }))
   subjectId: number): Promise<ApiResponse<any>> {
     const result = await this.topicService.findAllBySubjectId(subjectId);
-    return new ApiResponse(`${result.length} topics found in Subject ${result[0].subject.title}`, result);
+    return new ApiResponse(`${result.length} topics found in Subject`, result);
   }
 }

@@ -3,7 +3,6 @@ import { AbstractEntity } from './abstract.entity';
 import { ITopic } from '../interface/topic.interface';
 import { Subject } from './subject.entity';
 import { LabelEnum } from 'src/common/enum/label.enum';
-import { Trivia } from './trivia.entity';
 
 @Entity()
 export class Topic extends AbstractEntity implements ITopic {
@@ -121,6 +120,10 @@ export class Topic extends AbstractEntity implements ITopic {
 @ManyToOne(() => Subject)
 @JoinColumn({ name: 'subject_id' })
 subject: Subject;
+
+@ManyToOne(() => Topic)
+@JoinColumn({ name: 'parent' })
+topic: Topic;
 
 
 // @ManyToMany(() => Topic, { eager: true })

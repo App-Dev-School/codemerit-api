@@ -36,7 +36,6 @@ export class AuthController {
     return new ApiResponse('Succesfully Registered', result);
   }
 
-  @Public()
   @Post('login')
   @UseGuards(LocalAuthGuard)
   async login(
