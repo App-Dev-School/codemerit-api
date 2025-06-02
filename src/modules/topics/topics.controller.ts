@@ -65,6 +65,6 @@ export class TopicsController {
   async findAllTopicListBySubjectId(@Param('subjectId', new ParseIntPipe({ errorHttpStatusCode: 400, exceptionFactory: () => new BadRequestException('Subject Id must be a valid number') }))
   subjectId: number): Promise<ApiResponse<any>> {
     const result = await this.topicService.findAllBySubjectId(subjectId);
-    return new ApiResponse(`${result.length} topics found in Subject`, result);
+    return new ApiResponse(`${result.length} topics found in Subject ${result[0].subjectName}`, result);
   }
 }
