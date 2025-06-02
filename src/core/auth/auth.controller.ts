@@ -47,7 +47,7 @@ export class AuthController {
   }
 
   @Post('sent-otp')
-  async sendOtp(@Query() query: SendOtpDto): Promise<ApiResponse<any>> {
+  async sendOtp(@Body() query: SendOtpDto): Promise<ApiResponse<any>> {
     const result = await this.usersService.sendOtp(query.email, query.tag);
     return new ApiResponse('Succesfully Send OTP', result);
   }

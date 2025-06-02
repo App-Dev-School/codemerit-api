@@ -8,11 +8,4 @@ export interface ISubject extends ITimeStamp {
   image: string;
   color: string;
   isPublished: boolean;
-  numSubscribers: number;
-  numVotes: number;
-  numTopics: number;
-  numLessons: number;
-  numQuestions: number;
-  numTrivia: number;
-  numQuizzes: number;
 }

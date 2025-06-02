@@ -49,46 +49,4 @@ export class Subject extends AbstractEntity implements ISubject {
     default: true,
   })
   isPublished: boolean;
-
-  @Column({
-    type: 'int',
-    default: 0,
-  })
-  numSubscribers: number;
-
-  @Column({
-    type: 'int',
-    default: 0,
-  })
-  numVotes: number;
-
-  @Column({
-    type: 'int',
-    default: 0,
-  })
-  numTopics: number;
-
-  @Column({
-    type: 'int',
-    default: 0,
-  })
-  numLessons: number;
-
-  @Column({
-    type: 'int',
-    default: 0,
-  })
-  numQuestions: number;
-
-  @Column({
-    type: 'int',
-    default: 0,
-  })
-  numTrivia: number;
-
-  @Column({
-    type: 'int',
-    default: 0,
-  })
-  numQuizzes: number;
 }
