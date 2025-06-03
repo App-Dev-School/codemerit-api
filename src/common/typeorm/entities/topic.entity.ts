@@ -1,4 +1,4 @@
-import { Entity, Column, ManyToOne, JoinColumn, JoinTable, ManyToMany } from 'typeorm';
+import { Entity, Column, ManyToOne, JoinColumn, JoinTable, ManyToMany, OneToMany } from 'typeorm';
 import { AbstractEntity } from './abstract.entity';
 import { ITopic } from '../interface/topic.interface';
 import { Subject } from './subject.entity';
@@ -121,18 +121,15 @@ export class Topic extends AbstractEntity implements ITopic {
 @JoinColumn({ name: 'subject_id' })
 subject: Subject;
 
-@ManyToOne(() => Topic)
-@JoinColumn({ name: 'parent' })
-topic: Topic;
+// @ManyToOne(() => Topic)
+// @JoinColumn({ name: 'parent' })
+// topic: Topic;
+
+  @ManyToOne(() => Topic, topic => topic.subTopics, { nullable: true })
+  @JoinColumn({ name: 'parent' })
+  parentTopic?: Topic;
 
 
-// @ManyToMany(() => Topic, { eager: true })
-// @JoinTable({
-//   name: 'question_topic',
-//   joinColumn: { name: 'question_id', referencedColumnName: 'id' },
-//   inverseJoinColumn: { name: 'topic_id', referencedColumnName: 'id' },
-// })
-// topics: Topic[];
-// @ManyToMany(() => Trivia, (question) => question.topics)
-// questions: Trivia[];
+  @OneToMany(() => Topic, topic => topic.parentTopic)
+  subTopics: Topic[];
 }
