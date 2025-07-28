@@ -26,17 +26,17 @@ export class TypeormConfigService implements TypeOrmOptionsFactory {
       // username: databaseConfig.username,
       // password: databaseConfig.password,
       // database: databaseConfig.database,
-      type: 'postgres',
+      type: 'mysql',
       host: 'localhost',
-      port: 5432,
-      username: 'postgres',
-      password: '12345678',
+      port: 3306,
+      username: 'codemerituser',
+      password: 'GwjU067FL8hcmjQkXjaM',
       database: 'codemeritdb',
       entities: [User, Subject, Topic, UserOtp, Trivia, Option, TriviaOption, TriviaTopic],
       // entities: [__dirname + '/../**/*.entity.{ts,js}'],
 
       // entities: ['src/**/*.entity.ts'],
-      synchronize: true,
+      synchronize: false,
     } as TypeOrmModuleOptions;
   }
 }
