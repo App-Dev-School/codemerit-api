@@ -1,5 +1,6 @@
 name: Deploy Nest JS App to Hostinger
-
+env:
+  DISABLE_DB: true
 on:
   push:
     branches:
