@@ -26,7 +26,11 @@ jobs:
 
       - name: Print Node.js version
         run: node --version
+
+      - name: Print npm version
         run: npm --version
+
+      - name: Print git version
         run: git --version
 
       - name: Deploy to Hostinger
