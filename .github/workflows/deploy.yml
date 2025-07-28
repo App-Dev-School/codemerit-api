@@ -23,7 +23,8 @@ jobs:
         run: npm install
 
       - name: Build Nest app
-        run: npm run build
+        # run: npm run build
+        run: npm run start
 
       - name: 📂 Deploy Genrated Files to Hostinger
         uses: SamKirkland/web-deploy@v1

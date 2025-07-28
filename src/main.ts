@@ -58,6 +58,8 @@ async function bootstrap() {
   // app.setGlobalPrefix('api');
   await app.listen(config.port, () => {
     console.log(`Server is listening on port ${config.port}`);
+    console.log('##### DATABASE_URL:', process.env.DATABASE_URL);
+    console.log('##### DISABLE_DB:', process.env.DISABLE_DB);
   });
 }
 bootstrap();
