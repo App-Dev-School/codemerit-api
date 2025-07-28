@@ -92,7 +92,7 @@ export class UsersService {
     ) {
       throw new AppCustomException(
         HttpStatus.BAD_REQUEST,
-        'User Already verified.',
+        'User is already verified.',
       );
     }
     let userOtp: UserOtp = new UserOtp();
