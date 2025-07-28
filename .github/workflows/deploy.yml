@@ -1,37 +1,37 @@
-name: Deploy Nest JS App to Hostinger
-env:
-  DISABLE_DB: true
+name: Deploy NestJS to Hostinger
+
 on:
   push:
     branches:
-      - main  # Change if you are using different branch
+      - main # Or your main branch
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # - name: Setup Node.js
+      # - name: Set up Node.js
       #   uses: actions/setup-node@v4
       #   with:
-      #   node-version: 
+      #     node-version: '20'
 
       - name: Install dependencies
-        run: npm install
+        run: npm i
 
-      - name: Build Nest app
-        # run: npm run build
-        run: npm run start
+      - name: Build NestJS application
+        run: npm run build
 
-      - name: 📂 Deploy Genrated Files to Hostinger
-        uses: SamKirkland/web-deploy@v1
+      - name: Deploy to Hostinger
+        uses: appleboy/ssh-action@master
         with:
-          target-server: appdevops.in
-          remote-user: ${{ secrets.SSH_USERNAME }}
-          private-ssh-key: ${{ secrets.SSH_PRIVATE }}
-          source-path: ./dist/
-          destination-path:  ${{ secrets.FTP_REMOTE_DIR }}
-          rsync-options:  --archive --verbose --compress --human-readable --progress --exclude=vendor --exclude=node_modules exclude=.github exclude=.vscode exclude=src
+          host: srv575394.hstgr.cloud
+          username: ${{ secrets.SSH_USERNAME }} # Your Hostinger username
+          key: ${{ secrets.SSH_PRIVATE }}
+          script: |
+            cd ${{ secrets.FTP_REMOTE_DIR }}
+            git pull origin main # Or pull the latest changes
+            npm install --production # Install production dependencies
+            pm2 restart codemerit-api # Use PM2 or similar to manage your NestJS process
