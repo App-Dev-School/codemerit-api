@@ -27,7 +27,7 @@ export class TypeormConfigService implements TypeOrmOptionsFactory {
       // password: databaseConfig.password,
       // database: databaseConfig.database,
       type: 'mysql',
-      host: '127.0.0.1',
+      host: '82.112.234.241',
       port: 3306,
       username: 'codemerituser',
       password: 'GwjU067FL8hcmjQkXjaM',
