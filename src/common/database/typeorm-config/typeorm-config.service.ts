@@ -27,7 +27,7 @@ export class TypeormConfigService implements TypeOrmOptionsFactory {
       // password: databaseConfig.password,
       // database: databaseConfig.database,
       type: 'mysql',
-      host: 'localhost',
+      host: '82.112.234.241',
       port: 3306,
       username: 'codemerituser',
       password: 'GwjU067FL8hcmjQkXjaM',
@@ -36,7 +36,7 @@ export class TypeormConfigService implements TypeOrmOptionsFactory {
       // entities: [__dirname + '/../**/*.entity.{ts,js}'],
 
       // entities: ['src/**/*.entity.ts'],
-      synchronize: false,
+      synchronize: true,
     } as TypeOrmModuleOptions;
   }
 }
