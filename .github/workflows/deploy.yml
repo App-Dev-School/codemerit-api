@@ -33,7 +33,7 @@ jobs:
       - name: Print git version
         run: git --version
 
-      - name: Deploy to Hostinger
+      - name: Deploy to Hostinger VPS
         uses: appleboy/ssh-action@master
         with:
           host: srv575394.hstgr.cloud
