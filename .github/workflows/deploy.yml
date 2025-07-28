@@ -42,5 +42,5 @@ jobs:
           script: |
             cd ${{ secrets.FTP_REMOTE_DIR }}
             git pull origin main # Or pull the latest changes
-            npm install --production # Install production dependencies
-            pm2 restart codemerit-api # Use PM2 or similar to manage your NestJS process
+            npm install --production
+            pm2 restart codemerit-api
