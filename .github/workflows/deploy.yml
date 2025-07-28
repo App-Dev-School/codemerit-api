@@ -24,6 +24,11 @@ jobs:
       - name: Build NestJS application
         run: npm run build
 
+      - name: Print Node.js version
+        run: node --version
+        run: npm --version
+        run: git --version
+
       - name: Deploy to Hostinger
         uses: appleboy/ssh-action@master
         with:
