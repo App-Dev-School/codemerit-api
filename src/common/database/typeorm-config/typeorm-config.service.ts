@@ -20,12 +20,18 @@ export class TypeormConfigService implements TypeOrmOptionsFactory {
     ) as IDatabaseConfig;
 
     return {
-      type: databaseConfig.type,
-      host: databaseConfig.host,
-      port: databaseConfig.port,
-      username: databaseConfig.username,
-      password: databaseConfig.password,
-      database: databaseConfig.database,
+      // type: databaseConfig.type,
+      // host: databaseConfig.host,
+      // port: databaseConfig.port,
+      // username: databaseConfig.username,
+      // password: databaseConfig.password,
+      // database: databaseConfig.database,
+      type: 'postgres',
+      host: 'localhost',
+      port: 5432,
+      username: 'postgres',
+      password: '12345678',
+      database: 'codemeritdb',
       entities: [User, Subject, Topic, UserOtp, Trivia, Option, TriviaOption, TriviaTopic],
       // entities: [__dirname + '/../**/*.entity.{ts,js}'],
 
