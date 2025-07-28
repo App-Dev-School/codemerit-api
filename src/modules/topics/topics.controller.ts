@@ -24,7 +24,7 @@ export class TopicsController {
     @Body() createTopicDto: CreateTopicDto,
   ): Promise<ApiResponse<any>> {
     const result = await this.topicService.create(createTopicDto);
-    return new ApiResponse('New topic Forms in Angular created successfully.', result);
+    return new ApiResponse(`New topic ${createTopicDto.title} created successfully.`, result);
   }
 
   // @Get()

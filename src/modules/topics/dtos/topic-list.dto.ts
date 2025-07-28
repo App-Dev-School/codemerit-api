@@ -4,11 +4,12 @@ export class TopicListDto {
   description: string;
   subjectId: number;
   subjectName: string;
-
-  parent?: {
-    title: string;
-    description: string;
-    subjectId: number;
-    subjectName: string;
-  };
+  subTopics?: TopicDto[];
+}
+export class TopicDto {
+  id: number;
+  title: string;
+  description: string;
+  // subjectId: number;
+  // subjectName: string;
 }

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Topic } from 'src/common/typeorm/entities/topic.entity';
-import { Repository } from 'typeorm';
+import { IsNull, Not, Repository } from 'typeorm';
 import { CreateTopicDto } from '../dtos/create-topics.dto';
 import { UpdateTopicDto } from '../dtos/update-topics.dto';
 import { TopicListDto } from '../dtos/topic-list.dto';
@@ -44,9 +44,14 @@ export class TopicsService {
   //   order: { order: 'ASC' },
   // });
    const topics = await this.topicRepository.find({
-    relations: ['subject', 'topic', 'topic.subject'],
-    where: { subjectId: subjectId, isPublished: true },
+      relations: ['subject','parentTopic', 'subTopics'],
+      where: { 
+        subjectId: subjectId, 
+        isPublished: true,
+        parent: IsNull(), 
+    },
   });
+  console.log('topics', topics);
   
   return topics.map((t) => ({
     id: t.id,
@@ -54,14 +59,11 @@ export class TopicsService {
     description: t.description,
     subjectId: t.subjectId,
     subjectName: t.subject?.title ?? '',
-    parent: t.topic
-      ? {
-          title: t.topic.title,
-          description: t.topic.description,
-          subjectId: t.topic.subjectId,
-          subjectName:  t.topic.subject?.title ?? '',
-        }
-      : null,
+    subTopics: t.subTopics ? t.subTopics?.map((subTopic) => ({
+      id: subTopic.id,
+      title: subTopic.title,
+      description: subTopic.description,
+    })) : [],
   }));
 }
 }
