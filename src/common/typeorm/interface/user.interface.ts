@@ -16,13 +16,13 @@ export interface IUser extends ITimeStamp {
   id: number;
   firstName: string;
   lastName: string;
+  email: string;
+  mobile: string;
   username: string;
   role: UserRoleEnum;
   designation: string;
   city: string;
   country: string;
-  email: string;
-  mobile: string;
   password: string;
   image: string;
   level: string;

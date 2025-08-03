@@ -41,17 +41,31 @@ export class AuthService {
   }
 
   async login(user: User) {
+    console.log("LoginAPID AuthService :: user =>", user);
+    //Auto ACC_VERIFY without notification + test email
+    //Where password is validated
+
     if (user.accountStatus != AccountStatusEnum.ACTIVE) {
+      //Enable instant verification. Do not throw error if password is validated
+      /*
       throw new HttpException(
         'Please verify your account to sign in.',
         HttpStatus.NOT_ACCEPTABLE,
       );
+      */
+     const msg = 'Your account is now verified.';
+     //Do - Send a notification to the user
+     const updateStatus = this.usersService.updateUserAccountStatus(user?.id,
+          AccountStatusEnum.ACTIVE);
+     console.log("LoginAPID AuthService :: Account Activated =>", updateStatus);
     }
     const payload: any = {
       username: user.username,
       sub: user.id,
       role: user.role,
     };
+    console.log("JWT Sign Payload =>", payload);
+    
     const token = this.jwtService.sign(payload);
     const response = new LoginResponseDto({
       ...user,

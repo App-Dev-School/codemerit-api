@@ -5,13 +5,13 @@ const isDbDisabled = process.env.DISABLE_DB === 'true';
 @Module({
   imports: [
     // Conditionally import TypeOrmModule based on environment variable
-    // TypeOrmModule.forRootAsync({
-    //   useClass: TypeormConfigService,
-    // }),
-     ...(!isDbDisabled
-      ? [TypeOrmModule.forRootAsync({
+    TypeOrmModule.forRootAsync({
       useClass: TypeormConfigService,
-    })] : [])
+    }),
+    //  ...(!isDbDisabled
+    //   ? [TypeOrmModule.forRootAsync({
+    //   useClass: TypeormConfigService,
+    // })] : [])
   ]
 })
 export class DatabaseModule {}

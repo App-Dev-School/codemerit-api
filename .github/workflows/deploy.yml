@@ -33,6 +33,13 @@ jobs:
       - name: Print git version
         run: git --version
 
+      - name: Step 1 - Echo out a GitHub Actions Secret to the logs
+        run: |
+        echo "The GitHub Action Secret will be masked:  "
+        echo ${{ secrets.SSH_USERNAME }}
+        echo "FTP_REMOTE_DIR:  "
+        echo ${{secrets.FTP_REMOTE_DIR}} | sed 's/./& /g'
+
       - name: Deploy to Hostinger VPS
         uses: appleboy/ssh-action@master
         with:

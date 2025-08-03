@@ -1,4 +1,4 @@
-import { Column, Entity } from 'typeorm';
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, UpdateDateColumn } from 'typeorm';
 import { AbstractEntity } from './abstract.entity';
 import { IUser } from '../interface/user.interface';
 import { AccountStatusEnum } from 'src/core/users/enums/account-status.enum';
@@ -72,7 +72,7 @@ export class User extends AbstractEntity implements IUser {
 
   @Column({
     type: 'varchar',
-    length: 50,
+    length: 20,
     nullable: true,
     default: null,
     unique: true,
@@ -124,4 +124,19 @@ export class User extends AbstractEntity implements IUser {
     default: AccountStatusEnum.PENDING,
   })
   accountStatus: AccountStatusEnum;
+
+    @Column({ name: 'created_by', default: null, select: false })
+    createdBy: number;
+  
+    @Column({ name: 'updated_by', default: null, select: false })
+    updatedBy: number;
+  
+    @CreateDateColumn({ name: 'created_at' })
+    createdAt: Date;
+  
+    @UpdateDateColumn({ name: 'updated_at', select: false })
+    updatedAt: Date;
+  
+    @DeleteDateColumn({ name: 'deleted_at', default: null, select: false })
+    deletedAt: Date;
 }

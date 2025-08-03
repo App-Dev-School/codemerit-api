@@ -19,6 +19,13 @@ async function bootstrap() {
 
   const config: IAppConfig = app.get<IAppConfig>(appConfig.KEY);
 
+  // Enable CORS for localhost dev
+  app.enableCors({
+    origin: 'http://localhost:4200',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true
+  });
+
   app.useGlobalInterceptors(new ResponseInterceptor());
   app.useGlobalFilters(new GlobalExceptionsFilter());
   /* Add Swagger  */
@@ -33,12 +40,6 @@ async function bootstrap() {
     .build();
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('api-docs', app, document);
-  /* Add Global Validation Pipe  */
-  // app.useGlobalPipes(
-  //   new ValidationPipe({
-  //     transform: true
-  //   }),
-  // );
 
   app.useGlobalPipes(
     new ValidationPipe({
