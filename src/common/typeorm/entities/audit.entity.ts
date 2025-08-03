@@ -6,18 +6,18 @@ import {
 } from 'typeorm';
 
 export abstract class AuditEntity {
-  @Column({ name: 'created_by', default: null, select: false })
+  @Column({ name: 'createdBy', default: null, select: false })
   createdBy: number;
 
-  @Column({ name: 'updated_by', default: null, select: false })
+  @Column({ name: 'updatedBy', default: null, select: false })
   updatedBy: number;
 
-  @CreateDateColumn({ name: 'created_at' })
+  @CreateDateColumn({ name: 'createdAt' })
   createdAt: Date;
 
-  @UpdateDateColumn({ name: 'updated_at', select: false })
+  @UpdateDateColumn({ name: 'updatedAt', select: false })
   updatedAt: Date;
 
-  @DeleteDateColumn({ name: 'deleted_at', default: null, select: false })
+  @DeleteDateColumn({ name: 'deletedAt', default: null, select: false })
   deletedAt: Date;
 }
