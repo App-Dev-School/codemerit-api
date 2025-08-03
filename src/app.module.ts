@@ -36,7 +36,6 @@ import { RolesGuard } from './core/auth/guards/roles.guard';
 export class AppModule {
   constructor() {
     console.log('AppModule initialized');
-    console.log('##### DATABASE_URL:', process.env.DATABASE_URL);
-    console.log('##### DISABLE_DB:', process.env.DISABLE_DB);
+    console.log('##### Env.DB_HOST:', process.env.DB_HOST)
   }
 }
