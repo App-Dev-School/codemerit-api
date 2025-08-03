@@ -10,6 +10,7 @@ import { DomainModule } from './modules/domain.module';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './core/auth/jwt/jwt-auth-guard';
 import { RolesGuard } from './core/auth/guards/roles.guard';
+import { MonitoringModule } from './modules/monitoring/monitoring.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { RolesGuard } from './core/auth/guards/roles.guard';
     LoggerModule,
     DatabaseModule,
     DomainModule,
+    MonitoringModule,
   ],
   providers: [
     {
