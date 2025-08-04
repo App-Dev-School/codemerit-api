@@ -50,4 +50,3 @@ jobs:
             else
               pm2 start main.js --name main
             fi
-EOF
