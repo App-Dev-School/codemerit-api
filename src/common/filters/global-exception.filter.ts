@@ -39,7 +39,8 @@ export class GlobalExceptionsFilter implements ExceptionFilter {
     // TypeORM Query Error
     else if (exception instanceof QueryFailedError) {
       statusCode = HttpStatus.BAD_REQUEST;
-      message = `Database error: ${(exception as any).driverError?.detail || exception.message}`;
+      message = `${(exception as any).driverError?.detail || exception.message}`;
+      // message = `Database error: ${(exception as any).driverError?.detail || exception.message}`;
     }
 
     // TypeORM Not Found
@@ -60,7 +61,7 @@ export class GlobalExceptionsFilter implements ExceptionFilter {
     }
 
     // Log for debugging
-    console.error('Error caught:', exception);
+    // console.error('Error caught:', exception);
     console.error('Error message:', message);
 
     response.status(statusCode).json({
