@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsEmail, IsEmpty, IsMobilePhone, IsNotEmpty, IsNumberString, IsOptional } from 'class-validator';
 
 export class CreateUserDto {
@@ -23,13 +23,22 @@ export class CreateUserDto {
   @IsNotEmpty({ message: 'Email must not be empty' })
   email: string;
 
+  @ApiPropertyOptional()
   @IsOptional()
   // @IsMobilePhone("en-US", { strictMode: false })
   mobile?: string;
 
+  @ApiProperty({
+    description: 'Please select your current status',
+    example: 'Tolle',
+  })
   @IsNotEmpty({ message: 'Please select your current status.' })
   designation: string;
 
+  @ApiProperty({
+    description: 'Please select your current status',
+    example: 'Tolle',
+  })
   @IsNotEmpty({ message: 'Please let us know your city.' })
   city: string;
 }

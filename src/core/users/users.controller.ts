@@ -27,7 +27,7 @@ export class UsersController {
   @Roles(UserRoleEnum.ADMIN)
   @Get()
   async getAllUsers(): Promise<ApiResponse<any>> {
-    const result = await this.usersService.findAll();
+    const result = await this.usersService.findUserList();
     return new ApiResponse('User List found', result);
   }
 

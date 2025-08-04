@@ -41,6 +41,11 @@ export class UsersService {
     return this.usersRepo.find();
   }
 
+  async findUserList(): Promise<User[]> {
+    return this.usersRepo.find({
+  select: ['firstName','lastName','username','role','designation','city','country','email','mobile','level','points','token','accountStatus']
+});
+  }
   async updateUserAccountStatus(
     id: number,
     accountStatusEnum: AccountStatusEnum,
