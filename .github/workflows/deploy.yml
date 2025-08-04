@@ -35,12 +35,16 @@ jobs:
           destination-path: ${{ secrets.FTP_REMOTE_DIR }}
           rsync-options: --archive --verbose --compress --human-readable --progress --exclude=vendor --exclude=node_modules --exclude=.github --exclude=.vscode --exclude=src
 
+
+      - name: 🔍 List contents of ./dist
+        run: ls -al ./dist
+
       - name: 🚀 Restart app with PM2 on Hostinger
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USERNAME }}@appdevops.in << 'EOF'
-            export NVM_DIR="$HOME/.nvm"
-            source "$NVM_DIR/nvm.sh"
-            nvm use node
+            #export NVM_DIR="$HOME/.nvm"
+            #source "$NVM_DIR/nvm.sh"
+            #nvm use node
 
             cd ${{ secrets.FTP_REMOTE_DIR }}
             
