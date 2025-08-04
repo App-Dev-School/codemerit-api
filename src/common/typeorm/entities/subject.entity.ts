@@ -1,6 +1,7 @@
 import { Entity, Column } from 'typeorm';
 import { AbstractEntity } from './abstract.entity';
 import { ISubject } from '../interface/subject.interface';
+import { AuditEntity } from './audit.entity';
 
 @Entity()
 export class Subject extends AbstractEntity implements ISubject {
@@ -49,4 +50,7 @@ export class Subject extends AbstractEntity implements ISubject {
     default: true,
   })
   isPublished: boolean;
+  
+    @Column(type => AuditEntity)
+    audit: AuditEntity;
 }

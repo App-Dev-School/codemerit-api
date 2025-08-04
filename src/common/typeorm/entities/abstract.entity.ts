@@ -2,7 +2,7 @@
 import { PrimaryGeneratedColumn, Column } from 'typeorm';
 import { AuditEntity } from './audit.entity';
 
-export abstract class AbstractEntity extends AuditEntity {
+export abstract class AbstractEntity{
   @PrimaryGeneratedColumn()
   public id: number;
 

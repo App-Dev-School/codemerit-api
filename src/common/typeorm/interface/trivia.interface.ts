@@ -2,7 +2,7 @@ import { LabelEnum } from 'src/common/enum/label.enum';
 import { ITimeStamp } from './timestamp.interface';
 import { LavelEnum } from 'src/common/enum/lavel.enum';
 
-export interface ITrivia extends ITimeStamp {
+export interface ITrivia {
   question: string;
   // topicId: number;
   subjectId: number;
@@ -17,4 +17,5 @@ export interface ITrivia extends ITimeStamp {
   hint: string;
   numReads: number;
   numQuizzes: number;
+  audit: ITimeStamp;
 }

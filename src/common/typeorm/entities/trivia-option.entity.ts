@@ -3,6 +3,7 @@ import { AbstractEntity } from './abstract.entity';
 import { ITriviaOption } from '../interface/trivia-option.interface';
 import { Option } from './option.entity';
 import { Trivia } from './trivia.entity';
+import { AuditEntity } from './audit.entity';
 
 @Entity()
 export class TriviaOption extends AbstractEntity implements ITriviaOption {  
@@ -18,6 +19,9 @@ export class TriviaOption extends AbstractEntity implements ITriviaOption {
   })
   optionId: number;
 
+  @Column(type => AuditEntity)
+  audit: AuditEntity;
+  
   @ManyToOne(() => Option, { eager: true })
   @JoinColumn({ name: 'optionId', referencedColumnName: 'id' })
   option: Option;

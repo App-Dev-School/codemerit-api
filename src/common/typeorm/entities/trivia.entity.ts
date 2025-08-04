@@ -15,6 +15,7 @@ import { Subject } from './subject.entity';
 import { Option } from './option.entity';
 import { TriviaOption } from './trivia-option.entity';
 import { ITrivia } from '../interface/trivia.interface';
+import { AuditEntity } from './audit.entity';
 
 @Entity()
 export class Trivia extends AbstractEntity implements ITrivia {
@@ -73,6 +74,8 @@ export class Trivia extends AbstractEntity implements ITrivia {
   })
   order: number;
 
+  @Column(type => AuditEntity)
+  audit: AuditEntity;
 
   @ManyToOne(() => Subject, { eager: true })
   @JoinColumn({ name: 'subject_id', referencedColumnName: 'id' })

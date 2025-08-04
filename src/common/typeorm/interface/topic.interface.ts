@@ -1,7 +1,7 @@
 import { LabelEnum } from 'src/common/enum/label.enum';
 import { ITimeStamp } from './timestamp.interface';
 
-export interface ITopic extends ITimeStamp {
+export interface ITopic {
   id: number;
   title: string;
   subjectId: number;
@@ -19,4 +19,5 @@ export interface ITopic extends ITimeStamp {
   numQuestions: number;
   numTrivia: number;
   numQuizzes: number;
+  audit: ITimeStamp;
 }

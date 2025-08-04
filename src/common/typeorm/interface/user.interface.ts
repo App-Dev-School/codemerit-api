@@ -1,8 +1,9 @@
 import { AccountStatusEnum } from 'src/core/users/enums/account-status.enum';
 import { ITimeStamp } from './timestamp.interface';
 import { UserRoleEnum } from 'src/core/users/enums/user-roles.enum';
+import { AuditEntity } from '../entities/audit.entity';
 
-export interface IUser extends ITimeStamp {
+export interface IUser {
   // firstName: string;
   // lastName: string;
   // email: string;
@@ -29,4 +30,5 @@ export interface IUser extends ITimeStamp {
   points?: number;
   token?: string;
   accountStatus: AccountStatusEnum;
+  audit: ITimeStamp;
 }

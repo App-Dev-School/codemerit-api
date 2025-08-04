@@ -3,6 +3,7 @@ import { AbstractEntity } from './abstract.entity';
 import { ITopic } from '../interface/topic.interface';
 import { Subject } from './subject.entity';
 import { LabelEnum } from 'src/common/enum/label.enum';
+import { AuditEntity } from './audit.entity';
 
 @Entity()
 export class Topic extends AbstractEntity implements ITopic {
@@ -114,6 +115,8 @@ export class Topic extends AbstractEntity implements ITopic {
   })
   numQuizzes: number;
 
+  @Column(type => AuditEntity)
+  audit: AuditEntity;
   // @ManyToOne(() => Subject, { eager: true })
   // @JoinColumn({ name: 'subject_id', referencedColumnName: 'id' })
   // subject: Subject;

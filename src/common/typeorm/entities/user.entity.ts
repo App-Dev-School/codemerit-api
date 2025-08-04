@@ -3,6 +3,7 @@ import { AbstractEntity } from './abstract.entity';
 import { IUser } from '../interface/user.interface';
 import { AccountStatusEnum } from 'src/core/users/enums/account-status.enum';
 import { UserRoleEnum } from 'src/core/users/enums/user-roles.enum';
+import { AuditEntity } from './audit.entity';
 
 @Entity()
 export class User extends AbstractEntity implements IUser {
@@ -125,18 +126,6 @@ export class User extends AbstractEntity implements IUser {
   })
   accountStatus: AccountStatusEnum;
 
-  @Column({ name: 'createdBy', default: null, select: false })
-  createdBy: number;
-
-  @Column({ name: 'updatedBy', default: null, select: false })
-  updatedBy: number;
-
-  @CreateDateColumn({ name: 'createdAt' })
-  createdAt: Date;
-
-  @UpdateDateColumn({ name: 'updatedAt', select: false })
-  updatedAt: Date;
-
-  @DeleteDateColumn({ name: 'deletedAt', default: null, select: false })
-  deletedAt: Date;
+  @Column(type => AuditEntity, { prefix: '' })
+  audit: AuditEntity;
 }
