@@ -10,36 +10,44 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: ✅ Checkout code
         uses: actions/checkout@v4
 
-      - name: Print Node.js version
-        run: node --version
+      - name: 🧪 Print versions (debug)
+        run: |
+          node --version
+          npm --version
+          git --version
 
-      - name: Print npm version
-        run: npm --version
-
-      - name: Print git version
-        run: git --version
-
-      - name: Install dependencies
+      - name: 📦 Install dependencies
         run: npm install --force
 
-      - name: Build NestJS application
-        run: npm run build --prod
+      - name: 🏗️ Build NestJS application
+        run: npm run build
 
-      - name: 📂 Deploy Genrated Files to Hostinger
+      - name: 📂 Deploy built files to Hostinger
         uses: SamKirkland/web-deploy@v1
         with:
           target-server: appdevops.in
           remote-user: ${{ secrets.SSH_USERNAME }}
           private-ssh-key: ${{ secrets.SSH_PRIVATE }}
           source-path: ./dist/
-          destination-path:  ${{ secrets.FTP_REMOTE_DIR }}
-          rsync-options:  --archive --verbose --compress --human-readable --progress --exclude=vendor --exclude=node_modules exclude=.github exclude=.vscode exclude=src
+          destination-path: ${{ secrets.FTP_REMOTE_DIR }}
+          rsync-options: --archive --verbose --compress --human-readable --progress --exclude=vendor --exclude=node_modules --exclude=.github --exclude=.vscode --exclude=src
 
       - name: 🚀 Restart app with PM2 on Hostinger
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USERNAME }}@appdevops.in << 'EOF'
+            export NVM_DIR="$HOME/.nvm"
+            source "$NVM_DIR/nvm.sh"
+            nvm use node
+
             cd ${{ secrets.FTP_REMOTE_DIR }}
-            pm2 restart main.js  
+            
+            # Check if already running, restart or start
+            if pm2 describe main > /dev/null; then
+              pm2 restart main
+            else
+              pm2 start main.js --name main
+            fi
+EOF
