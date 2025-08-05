@@ -9,7 +9,7 @@ import {
   IsNotEmpty,
 } from 'class-validator';
 import { LabelEnum } from 'src/common/enum/label.enum';
-import { LavelEnum } from 'src/common/enum/lavel.enum';
+import { DifficultyLevelEnum } from 'src/common/enum/lavel.enum';
 
 export class UpdateQuestionDto {
   @ApiPropertyOptional()
@@ -47,8 +47,8 @@ export class UpdateQuestionDto {
 
   @ApiPropertyOptional()
   @IsOptional()
-  @IsEnum(LavelEnum)
-  level?: LavelEnum;
+  @IsEnum(DifficultyLevelEnum)
+  level?: DifficultyLevelEnum;
 
   @ApiPropertyOptional()
   @IsInt()

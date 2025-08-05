@@ -7,7 +7,7 @@ import {
   IsNotEmpty,
   Min,
 } from 'class-validator';
-
+import { TopicLabel } from 'src/common/enum/TopicLabel.enum';
 export class CreateTopicDto {
   @ApiProperty({
     description: 'Title of the topic',
@@ -22,8 +22,15 @@ export class CreateTopicDto {
     example: 3,
   })
   @IsInt({ message: 'Subject ID must be an integer' })
-  @Min(1, { message: 'Subject ID must be a positive integer' })
   subjectId: number;
+
+    @ApiProperty({
+    description: 'Display order for the topic',
+    example: 16,
+  })
+
+  @IsOptional()
+  label: TopicLabel;
 
   @ApiProperty({
     description: 'Display order for the topic',
@@ -55,5 +62,4 @@ export class CreateTopicDto {
   @IsString({ message: 'Description must be a string' })
   @IsNotEmpty({ message: 'Description is required' })
   description: string;
-
 }

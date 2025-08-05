@@ -1,19 +1,33 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, JoinColumn, OneToOne } from 'typeorm';
+import { User } from './user.entity';
 
 @Entity()
 export class Profile {
   @PrimaryGeneratedColumn('increment')
-  id: number;
+    id: number;
+  
+    @Column()
+    userId: number;
+  
+    @Column('linkedinUrl')
+    linkedinUrl: string;
 
-  @Column()
-  phone: string;
+    @Column()
+    selfRatingDone: boolean;
 
-  @Column('date')
-  birthday: Date;
+    @Column()
+    playedQuiz: boolean;
 
-  @Column()
-  website: string;
+    @Column()
+    takenInterview: boolean;
 
-  @Column()
-  designation: string;
+    @Column()
+    level1Assessment: boolean;
+    
+    @Column()
+    level2Assessment: boolean;
+  
+    @OneToOne(type => User)
+    @JoinColumn()
+    user: User;
 }

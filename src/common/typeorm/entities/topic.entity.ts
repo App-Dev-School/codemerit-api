@@ -2,8 +2,8 @@ import { Entity, Column, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
 import { AbstractEntity } from './abstract.entity';
 import { ITopic } from '../interface/topic.interface';
 import { Subject } from './subject.entity';
-import { LabelEnum } from 'src/common/enum/label.enum';
 import { AuditEntity } from './audit.entity';
+import { TopicLabel } from 'src/common/enum/TopicLabel.enum';
 
 @Entity()
 export class Topic extends AbstractEntity implements ITopic {
@@ -31,10 +31,11 @@ export class Topic extends AbstractEntity implements ITopic {
 
   @Column({
     type: 'enum',
-    enum: LabelEnum,
+    enum: TopicLabel,
     nullable: true,
+    default: TopicLabel.Beginner
   })
-  label: LabelEnum;
+  label: TopicLabel;
 
   @Column({
     type: 'varchar',
@@ -42,7 +43,7 @@ export class Topic extends AbstractEntity implements ITopic {
     nullable: true,
     default: null,
   })
-  color: string;
+  shortDesc: string;
 
   @Column({
     type: 'varchar',
@@ -57,6 +58,19 @@ export class Topic extends AbstractEntity implements ITopic {
     nullable: false,
   })
   order: number;
+
+  @Column({
+    type: 'int',
+    nullable: false,
+  })
+  weight: number;
+
+  @Column({
+    type: 'int',
+    nullable: true,
+    default: 1
+  })
+  popularity: number;
 
   @Column({
     type: 'integer',
@@ -89,7 +103,7 @@ export class Topic extends AbstractEntity implements ITopic {
     type: 'int',
     default: 0,
   })
-  numVotes: number;
+  votes: number;
 
   @Column({
     type: 'int',

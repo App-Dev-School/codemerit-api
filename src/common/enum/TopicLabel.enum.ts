@@ -1,5 +1,5 @@
-export enum DifficultyLevelEnum {
-  Easy = 'Easy',
+export enum TopicLabel {
+  Beginner = 'Beginner',
   Intermediate = 'Intermediate',
   Advanced = 'Advanced',
 }

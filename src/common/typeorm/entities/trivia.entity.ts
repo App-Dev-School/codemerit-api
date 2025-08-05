@@ -1,6 +1,6 @@
 import { Entity, Column, JoinColumn, ManyToOne } from 'typeorm';
 import { AbstractEntity } from './abstract.entity';
-import { LavelEnum } from 'src/common/enum/lavel.enum';
+import { DifficultyLevelEnum } from 'src/common/enum/lavel.enum';
 import { LabelEnum } from 'src/common/enum/label.enum';
 import { Subject } from './subject.entity';
 import { ITrivia } from '../interface/trivia.interface';
@@ -11,7 +11,11 @@ export class Trivia extends AbstractEntity implements ITrivia {
   @Column({ type: 'text', nullable: false })
   question: string;
 
-  @Column({ type: 'integer', name: 'subjectId', nullable: false })
+  @Column({
+    type: 'integer',
+    name: 'subjectId',
+    nullable: false,
+  })
   subjectId: number;
 
   @Column({ type: 'varchar', length: 255, nullable: true })
@@ -27,12 +31,15 @@ export class Trivia extends AbstractEntity implements ITrivia {
   @Column({ type: 'varchar', length: 255, nullable: true })
   tag: string;
 
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  questionType: string;
+
   @Column({
     type: 'enum',
-    enum: LavelEnum,
+    enum: DifficultyLevelEnum,
     nullable: true,
   })
-  level: LavelEnum;
+  level: DifficultyLevelEnum;
 
   @Column({ type: 'int', default: 1 })
   marks: number;

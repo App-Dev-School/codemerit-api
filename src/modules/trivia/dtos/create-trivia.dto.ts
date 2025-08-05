@@ -122,7 +122,7 @@
 
 import { IsArray, IsBoolean, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
-import { LavelEnum } from 'src/common/enum/lavel.enum';
+import { DifficultyLevelEnum } from 'src/common/enum/lavel.enum';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 
@@ -156,11 +156,11 @@ export class CreateTriviaDto {
 
   @ApiProperty({
     description: 'Difficulty level of the question',
-    enum: LavelEnum,
-    example: LavelEnum.Easy,
+    enum: DifficultyLevelEnum,
+    example: DifficultyLevelEnum.Easy,
   })
-  @IsEnum(LavelEnum, { message: 'Level must be a valid enum value' })
-  level: LavelEnum;
+  @IsEnum(DifficultyLevelEnum, { message: 'Level must be a valid enum value' })
+  level: DifficultyLevelEnum;
 
   @ApiProperty({
     description: 'Order of the question within the quiz or exam',

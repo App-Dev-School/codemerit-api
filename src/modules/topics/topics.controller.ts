@@ -24,22 +24,24 @@ export class TopicsController {
     @Body() createTopicDto: CreateTopicDto,
   ): Promise<ApiResponse<any>> {
     const result = await this.topicService.create(createTopicDto);
-    return new ApiResponse(`New topic ${createTopicDto.title} created successfully.`, result);
+    console.log("TopicCreateAPI #1 result", result);
+    
+    return new ApiResponse(`${createTopicDto.title} added successfully.`, result);
   }
 
-  // @Get()
-  // async findAll(): Promise<ApiResponse<any>> {
-  //   const result = await this.topicService.findAll();
-  //   return new ApiResponse('Topics Found', result);
-  // }
+  @Get('/all')
+  async findAll(): Promise<ApiResponse<any>> {
+    const result = await this.topicService.findAll();
+    return new ApiResponse('Topics Found', result);
+  }
 
-  // @Get(':topicId')
-  // async findOne(
-  //   @Param('topicId', new ParseIntPipe({ errorHttpStatusCode: 400, exceptionFactory: () => new BadRequestException('Topic Id must be a valid number') }))
-  //   topicId: number): Promise<ApiResponse<any>> {
-  //   const result = await this.topicService.findOne(topicId);
-  //   return new ApiResponse('Topic Found', result);
-  // }
+  @Get(':topicId')
+  async findOne(
+    @Param('topicId', new ParseIntPipe({ errorHttpStatusCode: 400, exceptionFactory: () => new BadRequestException('Topic Id must be a valid number') }))
+    topicId: number): Promise<ApiResponse<any>> {
+    const result = await this.topicService.findOne(topicId);
+    return new ApiResponse('Topic Found', result);
+  }
 
   @Put('update/:topicId')
   async update(
@@ -48,7 +50,7 @@ export class TopicsController {
     @Body() updateTopicDto: UpdateTopicDto,
   ): Promise<ApiResponse<any>> {
     const result = await this.topicService.update(topicId, updateTopicDto);
-    return new ApiResponse(`Topic ${updateTopicDto.title} updated successfully`, result);
+    return new ApiResponse(`${updateTopicDto.title} updated successfully.`, result);
   }
 
   @Delete('delete/:topicId')
@@ -57,7 +59,7 @@ export class TopicsController {
     topicId: number
   ): Promise<ApiResponse<any>> {
      await this.topicService.remove(topicId);
-    return new ApiResponse('Topic Removed', null);
+    return new ApiResponse('Topic deleted.', null);
   }
 
   @Public()

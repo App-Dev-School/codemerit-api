@@ -22,13 +22,13 @@ export class AuthService {
       if (!user) {
         throw new AppCustomException(
           HttpStatus.BAD_REQUEST,
-          'User not found',
+          'User account not found.',
         );
       }
       if (pass !== user?.password) {
         throw new AppCustomException(
           HttpStatus.BAD_REQUEST,
-          'Incorrect Password, Please check your password and try again',
+          'Incorrect Password. Please try again.',
         );
       }
       if (user && user.password) {

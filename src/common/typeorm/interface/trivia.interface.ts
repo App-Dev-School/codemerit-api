@@ -1,6 +1,6 @@
 import { LabelEnum } from 'src/common/enum/label.enum';
 import { ITimeStamp } from './timestamp.interface';
-import { LavelEnum } from 'src/common/enum/lavel.enum';
+import { DifficultyLevelEnum } from 'src/common/enum/lavel.enum';
 
 export interface ITrivia {
   question: string;
@@ -9,7 +9,7 @@ export interface ITrivia {
   image: string;
   label: LabelEnum;
   tag: string;
-  level: LavelEnum;
+  level: DifficultyLevelEnum;
   marks: number;
   slug: string;
   isPublished: boolean;

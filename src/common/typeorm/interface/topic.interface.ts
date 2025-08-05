@@ -1,4 +1,4 @@
-import { LabelEnum } from 'src/common/enum/label.enum';
+import { TopicLabel } from 'src/common/enum/TopicLabel.enum';
 import { ITimeStamp } from './timestamp.interface';
 
 export interface ITopic {
@@ -6,15 +6,14 @@ export interface ITopic {
   title: string;
   subjectId: number;
   image: string;
-  label: LabelEnum;
-  color: string;
-  slug: string;
+  label: TopicLabel;
   order: number;
   parent?: number;
   isPublished: boolean;
   description: string;
+  weight: number;
   goal: string;
-  numVotes: number;
+  votes: number;
   numLessons: number;
   numQuestions: number;
   numTrivia: number;

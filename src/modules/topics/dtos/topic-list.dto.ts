@@ -13,3 +13,16 @@ export class TopicDto {
   // subjectId: number;
   // subjectName: string;
 }
+export class TopicListItemDto {
+  id: number;
+  title: string;
+  description: string;
+  subjectId: number;
+  subjectName: string;
+  slug: string;
+  label: string;
+  votes?: number;
+  numQuestions?: number;
+  numQuizzes?: number;
+  isPublished: boolean;
+}
