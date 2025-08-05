@@ -1,8 +1,7 @@
 // import { Exclude } from "class-transformer";
 import { PrimaryGeneratedColumn, Column } from 'typeorm';
-import { AuditEntity } from './audit.entity';
 
-export abstract class AbstractEntity{
+export abstract class AbstractEntity {
   @PrimaryGeneratedColumn()
   public id: number;
 

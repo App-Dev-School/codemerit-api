@@ -1,7 +1,6 @@
 import { AccountStatusEnum } from 'src/core/users/enums/account-status.enum';
 import { ITimeStamp } from './timestamp.interface';
 import { UserRoleEnum } from 'src/core/users/enums/user-roles.enum';
-import { AuditEntity } from '../entities/audit.entity';
 
 export interface IUser {
   // firstName: string;

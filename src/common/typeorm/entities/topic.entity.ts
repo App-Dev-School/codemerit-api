@@ -1,4 +1,4 @@
-import { Entity, Column, ManyToOne, JoinColumn, JoinTable, ManyToMany, OneToMany } from 'typeorm';
+import { Entity, Column, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
 import { AbstractEntity } from './abstract.entity';
 import { ITopic } from '../interface/topic.interface';
 import { Subject } from './subject.entity';
@@ -16,7 +16,7 @@ export class Topic extends AbstractEntity implements ITopic {
 
   @Column({
     type: 'integer',
-    name: 'subject_id',
+    name: 'subjectId',
     nullable: false,
   })
   subjectId: number;
@@ -115,24 +115,17 @@ export class Topic extends AbstractEntity implements ITopic {
   })
   numQuizzes: number;
 
-  @Column(type => AuditEntity)
+  @Column((type) => AuditEntity)
   audit: AuditEntity;
-  // @ManyToOne(() => Subject, { eager: true })
-  // @JoinColumn({ name: 'subject_id', referencedColumnName: 'id' })
-  // subject: Subject;
-@ManyToOne(() => Subject)
-@JoinColumn({ name: 'subject_id' })
-subject: Subject;
 
-// @ManyToOne(() => Topic)
-// @JoinColumn({ name: 'parent' })
-// topic: Topic;
+  @ManyToOne(() => Subject)
+  @JoinColumn({ name: 'subjectId' })
+  subject: Subject;
 
-  @ManyToOne(() => Topic, topic => topic.subTopics, { nullable: true })
+  @ManyToOne(() => Topic, (topic) => topic.subTopics, { nullable: true })
   @JoinColumn({ name: 'parent' })
   parentTopic?: Topic;
 
-
-  @OneToMany(() => Topic, topic => topic.parentTopic)
+  @OneToMany(() => Topic, (topic) => topic.parentTopic)
   subTopics: Topic[];
 }

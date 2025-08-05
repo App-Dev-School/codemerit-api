@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, UpdateDateColumn } from 'typeorm';
+import { Column, Entity } from 'typeorm';
 import { AbstractEntity } from './abstract.entity';
 import { IUser } from '../interface/user.interface';
 import { AccountStatusEnum } from 'src/core/users/enums/account-status.enum';
@@ -126,6 +126,6 @@ export class User extends AbstractEntity implements IUser {
   })
   accountStatus: AccountStatusEnum;
 
-  @Column(type => AuditEntity, { prefix: '' })
+  @Column((type) => AuditEntity, { prefix: '' })
   audit: AuditEntity;
 }

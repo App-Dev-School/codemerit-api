@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, MaxLength, MinLength } from 'class-validator';
+import { IsNotEmpty, IsString, MaxLength } from 'class-validator';
 
 import {
   Column,
@@ -20,9 +20,6 @@ export class Hint {
 
   @CreateDateColumn()
   createdAt: Date;
-
-  // @ManyToOne(() => Question, (question) => question.hints)
-  // question: Question;
 
   constructor(data: Partial<Hint> = {}) {
     Object.assign(this, data);
