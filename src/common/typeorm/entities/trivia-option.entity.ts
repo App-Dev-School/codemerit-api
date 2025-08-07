@@ -18,7 +18,7 @@ export class TriviaOption extends AbstractEntity implements ITriviaOption {
   })
   optionId: number;
 
-  @Column((type) => AuditEntity)
+  @Column((type) => AuditEntity, { prefix: '' })
   audit: AuditEntity;
 
   @ManyToOne(() => Option, { eager: true })

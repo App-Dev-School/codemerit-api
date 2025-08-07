@@ -19,6 +19,6 @@ export class Option extends AbstractEntity implements IOption {
   })
   comment: string;
 
-  @Column((type) => AuditEntity)
+  @Column((type) => AuditEntity, { prefix: '' })
   audit: AuditEntity;
 }

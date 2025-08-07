@@ -18,8 +18,9 @@ export class TriviaTopic extends AbstractEntity implements ITriviaTopic {
   })
   topicId: number;
 
-  @Column((type) => AuditEntity)
+  @Column((type) => AuditEntity, { prefix: '' })
   audit: AuditEntity;
+
   @ManyToOne(() => Topic, { eager: true })
   @JoinColumn({ name: 'topicId', referencedColumnName: 'id' })
   topic: Topic;

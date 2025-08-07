@@ -10,6 +10,8 @@ import { Trivia } from 'src/common/typeorm/entities/trivia.entity';
 import { Option } from 'src/common/typeorm/entities/option.entity';
 import { TriviaOption } from 'src/common/typeorm/entities/trivia-option.entity';
 import { TriviaTopic } from 'src/common/typeorm/entities/trivia-topic.entity';
+import { SkillRating } from 'src/common/typeorm/entities/skill-rating.entity';
+import { AssessmentSession } from 'src/common/typeorm/entities/assessment-session.entity';
 @Injectable()
 export class TypeormConfigService implements TypeOrmOptionsFactory {
   constructor(private configService: ConfigService) {}
@@ -32,7 +34,18 @@ export class TypeormConfigService implements TypeOrmOptionsFactory {
       username: 'codemerituser',
       password: 'GwjU067FL8hcmjQkXjaM',
       database: 'codemeritdb',
-      entities: [User, Subject, Topic, UserOtp, Trivia, Option, TriviaOption, TriviaTopic],
+      entities: [
+        User,
+        Subject,
+        Topic,
+        UserOtp,
+        Trivia,
+        Option,
+        TriviaOption,
+        TriviaTopic,
+        AssessmentSession,
+        SkillRating,
+      ],
       // entities: [__dirname + '/../**/*.entity.{ts,js}'],
 
       // entities: ['src/**/*.entity.ts'],

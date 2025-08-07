@@ -50,7 +50,7 @@ export class Subject extends AbstractEntity implements ISubject {
     default: true,
   })
   isPublished: boolean;
-  
-    @Column(type => AuditEntity)
-    audit: AuditEntity;
+
+  @Column((type) => AuditEntity, { prefix: '' })
+  audit: AuditEntity;
 }

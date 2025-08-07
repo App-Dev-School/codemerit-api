@@ -24,9 +24,12 @@ export class TopicsController {
     @Body() createTopicDto: CreateTopicDto,
   ): Promise<ApiResponse<any>> {
     const result = await this.topicService.create(createTopicDto);
-    console.log("TopicCreateAPI #1 result", result);
-    
-    return new ApiResponse(`${createTopicDto.title} added successfully.`, result);
+    console.log('TopicCreateAPI #1 result', result);
+
+    return new ApiResponse(
+      `${createTopicDto.title} added successfully.`,
+      result,
+    );
   }
 
   @Get('/all')
@@ -37,36 +40,78 @@ export class TopicsController {
 
   @Get(':topicId')
   async findOne(
-    @Param('topicId', new ParseIntPipe({ errorHttpStatusCode: 400, exceptionFactory: () => new BadRequestException('Topic Id must be a valid number') }))
-    topicId: number): Promise<ApiResponse<any>> {
+    @Param(
+      'topicId',
+      new ParseIntPipe({
+        errorHttpStatusCode: 400,
+        exceptionFactory: () =>
+          new BadRequestException('Topic Id must be a valid number'),
+      }),
+    )
+    topicId: number,
+  ): Promise<ApiResponse<any>> {
     const result = await this.topicService.findOne(topicId);
     return new ApiResponse('Topic Found', result);
   }
 
   @Put('update/:topicId')
   async update(
-    @Param('topicId', new ParseIntPipe({ errorHttpStatusCode: 400, exceptionFactory: () => new BadRequestException('Topic Id must be a valid number') }))
+    @Param(
+      'topicId',
+      new ParseIntPipe({
+        errorHttpStatusCode: 400,
+        exceptionFactory: () =>
+          new BadRequestException('Topic Id must be a valid number'),
+      }),
+    )
     topicId: number,
     @Body() updateTopicDto: UpdateTopicDto,
   ): Promise<ApiResponse<any>> {
     const result = await this.topicService.update(topicId, updateTopicDto);
-    return new ApiResponse(`${updateTopicDto.title} updated successfully.`, result);
+    return new ApiResponse(
+      `${updateTopicDto.title} updated successfully.`,
+      result,
+    );
   }
 
   @Delete('delete/:topicId')
   async remove(
-    @Param('topicId', new ParseIntPipe({ errorHttpStatusCode: 400, exceptionFactory: () => new BadRequestException('Topic Id must be a valid number') }))
-    topicId: number
+    @Param(
+      'topicId',
+      new ParseIntPipe({
+        errorHttpStatusCode: 400,
+        exceptionFactory: () =>
+          new BadRequestException('Topic Id must be a valid number'),
+      }),
+    )
+    topicId: number,
   ): Promise<ApiResponse<any>> {
-     await this.topicService.remove(topicId);
-    return new ApiResponse('Topic deleted.', null);
+    const oldTopic = await this.topicService.findOne(topicId);
+    if (oldTopic && oldTopic?.id) {
+      await this.topicService.remove(topicId);
+      return new ApiResponse('Topic deleted.', null);
+    } else {
+      return new ApiResponse(`Topic id: ${topicId} not found`, null);
+    }
   }
 
   @Public()
   @Get(':subjectId')
-  async findAllTopicListBySubjectId(@Param('subjectId', new ParseIntPipe({ errorHttpStatusCode: 400, exceptionFactory: () => new BadRequestException('Subject Id must be a valid number') }))
-  subjectId: number): Promise<ApiResponse<any>> {
+  async findAllTopicListBySubjectId(
+    @Param(
+      'subjectId',
+      new ParseIntPipe({
+        errorHttpStatusCode: 400,
+        exceptionFactory: () =>
+          new BadRequestException('Subject Id must be a valid number'),
+      }),
+    )
+    subjectId: number,
+  ): Promise<ApiResponse<any>> {
     const result = await this.topicService.findAllBySubjectId(subjectId);
-    return new ApiResponse(`${result.length} topics found in Subject ${result[0].subjectName}`, result);
+    return new ApiResponse(
+      `${result.length} topics found in Subject ${result[0].subjectName}`,
+      result,
+    );
   }
 }

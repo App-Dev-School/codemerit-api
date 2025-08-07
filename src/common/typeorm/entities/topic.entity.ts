@@ -33,7 +33,7 @@ export class Topic extends AbstractEntity implements ITopic {
     type: 'enum',
     enum: TopicLabel,
     nullable: true,
-    default: TopicLabel.Beginner
+    default: TopicLabel.Beginner,
   })
   label: TopicLabel;
 
@@ -68,7 +68,7 @@ export class Topic extends AbstractEntity implements ITopic {
   @Column({
     type: 'int',
     nullable: true,
-    default: 1
+    default: 1,
   })
   popularity: number;
 
@@ -129,7 +129,7 @@ export class Topic extends AbstractEntity implements ITopic {
   })
   numQuizzes: number;
 
-  @Column((type) => AuditEntity)
+  @Column((type) => AuditEntity, { prefix: '' })
   audit: AuditEntity;
 
   @ManyToOne(() => Subject)

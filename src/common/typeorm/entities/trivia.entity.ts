@@ -73,7 +73,7 @@ export class Trivia extends AbstractEntity implements ITrivia {
   })
   order: number;
 
-  @Column((type) => AuditEntity)
+  @Column((type) => AuditEntity, { prefix: '' })
   audit: AuditEntity;
 
   @ManyToOne(() => Subject, { eager: true })
