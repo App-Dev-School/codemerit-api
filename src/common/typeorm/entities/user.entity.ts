@@ -1,9 +1,10 @@
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, OneToOne } from 'typeorm';
 import { AbstractEntity } from './abstract.entity';
 import { IUser } from '../interface/user.interface';
 import { AccountStatusEnum } from 'src/core/users/enums/account-status.enum';
 import { UserRoleEnum } from 'src/core/users/enums/user-roles.enum';
 import { AuditEntity } from './audit.entity';
+import { Profile } from './profile.entity';
 
 @Entity()
 export class User extends AbstractEntity implements IUser {
@@ -125,6 +126,9 @@ export class User extends AbstractEntity implements IUser {
     default: AccountStatusEnum.PENDING,
   })
   accountStatus: AccountStatusEnum;
+
+  @OneToOne(() => Profile, profile => profile.user, { cascade: true })
+  profile: Profile;
 
   @Column((type) => AuditEntity, { prefix: '' })
   audit: AuditEntity;

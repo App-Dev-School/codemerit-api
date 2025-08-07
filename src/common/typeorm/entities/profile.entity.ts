@@ -4,30 +4,42 @@ import { User } from './user.entity';
 @Entity()
 export class Profile {
   @PrimaryGeneratedColumn('increment')
-    id: number;
-  
-    @Column()
-    userId: number;
-  
-    @Column('linkedinUrl')
-    linkedinUrl: string;
+  id: number;
 
-    @Column()
-    selfRatingDone: boolean;
+  @Column()
+  userId: number;
 
-    @Column()
-    playedQuiz: boolean;
+  @Column()
+  linkedinUrl: string;
 
-    @Column()
-    takenInterview: boolean;
+  @Column()
+  about: string;
 
-    @Column()
-    level1Assessment: boolean;
-    
-    @Column()
-    level2Assessment: boolean;
-  
-    @OneToOne(type => User)
-    @JoinColumn()
-    user: User;
+  @Column()
+  googleId: string;
+
+  @Column()
+  linkedinId: string;
+
+  @Column()
+  auth_provider: string;
+
+  @Column()
+  selfRatingDone: boolean;
+
+  @Column()
+  playedQuiz: boolean;
+
+  @Column()
+  takenInterview: boolean;
+
+  @Column()
+  level1Assessment: boolean;
+
+  @Column()
+  level2Assessment: boolean;
+
+  @OneToOne(type => User)
+  @JoinColumn()
+  user: User;
 }

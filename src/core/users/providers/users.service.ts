@@ -11,12 +11,15 @@ import { AccountVerificationDto } from 'src/core/auth/dto/account-verification.d
 import { AccountStatusEnum } from '../enums/account-status.enum';
 import { UpdateProfileDto } from '../dtos/update-profile.dto';
 import { AppCustomException } from 'src/common/exceptions/app-custom-exception.filter';
+import { Profile } from 'src/common/typeorm/entities/profile.entity';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private usersRepo: Repository<User>,
+    @InjectRepository(Profile)
+  private profileRepository: Repository<Profile>,
     private userOtpService: UserOtpService,
   ) {}
 
@@ -26,7 +29,25 @@ export class UsersService {
     user.password = pass.toString(); //await bcrypt.hash(pass, 10);
     user.username = user.firstName + '-' + user.lastName;
 
-    return this.usersRepo.save(user);
+    //return this.usersRepo.save(user);
+    //Also create a profile
+    const savedUser = await this.usersRepo.save(user);
+    const profile = this.profileRepository.create({
+    user: savedUser,
+    linkedinUrl: '',
+    about: '',
+    googleId: '',
+    linkedinId: '',
+    auth_provider: '',
+    selfRatingDone: false,
+    playedQuiz: false,
+    takenInterview: false,
+    level1Assessment: false,
+    level2Assessment: false
+  });
+  await this.profileRepository.save(profile);
+  savedUser.profile = profile;
+  return savedUser;
   }
 
   async findByEmail(email: string): Promise<User | undefined> {
