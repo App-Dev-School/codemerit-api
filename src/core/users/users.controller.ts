@@ -47,8 +47,8 @@ export class UsersController {
   ): Promise<ApiResponse<any>> {
     const result = await this.usersService.updateProfile(
       userId,
-      updateProfileDto,
+      updateProfileDto
     );
-    return new ApiResponse('Succesfully updated user profile', result);
+    return new ApiResponse('User profile updated successfully.', result);
   }
 }

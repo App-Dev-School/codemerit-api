@@ -6,9 +6,10 @@ import { User } from 'src/common/typeorm/entities/user.entity';
 import { UsersService } from './providers/users.service';
 import { UserOtpService } from './providers/user-otp.service';
 import { UserOtp } from 'src/common/typeorm/entities/user-otp.entity';
+import { Profile } from 'src/common/typeorm/entities/profile.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, UserOtp])],
+  imports: [TypeOrmModule.forFeature([User, Profile, UserOtp])],
   providers: [UsersService, UserOtpService],
   controllers: [UsersController],
   exports: [UsersService, UserOtpService],
