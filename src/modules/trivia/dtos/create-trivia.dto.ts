@@ -124,6 +124,7 @@ import { IsArray, IsBoolean, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString,
 import { Type } from 'class-transformer';
 import { DifficultyLevelEnum } from 'src/common/enum/lavel.enum';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { QuestionStatus } from 'src/common/enum/questionStatus.enum';
 
 
 export class CreateTriviaDto {
@@ -158,8 +159,9 @@ export class CreateTriviaDto {
     description: 'Difficulty level of the question',
     enum: DifficultyLevelEnum,
     example: DifficultyLevelEnum.Easy,
+    default: DifficultyLevelEnum.Easy
   })
-  @IsEnum(DifficultyLevelEnum, { message: 'Level must be a valid enum value' })
+  @IsEnum(DifficultyLevelEnum, { message: 'Level must be a valid value' })
   level: DifficultyLevelEnum;
 
   @ApiProperty({
@@ -171,19 +173,21 @@ export class CreateTriviaDto {
   order: number;
 
   @ApiProperty({
-    description: 'Marks assigned to the question',
+    description: 'Marks assigned to the question.',
     example: 5,
   })
   @Type(() => Number)
-  @IsNumber({}, { message: 'Marks must be a number' })
+  @IsNumber({}, { message: 'Marks must be a number.' })
   marks: number;
 
-  @ApiProperty({
-    description: 'Publication status of the question',
-    example: true,
+   @ApiProperty({
+    description: 'Publishing status of the question',
+    enum: QuestionStatus,
+    example: QuestionStatus.Pending,
+    default: QuestionStatus.Pending
   })
-  @IsBoolean({ message: 'is published must be a boolean' })
-  isPublished: boolean;
+  @IsEnum(QuestionStatus, { message: 'Status must be valid.' })
+  status: QuestionStatus;
 
   @ApiPropertyOptional({
     description: 'Optional hint for the question',

@@ -3,11 +3,16 @@ import { AbstractEntity } from './abstract.entity';
 import { DifficultyLevelEnum } from 'src/common/enum/lavel.enum';
 import { LabelEnum } from 'src/common/enum/label.enum';
 import { Subject } from './subject.entity';
-import { ITrivia } from '../interface/trivia.interface';
+import { IQuestion } from '../interface/question.interface';
 import { AuditEntity } from './audit.entity';
+import { QuestionType } from 'src/common/enum/questionType';
+import { QuestionStatus } from 'src/common/enum/questionStatus.enum';
 
 @Entity()
-export class Trivia extends AbstractEntity implements ITrivia {
+export class Question extends AbstractEntity implements IQuestion {
+  @Column({ type: 'text', nullable: true, default: '' })
+  title: string;
+
   @Column({ type: 'text', nullable: false })
   question: string;
 
@@ -18,21 +23,12 @@ export class Trivia extends AbstractEntity implements ITrivia {
   })
   subjectId: number;
 
-  @Column({ type: 'varchar', length: 255, nullable: true })
-  image: string;
-
-  @Column({
-    type: 'enum',
-    enum: LabelEnum,
-    nullable: true,
-  })
-  label: LabelEnum;
-
-  @Column({ type: 'varchar', length: 255, nullable: true })
-  tag: string;
-
-  @Column({ type: 'varchar', length: 255, nullable: true })
-  questionType: string;
+  @Column({ type: 'enum', 
+     nullable: false,
+    enum: QuestionType,
+    default: QuestionType.General,
+ })
+  questionType: QuestionType;
 
   @Column({
     type: 'enum',
@@ -53,8 +49,24 @@ export class Trivia extends AbstractEntity implements ITrivia {
   })
   slug: string;
 
-  @Column({ type: 'boolean', default: true })
-  isPublished: boolean;
+  @Column({
+    type: 'enum',
+    enum: LabelEnum,
+    nullable: true,
+    default: LabelEnum.General,
+  })
+  label: LabelEnum;
+
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  tag: string;
+
+  @Column({
+    type: 'enum',
+    enum: QuestionStatus,
+    nullable: false,
+    default: QuestionStatus.Pending,
+  })
+  status: QuestionStatus;
 
   @Column({ type: 'text', nullable: true })
   answer: string;
@@ -62,14 +74,10 @@ export class Trivia extends AbstractEntity implements ITrivia {
   @Column({ type: 'text', nullable: true })
   hint: string;
 
-  @Column({ type: 'int', default: 0 })
-  numReads: number;
-
-  @Column({ type: 'int', default: 0 })
-  numQuizzes: number;
   @Column({
     type: 'int',
-    nullable: false,
+    nullable: true,
+    default: 0
   })
   order: number;
 

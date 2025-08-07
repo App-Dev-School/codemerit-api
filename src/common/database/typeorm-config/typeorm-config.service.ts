@@ -6,7 +6,7 @@ import { Topic } from 'src/common/typeorm/entities/topic.entity';
 import { User } from 'src/common/typeorm/entities/user.entity';
 import { Subject } from 'src/common/typeorm/entities/subject.entity';
 import { UserOtp } from 'src/common/typeorm/entities/user-otp.entity';
-import { Trivia } from 'src/common/typeorm/entities/trivia.entity';
+import { Question } from 'src/common/typeorm/entities/question.entity';
 import { Option } from 'src/common/typeorm/entities/option.entity';
 import { TriviaOption } from 'src/common/typeorm/entities/trivia-option.entity';
 import { TriviaTopic } from 'src/common/typeorm/entities/trivia-topic.entity';
@@ -32,7 +32,7 @@ export class TypeormConfigService implements TypeOrmOptionsFactory {
       username: 'codemerituser',
       password: 'GwjU067FL8hcmjQkXjaM',
       database: 'codemeritdb',
-      entities: [User, Subject, Topic, UserOtp, Trivia, Option, TriviaOption, TriviaTopic],
+      entities: [User, Subject, Topic, UserOtp, Question, Option, TriviaOption, TriviaTopic],
       // entities: [__dirname + '/../**/*.entity.{ts,js}'],
 
       // entities: ['src/**/*.entity.ts'],

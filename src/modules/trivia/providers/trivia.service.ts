@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { QuestionResponseDto } from '../dtos/question-response.dto';
 import { TriviaOption } from 'src/common/typeorm/entities/trivia-option.entity';
-import { Trivia } from 'src/common/typeorm/entities/trivia.entity';
+import { Question } from 'src/common/typeorm/entities/question.entity';
 import { CreateTriviaDto } from '../dtos/create-trivia.dto';
 import { TriviaTopic } from 'src/common/typeorm/entities/trivia-topic.entity';
 import { GetTriviaDto } from '../dtos/get-trivia.dto';
@@ -15,8 +15,8 @@ import { UpdateTriviaDto } from '../dtos/update-trivia.dto';
 @Injectable()
 export class TriviaService {
   constructor(
-    @InjectRepository(Trivia)
-    private triviaRepo: Repository<Trivia>,
+    @InjectRepository(Question)
+    private triviaRepo: Repository<Question>,
     private readonly dataSource: DataSource,
     private readonly triviaOptionRepo: TriviaOptionService,
     private readonly triviaTopicRepo: TriviaTopicService
@@ -30,7 +30,7 @@ export class TriviaService {
     return this.triviaRepo.findOne({ where: { id } });
   }
 
-  update(id: number, data: Partial<Trivia>) {
+  update(id: number, data: Partial<Question>) {
     return this.triviaRepo.update(id, data);
   }
 
@@ -40,7 +40,7 @@ export class TriviaService {
   }
   
 
-  async updateTrivia(id: number, dto: UpdateTriviaDto): Promise<Trivia> {
+  async updateTrivia(id: number, dto: UpdateTriviaDto): Promise<Question> {
 
     const queryRunner = this.dataSource.createQueryRunner();
 
@@ -61,7 +61,7 @@ export class TriviaService {
   const updatedTrivia = this.triviaRepo.merge(trivia, dto);
 
 
-      const savedTrivia = await queryRunner.manager.save(Trivia, updatedTrivia);
+      const savedTrivia = await queryRunner.manager.save(Question, updatedTrivia);
       await queryRunner.manager.delete(TriviaOption, { triviaId: id });
       await queryRunner.manager.delete(TriviaTopic, { triviaId: id });
 
@@ -92,7 +92,7 @@ export class TriviaService {
     }
   }
 
-  async createTrivia(dto: CreateTriviaDto): Promise<Trivia> {
+  async createTrivia(dto: CreateTriviaDto): Promise<Question> {
 
     const queryRunner = this.dataSource.createQueryRunner();
 
@@ -100,16 +100,16 @@ export class TriviaService {
     await queryRunner.startTransaction();
 
     try {
-      const triviaEntity = new Trivia();
+      const triviaEntity = new Question();
       triviaEntity.question = dto.question;
       triviaEntity.subjectId = dto.subjectId;
       triviaEntity.level = dto.level;
       triviaEntity.order = dto.order;
       triviaEntity.marks = dto.marks;
-      triviaEntity.isPublished = dto.isPublished;
+      triviaEntity.status = dto.status;
       triviaEntity.hint = dto.hint ?? '';
 
-      const savedTrivia = await queryRunner.manager.save(Trivia, triviaEntity);
+      const savedTrivia = await queryRunner.manager.save(Question, triviaEntity);
       let optionsList: TriviaOption[] = [];
       for( const optionId of dto.options) {
         const triviaOption = new TriviaOption();
@@ -157,7 +157,7 @@ export class TriviaService {
         triviaDto.level = trivia.level;
         triviaDto.order = trivia.order;
         triviaDto.marks = trivia.marks;
-        triviaDto.isPublished = trivia.isPublished;
+        triviaDto.status = trivia.status;
         triviaDto.hint = trivia.hint || '';
         triviaDto.topics = await this.triviaTopicRepo.findTriviaTopicsByTriviaId(trivia.id);
         triviaDto.options = await this.triviaOptionRepo.findTriviaOptionsByTriviaId(trivia.id);
@@ -170,7 +170,7 @@ export class TriviaService {
   
     async findTriviaList(
       subjectId: number,
-    ): Promise<Trivia[] | undefined> {
+    ): Promise<Question[] | undefined> {
       return this.triviaRepo.find({
         where: {
           subjectId: subjectId,
