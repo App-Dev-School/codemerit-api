@@ -47,7 +47,7 @@ export class SkillRatingController {
     id: number,
   ): Promise<ApiResponse<any>> {
     const result = await this.skillRatingService.findAssessmentSession(id);
-    return new ApiResponse('Topic Found', result);
+    return new ApiResponse('Assessment Found', result);
   }
 
   // @Get()
