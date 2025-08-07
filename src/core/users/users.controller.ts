@@ -23,12 +23,14 @@ export class UsersController {
     return new ApiResponse('User Found', result);
   }
 
+  //View Profile API for Admin
   //create one more endpoint: /profile/{userName} like above end point that can be used by admin only 
   //to view any user profile based on the username
   //Refer second last commit to check the profile entity
   //that lists the user profile along with the profile.
   //sensitive fields like password, token etc. should not be revealed.
-  //Ensure slugify use for username during registration
+  //the profile should be attached with login & in data.profile
+  //Additional : Implement slugify use for username during registration. Existing utility in project. See usage.
 
   @UseGuards(RolesGuard)
   @Roles(UserRoleEnum.ADMIN)
