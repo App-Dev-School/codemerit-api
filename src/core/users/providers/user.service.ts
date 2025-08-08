@@ -65,7 +65,7 @@ export class UserService {
       //save otp
       const otp = await this.sendOtp(
         savedUser?.email,
-        data?.password,
+        pass,
         UserOtpTagsEnum.ACC_VERIFY,
       );
       //save otp

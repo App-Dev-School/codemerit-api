@@ -14,6 +14,7 @@ import { UpdateUserDto } from './dtos/update-user.dto';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { ApiResponse } from 'src/common/utils/api-response';
 import { UserProfileService } from './providers/user-profile.service';
+import { UpdateUserProfileDto } from './dtos/update-user-profile.dto';
 
 @Controller('apis/users')
 export class UsersController {
@@ -57,16 +58,16 @@ export class UsersController {
   @Put('update/:userId')
   async updateUser(
     @Param('userId') userId: number,
-    @Body() updateProfileDto: UpdateUserDto,
+    @Body() updateUserDto: UpdateUserDto,
   ): Promise<ApiResponse<any>> {
-    const result = await this.usersService.updateUser(userId, updateProfileDto);
+    const result = await this.usersService.updateUser(userId, updateUserDto);
     return new ApiResponse('User profile updated successfully.', result);
   }
 
   @Put('/profile-update/:id')
   async updateUserProfile(
     @Param('id') id: number,
-    @Body() updateProfileDto: UpdateUserDto,
+    @Body() updateProfileDto: UpdateUserProfileDto,
   ): Promise<ApiResponse<any>> {
     const result = await this.userProfileService.updateProfile(
       id,

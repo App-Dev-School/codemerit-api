@@ -8,7 +8,7 @@ import { AccountStatusEnum } from 'src/core/users/enums/account-status.enum';
 import { AccountVerificationDto } from '../dto/account-verification.dto';
 import { AppCustomException } from 'src/common/exceptions/app-custom-exception.filter';
 import { LoginResponseDto } from '../dto/login-response.dto';
-import { UserProfileService } from 'src/core/users/providers/user-profile.service';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
@@ -26,16 +26,15 @@ export class AuthService {
           'User account not found.',
         );
       }
-      if (pass !== user?.password) {
+      // if (user && user.password) {
+      if (user && (await bcrypt.compare(pass, user.password))) {
+        const { password, ...result } = user;
+        return result;
+      } else {
         throw new AppCustomException(
           HttpStatus.BAD_REQUEST,
           'Incorrect Password. Please try again.',
         );
-      }
-      if (user && user.password) {
-        // if (user && (await bcrypt.compare(pass, user.password))) {
-        const { password, ...result } = user;
-        return result;
       }
     }
     return null;
