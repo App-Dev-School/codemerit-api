@@ -24,11 +24,14 @@ export class Question extends AbstractEntity implements IQuestion {
   subjectId: number;
 
   @Column({ type: 'enum', 
-     nullable: false,
+    nullable: false,
     enum: QuestionType,
     default: QuestionType.General,
  })
   questionType: QuestionType;
+  //implement related validations for questionType
+  //if questionType == General, then no options are required
+  //if questionType == Trivia, then options are required
 
   @Column({
     type: 'enum',
@@ -48,6 +51,7 @@ export class Question extends AbstractEntity implements IQuestion {
     default: null,
   })
   slug: string;
+  //slugify and limit max character to 50
 
   @Column({
     type: 'enum',
@@ -67,6 +71,7 @@ export class Question extends AbstractEntity implements IQuestion {
     default: QuestionStatus.Pending,
   })
   status: QuestionStatus;
+  //fetched questions for users (non-admin) should have status = Active
 
   @Column({ type: 'text', nullable: true })
   answer: string;
