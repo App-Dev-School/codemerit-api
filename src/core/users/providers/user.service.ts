@@ -1,57 +1,95 @@
-// src/users/users.service.ts
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  HttpStatus,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/common/typeorm/entities/user.entity';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { generate6DigitNumber } from 'src/common/utils/common-functions';
 import { UserOtpService } from './user-otp.service';
 import { UserOtp } from 'src/common/typeorm/entities/user-otp.entity';
 import { UserOtpTagsEnum } from '../enums/user-otp-Tags.enum';
 import { AccountVerificationDto } from 'src/core/auth/dto/account-verification.dto';
 import { AccountStatusEnum } from '../enums/account-status.enum';
-import { UpdateProfileDto } from '../dtos/update-profile.dto';
+import { UpdateUserDto } from '../dtos/update-user.dto';
 import { AppCustomException } from 'src/common/exceptions/app-custom-exception.filter';
-import { Profile } from 'src/common/typeorm/entities/profile.entity';
+import { validate } from 'class-validator';
+import { UserProfileService } from './user-profile.service';
+import {
+  generateSlug,
+  generateUniqueSlug,
+} from 'src/common/utils/slugify.util';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
-export class UsersService {
+export class UserService {
   constructor(
     @InjectRepository(User)
     private usersRepo: Repository<User>,
-    @InjectRepository(Profile)
-  private profileRepository: Repository<Profile>,
-    private userOtpService: UserOtpService,
+    private readonly userOtpService: UserOtpService,
+    private readonly userProfileService: UserProfileService,
+    private readonly dataSource: DataSource,
   ) {}
 
   async create(data: Partial<User>): Promise<User> {
-    const user = this.usersRepo.create(data);
-    const pass = generate6DigitNumber();
-    user.password = pass.toString(); //await bcrypt.hash(pass, 10);
-    user.username = user.firstName + '-' + user.lastName;
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
 
-    //return this.usersRepo.save(user);
-    //Also create a profile
-    const savedUser = await this.usersRepo.save(user);
-    const profile = this.profileRepository.create({
-    user: savedUser,
-    linkedinUrl: '',
-    about: '',
-    googleId: '',
-    linkedinId: '',
-    auth_provider: '',
-    selfRatingDone: false,
-    playedQuiz: false,
-    takenInterview: false,
-    level1Assessment: false,
-    level2Assessment: false
-  });
-  await this.profileRepository.save(profile);
-  savedUser.profile = profile;
-  return savedUser;
+    try {
+      const savedProfile = await this.userProfileService.create(
+        queryRunner.manager,
+      );
+      const user = this.usersRepo.create(data);
+      const pass = generate6DigitNumber();
+      user.password = await bcrypt.hash(pass, 10); //pass.toString();
+      const fullname = user.firstName + ' ' + user.lastName;
+      let username = generateSlug(fullname);
+      const existing = await this.usersRepo.findOne({ where: { username } });
+      if (existing) {
+        username = generateUniqueSlug(fullname);
+      }
+      user.username = username;
+      user.profileId = savedProfile.id;
+      const errors = await validate(user);
+      if (errors.length) {
+        throw new AppCustomException(
+          HttpStatus.BAD_REQUEST,
+          `User validation failed`,
+        );
+      }
+      const savedUser = await queryRunner.manager.save(user);
+      await queryRunner.commitTransaction();
+
+      //save otp
+      const otp = await this.sendOtp(
+        savedUser?.email,
+        data?.password,
+        UserOtpTagsEnum.ACC_VERIFY,
+      );
+      //save otp
+      if (otp) {
+        // send email with data?.password and related information
+      } else {
+        //failed to send otp
+      }
+
+      return savedUser;
+    } catch (err) {
+      await queryRunner.rollbackTransaction();
+      throw new InternalServerErrorException(err.message);
+    } finally {
+      await queryRunner.release();
+    }
   }
 
   async findByEmail(email: string): Promise<User | undefined> {
     return this.usersRepo.findOne({ where: { email } });
+  }
+
+  async findByUsername(username: string): Promise<User | undefined> {
+    return this.usersRepo.findOne({ where: { username } });
   }
 
   async findOne(id: number): Promise<User | undefined> {
@@ -64,8 +102,21 @@ export class UsersService {
 
   async findUserList(): Promise<User[]> {
     return this.usersRepo.find({
-  select: ['firstName','lastName','username','role','designation','city','country','email','mobile','level','points','token','accountStatus']
-});
+      select: [
+        'firstName',
+        'lastName',
+        'username',
+        'role',
+        'designation',
+        'city',
+        'country',
+        'email',
+        'mobile',
+        'level',
+        'points',
+        'accountStatus',
+      ],
+    });
   }
   async updateUserAccountStatus(
     id: number,
@@ -94,7 +145,11 @@ export class UsersService {
     }
   }
 
-  async sendOtp(email: string, tag: UserOtpTagsEnum): Promise<string | null> {
+  async sendOtp(
+    email: string,
+    pass: string,
+    tag: UserOtpTagsEnum,
+  ): Promise<string | null> {
     const user: User = await this.findByEmail(email);
 
     // const userOtpList: UserOtp[] = await this.userOtpService.findByUserIdTags(
@@ -122,7 +177,7 @@ export class UsersService {
       );
     }
     let userOtp: UserOtp = new UserOtp();
-    userOtp.otp = generate6DigitNumber();
+    userOtp.otp = pass ? pass : generate6DigitNumber();
     userOtp.userId = user?.id;
     userOtp.tag = tag;
     const result = await this.userOtpService.create(userOtp);
@@ -185,15 +240,15 @@ export class UsersService {
     }
   }
 
-  async updateProfile(
+  async updateUser(
     userId: number,
-    updateProfileDto: UpdateProfileDto,
+    updateUserDto: UpdateUserDto,
   ): Promise<User> {
     const user = await this.findOne(userId);
     if (!user) {
-      throw new Error('User not found');
+      throw new AppCustomException(HttpStatus.BAD_REQUEST, 'User not found');
     }
-    Object.assign(user, updateProfileDto);
+    Object.assign(user, updateUserDto);
     return this.usersRepo.save(user);
   }
 }

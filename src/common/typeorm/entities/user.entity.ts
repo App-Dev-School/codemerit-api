@@ -1,4 +1,4 @@
-import { Column, Entity, OneToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
 import { AbstractEntity } from './abstract.entity';
 import { IUser } from '../interface/user.interface';
 import { AccountStatusEnum } from 'src/core/users/enums/account-status.enum';
@@ -127,7 +127,17 @@ export class User extends AbstractEntity implements IUser {
   })
   accountStatus: AccountStatusEnum;
 
-  @OneToOne(() => Profile, profile => profile.user, { cascade: true })
+  @Column({
+    type: 'integer',
+    nullable: false,
+  })
+  profileId: number;
+
+  // @OneToOne(() => Profile, profile => profile.user, { cascade: true })
+  // profile: Profile;
+
+  @OneToOne((type) => Profile, { eager: true })
+  @JoinColumn({ name: 'profileId', referencedColumnName: 'id' })
   profile: Profile;
 
   @Column((type) => AuditEntity, { prefix: '' })

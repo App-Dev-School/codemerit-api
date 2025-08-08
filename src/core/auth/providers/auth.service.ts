@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { UsersService } from 'src/core/users/providers/users.service';
+import { UserService } from 'src/core/users/providers/user.service';
 import { UserRoleEnum } from 'src/core/users/enums/user-roles.enum';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { User } from 'src/common/typeorm/entities/user.entity';
@@ -8,12 +8,13 @@ import { AccountStatusEnum } from 'src/core/users/enums/account-status.enum';
 import { AccountVerificationDto } from '../dto/account-verification.dto';
 import { AppCustomException } from 'src/common/exceptions/app-custom-exception.filter';
 import { LoginResponseDto } from '../dto/login-response.dto';
+import { UserProfileService } from 'src/core/users/providers/user-profile.service';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private usersService: UsersService,
-    private jwtService: JwtService,
+    private readonly usersService: UserService,
+    private readonly jwtService: JwtService,
   ) {}
 
   async validateUser(email: string, pass: string) {
@@ -41,7 +42,7 @@ export class AuthService {
   }
 
   async login(user: User) {
-    console.log("LoginAPID AuthService :: user =>", user);
+    console.log('LoginAPID AuthService :: user =>', user);
     //Auto ACC_VERIFY without notification + test email
     //Where password is validated
 
@@ -53,19 +54,24 @@ export class AuthService {
         HttpStatus.NOT_ACCEPTABLE,
       );
       */
-     const msg = 'Your account is now verified.';
-     //Do - Send a notification to the user
-     const updateStatus = this.usersService.updateUserAccountStatus(user?.id,
-          AccountStatusEnum.ACTIVE);
-     console.log("LoginAPID AuthService :: Account Activated =>", updateStatus);
+      const msg = 'Your account is now verified.';
+      //Do - Send a notification to the user
+      const updateStatus = this.usersService.updateUserAccountStatus(
+        user?.id,
+        AccountStatusEnum.ACTIVE,
+      );
+      console.log(
+        'LoginAPID AuthService :: Account Activated =>',
+        updateStatus,
+      );
     }
     const payload: any = {
       username: user.username,
       sub: user.id,
       role: user.role,
     };
-    console.log("JWT Sign Payload =>", payload);
-    
+    console.log('JWT Sign Payload =>', payload);
+
     const token = this.jwtService.sign(payload);
     const response = new LoginResponseDto({
       ...user,

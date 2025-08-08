@@ -14,7 +14,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { Public } from './decorators/public.decorator';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { AccountVerificationDto } from './dto/account-verification.dto';
-import { UsersService } from '../users/providers/users.service';
+import { UserService } from '../users/providers/user.service';
 import { UserOtpTagsEnum } from '../users/enums/user-otp-Tags.enum';
 import { ApiResponse } from 'src/common/utils/api-response';
 import { LoginDto } from './dto/login.dto';
@@ -25,7 +25,7 @@ import { SendOtpDto } from './dto/send-otp.dto';
 export class AuthController {
   constructor(
     private authService: AuthService,
-    private usersService: UsersService,
+    private usersService: UserService,
   ) {}
 
   @Post('register')
@@ -48,7 +48,11 @@ export class AuthController {
 
   @Post('sent-otp')
   async sendOtp(@Body() query: SendOtpDto): Promise<ApiResponse<any>> {
-    const result = await this.usersService.sendOtp(query.email, query.tag);
+    const result = await this.usersService.sendOtp(
+      query.email,
+      null,
+      query.tag,
+    );
     return new ApiResponse('Succesfully Send OTP', result);
   }
 
