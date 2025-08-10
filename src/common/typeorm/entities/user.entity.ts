@@ -73,9 +73,9 @@ export class User extends AbstractEntity implements IUser {
   country: string;
 
   @IsOptional()
-  @Matches(/^[0-9]{10}$/, {
-    message: 'Mobile must be a 10-digit number',
-  })
+  // @Matches(/^[0-9]{10}$/, {
+  //   message: 'Mobile must be a 10-digit number',
+  // })
   @Column({
     type: 'varchar',
     length: 20,

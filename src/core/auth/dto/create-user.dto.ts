@@ -25,9 +25,9 @@ export class CreateUserDto {
 
   @ApiPropertyOptional()
   @IsOptional()
-  @Matches(/^[0-9]{10}$/, {
-    message: 'Mobile must be a 10-digit number',
-  })
+  // @Matches(/^[0-9]{10}$/, {
+  //   message: 'Mobile must be a 10-digit number',
+  // })
   mobile?: string;
 
   @ApiProperty({
@@ -43,4 +43,22 @@ export class CreateUserDto {
   })
   @IsNotEmpty({ message: 'Please let us know your city.' })
   city: string;
+
+  @ApiProperty({
+    description: 'Please select your country',
+    example: 'India',
+  })
+  @IsNotEmpty({ message: 'Please let us know your country.' })
+  country: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  linkedinUrl?: string;
+  @ApiPropertyOptional()
+  @IsOptional()
+  linkedinId?: string;
+  @ApiPropertyOptional()
+  @IsOptional()
+  googleId?: string;
+
 }

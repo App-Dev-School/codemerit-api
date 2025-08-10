@@ -22,6 +22,7 @@ import {
   generateUniqueSlug,
 } from 'src/common/utils/slugify.util';
 import * as bcrypt from 'bcrypt';
+import { CreateUserDto } from 'src/core/auth/dto/create-user.dto';
 
 @Injectable()
 export class UserService {
@@ -33,7 +34,7 @@ export class UserService {
     private readonly dataSource: DataSource,
   ) { }
 
-  async create(data: Partial<User>): Promise<User> {
+  async create(data: Partial<CreateUserDto>): Promise<User> {
     /** Validate important fields  */
     const existingEmail = await this.findByEmail(data.email);
     if (existingEmail) {
@@ -59,7 +60,7 @@ export class UserService {
     await queryRunner.startTransaction();
 
     try {
-      const user = this.usersRepo.create(data);
+      const user = this.usersRepo.create(data as Partial<User>);
       const pass = generate6DigitNumber();
       user.password = await bcrypt.hash(pass, 10);
       const fullname = user.firstName + ' ' + user.lastName;
@@ -79,9 +80,19 @@ export class UserService {
       const savedUser = await queryRunner.manager.save(user);
       const profile = new Profile();
       profile.userId = savedUser.id;
+      //validate on client
+      if(data.linkedinUrl){
+      profile.linkedinUrl = data.linkedinUrl;
+      }
+      if(data.googleId){
+      profile.googleId = data.googleId;
+      }
+      if(data.linkedinId){
+      profile.linkedinId = data.linkedinId;
+      }
+      profile.auth_provider = 'Native';
       await queryRunner.manager.save(profile);
       await queryRunner.commitTransaction();
-
       //save otp
       try {
         const otp = await this.sendOtp(
