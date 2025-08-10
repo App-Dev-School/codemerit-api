@@ -11,9 +11,14 @@ export class UserProfileService {
     private profileRepository: Repository<Profile>,
   ) {}
 
-  async create(manager: EntityManager): Promise<Profile> {
+  async createEmpty(manager: EntityManager): Promise<Profile> {
     const profile = manager.create(Profile);
     const savedProfile = await manager.save(profile);
+    return savedProfile;
+  }
+
+   async create(profile: Profile): Promise<Profile> {
+    const savedProfile = await this.profileRepository.save(profile);
     return savedProfile;
   }
 

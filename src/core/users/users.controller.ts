@@ -42,7 +42,7 @@ export class UsersController {
   @Get()
   async getAllUsers(): Promise<ApiResponse<any>> {
     const result = await this.usersService.findUserList();
-    return new ApiResponse('User List found', result);
+    return new ApiResponse('Users listed successfully.', result);
   }
 
   @UseGuards(RolesGuard)

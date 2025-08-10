@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsEmail, IsEmpty, IsMobilePhone, IsNotEmpty, IsNumberString, IsOptional } from 'class-validator';
+import { IsEmail, IsEmpty, IsMobilePhone, IsNotEmpty, IsNumberString, IsOptional, Matches } from 'class-validator';
 
 export class CreateUserDto {
   @ApiProperty({
@@ -25,7 +25,9 @@ export class CreateUserDto {
 
   @ApiPropertyOptional()
   @IsOptional()
-  // @IsMobilePhone("en-US", { strictMode: false })
+  @Matches(/^[0-9]{10}$/, {
+    message: 'Mobile must be a 10-digit number',
+  })
   mobile?: string;
 
   @ApiProperty({

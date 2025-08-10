@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/common/typeorm/entities/user.entity';
+import { Profile } from 'src/common/typeorm/entities/profile.entity';
 import { DataSource, Repository } from 'typeorm';
 import { generate6DigitNumber } from 'src/common/utils/common-functions';
 import { UserOtpService } from './user-otp.service';
@@ -30,20 +31,37 @@ export class UserService {
     private readonly userOtpService: UserOtpService,
     private readonly userProfileService: UserProfileService,
     private readonly dataSource: DataSource,
-  ) {}
+  ) { }
 
   async create(data: Partial<User>): Promise<User> {
+    /** Validate important fields  */
+    const existingEmail = await this.findByEmail(data.email);
+    if (existingEmail) {
+      throw new AppCustomException(
+        HttpStatus.BAD_REQUEST,
+        `E-mail already exists.`,
+      );
+    }
+
+    if (data.mobile) {
+      const existingMobile = await this.findByMobile(data.mobile);
+      if (existingMobile) {
+        throw new AppCustomException(
+          HttpStatus.BAD_REQUEST,
+          `Mobile number already exists.`,
+        );
+      }
+    }
+
+    //Start Query runner
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
 
     try {
-      const savedProfile = await this.userProfileService.create(
-        queryRunner.manager,
-      );
       const user = this.usersRepo.create(data);
       const pass = generate6DigitNumber();
-      user.password = await bcrypt.hash(pass, 10); //pass.toString();
+      user.password = await bcrypt.hash(pass, 10);
       const fullname = user.firstName + ' ' + user.lastName;
       let username = generateSlug(fullname);
       const existing = await this.usersRepo.findOne({ where: { username } });
@@ -51,7 +69,6 @@ export class UserService {
         username = generateUniqueSlug(fullname);
       }
       user.username = username;
-      user.profileId = savedProfile.id;
       const errors = await validate(user);
       if (errors.length) {
         throw new AppCustomException(
@@ -60,19 +77,21 @@ export class UserService {
         );
       }
       const savedUser = await queryRunner.manager.save(user);
+      const profile = new Profile();
+      profile.userId = savedUser.id;
+      await queryRunner.manager.save(profile);
       await queryRunner.commitTransaction();
 
       //save otp
-      const otp = await this.sendOtp(
-        savedUser?.email,
-        pass,
-        UserOtpTagsEnum.ACC_VERIFY,
-      );
-      //save otp
-      if (otp) {
-        // send email with data?.password and related information
-      } else {
-        //failed to send otp
+      try {
+        const otp = await this.sendOtp(
+          savedUser?.email,
+          pass,
+          UserOtpTagsEnum.ACC_VERIFY
+        );
+        console.log("CMRegistration Send otp => ", otp);
+      } catch (error) {
+        console.log("CMRegistration Send otp exception => ", error);
       }
 
       return savedUser;
@@ -86,6 +105,10 @@ export class UserService {
 
   async findByEmail(email: string): Promise<User | undefined> {
     return this.usersRepo.findOne({ where: { email } });
+  }
+
+  async findByMobile(mobile: string): Promise<User | null> {
+    return this.usersRepo.findOne({ where: { mobile } });
   }
 
   async findByUsername(username: string): Promise<User | undefined> {
@@ -151,17 +174,6 @@ export class UserService {
     tag: UserOtpTagsEnum,
   ): Promise<string | null> {
     const user: User = await this.findByEmail(email);
-
-    // const userOtpList: UserOtp[] = await this.userOtpService.findByUserIdTags(
-    //   user.id,
-    //   tag,
-    // );
-    // if (userOtpList && userOtpList?.length >= 3) {
-    //   throw new HttpException(
-    //     'Already applied 3 times.',
-    //     HttpStatus.NOT_ACCEPTABLE,
-    //   );
-    // }
     if (!user) {
       throw new AppCustomException(
         HttpStatus.BAD_REQUEST,
@@ -181,6 +193,7 @@ export class UserService {
     userOtp.userId = user?.id;
     userOtp.tag = tag;
     const result = await this.userOtpService.create(userOtp);
+
     if (result) {
       return 'Successfully send OTP';
     }

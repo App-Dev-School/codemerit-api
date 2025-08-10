@@ -75,7 +75,13 @@ export class Profile extends AbstractEntity implements IProfile {
   })
   level2Assessment: boolean;
 
-  // @OneToOne((type) => User, { eager: true })
-  // @JoinColumn({ name: 'userId', referencedColumnName: 'id' })
-  // user: User;
+  @Column({
+    type: 'integer',
+    default: null,
+  })
+  userId: number;
+
+  @OneToOne((type) => User, { eager: true })
+  @JoinColumn({ name: 'userId', referencedColumnName: 'id' })
+  user: User;
 }

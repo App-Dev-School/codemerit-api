@@ -1,10 +1,10 @@
-import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
-import { AbstractEntity } from './abstract.entity';
-import { IUser } from '../interface/user.interface';
+import { IsOptional, Matches } from 'class-validator';
 import { AccountStatusEnum } from 'src/core/users/enums/account-status.enum';
 import { UserRoleEnum } from 'src/core/users/enums/user-roles.enum';
+import { Column, Entity } from 'typeorm';
+import { IUser } from '../interface/user.interface';
+import { AbstractEntity } from './abstract.entity';
 import { AuditEntity } from './audit.entity';
-import { Profile } from './profile.entity';
 
 @Entity()
 export class User extends AbstractEntity implements IUser {
@@ -72,6 +72,10 @@ export class User extends AbstractEntity implements IUser {
   })
   country: string;
 
+  @IsOptional()
+  @Matches(/^[0-9]{10}$/, {
+    message: 'Mobile must be a 10-digit number',
+  })
   @Column({
     type: 'varchar',
     length: 20,
@@ -126,19 +130,6 @@ export class User extends AbstractEntity implements IUser {
     default: AccountStatusEnum.PENDING,
   })
   accountStatus: AccountStatusEnum;
-
-  @Column({
-    type: 'integer',
-    nullable: false,
-  })
-  profileId: number;
-
-  // @OneToOne(() => Profile, profile => profile.user, { cascade: true })
-  // profile: Profile;
-
-  @OneToOne((type) => Profile, { eager: true })
-  @JoinColumn({ name: 'profileId', referencedColumnName: 'id' })
-  profile: Profile;
 
   @Column((type) => AuditEntity, { prefix: '' })
   audit: AuditEntity;
