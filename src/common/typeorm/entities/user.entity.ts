@@ -1,7 +1,7 @@
 import { IsOptional, Matches } from 'class-validator';
 import { AccountStatusEnum } from 'src/core/users/enums/account-status.enum';
 import { UserRoleEnum } from 'src/core/users/enums/user-roles.enum';
-import { Column, Entity } from 'typeorm';
+import { Column, DeleteDateColumn, Entity } from 'typeorm';
 import { IUser } from '../interface/user.interface';
 import { AbstractEntity } from './abstract.entity';
 import { AuditEntity } from './audit.entity';
@@ -130,6 +130,9 @@ export class User extends AbstractEntity implements IUser {
     default: AccountStatusEnum.PENDING,
   })
   accountStatus: AccountStatusEnum;
+
+  @DeleteDateColumn({ nullable: true, select: false })
+  deletedAt?: Date;
 
   @Column((type) => AuditEntity, { prefix: '' })
   audit: AuditEntity;

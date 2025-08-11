@@ -30,4 +30,5 @@ export interface IUser {
   token?: string;
   accountStatus: AccountStatusEnum;
   audit: ITimeStamp;
+  deletedAt?: Date;
 }

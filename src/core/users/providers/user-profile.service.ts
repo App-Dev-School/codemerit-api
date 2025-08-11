@@ -17,13 +17,32 @@ export class UserProfileService {
     return savedProfile;
   }
 
-   async create(profile: Profile): Promise<Profile> {
+  async create(profile: Profile): Promise<Profile> {
     const savedProfile = await this.profileRepository.save(profile);
     return savedProfile;
   }
 
   async findOne(id: number): Promise<Profile | undefined> {
     return this.profileRepository.findOne({ where: { id } });
+  }
+
+  async findOneByUserId(id: number): Promise<Profile | undefined> {
+    return this.profileRepository.findOne({
+      where: { userId: id },
+      select: [
+        'id',
+        'linkedinUrl',
+        'about',
+        'googleId',
+        'linkedinId',
+        'auth_provider',
+        'selfRatingDone',
+        'playedQuiz',
+        'takenInterview',
+        'level1Assessment',
+        'level2Assessment',
+      ],
+    });
   }
 
   async findAll(): Promise<Profile[]> {
@@ -37,5 +56,13 @@ export class UserProfileService {
     }
     Object.assign(user, dto);
     return this.profileRepository.save(user);
+  }
+
+  async remove(id: number): Promise<void> {
+    await this.profileRepository.delete(id);
+  }
+
+  async removeByUserId(userId: number): Promise<void> {
+    await this.profileRepository.delete({ userId });
   }
 }

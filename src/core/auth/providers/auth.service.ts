@@ -9,12 +9,14 @@ import { AccountVerificationDto } from '../dto/account-verification.dto';
 import { AppCustomException } from 'src/common/exceptions/app-custom-exception.filter';
 import { LoginResponseDto } from '../dto/login-response.dto';
 import * as bcrypt from 'bcrypt';
+import { UserProfileService } from 'src/core/users/providers/user-profile.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly usersService: UserService,
     private readonly jwtService: JwtService,
+    private readonly userProfileService: UserProfileService,
   ) {}
 
   async validateUser(email: string, pass: string) {
@@ -72,9 +74,11 @@ export class AuthService {
     console.log('JWT Sign Payload =>', payload);
 
     const token = this.jwtService.sign(payload);
+    const profile = await this.userProfileService.findOneByUserId(user?.id);
     const response = new LoginResponseDto({
       ...user,
       token,
+      profile,
     });
     return response;
   }

@@ -81,7 +81,7 @@ export class Profile extends AbstractEntity implements IProfile {
   })
   userId: number;
 
-  @OneToOne((type) => User, { eager: true })
+  @OneToOne((type) => User, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'userId', referencedColumnName: 'id' })
   user: User;
 }

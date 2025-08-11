@@ -1,9 +1,13 @@
 import {
+  BadRequestException,
   Body,
   Controller,
+  Delete,
   Get,
   Param,
+  ParseIntPipe,
   Put,
+  Query,
   Request,
   UseGuards,
 } from '@nestjs/common';
@@ -25,7 +29,10 @@ export class UsersController {
   @Get('me')
   async getProfile(@Request() req): Promise<ApiResponse<any>> {
     const result = await this.usersService.findOne(req.user.id);
-    return new ApiResponse('User Found', result);
+    if (result) {
+      return new ApiResponse('User Found', result);
+    }
+    return new ApiResponse('User not found', result);
   }
 
   //View Profile API for Admin
@@ -42,7 +49,10 @@ export class UsersController {
   @Get()
   async getAllUsers(): Promise<ApiResponse<any>> {
     const result = await this.usersService.findUserList();
-    return new ApiResponse('Users listed successfully.', result);
+    if (result && result.length > 0) {
+      return new ApiResponse('Users listed successfully.', result);
+    }
+    return new ApiResponse('User lit not found.', null);
   }
 
   @UseGuards(RolesGuard)
@@ -52,12 +62,15 @@ export class UsersController {
     @Param('username') username: string,
   ): Promise<ApiResponse<any>> {
     const result = await this.usersService.findByUsername(username);
-    return new ApiResponse('User found', result);
+    if (result) {
+      return new ApiResponse('User found', result);
+    }
+    return new ApiResponse('User not found', result);
   }
 
-  @Put('update/:userId')
+  @Put('update')
   async updateUser(
-    @Param('userId') userId: number,
+    @Query('userId', ParseIntPipe) userId: number,
     @Body() updateUserDto: UpdateUserDto,
   ): Promise<ApiResponse<any>> {
     const result = await this.usersService.updateUser(userId, updateUserDto);
@@ -74,5 +87,42 @@ export class UsersController {
       updateProfileDto,
     );
     return new ApiResponse('User profile updated successfully.', result);
+  }
+
+  @Get(':userId')
+  async findOne(
+    @Param(
+      'userId',
+      new ParseIntPipe({
+        errorHttpStatusCode: 400,
+        exceptionFactory: () =>
+          new BadRequestException('User Id must be a valid number'),
+      }),
+    )
+    userId: number,
+  ): Promise<ApiResponse<any>> {
+    const result = await this.usersService.findOne(userId);
+    if (result) {
+      return new ApiResponse('User Found', result);
+    } else {
+      return new ApiResponse('User Found', result);
+    }
+  }
+
+  @Delete('delete/:userId')
+  async remove(
+    @Param(
+      'userId',
+      new ParseIntPipe({
+        errorHttpStatusCode: 400,
+        exceptionFactory: () =>
+          new BadRequestException('User Id must be a valid number'),
+      }),
+    )
+    userId: number,
+  ): Promise<ApiResponse<any>> {
+    await this.usersService.remove(userId);
+
+    return new ApiResponse('User deleted Successful.', null);
   }
 }

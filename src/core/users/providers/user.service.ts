@@ -28,11 +28,11 @@ import { CreateUserDto } from 'src/core/auth/dto/create-user.dto';
 export class UserService {
   constructor(
     @InjectRepository(User)
-    private usersRepo: Repository<User>,
+    private userRepo: Repository<User>,
     private readonly userOtpService: UserOtpService,
     private readonly userProfileService: UserProfileService,
     private readonly dataSource: DataSource,
-  ) { }
+  ) {}
 
   async create(data: Partial<CreateUserDto>): Promise<User> {
     /** Validate important fields  */
@@ -60,12 +60,12 @@ export class UserService {
     await queryRunner.startTransaction();
 
     try {
-      const user = this.usersRepo.create(data as Partial<User>);
+      const user = this.userRepo.create(data as Partial<User>);
       const pass = generate6DigitNumber();
       user.password = await bcrypt.hash(pass, 10);
       const fullname = user.firstName + ' ' + user.lastName;
       let username = generateSlug(fullname);
-      const existing = await this.usersRepo.findOne({ where: { username } });
+      const existing = await this.userRepo.findOne({ where: { username } });
       if (existing) {
         username = generateUniqueSlug(fullname);
       }
@@ -81,14 +81,14 @@ export class UserService {
       const profile = new Profile();
       profile.userId = savedUser.id;
       //validate on client
-      if(data.linkedinUrl){
-      profile.linkedinUrl = data.linkedinUrl;
+      if (data.linkedinUrl) {
+        profile.linkedinUrl = data.linkedinUrl;
       }
-      if(data.googleId){
-      profile.googleId = data.googleId;
+      if (data.googleId) {
+        profile.googleId = data.googleId;
       }
-      if(data.linkedinId){
-      profile.linkedinId = data.linkedinId;
+      if (data.linkedinId) {
+        profile.linkedinId = data.linkedinId;
       }
       profile.auth_provider = 'Native';
       await queryRunner.manager.save(profile);
@@ -98,11 +98,11 @@ export class UserService {
         const otp = await this.sendOtp(
           savedUser?.email,
           pass,
-          UserOtpTagsEnum.ACC_VERIFY
+          UserOtpTagsEnum.ACC_VERIFY,
         );
-        console.log("CMRegistration Send otp => ", otp);
+        console.log('CMRegistration Send otp => ', otp);
       } catch (error) {
-        console.log("CMRegistration Send otp exception => ", error);
+        console.log('CMRegistration Send otp exception => ', error);
       }
 
       return savedUser;
@@ -115,48 +115,50 @@ export class UserService {
   }
 
   async findByEmail(email: string): Promise<User | undefined> {
-    return this.usersRepo.findOne({ where: { email } });
+    return this.userRepo.findOne({ where: { email } });
   }
 
   async findByMobile(mobile: string): Promise<User | null> {
-    return this.usersRepo.findOne({ where: { mobile } });
+    return this.userRepo.findOne({ where: { mobile } });
   }
 
   async findByUsername(username: string): Promise<User | undefined> {
-    return this.usersRepo.findOne({ where: { username } });
+    return this.userRepo.findOne({ where: { username } });
   }
 
   async findOne(id: number): Promise<User | undefined> {
-    return this.usersRepo.findOne({ where: { id } });
+    return this.userRepo.findOne({ where: { id } });
   }
 
   async findAll(): Promise<User[]> {
-    return this.usersRepo.find();
+    return this.userRepo.find();
   }
 
   async findUserList(): Promise<User[]> {
-    return this.usersRepo.find({
-      select: [
-        'firstName',
-        'lastName',
-        'username',
-        'role',
-        'designation',
-        'city',
-        'country',
-        'email',
-        'mobile',
-        'level',
-        'points',
-        'accountStatus',
-      ],
-    });
+    return this.userRepo
+      .createQueryBuilder('user')
+      .select([
+        'user.firstName',
+        'user.lastName',
+        'user.username',
+        'user.role',
+        'user.designation',
+        'user.city',
+        'user.country',
+        'user.email',
+        'user.mobile',
+        'user.level',
+        'user.points',
+        'user.accountStatus',
+        'user.audit.createdAt',
+      ])
+      .getMany();
   }
   async updateUserAccountStatus(
     id: number,
     accountStatusEnum: AccountStatusEnum,
   ): Promise<boolean> {
-    const result = await this.usersRepo.update(
+    const result = await this.userRepo.update(
       { id: id },
       { accountStatus: accountStatusEnum },
     );
@@ -168,7 +170,7 @@ export class UserService {
   }
 
   async updateUserPassword(id: number, password: string): Promise<boolean> {
-    const result = await this.usersRepo.update(
+    const result = await this.userRepo.update(
       { id: id },
       { password: password },
     );
@@ -273,6 +275,19 @@ export class UserService {
       throw new AppCustomException(HttpStatus.BAD_REQUEST, 'User not found');
     }
     Object.assign(user, updateUserDto);
-    return this.usersRepo.save(user);
+    return this.userRepo.save(user);
+  }
+
+  async remove(id: number): Promise<void> {
+    const user = await this.findOne(id);
+    if (user) {
+      await this.userRepo.update(id, {
+        accountStatus: AccountStatusEnum.BLOCKED,
+      });
+      await this.userProfileService.removeByUserId(id);
+      await this.userRepo.softDelete({ id: id });
+    } else {
+      throw new AppCustomException(HttpStatus.BAD_REQUEST, 'User not found');
+    }
   }
 }
