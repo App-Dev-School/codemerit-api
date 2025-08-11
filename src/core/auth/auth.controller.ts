@@ -53,7 +53,7 @@ export class AuthController {
       null,
       query.tag,
     );
-    return new ApiResponse('Succesfully Send OTP', result);
+    return new ApiResponse('OTP sent succesfully.', result);
   }
 
   @Post('verify')
@@ -64,7 +64,7 @@ export class AuthController {
     const result = await this.usersService.acoountVerification(
       accountVerificationDto,
     );
-    return new ApiResponse('Succesfully Account Verified', result);
+    return new ApiResponse('Account verified succesfully.', result);
   }
 
   @Post('recover-password')
