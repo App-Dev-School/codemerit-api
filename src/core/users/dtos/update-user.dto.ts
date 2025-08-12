@@ -10,7 +10,7 @@ import { UserRoleEnum } from '../enums/user-roles.enum';
 import { AccountStatusEnum } from '../enums/account-status.enum';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 
-export class UpdateProfileDto {
+export class UpdateUserDto {
   @ApiPropertyOptional()
   @IsOptional()
   @IsInt()

@@ -37,10 +37,7 @@ export class UserOtpService {
   }
 
   async updateIsUsed(id: number): Promise<boolean> {
-    const result = await this.userOtpRepo.update(
-      { id: id }, // WHERE condition
-      { isUsed: true }, // Column(s) to update
-    );
+    const result = await this.userOtpRepo.update({ id: id }, { isUsed: true });
     if (result.affected && result.affected > 0) {
       return true;
     } else {

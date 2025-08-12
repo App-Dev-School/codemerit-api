@@ -6,12 +6,13 @@ import { Topic } from 'src/common/typeorm/entities/topic.entity';
 import { User } from 'src/common/typeorm/entities/user.entity';
 import { Subject } from 'src/common/typeorm/entities/subject.entity';
 import { UserOtp } from 'src/common/typeorm/entities/user-otp.entity';
-import { Trivia } from 'src/common/typeorm/entities/trivia.entity';
+import { Question } from 'src/common/typeorm/entities/question.entity';
 import { Option } from 'src/common/typeorm/entities/option.entity';
 import { TriviaOption } from 'src/common/typeorm/entities/trivia-option.entity';
 import { TriviaTopic } from 'src/common/typeorm/entities/trivia-topic.entity';
 import { SkillRating } from 'src/common/typeorm/entities/skill-rating.entity';
 import { AssessmentSession } from 'src/common/typeorm/entities/assessment-session.entity';
+import { Profile } from 'src/common/typeorm/entities/profile.entity';
 @Injectable()
 export class TypeormConfigService implements TypeOrmOptionsFactory {
   constructor(private configService: ConfigService) {}
@@ -39,7 +40,8 @@ export class TypeormConfigService implements TypeOrmOptionsFactory {
         Subject,
         Topic,
         UserOtp,
-        Trivia,
+        Profile,
+        Question,
         Option,
         TriviaOption,
         TriviaTopic,

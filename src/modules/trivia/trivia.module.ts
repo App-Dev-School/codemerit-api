@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Trivia } from 'src/common/typeorm/entities/trivia.entity';
+import { Question } from 'src/common/typeorm/entities/question.entity';
 import { TriviaService } from './providers/trivia.service';
 import { TriviaController } from './trivia.controller';
 import { TriviaOptionService } from './providers/trivia-option.service';
@@ -9,7 +9,7 @@ import { TriviaOption } from 'src/common/typeorm/entities/trivia-option.entity';
 import { TriviaTopic } from 'src/common/typeorm/entities/trivia-topic.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Trivia, TriviaOption, TriviaTopic])],
+  imports: [TypeOrmModule.forFeature([Question, TriviaOption, TriviaTopic])],
   providers: [TriviaService, TriviaOptionService, TriviaTopicService],
   controllers: [TriviaController],
 })

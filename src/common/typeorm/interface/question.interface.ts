@@ -1,21 +1,20 @@
 import { LabelEnum } from 'src/common/enum/label.enum';
 import { ITimeStamp } from './timestamp.interface';
 import { DifficultyLevelEnum } from 'src/common/enum/lavel.enum';
+import { QuestionType } from 'src/common/enum/questionType';
+import { QuestionStatus } from 'src/common/enum/questionStatus.enum';
 
-export interface ITrivia {
+export interface IQuestion {
   question: string;
-  // topicId: number;
   subjectId: number;
-  image: string;
-  label: LabelEnum;
-  tag: string;
+  questionType: QuestionType;
   level: DifficultyLevelEnum;
+  tag: string;
   marks: number;
   slug: string;
-  isPublished: boolean;
   answer: string;
   hint: string;
-  numReads: number;
-  numQuizzes: number;
+  label: LabelEnum;
+  status: QuestionStatus;
   audit: ITimeStamp;
 }

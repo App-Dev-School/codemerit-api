@@ -7,15 +7,15 @@ import {
   JoinTable,
 } from 'typeorm';
 import { Option } from './option.entity';
-import { Trivia } from './trivia.entity';
+import { Question } from './question.entity';
 
 @Entity()
 export class UserAttempt {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Trivia, (trivia) => trivia.id)
-  trivia: Trivia;
+  @ManyToOne(() => Question, (trivia) => trivia.id)
+  trivia: Question;
 
   @ManyToMany(() => Option)
   @JoinTable()

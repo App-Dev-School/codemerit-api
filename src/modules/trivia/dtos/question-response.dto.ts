@@ -1,3 +1,4 @@
+import { QuestionStatus } from "src/common/enum/questionStatus.enum";
 import { QuestionOptionResponseDto } from "./question-option-response.dto";
 import { QuestionTopicResponseDto } from "./question-topic-response.dto";
 
@@ -10,7 +11,8 @@ export class QuestionResponseDto {
   level: string;
   order: number;
   marks: number;
-  isPublished: boolean;
+  status: string;
   hint: string;
+  questionType: string;
   options: QuestionOptionResponseDto[];
 }
