@@ -28,7 +28,7 @@ export class UsersController {
   ) {}
   @Get('me')
   async getProfile(@Request() req): Promise<ApiResponse<any>> {
-    const result = await this.usersService.findOne(req.user.id);
+    const result = await this.usersService.getOwnUserInfo(req.user.id);
     if (result) {
       return new ApiResponse('User Found', result);
     }
@@ -79,7 +79,7 @@ export class UsersController {
 
   @Put('/profile-update/:id')
   async updateUserProfile(
-    @Param('id') id: number,
+    @Query('id', ParseIntPipe) id: number,
     @Body() updateProfileDto: UpdateUserProfileDto,
   ): Promise<ApiResponse<any>> {
     const result = await this.userProfileService.updateProfile(
@@ -89,40 +89,31 @@ export class UsersController {
     return new ApiResponse('User profile updated successfully.', result);
   }
 
-  @Get(':userId')
-  async findOne(
-    @Param(
-      'userId',
-      new ParseIntPipe({
-        errorHttpStatusCode: 400,
-        exceptionFactory: () =>
-          new BadRequestException('User Id must be a valid number'),
-      }),
-    )
-    userId: number,
-  ): Promise<ApiResponse<any>> {
-    const result = await this.usersService.findOne(userId);
-    if (result) {
-      return new ApiResponse('User Found', result);
-    } else {
-      return new ApiResponse('User Found', result);
-    }
-  }
+  // @Get(':userId')
+  // async findOne(
+  //   @Param(
+  //     'userId',
+  //     new ParseIntPipe({
+  //       errorHttpStatusCode: 400,
+  //       exceptionFactory: () =>
+  //         new BadRequestException('User Id must be a valid number'),
+  //     }),
+  //   )
+  //   userId: number,
+  // ): Promise<ApiResponse<any>> {
+  //   const result = await this.usersService.findOne(userId);
+  //   if (result) {
+  //     return new ApiResponse('User Found', result);
+  //   } else {
+  //     return new ApiResponse('User Found', result);
+  //   }
+  // }
 
   @Delete('delete/:userId')
   async remove(
-    @Param(
-      'userId',
-      new ParseIntPipe({
-        errorHttpStatusCode: 400,
-        exceptionFactory: () =>
-          new BadRequestException('User Id must be a valid number'),
-      }),
-    )
-    userId: number,
+    @Query('userId', ParseIntPipe) userId: number,
   ): Promise<ApiResponse<any>> {
     await this.usersService.remove(userId);
-
     return new ApiResponse('User deleted Successful.', null);
   }
 }

@@ -1,18 +1,7 @@
 import { AccountStatusEnum } from 'src/core/users/enums/account-status.enum';
-import { ITimeStamp } from './timestamp.interface';
 import { UserRoleEnum } from 'src/core/users/enums/user-roles.enum';
 
 export interface IUser {
-  // firstName: string;
-  // lastName: string;
-  // email: string;
-  // salt?: string;
-  // password?: string;
-  // roles: string;
-  // status: string;
-  // googleId?: string;
-  // accessToken?: string;
-  // refreshToken?: string;
   id: number;
   firstName: string;
   lastName: string;
@@ -29,6 +18,9 @@ export interface IUser {
   points?: number;
   token?: string;
   accountStatus: AccountStatusEnum;
-  audit: ITimeStamp;
+  createdBy: number;
+  updatedBy: number;
+  createdAt: Date;
+  updatedAt: Date;
   deletedAt?: Date;
 }

@@ -23,6 +23,7 @@ import {
 } from 'src/common/utils/slugify.util';
 import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from 'src/core/auth/dto/create-user.dto';
+import { UserProfileResponseDto } from '../dtos/user-profile-response.dto';
 
 @Injectable()
 export class UserService {
@@ -37,6 +38,8 @@ export class UserService {
   async create(data: Partial<CreateUserDto>): Promise<User> {
     /** Validate important fields  */
     const existingEmail = await this.findByEmail(data.email);
+    console.log('existingEmail', existingEmail);
+
     if (existingEmail) {
       throw new AppCustomException(
         HttpStatus.BAD_REQUEST,
@@ -105,7 +108,7 @@ export class UserService {
         console.log('CMRegistration Send otp exception => ', error);
       }
 
-      return savedUser;
+      return this.findOne(savedUser?.id);
     } catch (err) {
       await queryRunner.rollbackTransaction();
       throw new InternalServerErrorException(err.message);
@@ -118,16 +121,70 @@ export class UserService {
     return this.userRepo.findOne({ where: { email } });
   }
 
+  async findByEmailForLogin(email: string): Promise<User | undefined> {
+    return this.userRepo.findOne({
+      where: { email },
+      select: [
+        'id',
+        'firstName',
+        'lastName',
+        'username',
+        'role',
+        'email',
+        'mobile',
+        'password',
+        'accountStatus',
+      ],
+    });
+  }
+
   async findByMobile(mobile: string): Promise<User | null> {
     return this.userRepo.findOne({ where: { mobile } });
   }
 
-  async findByUsername(username: string): Promise<User | undefined> {
-    return this.userRepo.findOne({ where: { username } });
+  async findByUsername(
+    username: string,
+  ): Promise<UserProfileResponseDto | undefined> {
+    const user = await this.userRepo.findOne({ where: { username } });
+
+    if (!user) {
+      throw new AppCustomException(
+        HttpStatus.BAD_REQUEST,
+        'User is Not Found.',
+      );
+    }
+    const profile = await this.userProfileService.findOneByUserId(user?.id);
+    const userProfileResponse: UserProfileResponseDto = {
+      ...user,
+      profile,
+    };
+
+    return userProfileResponse;
   }
 
   async findOne(id: number): Promise<User | undefined> {
     return this.userRepo.findOne({ where: { id } });
+  }
+
+  async getOwnUserInfo(
+    id: number,
+  ): Promise<UserProfileResponseDto | undefined> {
+    const user = await this.userRepo.findOne({
+      where: { id },
+    });
+    if (!user) {
+      throw new AppCustomException(
+        HttpStatus.BAD_REQUEST,
+        'User is Not Found.',
+      );
+    }
+    const profile = await this.userProfileService.findOneByUserId(user?.id);
+    const userProfileResponse: UserProfileResponseDto = {
+      ...user,
+      profile,
+    };
+
+    return userProfileResponse;
   }
 
   async findAll(): Promise<User[]> {
@@ -135,24 +192,22 @@ export class UserService {
   }
 
   async findUserList(): Promise<User[]> {
-    return this.userRepo
-      .createQueryBuilder('user')
-      .select([
-        'user.firstName',
-        'user.lastName',
-        'user.username',
-        'user.role',
-        'user.designation',
-        'user.city',
-        'user.country',
-        'user.email',
-        'user.mobile',
-        'user.level',
-        'user.points',
-        'user.accountStatus',
-        'user.audit.createdAt',
-      ])
-      .getMany();
+    return this.userRepo.find({
+      select: [
+        'firstName',
+        'lastName',
+        'username',
+        'role',
+        'designation',
+        'city',
+        'country',
+        'email',
+        'mobile',
+        'level',
+        'points',
+        'accountStatus',
+      ],
+    });
   }
   async updateUserAccountStatus(
     id: number,
