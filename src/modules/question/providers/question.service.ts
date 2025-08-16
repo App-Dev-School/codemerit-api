@@ -91,6 +91,12 @@ export class QuestionService {
     dto: UpdateQuestionDto,
     user: GetUserRequestDto,
   ): Promise<Question> {
+    if (!dto.questionType) {
+      throw new AppCustomException(
+        HttpStatus.NOT_FOUND,
+        `Question Type is required`,
+      );
+    }
     const questionAdut = await this.findOneWithAuidt(id);
     if (
       user.role == UserRoleEnum.MODERATOR &&
