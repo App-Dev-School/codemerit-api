@@ -1,8 +1,8 @@
 import { ITimeStamp } from './timestamp.interface';
 
-export interface ITriviaTopic {
+export interface IQuestionTopic {
   id: number;
-  triviaId: number;
+  questionId: number;
   topicId: number;
-  audit: ITimeStamp;
+  createdAt: Date;
 }

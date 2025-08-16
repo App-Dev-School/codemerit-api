@@ -1,6 +1,6 @@
 import { ITimeStamp } from './timestamp.interface';
 
-export interface ISubject{
+export interface ISubject {
   title: string;
   description: string;
   body: string;
@@ -8,5 +8,8 @@ export interface ISubject{
   image: string;
   color: string;
   isPublished: boolean;
-  audit: ITimeStamp;
+  createdBy: number;
+  updatedBy: number;
+  createdAt: Date;
+  updatedAt: Date;
 }

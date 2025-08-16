@@ -1,5 +1,13 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsEmail, IsEmpty, IsMobilePhone, IsNotEmpty, IsNumberString, IsOptional, Matches } from 'class-validator';
+import {
+  IsEmail,
+  IsEmpty,
+  IsMobilePhone,
+  IsNotEmpty,
+  IsNumberString,
+  IsOptional,
+  Matches,
+} from 'class-validator';
 
 export class CreateUserDto {
   @ApiProperty({
@@ -61,4 +69,7 @@ export class CreateUserDto {
   @IsOptional()
   googleId?: string;
 
+  @ApiPropertyOptional()
+  @IsOptional()
+  createdBy?: number;
 }

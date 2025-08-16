@@ -1,8 +1,15 @@
-import { Entity, Column, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
+import {
+  Entity,
+  Column,
+  ManyToOne,
+  JoinColumn,
+  OneToMany,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { AbstractEntity } from './abstract.entity';
 import { ITopic } from '../interface/topic.interface';
 import { Subject } from './subject.entity';
-import { AuditEntity } from './audit.entity';
 import { TopicLabel } from 'src/common/enum/TopicLabel.enum';
 
 @Entity()
@@ -33,7 +40,7 @@ export class Topic extends AbstractEntity implements ITopic {
     type: 'enum',
     enum: TopicLabel,
     nullable: true,
-    default: TopicLabel.Beginner
+    default: TopicLabel.Beginner,
   })
   label: TopicLabel;
 
@@ -68,7 +75,7 @@ export class Topic extends AbstractEntity implements ITopic {
   @Column({
     type: 'int',
     nullable: true,
-    default: 1
+    default: 1,
   })
   popularity: number;
 
@@ -121,16 +128,24 @@ export class Topic extends AbstractEntity implements ITopic {
     type: 'int',
     default: 0,
   })
-  numTrivia: number;
+  numQuestion: number;
 
   @Column({
     type: 'int',
     default: 0,
   })
   numQuizzes: number;
+  @Column({ name: 'createdBy', default: null, select: false })
+  createdBy: number;
 
-  @Column((type) => AuditEntity)
-  audit: AuditEntity;
+  @Column({ name: 'updatedBy', default: null, select: false })
+  updatedBy: number;
+
+  @CreateDateColumn({ name: 'createdAt' })
+  createdAt: Date;
+
+  @UpdateDateColumn({ name: 'updatedAt', select: false })
+  updatedAt: Date;
 
   @ManyToOne(() => Subject)
   @JoinColumn({ name: 'subjectId' })

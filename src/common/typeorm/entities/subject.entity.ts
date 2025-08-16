@@ -1,4 +1,4 @@
-import { Entity, Column } from 'typeorm';
+import { Entity, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import { AbstractEntity } from './abstract.entity';
 import { ISubject } from '../interface/subject.interface';
 import { AuditEntity } from './audit.entity';
@@ -50,7 +50,16 @@ export class Subject extends AbstractEntity implements ISubject {
     default: true,
   })
   isPublished: boolean;
-  
-    @Column(type => AuditEntity)
-    audit: AuditEntity;
+
+  @Column({ name: 'createdBy', default: null, select: false })
+  createdBy: number;
+
+  @Column({ name: 'updatedBy', default: null, select: false })
+  updatedBy: number;
+
+  @CreateDateColumn({ name: 'createdAt' })
+  createdAt: Date;
+
+  @UpdateDateColumn({ name: 'updatedAt', select: false })
+  updatedAt: Date;
 }

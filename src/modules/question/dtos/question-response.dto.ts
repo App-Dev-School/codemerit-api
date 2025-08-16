@@ -1,9 +1,10 @@
-import { QuestionStatus } from "src/common/enum/questionStatus.enum";
-import { QuestionOptionResponseDto } from "./question-option-response.dto";
-import { QuestionTopicResponseDto } from "./question-topic-response.dto";
+import { QuestionStatusEnum } from 'src/common/enum/question-status.enum';
+import { QuestionOptionResponseDto } from './question-option-response.dto';
+import { QuestionTopicResponseDto } from './question-topic-response.dto';
 
 export class QuestionResponseDto {
   id: number;
+  title?: string;
   question: string;
   subjectId: number;
   subject: string;

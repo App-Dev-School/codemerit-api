@@ -7,6 +7,7 @@ import { LoggerService } from './common/services/logger.service';
 import { IAppConfig, appConfig } from './config/app-config';
 import { GlobalExceptionsFilter } from './common/filters/global-exception.filter';
 import { ResponseInterceptor } from './common/interceptors/response.interceptor';
+import { AuditInterceptor } from './common/interceptors/audit.interceptor';
 // import { GlobalExceptionFilter } from './common/filters/global-exception.old.filter';
 
 configDotenv({
@@ -39,7 +40,7 @@ async function bootstrap() {
     credentials: true,
   });
 
-  app.useGlobalInterceptors(new ResponseInterceptor());
+  app.useGlobalInterceptors(new ResponseInterceptor(), new AuditInterceptor());
   app.useGlobalFilters(new GlobalExceptionsFilter());
   /* Add Swagger  */
   const options = new DocumentBuilder()

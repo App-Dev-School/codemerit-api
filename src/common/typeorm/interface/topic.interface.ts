@@ -1,5 +1,4 @@
 import { TopicLabel } from 'src/common/enum/TopicLabel.enum';
-import { ITimeStamp } from './timestamp.interface';
 
 export interface ITopic {
   id: number;
@@ -16,7 +15,10 @@ export interface ITopic {
   votes: number;
   numLessons: number;
   numQuestions: number;
-  numTrivia: number;
+  numQuestion: number;
   numQuizzes: number;
-  audit: ITimeStamp;
+  createdBy: number;
+  updatedBy: number;
+  createdAt: Date;
+  updatedAt: Date;
 }

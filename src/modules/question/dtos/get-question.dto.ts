@@ -1,14 +1,13 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
-import { IsArray, IsNumber, IsOptional } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsInt, IsNumber } from 'class-validator';
 
-export class GetTriviaDto {
+export class GetQuestionDto {
   @ApiProperty({
     description: 'ID of the subject the question belongs to',
     example: 1,
   })
-  @Type(() => Number)
-  @IsNumber({}, { message: 'Subject ID must be a number' })
+  // @IsInt({ message: 'Subject ID must be an integer' })
+  // @IsNumber({}, { message: 'Subject ID must be a number' })
   subjectId: number;
 
   // @ApiPropertyOptional({

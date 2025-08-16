@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { SubjectsModule } from './subjects/subjects.module';
 import { TopicsModule } from './topics/topics.module';
-import { TriviaModule } from './trivia/trivia.module';
+import { QuestionModule } from './question/question.module';
 
 @Module({
-  imports: [SubjectsModule, TriviaModule, TopicsModule],
+  imports: [SubjectsModule, QuestionModule, TopicsModule],
 })
 export class DomainModule {}
