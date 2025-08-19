@@ -310,7 +310,6 @@ export class QuestionService {
     let questionResponseDto: AdminQuestionResponseDto[] = [];
     if (subjectId) {
       const questionList = await this.findQuestionListBySubjectId(subjectId);
-      console.log('questionList', questionList);
 
       if (!questionList) {
         throw new AppCustomException(
