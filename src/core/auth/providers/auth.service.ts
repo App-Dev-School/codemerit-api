@@ -21,14 +21,13 @@ export class AuthService {
 
   async validateUser(email: string, pass: string) {
     if (email && pass) {
-      const user = await this.usersService.findByEmail(email);
+      const user = await this.usersService.findByEmailForLogin(email);
       if (!user) {
         throw new AppCustomException(
           HttpStatus.BAD_REQUEST,
           'User account not found.',
         );
       }
-      // if (user && user.password) {
       if (user && (await bcrypt.compare(pass, user.password))) {
         const { password, ...result } = user;
         return result;

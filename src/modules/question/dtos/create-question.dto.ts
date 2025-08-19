@@ -1,12 +1,33 @@
-import { IsArray, IsBoolean, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, ValidateNested } from 'class-validator';
+import {
+  IsArray,
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  IsInt,
+} from 'class-validator';
 import { Type } from 'class-transformer';
-import { DifficultyLevelEnum } from 'src/common/enum/lavel.enum';
+import { DifficultyLevelEnum } from 'src/common/enum/difficulty-lavel.enum';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { QuestionStatus } from 'src/common/enum/questionStatus.enum';
-import { QuestionType } from 'src/common/enum/questionType';
+import { QuestionStatusEnum } from 'src/common/enum/question-status.enum';
+import { QuestionTypeEnum } from 'src/common/enum/question-type.enum';
+import { CreateOptionDto } from './create-option.dto';
 
+export class CreateQuestionDto {
+  @ApiPropertyOptional({ example: 101 })
+  @IsOptional()
+  @IsInt()
+  id?: number;
 
-export class CreateTriviaDto {
+  @ApiPropertyOptional({
+    description: 'The text of the question',
+    example: 'What is the capital of France?',
+  })
+  @IsOptional()
+  @IsString({ message: 'Title must be a string' })
+  title?: string;
+
   @ApiProperty({
     description: 'The text of the question',
     example: 'What is the capital of France?',
@@ -23,14 +44,14 @@ export class CreateTriviaDto {
   @IsNumber({}, { message: 'Subject ID must be a number' })
   subjectId: number;
 
-   @ApiProperty({
+  @ApiProperty({
     description: 'Specify question type',
-    enum: QuestionType,
-    example: QuestionType.Trivia,
-    default: QuestionType.General
+    enum: QuestionTypeEnum,
+    example: QuestionTypeEnum.Trivia,
+    default: QuestionTypeEnum.General,
   })
-  @IsEnum(QuestionType, { message: 'Question type should be valid.' })
-    questionType: QuestionType;
+  @IsEnum(QuestionTypeEnum, { message: 'Question type should be valid.' })
+  questionType: QuestionTypeEnum;
 
   @ApiProperty({
     description: 'IDs of the topics associated with the question',
@@ -47,7 +68,7 @@ export class CreateTriviaDto {
     description: 'Difficulty level of the question',
     enum: DifficultyLevelEnum,
     example: DifficultyLevelEnum.Easy,
-    default: DifficultyLevelEnum.Easy
+    default: DifficultyLevelEnum.Easy,
   })
   @IsEnum(DifficultyLevelEnum, { message: 'Level must be a valid value' })
   level: DifficultyLevelEnum;
@@ -68,14 +89,14 @@ export class CreateTriviaDto {
   @IsNumber({}, { message: 'Marks must be a number.' })
   marks: number;
 
-   @ApiProperty({
+  @ApiProperty({
     description: 'Publishing status of the question',
-    enum: QuestionStatus,
-    example: QuestionStatus.Pending,
-    default: QuestionStatus.Pending
+    enum: QuestionStatusEnum,
+    example: QuestionStatusEnum.Pending,
+    default: QuestionStatusEnum.Pending,
   })
-  @IsEnum(QuestionStatus, { message: 'Status must be valid.' })
-  status: QuestionStatus;
+  @IsEnum(QuestionStatusEnum, { message: 'Status must be valid.' })
+  status: QuestionStatusEnum;
 
   @ApiPropertyOptional({
     description: 'Optional hint for the question',
@@ -85,14 +106,14 @@ export class CreateTriviaDto {
   @IsString({ message: 'Hint must be a string' })
   hint?: string;
 
-  @ApiProperty({
-    description: 'Option IDs associated with the question',
-    example: [10, 11, 12],
+  @ApiPropertyOptional({
+    description: 'Option array associated with the question',
+    // example: [10, 11, 12],
     isArray: true,
-    type: Number,
+    type: CreateOptionDto,
   })
+  @IsOptional()
   @IsArray({ message: 'Options must be an array' })
-  @Type(() => Number)
-  @IsNumber({}, { each: true, message: 'Each option ID must be a number' })
-  options: number[];
+  @Type(() => CreateOptionDto)
+  options?: CreateOptionDto[];
 }

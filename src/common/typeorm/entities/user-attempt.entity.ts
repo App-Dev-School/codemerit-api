@@ -6,7 +6,7 @@ import {
   ManyToMany,
   JoinTable,
 } from 'typeorm';
-import { Option } from './option.entity';
+import { QuestionOption } from './question-option.entity';
 import { Question } from './question.entity';
 
 @Entity()
@@ -14,12 +14,12 @@ export class UserAttempt {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Question, (trivia) => trivia.id)
-  trivia: Question;
+  @ManyToOne(() => Question, (question) => question.id)
+  question: Question;
 
-  @ManyToMany(() => Option)
+  @ManyToMany(() => QuestionOption)
   @JoinTable()
-  selectedOptions: Option[];
+  selectedOptions: QuestionOption[];
 
   @Column({ default: false })
   isCorrect: boolean;

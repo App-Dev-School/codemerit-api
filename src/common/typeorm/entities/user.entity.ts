@@ -1,10 +1,19 @@
 import { IsOptional, Matches } from 'class-validator';
 import { AccountStatusEnum } from 'src/core/users/enums/account-status.enum';
 import { UserRoleEnum } from 'src/core/users/enums/user-roles.enum';
-import { Column, DeleteDateColumn, Entity } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  DeleteDateColumn,
+  Entity,
+  JoinColumn,
+  OneToOne,
+  UpdateDateColumn,
+} from 'typeorm';
 import { IUser } from '../interface/user.interface';
 import { AbstractEntity } from './abstract.entity';
 import { AuditEntity } from './audit.entity';
+import { Profile } from './profile.entity';
 
 @Entity()
 export class User extends AbstractEntity implements IUser {
@@ -89,6 +98,7 @@ export class User extends AbstractEntity implements IUser {
     type: 'varchar',
     length: 100,
     nullable: false,
+    select: false,
   })
   password: string;
 
@@ -120,6 +130,7 @@ export class User extends AbstractEntity implements IUser {
     length: 10,
     nullable: true,
     default: null,
+    select: false,
   })
   token?: string;
 
@@ -131,9 +142,18 @@ export class User extends AbstractEntity implements IUser {
   })
   accountStatus: AccountStatusEnum;
 
-  @DeleteDateColumn({ nullable: true, select: false })
-  deletedAt?: Date;
+  @Column({ name: 'createdBy', default: null, select: false })
+  createdBy: number;
 
-  @Column((type) => AuditEntity, { prefix: '' })
-  audit: AuditEntity;
+  @Column({ name: 'updatedBy', default: null, select: false })
+  updatedBy: number;
+
+  @CreateDateColumn({ name: 'createdAt' })
+  createdAt: Date;
+
+  @UpdateDateColumn({ name: 'updatedAt', select: false })
+  updatedAt: Date;
+
+  @DeleteDateColumn({ name: 'deletedAt', default: null, select: false })
+  deletedAt: Date;
 }

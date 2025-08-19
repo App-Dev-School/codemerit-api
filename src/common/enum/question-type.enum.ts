@@ -1,5 +1,5 @@
-export enum QuestionType {
+export enum QuestionTypeEnum {
   General = 'General', //no options required for a question. Free text question
   Trivia = 'Trivia',
-  Survey = 'Survey'
+  Survey = 'Survey',
 }

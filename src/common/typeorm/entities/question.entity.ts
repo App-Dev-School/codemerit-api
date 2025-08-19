@@ -1,16 +1,24 @@
-import { Entity, Column, JoinColumn, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  Column,
+  JoinColumn,
+  OneToOne,
+  ManyToOne,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { AbstractEntity } from './abstract.entity';
-import { DifficultyLevelEnum } from 'src/common/enum/lavel.enum';
+import { DifficultyLevelEnum } from 'src/common/enum/difficulty-lavel.enum';
 import { LabelEnum } from 'src/common/enum/label.enum';
 import { Subject } from './subject.entity';
 import { IQuestion } from '../interface/question.interface';
 import { AuditEntity } from './audit.entity';
-import { QuestionType } from 'src/common/enum/questionType';
-import { QuestionStatus } from 'src/common/enum/questionStatus.enum';
+import { QuestionTypeEnum } from 'src/common/enum/question-type.enum';
+import { QuestionStatusEnum } from 'src/common/enum/question-status.enum';
 
 @Entity()
 export class Question extends AbstractEntity implements IQuestion {
-  @Column({ type: 'text', nullable: true, default: '' })
+  @Column({ type: 'text', nullable: true, default: null })
   title: string;
 
   @Column({ type: 'text', nullable: false })
@@ -23,12 +31,13 @@ export class Question extends AbstractEntity implements IQuestion {
   })
   subjectId: number;
 
-  @Column({ type: 'enum', 
+  @Column({
+    type: 'enum',
     nullable: false,
-    enum: QuestionType,
-    default: QuestionType.General,
- })
-  questionType: QuestionType;
+    enum: QuestionTypeEnum,
+    default: QuestionTypeEnum.General,
+  })
+  questionType: QuestionTypeEnum;
   //implement related validations for questionType
   //if questionType == General, then no options are required
   //if questionType == Trivia, then options are required
@@ -45,7 +54,7 @@ export class Question extends AbstractEntity implements IQuestion {
 
   @Column({
     type: 'varchar',
-    length: 255,
+    length: 50,
     unique: true,
     nullable: true,
     default: null,
@@ -66,11 +75,11 @@ export class Question extends AbstractEntity implements IQuestion {
 
   @Column({
     type: 'enum',
-    enum: QuestionStatus,
+    enum: QuestionStatusEnum,
     nullable: false,
-    default: QuestionStatus.Pending,
+    default: QuestionStatusEnum.Pending,
   })
-  status: QuestionStatus;
+  status: QuestionStatusEnum;
   //fetched questions for users (non-admin) should have status = Active
 
   @Column({ type: 'text', nullable: true })
@@ -82,12 +91,21 @@ export class Question extends AbstractEntity implements IQuestion {
   @Column({
     type: 'int',
     nullable: true,
-    default: 0
+    default: 0,
   })
   order: number;
 
-  @Column((type) => AuditEntity, { prefix: '' })
-  audit: AuditEntity;
+  @Column({ name: 'createdBy', default: null, select: false })
+  createdBy: number;
+
+  @Column({ name: 'updatedBy', default: null, select: false })
+  updatedBy: number;
+
+  @CreateDateColumn({ name: 'createdAt' })
+  createdAt: Date;
+
+  @UpdateDateColumn({ name: 'updatedAt', select: false })
+  updatedAt: Date;
 
   @ManyToOne(() => Subject, { eager: true })
   @JoinColumn({ name: 'subjectId', referencedColumnName: 'id' })

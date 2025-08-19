@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { SubjectsModule } from './subjects/subjects.module';
 import { TopicsModule } from './topics/topics.module';
-import { TriviaModule } from './trivia/trivia.module';
+import { QuestionModule } from './question/question.module';
 import { SkillRatingModule } from './skill-rating/skill-rating.module';
 
 @Module({
-  imports: [SubjectsModule, TriviaModule, TopicsModule, SkillRatingModule],
+  imports: [SubjectsModule, QuestionModule, TopicsModule, SkillRatingModule],
 })
 export class DomainModule {}
