@@ -10,6 +10,7 @@ import { Question } from 'src/common/typeorm/entities/question.entity';
 import { QuestionOption } from 'src/common/typeorm/entities/question-option.entity';
 import { Profile } from 'src/common/typeorm/entities/profile.entity';
 import { QuestionTopic } from 'src/common/typeorm/entities/quesion-topic.entity';
+import { JobRole } from 'src/common/typeorm/entities/job-role.entity';
 @Injectable()
 export class TypeormConfigService implements TypeOrmOptionsFactory {
   constructor(private configService: ConfigService) {}
@@ -36,6 +37,7 @@ export class TypeormConfigService implements TypeOrmOptionsFactory {
         User,
         Profile,
         Subject,
+        JobRole,
         Topic,
         UserOtp,
         Question,

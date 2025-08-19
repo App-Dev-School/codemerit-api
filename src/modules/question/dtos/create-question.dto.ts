@@ -89,12 +89,13 @@ export class CreateQuestionDto {
   @IsNumber({}, { message: 'Marks must be a number.' })
   marks: number;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Publishing status of the question',
     enum: QuestionStatusEnum,
     example: QuestionStatusEnum.Pending,
     default: QuestionStatusEnum.Pending,
   })
+  @IsOptional()
   @IsEnum(QuestionStatusEnum, { message: 'Status must be valid.' })
   status: QuestionStatusEnum;
 

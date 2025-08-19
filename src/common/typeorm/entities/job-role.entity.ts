@@ -1,9 +1,9 @@
 import { Column, CreateDateColumn, Entity, UpdateDateColumn } from 'typeorm';
-import { ISubject } from '../interface/subject.interface';
+import { IJobRole } from '../interface/job-role.interface';
 import { AbstractEntity } from './abstract.entity';
 
 @Entity()
-export class Subject extends AbstractEntity implements ISubject {
+export class JobRole extends AbstractEntity implements IJobRole {
   @Column({
     type: 'varchar',
     length: 100,

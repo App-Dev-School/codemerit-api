@@ -11,9 +11,11 @@ import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './core/auth/jwt/jwt-auth-guard';
 import { RolesGuard } from './core/auth/guards/roles.guard';
 import { MonitoringModule } from './modules/monitoring/monitoring.module';
+import { MasterModule } from './modules/master/master.module';
 
 @Module({
   imports: [
+    MasterModule,
     CoreModule,
     ConfigModule.forRoot({
       load: [appConfig, databaseConfig, jwtConfig],
@@ -22,7 +24,7 @@ import { MonitoringModule } from './modules/monitoring/monitoring.module';
     LoggerModule,
     DatabaseModule,
     DomainModule,
-    MonitoringModule,
+    MonitoringModule
   ],
   providers: [
     {
