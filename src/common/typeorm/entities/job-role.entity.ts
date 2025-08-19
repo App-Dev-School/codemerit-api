@@ -1,6 +1,7 @@
-import { Column, CreateDateColumn, Entity, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, ManyToMany, UpdateDateColumn } from 'typeorm';
 import { IJobRole } from '../interface/job-role.interface';
 import { AbstractEntity } from './abstract.entity';
+import { Subject } from './subject.entity';
 
 @Entity()
 export class JobRole extends AbstractEntity implements IJobRole {
@@ -61,4 +62,7 @@ export class JobRole extends AbstractEntity implements IJobRole {
 
   @UpdateDateColumn({ name: 'updatedAt', select: false })
   updatedAt: Date;
+
+  // @ManyToMany(() => Subject, (subject) => subject.jobRoles)
+  // subjects: Subject[];
 }

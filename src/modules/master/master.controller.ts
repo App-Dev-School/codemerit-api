@@ -13,6 +13,6 @@ export class MasterController {
 
     @Get('subjectsWithJobRole')
     async getSubjectsWithRoles() {
-        return this.masterService.findAllSubjectsWithJobRoles();
+        return this.masterService.findSubjectsWithRoles();
     }
 }
