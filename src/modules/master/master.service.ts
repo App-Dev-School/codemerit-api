@@ -31,4 +31,8 @@ export class MasterService {
       jobRoles,
     };
   }
+
+  async findAllSubjectsWithJobRoles() {
+    
+  }
 }

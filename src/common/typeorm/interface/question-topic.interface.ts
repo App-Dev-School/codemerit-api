@@ -1,5 +1,3 @@
-import { ITimeStamp } from './timestamp.interface';
-
 export interface IQuestionTopic {
   id: number;
   questionId: number;
