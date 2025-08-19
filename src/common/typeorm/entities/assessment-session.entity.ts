@@ -6,6 +6,7 @@ import {
   JoinColumn,
   ManyToOne,
   OneToMany,
+  UpdateDateColumn,
 } from 'typeorm';
 import { AbstractEntity } from './abstract.entity';
 import { SkillTypeEnum } from 'src/common/enum/skill-type.enum';
@@ -49,8 +50,17 @@ export class AssessmentSession
   })
   ratingType: RatingTypeEnum;
 
-  @Column((type) => AuditEntity, { prefix: '' })
-  audit: AuditEntity;
+  @Column({ name: 'createdBy', default: null, select: false })
+  createdBy: number;
+
+  @Column({ name: 'updatedBy', default: null, select: false })
+  updatedBy: number;
+
+  @CreateDateColumn({ name: 'createdAt' })
+  createdAt: Date;
+
+  @UpdateDateColumn({ name: 'updatedAt', select: false })
+  updatedAt: Date;
 
   @OneToMany(() => SkillRating, (rating) => rating.assessmentSession, {
     cascade: true,

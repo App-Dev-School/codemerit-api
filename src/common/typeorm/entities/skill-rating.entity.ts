@@ -1,4 +1,10 @@
-import { Entity, Column, JoinColumn, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  Column,
+  JoinColumn,
+  ManyToOne,
+  CreateDateColumn,
+} from 'typeorm';
 import { ISkillRating } from '../interface/skill-rating.interface';
 import { AbstractEntity } from './abstract.entity';
 import { SkillTypeEnum } from 'src/common/enum/skill-type.enum';
@@ -35,8 +41,8 @@ export class SkillRating extends AbstractEntity implements ISkillRating {
   })
   assessmentSessionId: number;
 
-  @Column((type) => AuditEntity, { prefix: '' })
-  audit: AuditEntity;
+  @CreateDateColumn({ name: 'createdAt' })
+  createdAt: Date;
 
   @ManyToOne(() => AssessmentSession, (session) => session.skillRatings, {
     onDelete: 'CASCADE',

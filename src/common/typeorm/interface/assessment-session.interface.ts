@@ -9,7 +9,10 @@ export interface IAssessmentSession {
   assessmentTitle: string;
   notes?: string;
   skillRatings: SkillRating[];
-  audit: ITimeStamp;
   ratedBy?: number;
   ratingType: RatingTypeEnum;
+  createdBy: number;
+  updatedBy: number;
+  createdAt: Date;
+  updatedAt: Date;
 }
