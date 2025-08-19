@@ -253,6 +253,7 @@ export class QuestionService {
         );
       }
       let slug = generateSlug(dto.question);
+
       const existing = await this.questionRepo.findOne({ where: { slug } });
       if (existing) {
         slug = generateUniqueSlug(dto.question);
@@ -292,7 +293,7 @@ export class QuestionService {
         }
       }
       await queryRunner.commitTransaction();
-      return savedQuestion;
+      return this.findOne(savedQuestion.id);
     } catch (error) {
       await queryRunner.rollbackTransaction();
       throw new InternalServerErrorException(
