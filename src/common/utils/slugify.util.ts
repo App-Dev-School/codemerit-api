@@ -3,7 +3,8 @@
  * Removes special characters.
  */
 export function generateSlug(title: string): string {
-  return title
+  const trimmedTitle = title.length > 50 ? title.slice(0, 50) : title;
+  return trimmedTitle
     .toLowerCase()
     .trim()
     .replace(/[^a-z0-9\s-]/g, '') // remove special chars

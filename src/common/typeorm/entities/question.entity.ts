@@ -15,6 +15,7 @@ import { IQuestion } from '../interface/question.interface';
 import { AuditEntity } from './audit.entity';
 import { QuestionTypeEnum } from 'src/common/enum/question-type.enum';
 import { QuestionStatusEnum } from 'src/common/enum/question-status.enum';
+import { User } from './user.entity';
 
 @Entity()
 export class Question extends AbstractEntity implements IQuestion {
@@ -62,13 +63,19 @@ export class Question extends AbstractEntity implements IQuestion {
   slug: string;
   //slugify and limit max character to 50
 
+  // @Column({
+  //   type: 'enum',
+  //   enum: LabelEnum,
+  //   nullable: true,
+  //   default: LabelEnum.General,
+  // })
+  // label: LabelEnum;
+
   @Column({
-    type: 'enum',
-    enum: LabelEnum,
-    nullable: true,
-    default: LabelEnum.General,
+    type: 'int',
+    default: 60,
   })
-  label: LabelEnum;
+  timeAllowed: number;
 
   @Column({ type: 'varchar', length: 255, nullable: true })
   tag: string;
@@ -90,8 +97,7 @@ export class Question extends AbstractEntity implements IQuestion {
 
   @Column({
     type: 'int',
-    nullable: true,
-    default: 0,
+    default: 1,
   })
   order: number;
 
@@ -110,4 +116,8 @@ export class Question extends AbstractEntity implements IQuestion {
   @ManyToOne(() => Subject, { eager: true })
   @JoinColumn({ name: 'subjectId', referencedColumnName: 'id' })
   subject: Subject;
+
+  @ManyToOne(() => User)
+  @JoinColumn({ name: 'createdBy', referencedColumnName: 'id' })
+  userCreatedBy: User;
 }

@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, EntityManager, In, Repository } from 'typeorm';
-import { QuestionResponseDto } from '../dtos/question-response.dto';
+import { AdminQuestionResponseDto } from '../dtos/admin-question-response.dto';
 import { Question } from 'src/common/typeorm/entities/question.entity';
 import { CreateQuestionDto } from '../dtos/create-question.dto';
 import { GetQuestionDto } from '../dtos/get-question.dto';
@@ -304,10 +304,14 @@ export class QuestionService {
     }
   }
 
-  async getQuestionList(subjectId: number): Promise<QuestionResponseDto[]> {
-    let questionResponseDto: QuestionResponseDto[] = [];
+  async getQuestionListForAdmin(
+    subjectId: number,
+  ): Promise<AdminQuestionResponseDto[]> {
+    let questionResponseDto: AdminQuestionResponseDto[] = [];
     if (subjectId) {
       const questionList = await this.findQuestionListBySubjectId(subjectId);
+      console.log('questionList', questionList);
+
       if (!questionList) {
         throw new AppCustomException(
           HttpStatus.NOT_FOUND,
@@ -315,24 +319,22 @@ export class QuestionService {
         );
       }
       for (const question of questionList) {
-        const questionDto = new QuestionResponseDto();
+        const questionDto = new AdminQuestionResponseDto();
         questionDto.id = question.id;
-        questionDto.title = question.title;
         questionDto.question = question.question;
         questionDto.subjectId = question.subjectId;
         questionDto.subject = question.subject.title;
-        questionDto.level = question.level;
-        questionDto.order = question.order;
-        questionDto.marks = question.marks;
         questionDto.status = question.status;
-        questionDto.hint = question.hint || '';
+        questionDto.level = question.level;
+        questionDto.createdByUsername = question.userCreatedBy?.username;
+        questionDto.createdByName =
+          question.userCreatedBy?.firstName +
+          ' ' +
+          question.userCreatedBy?.lastName;
         questionDto.topics =
           await this.questionTopicRepo.findQuestionTopicsByQuestionId(
             question.id,
           );
-        questionDto.options = await this.questionOptionService.findByQuestionId(
-          question.id,
-        );
         questionResponseDto.push(questionDto);
       }
     }
@@ -340,6 +342,41 @@ export class QuestionService {
     return questionResponseDto;
   }
 
+  // async getQuestionList(subjectId: number): Promise<QuestionResponseDto[]> {
+  //   let questionResponseDto: QuestionResponseDto[] = [];
+  //   if (subjectId) {
+  //     const questionList = await this.findQuestionListBySubjectId(subjectId);
+  //     if (!questionList) {
+  //       throw new AppCustomException(
+  //         HttpStatus.NOT_FOUND,
+  //         'No Question found for the given subject',
+  //       );
+  //     }
+  //     for (const question of questionList) {
+  //       const questionDto = new QuestionResponseDto();
+  //       questionDto.id = question.id;
+  //       questionDto.title = question.title;
+  //       questionDto.question = question.question;
+  //       questionDto.subjectId = question.subjectId;
+  //       questionDto.subject = question.subject.title;
+  //       questionDto.level = question.level;
+  //       questionDto.order = question.order;
+  //       questionDto.marks = question.marks;
+  //       questionDto.status = question.status;
+  //       questionDto.hint = question.hint || '';
+  //       questionDto.topics =
+  //         await this.questionTopicRepo.findQuestionTopicsByQuestionId(
+  //           question.id,
+  //         );
+  //       questionDto.options = await this.questionOptionService.findByQuestionId(
+  //         question.id,
+  //       );
+  //       questionResponseDto.push(questionDto);
+  //     }
+  //   }
+
+  //   return questionResponseDto;
+  // }
   async findQuestionListBySubjectId(
     subjectId: number,
   ): Promise<Question[] | undefined> {
@@ -347,6 +384,11 @@ export class QuestionService {
       where: {
         subjectId: subjectId,
       },
+      relations: ['subject', 'userCreatedBy'],
+      order: {
+        id: 'DESC', // or 'createdAt': 'DESC' if you have a createdAt column
+      },
+      take: 500,
     });
   }
 
