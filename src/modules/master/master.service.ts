@@ -67,6 +67,45 @@ export class MasterService {
   return Object.values(grouped);
 }
 
+ async getAllJobRolesWithSubjects() {
+    const jobRoleSubjects = await this.jobRoleSubjectRepo.find({
+      relations: ['jobRole', 'subject'],
+    });
+
+    const result = new Map<number, {
+      id: number;
+      title: string;
+      subjects: {
+        id: number;
+        title: string;
+        description: string;
+        image: string
+      }[];
+    }>();
+
+    for (const jrs of jobRoleSubjects) {
+      const jobRoleId = jrs.jobRole.id;
+      const subject = jrs.subject;
+
+      if (!result.has(jobRoleId)) {
+        result.set(jobRoleId, {
+          id: jobRoleId,
+          title: jrs.jobRole.title,
+          subjects: [],
+        });
+      }
+
+      result.get(jobRoleId).subjects.push({
+        id: subject.id,
+        title: subject.title,
+        description: subject.description,
+        image: subject.image
+      });
+    }
+
+    return Array.from(result.values());
+  }
+
   /*
   Workable when direct relationships are established in entities
   *

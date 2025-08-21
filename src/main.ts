@@ -1,13 +1,12 @@
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import { configDotenv } from 'dotenv';
 import { BadRequestException, Logger, ValidationPipe } from '@nestjs/common';
+import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { LoggerService } from './common/services/logger.service';
-import { IAppConfig, appConfig } from './config/app-config';
+import { configDotenv } from 'dotenv';
+import { AppModule } from './app.module';
 import { GlobalExceptionsFilter } from './common/filters/global-exception.filter';
-import { ResponseInterceptor } from './common/interceptors/response.interceptor';
 import { AuditInterceptor } from './common/interceptors/audit.interceptor';
+import { ResponseInterceptor } from './common/interceptors/response.interceptor';
+import { IAppConfig, appConfig } from './config/app-config';
 // import { GlobalExceptionFilter } from './common/filters/global-exception.old.filter';
 
 configDotenv({
@@ -27,6 +26,7 @@ async function bootstrap() {
         'http://localhost:3000',
         'http://localhost:4200',
         'http://apis.appdevops.in',
+        'https://apis.appdevops.in',
         'https://appdevops.in',
       ];
 
