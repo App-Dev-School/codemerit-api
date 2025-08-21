@@ -206,6 +206,7 @@ export class UserService {
         'level',
         'points',
         'accountStatus',
+        'createdAt',
       ],
     });
   }

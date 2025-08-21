@@ -11,10 +11,11 @@ export interface IQuestion {
   level: DifficultyLevelEnum;
   tag: string;
   marks: number;
+  timeAllowed: number;
   slug: string;
   answer: string;
   hint: string;
-  label: LabelEnum;
+  // label: LabelEnum;
   status: QuestionStatusEnum;
   createdBy: number;
   updatedBy: number;
