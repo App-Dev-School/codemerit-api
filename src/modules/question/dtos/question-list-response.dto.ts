@@ -13,7 +13,7 @@ export class QuestionListResponseDto {
   level: DifficultyLevelEnum | null;
   marks: number;
   slug: string;
-  label: LabelEnum | null;
+  timeAllowed: number;
   tag: string | null;
   status: QuestionStatusEnum;
   answer: string | null;

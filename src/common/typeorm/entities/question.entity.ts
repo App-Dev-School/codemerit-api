@@ -6,6 +6,7 @@ import {
   ManyToOne,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
 import { AbstractEntity } from './abstract.entity';
 import { DifficultyLevelEnum } from 'src/common/enum/difficulty-lavel.enum';
@@ -16,6 +17,7 @@ import { AuditEntity } from './audit.entity';
 import { QuestionTypeEnum } from 'src/common/enum/question-type.enum';
 import { QuestionStatusEnum } from 'src/common/enum/question-status.enum';
 import { User } from './user.entity';
+import { QuestionOption } from './question-option.entity';
 
 @Entity()
 export class Question extends AbstractEntity implements IQuestion {
@@ -62,14 +64,6 @@ export class Question extends AbstractEntity implements IQuestion {
   })
   slug: string;
   //slugify and limit max character to 50
-
-  // @Column({
-  //   type: 'enum',
-  //   enum: LabelEnum,
-  //   nullable: true,
-  //   default: LabelEnum.General,
-  // })
-  // label: LabelEnum;
 
   @Column({
     type: 'int',
@@ -120,4 +114,7 @@ export class Question extends AbstractEntity implements IQuestion {
   @ManyToOne(() => User)
   @JoinColumn({ name: 'createdBy', referencedColumnName: 'id' })
   userCreatedBy: User;
+
+  @OneToMany(() => QuestionOption, option => option.question)
+  options: QuestionOption[];
 }

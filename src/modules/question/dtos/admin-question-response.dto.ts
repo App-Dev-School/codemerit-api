@@ -8,6 +8,7 @@ export class AdminQuestionResponseDto {
   topics: QuestionTopicResponseDto[];
   status: string;
   level: string;
+  slug: string;
   questionType: string;
   createdByUsername: string;
   createdByName: string;

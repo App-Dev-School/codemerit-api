@@ -1,22 +1,19 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Param,
-  Put,
+  Controller,
   Delete,
-  ParseIntPipe,
+  Get,
+  Param,
+  Post,
+  Put,
   Query,
-  BadRequestException,
-  Request,
+  Request
 } from '@nestjs/common';
 import { ApiResponse } from 'src/common/utils/api-response';
 import { CreateQuestionDto } from './dtos/create-question.dto';
-import { QuestionService } from './providers/question.service';
-import { GetQuestionDto } from './dtos/get-question.dto';
-import { UpdateQuestionDto } from './dtos/update-question.dto';
 import { GetQuestionsByIdsDto } from './dtos/get-questions-by-ids.dto';
+import { UpdateQuestionDto } from './dtos/update-question.dto';
+import { QuestionService } from './providers/question.service';
 
 @Controller('apis/question')
 export class QuestionController {
@@ -35,6 +32,7 @@ export class QuestionController {
     @Query('subjectId') subjectId: number,
     // @Query() query: GetQuestionDto,
   ): Promise<ApiResponse<any>> {
+    //Temporarily lists all questions
     const result = await this.service.getQuestionListForAdmin(subjectId);
     return new ApiResponse(
       `${result.length} Question fetched from ${result[0].subject}.`,
@@ -50,6 +48,13 @@ export class QuestionController {
   ): Promise<ApiResponse<any>> {
     const result = await this.service.updateQuestion(id, dto, req.user);
     return new ApiResponse('Successfully updated Question', result);
+  }
+
+  @Get(':slug')
+    async findOne(
+      @Param('slug') slug: string): Promise<ApiResponse<any>> {
+      const result = await this.service.findOneBySlug(slug);
+      return new ApiResponse('Question Found', result);
   }
 
   @Delete('delete')

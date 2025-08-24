@@ -91,6 +91,15 @@ export class CreateQuestionDto {
   @IsNumber({}, { message: 'Marks must be a number.' })
   marks: number;
 
+    @ApiProperty({
+    description: 'Marks assigned to the question.',
+    example: 5,
+  })
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber({}, { message: 'Time allowed in seconds.' })
+  timeAllowed: number;
+
   @ApiPropertyOptional({
     description: 'Publishing status of the question',
     enum: QuestionStatusEnum,

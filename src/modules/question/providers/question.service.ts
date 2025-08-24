@@ -4,29 +4,28 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, EntityManager, In, Repository } from 'typeorm';
-import { AdminQuestionResponseDto } from '../dtos/admin-question-response.dto';
-import { Question } from 'src/common/typeorm/entities/question.entity';
-import { CreateQuestionDto } from '../dtos/create-question.dto';
-import { GetQuestionDto } from '../dtos/get-question.dto';
-import { QuestionTopicService } from './question-topic.service';
-import { AppCustomException } from 'src/common/exceptions/app-custom-exception.filter';
-import { QuestionTopic } from 'src/common/typeorm/entities/quesion-topic.entity';
-import { QuestionOptionService } from './question-option.service';
-import { UpdateQuestionDto } from '../dtos/update-question.dto';
-import { QuestionOption } from 'src/common/typeorm/entities/question-option.entity';
-import { CreateOptionDto } from '../dtos/create-option.dto';
-import { QuestionTypeEnum } from 'src/common/enum/question-type.enum';
 import { validate } from 'class-validator';
+import { QuestionTypeEnum } from 'src/common/enum/question-type.enum';
+import { AppCustomException } from 'src/common/exceptions/app-custom-exception.filter';
+import { JobRoleSubject } from 'src/common/typeorm/entities/job-role-subject.entity';
+import { QuestionTopic } from 'src/common/typeorm/entities/quesion-topic.entity';
+import { QuestionOption } from 'src/common/typeorm/entities/question-option.entity';
+import { Question } from 'src/common/typeorm/entities/question.entity';
 import {
   generateSlug,
   generateUniqueSlug,
 } from 'src/common/utils/slugify.util';
 import { GetUserRequestDto } from 'src/core/auth/dto/get-user-request.dto';
 import { UserRoleEnum } from 'src/core/users/enums/user-roles.enum';
+import { DataSource, EntityManager, In, Repository } from 'typeorm';
+import { AdminQuestionResponseDto } from '../dtos/admin-question-response.dto';
+import { CreateOptionDto } from '../dtos/create-option.dto';
+import { CreateQuestionDto } from '../dtos/create-question.dto';
 import { GetQuestionsByIdsDto } from '../dtos/get-questions-by-ids.dto';
-import { JobRoleSubject } from 'src/common/typeorm/entities/job-role-subject.entity';
 import { QuestionListResponseDto } from '../dtos/question-list-response.dto';
+import { UpdateQuestionDto } from '../dtos/update-question.dto';
+import { QuestionOptionService } from './question-option.service';
+import { QuestionTopicService } from './question-topic.service';
 
 @Injectable()
 export class QuestionService {
@@ -54,7 +53,10 @@ export class QuestionService {
   }
 
   findOneBySlug(slug: string) {
-    return this.questionRepo.findOne({ where: { slug } });
+    return this.questionRepo.findOne({ 
+      where: { slug }, 
+      relations: ['options'] 
+    });
   }
 
   // update(id: number, data: Partial<Question>) {
@@ -300,7 +302,7 @@ export class QuestionService {
     } catch (error) {
       await queryRunner.rollbackTransaction();
       throw new InternalServerErrorException(
-        'Failed to create Question',
+        'Failed to create the question set. Please try again.',
         error.message,
       );
     } finally {
@@ -329,6 +331,7 @@ export class QuestionService {
         questionDto.subject = question.subject.title;
         questionDto.status = question.status;
         questionDto.level = question.level;
+        questionDto.slug = question.slug;
         questionDto.createdByUsername = question.userCreatedBy?.username;
         questionDto.createdByName =
           question.userCreatedBy?.firstName +
@@ -384,9 +387,9 @@ export class QuestionService {
     subjectId: number,
   ): Promise<Question[] | undefined> {
     return this.questionRepo.find({
-      where: {
-        subjectId: subjectId,
-      },
+      // where: {
+      //   subjectId: subjectId,
+      // },
       relations: ['subject', 'userCreatedBy'],
       order: {
         id: 'DESC', // or 'createdAt': 'DESC' if you have a createdAt column
@@ -523,7 +526,7 @@ export class QuestionService {
       level: q.level,
       marks: q.marks,
       slug: q.slug,
-      label: q.label,
+      timeAllowed: q.timeAllowed,
       tag: q.tag,
       status: q.status,
       answer: q.answer,
