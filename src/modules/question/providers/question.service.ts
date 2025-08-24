@@ -24,6 +24,9 @@ import {
 } from 'src/common/utils/slugify.util';
 import { GetUserRequestDto } from 'src/core/auth/dto/get-user-request.dto';
 import { UserRoleEnum } from 'src/core/users/enums/user-roles.enum';
+import { GetQuestionsByIdsDto } from '../dtos/get-questions-by-ids.dto';
+import { JobRoleSubject } from 'src/common/typeorm/entities/job-role-subject.entity';
+import { QuestionListResponseDto } from '../dtos/question-list-response.dto';
 
 @Injectable()
 export class QuestionService {
@@ -426,5 +429,110 @@ export class QuestionService {
       questionList.push(topic);
     }
     await manager.save(QuestionTopic, questionList);
+  }
+  async getQuestionsByIds(
+    dto: GetQuestionsByIdsDto,
+  ): Promise<QuestionListResponseDto[]> {
+    if (
+      (!dto.subjectIds || dto.subjectIds.length === 0) &&
+      (!dto.topicIds || dto.topicIds.length === 0) &&
+      (!dto.jobIds || dto.jobIds.length === 0)
+    ) {
+      throw new AppCustomException(
+        HttpStatus.BAD_REQUEST,
+        'At least one of subjectIds, topicIds, or jobIds must be provided.',
+      );
+    }
+
+    let subjectIds: number[] = [];
+    if (dto.jobIds && dto.jobIds.length > 0) {
+      const jobRoleSubjects = await this.dataSource
+        .getRepository(JobRoleSubject)
+        .find({
+          where: { jobRoleId: In(dto.jobIds) },
+        });
+      subjectIds = jobRoleSubjects.map((jrs) => jrs.subjectId);
+    } else if (dto.subjectIds && dto.subjectIds.length > 0) {
+      subjectIds = dto.subjectIds;
+    }
+
+    let questions: Question[] = [];
+    if (subjectIds.length > 0) {
+      questions = await this.questionRepo.find({
+        where: { subjectId: In(subjectIds) },
+        relations: ['subject'],
+      });
+    } else if (dto.topicIds && dto.topicIds.length > 0) {
+      const questionTopics = await this.dataSource
+        .getRepository(QuestionTopic)
+        .find({
+          where: { topicId: In(dto.topicIds) },
+        });
+      const questionIds = questionTopics.map((qt) => qt.questionId);
+      questions = await this.questionRepo.find({
+        where: { id: In(questionIds) },
+        relations: ['subject'],
+      });
+    }
+
+    if (!questions.length) return [];
+    const options = await this.dataSource.getRepository(QuestionOption).find({
+      where: { questionId: In(questions.map((q) => q.id)) },
+    });
+    const questionTopics = await this.dataSource
+      .getRepository(QuestionTopic)
+      .find({
+        where: { questionId: In(questions.map((q) => q.id)) },
+        relations: ['topic'],
+      });
+
+    const optionsMap = new Map<number, any[]>();
+    for (const option of options) {
+      if (!optionsMap.has(option.questionId))
+        optionsMap.set(option.questionId, []);
+      optionsMap.get(option.questionId).push(option);
+    }
+
+    const topicsMap = new Map<number, any[]>();
+    for (const qt of questionTopics) {
+      if (!topicsMap.has(qt.questionId)) topicsMap.set(qt.questionId, []);
+      if (qt.topic) {
+        topicsMap.get(qt.questionId).push({
+          id: qt.topic.id,
+          title: qt.topic.title,
+          description: qt.topic.description,
+          createdAt: qt.topic.createdAt,
+        });
+      }
+    }
+
+    return this.mappedQuestionList(questions, topicsMap, optionsMap);
+  }
+
+  private mappedQuestionList(
+    questions: Question[],
+    topicsMap: Map<number, any[]>,
+    optionsMap: Map<number, any[]>,
+  ): QuestionListResponseDto[] {
+    return questions.map((q) => ({
+      id: q.id,
+      title: q.title,
+      question: q.question,
+      subjectId: q.subjectId,
+      questionType: q.questionType,
+      level: q.level,
+      marks: q.marks,
+      slug: q.slug,
+      label: q.label,
+      tag: q.tag,
+      status: q.status,
+      answer: q.answer,
+      hint: q.hint,
+      order: q.order,
+      createdAt: q.createdAt,
+      subject: q.subject,
+      topics: topicsMap.get(q.id) || [],
+      options: optionsMap.get(q.id) || [],
+    }));
   }
 }

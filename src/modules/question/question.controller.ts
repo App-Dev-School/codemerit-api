@@ -16,6 +16,7 @@ import { CreateQuestionDto } from './dtos/create-question.dto';
 import { QuestionService } from './providers/question.service';
 import { GetQuestionDto } from './dtos/get-question.dto';
 import { UpdateQuestionDto } from './dtos/update-question.dto';
+import { GetQuestionsByIdsDto } from './dtos/get-questions-by-ids.dto';
 
 @Controller('apis/question')
 export class QuestionController {
@@ -59,5 +60,16 @@ export class QuestionController {
     const result = await this.service.remove(id, req.user);
 
     return new ApiResponse('Successfully deleted question', null);
+  }
+
+  @Post('fetch')
+  async getQuestionsByIds(
+    @Body() dto: GetQuestionsByIdsDto,
+  ): Promise<ApiResponse<any>> {
+    const result = await this.service.getQuestionsByIds(dto);
+    if (!result || result.length === 0) {
+      return new ApiResponse('No questions found', null);
+    }
+    return new ApiResponse('Questions fetched successfully', result);
   }
 }
