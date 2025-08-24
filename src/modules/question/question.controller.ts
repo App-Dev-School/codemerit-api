@@ -62,7 +62,7 @@ export class QuestionController {
     return new ApiResponse('Successfully deleted question', null);
   }
 
-  @Post('list-by-ids')
+  @Post('fetch')
   async getQuestionsByIds(
     @Body() dto: GetQuestionsByIdsDto,
   ): Promise<ApiResponse<any>> {
