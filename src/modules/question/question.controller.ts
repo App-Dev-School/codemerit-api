@@ -67,6 +67,9 @@ export class QuestionController {
     @Body() dto: GetQuestionsByIdsDto,
   ): Promise<ApiResponse<any>> {
     const result = await this.service.getQuestionsByIds(dto);
+    if (!result || result.length === 0) {
+      return new ApiResponse('No questions found', null);
+    }
     return new ApiResponse('Questions fetched successfully', result);
   }
 }

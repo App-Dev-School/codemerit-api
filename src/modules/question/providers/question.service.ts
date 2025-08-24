@@ -434,13 +434,9 @@ export class QuestionService {
     }
 
     if (!questions.length) return [];
-
-    // Fetch all options for these questions in one query
     const options = await this.dataSource.getRepository(QuestionOption).find({
       where: { questionId: In(questions.map((q) => q.id)) },
     });
-
-    // Fetch all topics for these questions in one query
     const questionTopics = await this.dataSource
       .getRepository(QuestionTopic)
       .find({
@@ -448,7 +444,6 @@ export class QuestionService {
         relations: ['topic'],
       });
 
-    // Group options by questionId
     const optionsMap = new Map<number, any[]>();
     for (const option of options) {
       if (!optionsMap.has(option.questionId))
@@ -456,7 +451,6 @@ export class QuestionService {
       optionsMap.get(option.questionId).push(option);
     }
 
-    // Group topics by questionId
     const topicsMap = new Map<number, any[]>();
     for (const qt of questionTopics) {
       if (!topicsMap.has(qt.questionId)) topicsMap.set(qt.questionId, []);
@@ -470,7 +464,14 @@ export class QuestionService {
       }
     }
 
-    // Map questions to DTOs with subject, topics, and options
+    return this.mappedQuestionList(questions, topicsMap, optionsMap);
+  }
+
+  private mappedQuestionList(
+    questions: Question[],
+    topicsMap: Map<number, any[]>,
+    optionsMap: Map<number, any[]>,
+  ): QuestionListResponseDto[] {
     return questions.map((q) => ({
       id: q.id,
       title: q.title,
