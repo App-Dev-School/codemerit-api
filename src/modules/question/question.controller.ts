@@ -32,10 +32,9 @@ export class QuestionController {
     @Query('subjectId') subjectId: number,
     // @Query() query: GetQuestionDto,
   ): Promise<ApiResponse<any>> {
-    //Temporarily lists all questions
     const result = await this.service.getQuestionListForAdmin(subjectId);
     return new ApiResponse(
-      `${result.length} Question fetched from ${result[0].subject}.`,
+      `${result.length} Question fetched.`,
       result,
     );
   }

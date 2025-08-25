@@ -331,6 +331,7 @@ export class QuestionService {
         questionDto.subject = question.subject.title;
         questionDto.status = question.status;
         questionDto.level = question.level;
+        questionDto.questionType = question.questionType;
         questionDto.slug = question.slug;
         questionDto.createdByUsername = question.userCreatedBy?.username;
         questionDto.createdByName =
@@ -386,10 +387,9 @@ export class QuestionService {
   async findQuestionListBySubjectId(
     subjectId: number,
   ): Promise<Question[] | undefined> {
+    const whereCondition = subjectId > 0 ? { subjectId } : undefined;
     return this.questionRepo.find({
-      // where: {
-      //   subjectId: subjectId,
-      // },
+      where: whereCondition,
       relations: ['subject', 'userCreatedBy'],
       order: {
         id: 'DESC', // or 'createdAt': 'DESC' if you have a createdAt column
