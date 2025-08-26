@@ -53,9 +53,9 @@ export class QuestionService {
   }
 
   findOneBySlug(slug: string) {
-    return this.questionRepo.findOne({ 
-      where: { slug }, 
-      relations: ['options'] 
+    return this.questionRepo.findOne({
+      where: { slug },
+      relations: ['options'],
     });
   }
 
@@ -102,6 +102,7 @@ export class QuestionService {
         `Question Type is required`,
       );
     }
+
     const questionAdut = await this.findOneWithAuidt(id);
     if (
       user.role == UserRoleEnum.MODERATOR &&
@@ -127,12 +128,12 @@ export class QuestionService {
           `Question with id ${id} not found`,
         );
       }
-      // Merge the DTO into the entity
       const updatedQuestion = this.questionRepo.merge(question, dto);
 
+      const { options, ...questionData } = updatedQuestion;
       const savedQuestion = await queryRunner.manager.save(
         Question,
-        updatedQuestion,
+        questionData,
       );
 
       // if (dto?.topicIds && dto.topicIds.length > 0) {
