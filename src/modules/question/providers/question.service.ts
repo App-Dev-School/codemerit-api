@@ -154,7 +154,7 @@ export class QuestionService {
 
     await queryRunner.connect();
     await queryRunner.startTransaction();
-    let msg = 'Failed to update the question. Please try again.';
+    let msg = '';
     try {
       const question = await this.findOne(id);
 
@@ -249,7 +249,10 @@ export class QuestionService {
       return savedQuestion;
     } catch (error) {
       await queryRunner.rollbackTransaction();
-      throw new AppCustomException(HttpStatus.BAD_REQUEST, msg);
+      throw new AppCustomException(
+        HttpStatus.BAD_REQUEST,
+        msg ? msg : error.detail || error.message || error,
+      );
     } finally {
       await queryRunner.release();
     }
@@ -257,7 +260,7 @@ export class QuestionService {
 
   async createQuestion(dto: CreateQuestionDto): Promise<Question> {
     const queryRunner = this.dataSource.createQueryRunner();
-    let msg = 'Failed to create the question set. Please try again.';
+    let msg = '';
     await queryRunner.connect();
     await queryRunner.startTransaction();
 
@@ -268,6 +271,7 @@ export class QuestionService {
         msg = 'Failed to create question';
         throw new BadRequestException();
       }
+
       let slug = generateSlug(dto.question);
 
       const existing = await this.questionRepo.findOne({ where: { slug } });
@@ -315,7 +319,10 @@ export class QuestionService {
       return this.findOne(savedQuestion.id);
     } catch (error) {
       await queryRunner.rollbackTransaction();
-      throw new AppCustomException(HttpStatus.BAD_REQUEST, msg);
+      throw new AppCustomException(
+        HttpStatus.BAD_REQUEST,
+        msg ? msg : error.detail || error.message || error,
+      );
     } finally {
       await queryRunner.release();
     }
