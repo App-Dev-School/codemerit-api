@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   HttpStatus,
   Injectable,
   InternalServerErrorException,
@@ -153,15 +154,13 @@ export class QuestionService {
 
     await queryRunner.connect();
     await queryRunner.startTransaction();
-
+    let msg = 'Failed to update the question. Please try again.';
     try {
       const question = await this.findOne(id);
 
       if (!question) {
-        throw new AppCustomException(
-          HttpStatus.NOT_FOUND,
-          `Question with id ${id} not found`,
-        );
+        msg = `Question with id ${id} not found`;
+        throw new BadRequestException();
       }
       const updatedQuestion = this.questionRepo.merge(question, dto);
 
@@ -171,16 +170,6 @@ export class QuestionService {
         questionData,
       );
 
-      // if (dto?.topicIds && dto.topicIds.length > 0) {
-      //   await queryRunner.manager.delete(QuestionTopic, {
-      //     questionId: savedQuestion?.id,
-      //   });
-      //   await this.saveQuestionTopic(
-      //     queryRunner.manager,
-      //     dto?.topicIds,
-      //     savedQuestion.id,
-      //   );
-      // }
       if (dto?.topicIds && dto.topicIds.length > 0) {
         const existingTopics = await queryRunner.manager.find(QuestionTopic, {
           where: { questionId: savedQuestion.id },
@@ -218,61 +207,49 @@ export class QuestionService {
         }
       }
 
-      if (dto?.options && dto.options?.length > 0) {
-        if (dto.questionType !== QuestionTypeEnum.General) {
-          // await queryRunner.manager.delete(QuestionOption, {
-          //   questionId: savedQuestion?.id,
-          // });
+      if (dto.questionType !== QuestionTypeEnum.General) {
+        if (dto.options?.length >= 2) {
+          const hasCorrectOption = dto.options.some(
+            (opt: CreateOptionDto) => opt.correct === true,
+          );
+          if (!hasCorrectOption) {
+            msg = 'At least one option must be marked as correct.';
+            throw new BadRequestException();
+          }
           await this.saveOption(
             queryRunner.manager,
             dto?.options,
             savedQuestion.id,
           );
         } else {
-          await queryRunner.manager.delete(QuestionOption, {
-            questionId: savedQuestion?.id,
-          });
+          msg = 'At least 2 options are mendatory for selected question type';
+          throw new BadRequestException();
         }
+      } else {
+        await queryRunner.manager.delete(QuestionOption, {
+          questionId: savedQuestion?.id,
+        });
       }
+      // if (dto?.options && dto.options?.length > 0) {
+      //   if (dto.questionType !== QuestionTypeEnum.General) {
 
-      // let optionsList: TriviaOption[] = [];
-      // for (const optionId of dto.options) {
-      //   const triviaOption = new TriviaOption();
-      //   triviaOption.triviaId = savedTrivia.id;
-      //   triviaOption.optionId = optionId;
-      //   optionsList.push(triviaOption);
-      // }
-      // let questionList: QuestionTopic[] = [];
-      // for (const topicId of dto.topicIds) {
-      //   const topic = new QuestionTopic();
-      //   topic.questionId = savedQuestion.id;
-      //   topic.topicId = topicId;
-      //   questionList.push(topic);
-      // }
-      // await queryRunner.manager.save(QuestionTopic, questionList);
-
-      // await this.saveQuestionTopic(
-      //   queryRunner.manager,
-      //   dto?.topicIds,
-      //   savedQuestion.id,
-      // );
-
-      // if (dto.questionType !== QuestionTypeEnum.General) {
-      //   await this.saveOption(
-      //     queryRunner.manager,
-      //     dto?.options,
-      //     savedQuestion.id,
-      //   );
+      //     await this.saveOption(
+      //       queryRunner.manager,
+      //       dto?.options,
+      //       savedQuestion.id,
+      //     );
+      //   } else {
+      //     await queryRunner.manager.delete(QuestionOption, {
+      //       questionId: savedQuestion?.id,
+      //     });
+      //   }
       // }
 
       await queryRunner.commitTransaction();
       return savedQuestion;
     } catch (error) {
       await queryRunner.rollbackTransaction();
-      throw new InternalServerErrorException(
-        'Failed to update Question',
-        error.message,
-      );
+      throw new AppCustomException(HttpStatus.BAD_REQUEST, msg);
     } finally {
       await queryRunner.release();
     }
@@ -280,7 +257,7 @@ export class QuestionService {
 
   async createQuestion(dto: CreateQuestionDto): Promise<Question> {
     const queryRunner = this.dataSource.createQueryRunner();
-
+    let msg = 'Failed to create the question set. Please try again.';
     await queryRunner.connect();
     await queryRunner.startTransaction();
 
@@ -288,10 +265,8 @@ export class QuestionService {
       const questionEntity = this.questionRepo.create(dto);
       const errors = await validate(questionEntity);
       if (errors.length) {
-        throw new AppCustomException(
-          HttpStatus.BAD_REQUEST,
-          `Failed to create question`,
-        );
+        msg = 'Failed to create question';
+        throw new BadRequestException();
       }
       let slug = generateSlug(dto.question);
 
@@ -313,22 +288,17 @@ export class QuestionService {
             savedQuestion.id,
           );
         } else {
-          throw new AppCustomException(
-            HttpStatus.NOT_FOUND,
-            'Topics are mendatory.',
-          );
+          msg = 'Topics are mendatory';
+          throw new BadRequestException();
         }
         if (dto.questionType !== QuestionTypeEnum.General) {
-          if (dto.options && dto.options?.length < 2) {
+          if (dto.options?.length >= 2) {
             const hasCorrectOption = dto.options.some(
               (opt: CreateOptionDto) => opt.correct === true,
             );
-
             if (!hasCorrectOption) {
-              throw new AppCustomException(
-                HttpStatus.BAD_REQUEST,
-                'At least one option must be marked as correct.',
-              );
+              msg = 'At least one option must be marked as correct.';
+              throw new BadRequestException();
             }
             await this.saveOption(
               queryRunner.manager,
@@ -336,10 +306,8 @@ export class QuestionService {
               savedQuestion.id,
             );
           } else {
-            throw new AppCustomException(
-              HttpStatus.NOT_FOUND,
-              'At least 2 options are mendatory and for selected question type',
-            );
+            msg = 'At least 2 options are mendatory for selected question type';
+            throw new BadRequestException();
           }
         }
       }
@@ -347,10 +315,7 @@ export class QuestionService {
       return this.findOne(savedQuestion.id);
     } catch (error) {
       await queryRunner.rollbackTransaction();
-      throw new InternalServerErrorException(
-        'Failed to create the question set. Please try again.',
-        error.message,
-      );
+      throw new AppCustomException(HttpStatus.BAD_REQUEST, msg);
     } finally {
       await queryRunner.release();
     }
