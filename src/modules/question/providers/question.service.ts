@@ -317,7 +317,7 @@ export class QuestionService {
           );
         }
         if (dto.questionType !== QuestionTypeEnum.General) {
-          if (dto.options?.length > 0) {
+          if (dto.options && dto.options?.length < 2) {
             await this.saveOption(
               queryRunner.manager,
               dto?.options,
@@ -326,7 +326,7 @@ export class QuestionService {
           } else {
             throw new AppCustomException(
               HttpStatus.NOT_FOUND,
-              'Options are mendatory for selected question type',
+              'At least 2 options are mendatory and for selected question type',
             );
           }
         }
