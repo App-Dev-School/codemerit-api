@@ -47,10 +47,5 @@ jobs:
             #nvm use node
 
             cd ${{ secrets.FTP_REMOTE_DIR }}
-            
-            # Check if already running, restart or start
-            if pm2 describe main > /dev/null; then
-              pm2 restart main
-            else
-              pm2 start main.js --name main
+            pm2 start main.js --name cloud-codemerit
             fi
