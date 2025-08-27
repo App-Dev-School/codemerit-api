@@ -60,6 +60,7 @@ export class QuestionService {
         'questionTopics',
         'questionTopics.topic',
         'userCreatedBy',
+        'subject',
       ],
     });
 
@@ -69,7 +70,7 @@ export class QuestionService {
       title: qt.topic.title,
     }));
 
-    // Build simplified user object
+    const subjectName = question.subject?.title ?? null;
     const userCreatedBy = question.userCreatedBy
       ? {
           id: question.userCreatedBy.id,
@@ -88,6 +89,7 @@ export class QuestionService {
       ...rest,
       topics,
       userCreatedBy,
+      subjectName: subjectName,
     };
     return questionWithTopics;
   }
