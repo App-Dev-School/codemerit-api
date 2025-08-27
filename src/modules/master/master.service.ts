@@ -26,13 +26,13 @@ export class MasterService {
     const [subjects, topics, jobRoles] = await Promise.all([
       this.subjectRepo.find(),
       this.topicRepo.find(),
-      this.jobRoleRepo.find(),
+      this.jobRoleRepo.find()
     ]);
 
     return {
       subjects,
       topics,
-      jobRoles,
+      jobRoles
     };
   }
 
@@ -75,6 +75,7 @@ export class MasterService {
     const result = new Map<number, {
       id: number;
       title: string;
+      slug: string;
       subjects: {
         id: number;
         title: string;
@@ -91,6 +92,7 @@ export class MasterService {
         result.set(jobRoleId, {
           id: jobRoleId,
           title: jrs.jobRole.title,
+          slug: jrs.jobRole.slug,
           subjects: [],
         });
       }

@@ -15,4 +15,9 @@ export class MasterController {
     async getSubjectsWithRoles() {
         return this.masterService.findSubjectsWithRoles();
     }
+
+    @Get('jobRoles')
+    async getJobRoles() {
+        return this.masterService.getAllJobRolesWithSubjects();
+    }
 }
