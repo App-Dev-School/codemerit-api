@@ -8,6 +8,7 @@ export interface IQuiz {
   description: string;
   slug: string;
   subjectId: number;
+  quizType: string;
   image: string;
   label: TopicLabel;
   isPublished: boolean;

@@ -113,8 +113,8 @@ export class Question extends AbstractEntity implements IQuestion {
   subject: Subject;
 
   @OneToMany(() => QuestionTopic, questionTopic => questionTopic.question, {
-})
-questionTopics: QuestionTopic[];
+  })
+  questionTopics: QuestionTopic[];
 
   @ManyToOne(() => User)
   @JoinColumn({ name: 'createdBy', referencedColumnName: 'id' })

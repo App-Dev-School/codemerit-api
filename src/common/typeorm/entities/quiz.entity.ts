@@ -10,93 +10,106 @@ import {
 import { IQuiz } from '../interface/quiz.interface';
 import { AbstractEntity } from './abstract.entity';
 import { Subject } from './subject.entity';
+import { QuizTypeEnum } from 'src/common/enum/quiz-type.enum';
 
 @Entity()
 export class Quiz extends AbstractEntity implements IQuiz {
-  @Column({
-    type: 'varchar',
-    length: 200,
-    nullable: false,
-  })
-  title: string;
+    @Column({
+        type: 'varchar',
+        length: 200,
+        nullable: false,
+    })
+    title: string;
 
-  @Column({
-    type: 'integer',
-    name: 'subjectId',
-    nullable: false,
-  })
-  subjectId: number;
+    @Column({
+        type: 'integer',
+        name: 'subjectId',
+        nullable: false,
+    })
+    subjectId: number;
 
-  @Column({
-    type: 'varchar',
-    length: 255,
-    nullable: true,
-    default: null,
-  })
-  image: string;
+    @Column({
+        type: 'varchar',
+        length: 255,
+        nullable: true,
+        default: null,
+    })
+    image: string;
 
-  @Column({
-    type: 'enum',
-    enum: TopicLabel,
-    nullable: true,
-    default: TopicLabel.Beginner,
-  })
-  label: TopicLabel;
+    @Column({
+        type: 'enum',
+        enum: TopicLabel,
+        nullable: true,
+        default: TopicLabel.Beginner,
+    })
+    label: TopicLabel;
 
-  @Column({
-    type: 'varchar',
-    length: 20,
-    nullable: true,
-    default: null,
-  })
-  shortDesc: string;
+    @Column({
+        type: 'varchar',
+        length: 20,
+        nullable: true,
+        default: null,
+    })
+    shortDesc: string;
 
-  @Column({
-    type: 'varchar',
-    length: 100,
-    nullable: true,
-    unique: true,
-  })
-  slug: string;
+    @Column({
+        type: 'varchar',
+        length: 100,
+        nullable: true,
+        unique: true,
+    })
+    slug: string;
 
-  @Column({
-    type: 'boolean',
-    default: true,
-  })
-  isPublished: boolean;
+    @Column({
+        type: 'enum',
+        nullable: false,
+        enum: QuizTypeEnum,
+        default: QuizTypeEnum.UserQuiz,
+    })
+    quizType: QuizTypeEnum;
 
-  @Column({
-    type: 'text',
-    nullable: true,
-    default: null,
-  })
-  description: string;
+    @Column({
+        type: 'boolean',
+        default: true,
+    })
+    isPublished: boolean;
 
-  @Column({
-    type: 'text',
-    nullable: true,
-    default: null,
-  })
-  goal: string;
+    @Column({
+        type: 'text',
+        nullable: true,
+        default: null,
+    })
+    description: string;
 
-  @Column({
-    type: 'int',
-    default: 0,
-  })
-  numQuizzes: number;
-  @Column({ name: 'createdBy', default: null, select: false })
-  createdBy: number;
+    @Column({
+        type: 'text',
+        nullable: true,
+        default: null,
+    })
+    goal: string;
 
-  @Column({ name: 'updatedBy', default: null, select: false })
-  updatedBy: number;
+    @Column({
+        type: 'int',
+        default: 0,
+    })
+    numQuizzes: number;
+    @Column({ name: 'createdBy', default: null, select: false })
+    createdBy: number;
 
-  @CreateDateColumn({ name: 'createdAt' })
-  createdAt: Date;
+    @Column({ name: 'updatedBy', default: null, select: false })
+    updatedBy: number;
 
-  @UpdateDateColumn({ name: 'updatedAt', select: false })
-  updatedAt: Date;
+    @CreateDateColumn({ name: 'createdAt' })
+    createdAt: Date;
 
-  @ManyToOne(() => Subject)
-  @JoinColumn({ name: 'subjectId' })
-  subject: Subject;
+    @UpdateDateColumn({ name: 'updatedAt', select: false })
+    updatedAt: Date;
+
+    @ManyToOne(() => Subject)
+    @JoinColumn({ name: 'subjectId' })
+    subject: Subject;
+
+    //Map for relation with one JobRole
+    //Map for relation with one/many Topic
+    //Map for relation with one/many Questions
 }
