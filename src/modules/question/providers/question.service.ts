@@ -52,11 +52,44 @@ export class QuestionService {
     });
   }
 
-  findOneBySlug(slug: string) {
-    return this.questionRepo.findOne({
+  async findOneBySlug(slug: string) {
+    const question = await this.questionRepo.findOne({
       where: { slug },
-      relations: ['options', 'questionTopics', 'questionTopics.topic'],
+      relations: [
+        'options',
+        'questionTopics',
+        'questionTopics.topic',
+        'userCreatedBy',
+      ],
     });
+
+    // Build topic list
+    const topics = question.questionTopics.map((qt) => ({
+      id: qt.topic.id,
+      title: qt.topic.title,
+    }));
+
+    // Build simplified user object
+    const userCreatedBy = question.userCreatedBy
+      ? {
+          id: question.userCreatedBy.id,
+          firstName: question.userCreatedBy.firstName,
+          lastName: question.userCreatedBy.lastName,
+          email: question.userCreatedBy.email,
+          username: question.userCreatedBy.username,
+        }
+      : null;
+
+    // Destructure to remove questionTopics and userCreatedBy from the base object
+    const { questionTopics, userCreatedBy: _, ...rest } = question;
+
+    // Final output object
+    const questionWithTopics = {
+      ...rest,
+      topics,
+      userCreatedBy,
+    };
+    return questionWithTopics;
   }
 
   // update(id: number, data: Partial<Question>) {
@@ -522,6 +555,14 @@ export class QuestionService {
       subject: q.subject,
       topics: topicsMap.get(q.id) || [],
       options: optionsMap.get(q.id) || [],
+      userCreatedBy: q?.userCreatedBy
+        ? {
+            id: q.userCreatedBy.id,
+            firstName: q.userCreatedBy.firstName,
+            lastName: q.userCreatedBy.lastName,
+            email: q.userCreatedBy.email,
+          }
+        : null,
     }));
   }
 }
