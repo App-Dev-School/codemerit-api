@@ -25,28 +25,37 @@ jobs:
       - name: 🏗️ Build NestJS application
         run: npm run build
 
-      - name: 📂 Deploy built files to Hostinger
-        uses: SamKirkland/web-deploy@v1
-        continue-on-error: true
-        with:
-          target-server: appdevops.in
-          remote-user: ${{ secrets.SSH_USERNAME }}
-          private-ssh-key: ${{ secrets.SSH_PRIVATE }}
-          source-path: ./dist/
-          destination-path: ${{ secrets.FTP_REMOTE_DIR }}
-          rsync-options: --archive --verbose --compress --human-readable --progress --exclude=vendor --exclude=node_modules --exclude=.github --exclude=.vscode --exclude=src
+      - name: 📂 Deploy built files via rsync
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE }}
+          SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
+          FTP_REMOTE_DIR: ${{ secrets.FTP_REMOTE_DIR }}
+        run: |
+          echo "$SSH_PRIVATE_KEY" > private_key.pem
+          chmod 600 private_key.pem
 
+          rsync -avz --delete \
+            --exclude=vendor \
+            --exclude=node_modules \
+            --exclude=.github \
+            --exclude=.vscode \
+            --exclude=src \
+            -e "ssh -i private_key.pem -o StrictHostKeyChecking=no" \
+            ./dist/ "$SSH_USERNAME@appdevops.in:$FTP_REMOTE_DIR" || echo "⚠️ rsync exited with non-zero code"
 
       - name: 🔍 List contents of ./dist
         run: ls -al ./dist
 
       - name: 🚀 Restart app with PM2 on Hostinger
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE }}
+          SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
+          FTP_REMOTE_DIR: ${{ secrets.FTP_REMOTE_DIR }}
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USERNAME }}@appdevops.in << 'EOF'
-            #export NVM_DIR="$HOME/.nvm"
-            #source "$NVM_DIR/nvm.sh"
-            #nvm use node
+          echo "$SSH_PRIVATE_KEY" > private_key.pem
+          chmod 600 private_key.pem
 
-            cd ${{ secrets.FTP_REMOTE_DIR }}
-            pm2 start main.js --name cloud-codemerit
+          ssh -i private_key.pem -o StrictHostKeyChecking=no "$SSH_USERNAME@appdevops.in" << EOF
+            cd "$FTP_REMOTE_DIR"
+            pm2 restart cloud-codemerit || pm2 start main.js --name cloud-codemerit
           EOF
