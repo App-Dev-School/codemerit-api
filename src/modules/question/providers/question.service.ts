@@ -320,6 +320,16 @@ export class QuestionService {
         }
         if (dto.questionType !== QuestionTypeEnum.General) {
           if (dto.options && dto.options?.length < 2) {
+            const hasCorrectOption = dto.options.some(
+              (opt: CreateOptionDto) => opt.correct === true,
+            );
+
+            if (!hasCorrectOption) {
+              throw new AppCustomException(
+                HttpStatus.BAD_REQUEST,
+                'At least one option must be marked as correct.',
+              );
+            }
             await this.saveOption(
               queryRunner.manager,
               dto?.options,
