@@ -55,7 +55,7 @@ export class QuestionService {
   findOneBySlug(slug: string) {
     return this.questionRepo.findOne({
       where: { slug },
-      relations: ['options'],
+      relations: ['options', 'questionTopics', 'questionTopics.topic'],
     });
   }
 
@@ -311,50 +311,44 @@ export class QuestionService {
     }
   }
 
-  async getQuestionListForAdmin(
-    subjectId: number,
-  ): Promise<AdminQuestionResponseDto[]> {
+  async getQuestionListForAdmin() // subjectId: number,
+  : Promise<AdminQuestionResponseDto[]> {
     let questionResponseDto: AdminQuestionResponseDto[] = [];
-    if (subjectId >= 0) {
-      let questionList = await this.findQuestionListBySubjectId(subjectId);
+    // if (subjectId >= 0) {
+    let questionList = await this.findQuestionListBySubjectId();
 
-      if (!questionList) {
-        throw new AppCustomException(
-          HttpStatus.NOT_FOUND,
-          'No Question found for the given subject',
-        );
-      }
-      for (const question of questionList) {
-        const questionDto = new AdminQuestionResponseDto();
-        questionDto.id = question.id;
-        questionDto.question = question.question;
-        questionDto.subjectId = question.subjectId;
-        questionDto.subject = question.subject.title;
-        questionDto.status = question.status;
-        questionDto.level = question.level;
-        questionDto.questionType = question.questionType;
-        questionDto.slug = question.slug;
-        questionDto.createdByUsername = question.userCreatedBy?.username;
-        questionDto.createdByName =
-        question.userCreatedBy?.firstName + ' ' + question.userCreatedBy?.lastName;
-        // questionDto.topics =
-        //   await this.questionTopicRepo.findQuestionTopicsByQuestionId(
-        //     question.id,
-        //   );
-        questionResponseDto.push(questionDto);
-      }
+    if (!questionList) {
+      throw new AppCustomException(
+        HttpStatus.NOT_FOUND,
+        'No Question found for the given subject',
+      );
     }
+    for (const question of questionList) {
+      const questionDto = new AdminQuestionResponseDto();
+      questionDto.id = question.id;
+      questionDto.question = question.question;
+      questionDto.subjectId = question.subjectId;
+      questionDto.subject = question.subject.title;
+      questionDto.status = question.status;
+      questionDto.level = question.level;
+      questionDto.questionType = question.questionType;
+      questionDto.slug = question.slug;
+      questionDto.createdByUsername = question.userCreatedBy?.username;
+      questionDto.createdByName =
+        question.userCreatedBy?.firstName +
+        ' ' +
+        question.userCreatedBy?.lastName;
+      questionResponseDto.push(questionDto);
+    }
+    // }
 
     return questionResponseDto;
   }
 
-
-  async findQuestionListBySubjectId(
-    subjectId: number,
-  ): Promise<Question[] | undefined> {
+  async findQuestionListBySubjectId(): Promise<any[] | undefined> {
     //Not filtering by subject
     //const whereCondition = subjectId > 0 ? { subjectId } : undefined;
-    const whereCondition = { };
+    const whereCondition = {};
     // return this.questionRepo.find({
     //   where: whereCondition,
     //   relations: ['subject', 'questionTopics', 'questionTopics.topic', 'userCreatedBy'],
@@ -364,28 +358,30 @@ export class QuestionService {
     //   take: 500,
     // });
 
- const questions = await this.questionRepo
-  .createQueryBuilder('question')
-  // Join subject (only select id and name)
-  .leftJoin('question.subject', 'subject')
-  .addSelect(['subject.id', 'subject.title'])
-  // Join createdBy user (only select id and fullName)
-  .leftJoin('question.userCreatedBy', 'userCreatedBy')
-  .addSelect([
-    'userCreatedBy.id',
-    "CONCAT(userCreatedBy.firstName, ' ', userCreatedBy.lastName) AS createdByName"
-  ])
-  // Join questionTopics (no select needed, just for structure)
-  .leftJoin('question.questionTopics', 'questionTopic')
-  .leftJoin('questionTopic.topic', 'topic')
-  .addSelect(['topic.id'])
+    const questions = await this.questionRepo
+      .createQueryBuilder('question')
+      // Join subject (only select id and name)
+      .leftJoin('question.subject', 'subject')
+      .addSelect(['subject.id', 'subject.title'])
+      // Join createdBy user (only select id and fullName)
+      .leftJoin('question.userCreatedBy', 'user')
+      .addSelect([
+        'user.id',
+        'user.firstName',
+        'user.lastName',
+        'user.username',
+      ])
+      // Join questionTopics (no select needed, just for structure)
+      .leftJoin('question.questionTopics', 'questionTopic')
+      .leftJoin('questionTopic.topic', 'topic')
+      .addSelect(['topic.id'])
 
-  .where(whereCondition) // Your existing filter condition
-  .orderBy('question.id', 'DESC')
-  .take(500)
-  .getMany();
+      .where(whereCondition) // Your existing filter condition
+      .orderBy('question.id', 'DESC')
+      .take(500)
+      .getMany();
 
-  return questions;
+    return questions;
   }
 
   private async saveOption(

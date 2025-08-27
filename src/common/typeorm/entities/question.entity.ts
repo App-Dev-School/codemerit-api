@@ -108,18 +108,17 @@ export class Question extends AbstractEntity implements IQuestion {
   @UpdateDateColumn({ name: 'updatedAt', select: false })
   updatedAt: Date;
 
-  @ManyToOne(() => Subject, { eager: false })
+  @ManyToOne(() => Subject)
   @JoinColumn({ name: 'subjectId', referencedColumnName: 'id' })
   subject: Subject;
 
-  @OneToMany(() => QuestionTopic, questionTopic => questionTopic.question, {
-  })
+  @OneToMany(() => QuestionTopic, (questionTopic) => questionTopic.question, {})
   questionTopics: QuestionTopic[];
 
   @ManyToOne(() => User)
   @JoinColumn({ name: 'createdBy', referencedColumnName: 'id' })
   userCreatedBy: User;
 
-  @OneToMany(() => QuestionOption, option => option.question)
+  @OneToMany(() => QuestionOption, (option) => option.question)
   options: QuestionOption[];
 }

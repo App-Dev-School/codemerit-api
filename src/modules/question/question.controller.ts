@@ -7,7 +7,7 @@ import {
   Post,
   Put,
   Query,
-  Request
+  Request,
 } from '@nestjs/common';
 import { ApiResponse } from 'src/common/utils/api-response';
 import { CreateQuestionDto } from './dtos/create-question.dto';
@@ -28,15 +28,9 @@ export class QuestionController {
   }
 
   @Get()
-  async findQuestionList(
-    @Query('subjectId') subjectId: number,
-    // @Query() query: GetQuestionDto,
-  ): Promise<ApiResponse<any>> {
-    const result = await this.service.getQuestionListForAdmin(subjectId);
-    return new ApiResponse(
-      `${result.length} Question fetched.`,
-      result,
-    );
+  async findQuestionList(): Promise<ApiResponse<any>> {
+    const result = await this.service.getQuestionListForAdmin();
+    return new ApiResponse(`${result.length} Question fetched.`, result);
   }
 
   @Put('update')
@@ -50,10 +44,9 @@ export class QuestionController {
   }
 
   @Get(':slug')
-    async findOne(
-      @Param('slug') slug: string): Promise<ApiResponse<any>> {
-      const result = await this.service.findOneBySlug(slug);
-      return new ApiResponse('Question Found', result);
+  async findOne(@Param('slug') slug: string): Promise<ApiResponse<any>> {
+    const result = await this.service.findOneBySlug(slug);
+    return new ApiResponse('Question Found', result);
   }
 
   @Delete('delete')
