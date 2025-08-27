@@ -18,6 +18,7 @@ import { QuestionTypeEnum } from 'src/common/enum/question-type.enum';
 import { QuestionStatusEnum } from 'src/common/enum/question-status.enum';
 import { User } from './user.entity';
 import { QuestionOption } from './question-option.entity';
+import { QuestionTopic } from './quesion-topic.entity';
 
 @Entity()
 export class Question extends AbstractEntity implements IQuestion {
@@ -107,9 +108,13 @@ export class Question extends AbstractEntity implements IQuestion {
   @UpdateDateColumn({ name: 'updatedAt', select: false })
   updatedAt: Date;
 
-  @ManyToOne(() => Subject, { eager: true })
+  @ManyToOne(() => Subject, { eager: false })
   @JoinColumn({ name: 'subjectId', referencedColumnName: 'id' })
   subject: Subject;
+
+  @OneToMany(() => QuestionTopic, questionTopic => questionTopic.question, {
+})
+questionTopics: QuestionTopic[];
 
   @ManyToOne(() => User)
   @JoinColumn({ name: 'createdBy', referencedColumnName: 'id' })

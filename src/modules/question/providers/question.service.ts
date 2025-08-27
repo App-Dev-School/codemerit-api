@@ -315,8 +315,8 @@ export class QuestionService {
     subjectId: number,
   ): Promise<AdminQuestionResponseDto[]> {
     let questionResponseDto: AdminQuestionResponseDto[] = [];
-    if (subjectId) {
-      const questionList = await this.findQuestionListBySubjectId(subjectId);
+    if (subjectId >= 0) {
+      let questionList = await this.findQuestionListBySubjectId(subjectId);
 
       if (!questionList) {
         throw new AppCustomException(
@@ -336,13 +336,11 @@ export class QuestionService {
         questionDto.slug = question.slug;
         questionDto.createdByUsername = question.userCreatedBy?.username;
         questionDto.createdByName =
-          question.userCreatedBy?.firstName +
-          ' ' +
-          question.userCreatedBy?.lastName;
-        questionDto.topics =
-          await this.questionTopicRepo.findQuestionTopicsByQuestionId(
-            question.id,
-          );
+        question.userCreatedBy?.firstName + ' ' + question.userCreatedBy?.lastName;
+        // questionDto.topics =
+        //   await this.questionTopicRepo.findQuestionTopicsByQuestionId(
+        //     question.id,
+        //   );
         questionResponseDto.push(questionDto);
       }
     }
@@ -350,53 +348,44 @@ export class QuestionService {
     return questionResponseDto;
   }
 
-  // async getQuestionList(subjectId: number): Promise<QuestionResponseDto[]> {
-  //   let questionResponseDto: QuestionResponseDto[] = [];
-  //   if (subjectId) {
-  //     const questionList = await this.findQuestionListBySubjectId(subjectId);
-  //     if (!questionList) {
-  //       throw new AppCustomException(
-  //         HttpStatus.NOT_FOUND,
-  //         'No Question found for the given subject',
-  //       );
-  //     }
-  //     for (const question of questionList) {
-  //       const questionDto = new QuestionResponseDto();
-  //       questionDto.id = question.id;
-  //       questionDto.title = question.title;
-  //       questionDto.question = question.question;
-  //       questionDto.subjectId = question.subjectId;
-  //       questionDto.subject = question.subject.title;
-  //       questionDto.level = question.level;
-  //       questionDto.order = question.order;
-  //       questionDto.marks = question.marks;
-  //       questionDto.status = question.status;
-  //       questionDto.hint = question.hint || '';
-  //       questionDto.topics =
-  //         await this.questionTopicRepo.findQuestionTopicsByQuestionId(
-  //           question.id,
-  //         );
-  //       questionDto.options = await this.questionOptionService.findByQuestionId(
-  //         question.id,
-  //       );
-  //       questionResponseDto.push(questionDto);
-  //     }
-  //   }
 
-  //   return questionResponseDto;
-  // }
   async findQuestionListBySubjectId(
     subjectId: number,
   ): Promise<Question[] | undefined> {
-    const whereCondition = subjectId > 0 ? { subjectId } : undefined;
-    return this.questionRepo.find({
-      where: whereCondition,
-      relations: ['subject', 'userCreatedBy'],
-      order: {
-        id: 'DESC', // or 'createdAt': 'DESC' if you have a createdAt column
-      },
-      take: 500,
-    });
+    //Not filtering by subject
+    //const whereCondition = subjectId > 0 ? { subjectId } : undefined;
+    const whereCondition = { };
+    // return this.questionRepo.find({
+    //   where: whereCondition,
+    //   relations: ['subject', 'questionTopics', 'questionTopics.topic', 'userCreatedBy'],
+    //   order: {
+    //     id: 'DESC',
+    //   },
+    //   take: 500,
+    // });
+
+ const questions = await this.questionRepo
+  .createQueryBuilder('question')
+  // Join subject (only select id and name)
+  .leftJoin('question.subject', 'subject')
+  .addSelect(['subject.id', 'subject.title'])
+  // Join createdBy user (only select id and fullName)
+  .leftJoin('question.userCreatedBy', 'userCreatedBy')
+  .addSelect([
+    'userCreatedBy.id',
+    "CONCAT(userCreatedBy.firstName, ' ', userCreatedBy.lastName) AS createdByName"
+  ])
+  // Join questionTopics (no select needed, just for structure)
+  .leftJoin('question.questionTopics', 'questionTopic')
+  .leftJoin('questionTopic.topic', 'topic')
+  .addSelect(['topic.id'])
+
+  .where(whereCondition) // Your existing filter condition
+  .orderBy('question.id', 'DESC')
+  .take(500)
+  .getMany();
+
+  return questions;
   }
 
   private async saveOption(

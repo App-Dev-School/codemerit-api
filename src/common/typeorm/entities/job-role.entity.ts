@@ -32,6 +32,21 @@ export class JobRole extends AbstractEntity implements IJobRole {
   scope: string;
 
   @Column({
+      type: 'varchar',
+      length: 100,
+      nullable: true,
+      unique: true,
+    })
+    slug: string;
+  
+    @Column({
+      type: 'int',
+      nullable: false,
+      default: 1
+    })
+    orderId: number;
+
+  @Column({
     type: 'varchar',
     length: 255,
     nullable: true,

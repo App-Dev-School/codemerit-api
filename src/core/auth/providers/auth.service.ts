@@ -71,11 +71,13 @@ export class AuthService {
       role: user.role,
     };
     console.log('JWT Sign Payload =>', payload);
-
     const token = this.jwtService.sign(payload);
     const profile = await this.userProfileService.findOneByUserId(user?.id);
+    console.log("User Login user", user);
+    const userData = await this.usersService.findByEmail(
+        user?.email);
     const response = new LoginResponseDto({
-      ...user,
+      ...userData,
       token,
       profile,
     });
