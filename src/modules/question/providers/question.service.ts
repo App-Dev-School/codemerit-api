@@ -70,7 +70,7 @@ export class QuestionService {
       title: qt.topic.title,
     }));
 
-    const subjectName = question.subject?.title ?? null;
+    const subjectTitle = question.subject?.title ?? null;
     const userCreatedBy = question.userCreatedBy
       ? {
           id: question.userCreatedBy.id,
@@ -89,7 +89,7 @@ export class QuestionService {
       ...rest,
       topics,
       userCreatedBy,
-      subjectName: subjectName,
+      subjectTitle: subjectTitle,
     };
     return questionWithTopics;
   }
