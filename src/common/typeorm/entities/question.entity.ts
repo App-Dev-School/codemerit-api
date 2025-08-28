@@ -19,6 +19,7 @@ import { QuestionStatusEnum } from 'src/common/enum/question-status.enum';
 import { User } from './user.entity';
 import { QuestionOption } from './question-option.entity';
 import { QuestionTopic } from './quesion-topic.entity';
+import { IsEnum } from 'class-validator';
 
 @Entity()
 export class Question extends AbstractEntity implements IQuestion {
@@ -41,6 +42,7 @@ export class Question extends AbstractEntity implements IQuestion {
     enum: QuestionTypeEnum,
     default: QuestionTypeEnum.General,
   })
+  @IsEnum(QuestionTypeEnum, { message: 'Invalid question type' })
   questionType: QuestionTypeEnum;
   //implement related validations for questionType
   //if questionType == General, then no options are required
@@ -51,6 +53,7 @@ export class Question extends AbstractEntity implements IQuestion {
     enum: DifficultyLevelEnum,
     nullable: true,
   })
+  @IsEnum(DifficultyLevelEnum, { message: 'Enter question level' })
   level: DifficultyLevelEnum;
 
   @Column({ type: 'int', default: 1 })
@@ -81,6 +84,7 @@ export class Question extends AbstractEntity implements IQuestion {
     nullable: false,
     default: QuestionStatusEnum.Pending,
   })
+  @IsEnum(QuestionStatusEnum, { message: 'Enter question status' })
   status: QuestionStatusEnum;
   //fetched questions for users (non-admin) should have status = Active
 
@@ -94,7 +98,7 @@ export class Question extends AbstractEntity implements IQuestion {
     type: 'int',
     default: 1,
   })
-  order: number;
+  orderId: number;
 
   @Column({ name: 'createdBy', default: null, select: false })
   createdBy: number;

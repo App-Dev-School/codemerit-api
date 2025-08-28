@@ -534,7 +534,7 @@ export class QuestionService {
       status: q.status,
       answer: q.answer,
       hint: q.hint,
-      order: q.order,
+      order: q.orderId,
       createdAt: q.createdAt,
       subject: q.subject,
       topics: topicsMap.get(q.id) || [],
