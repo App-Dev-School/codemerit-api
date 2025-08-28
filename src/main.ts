@@ -45,18 +45,19 @@ async function bootstrap() {
   /* Add Swagger  */
   const options = new DocumentBuilder()
     .setTitle('CodeMerit API')
-    .setDescription('Your API description')
+    .setDescription('Rest API Documentation')
     .setVersion('1.0')
     .addServer('http://localhost:3000/', 'Local environment')
     .addServer('https://staging.yourapi.com/', 'Staging')
     .addServer('https://production.yourapi.com/', 'Production')
-    .addTag('Your API Tag')
+    .addTag('CodeMerit')
     .build();
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('api-docs', app, document);
 
   app.useGlobalPipes(
     new ValidationPipe({
+      forbidUnknownValues: false,
       exceptionFactory: (errors) => {
         const result = errors.map((error) => ({
           property: error.property,
