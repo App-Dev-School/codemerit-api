@@ -106,38 +106,6 @@ export class Topic extends AbstractEntity implements ITopic {
   })
   goal: string;
 
-  @Column({
-    type: 'int',
-    default: 0,
-  })
-  votes: number;
-
-  @Column({
-    type: 'int',
-    default: 0,
-  })
-  numLessons: number;
-
-  @Column({
-    type: 'int',
-    default: 0,
-  })
-  numQuestions: number;
-
-  @Column({
-    type: 'int',
-    default: 0,
-  })
-  numQuestion: number;
-
-  @Column({
-    type: 'int',
-    default: 0,
-  })
-  numQuizzes: number;
-  @Column({ name: 'createdBy', default: null, select: false })
-  createdBy: number;
-
   @Column({ name: 'updatedBy', default: null, select: false })
   updatedBy: number;
 

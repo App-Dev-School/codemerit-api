@@ -12,13 +12,8 @@ export interface ITopic {
   description: string;
   weight: number;
   goal: string;
-  votes: number;
-  numLessons: number;
-  numQuestions: number;
-  numQuestion: number;
-  numQuizzes: number;
-  createdBy: number;
-  updatedBy: number;
+  createdBy?: number;
+  updatedBy?: number;
   createdAt: Date;
   updatedAt: Date;
 }

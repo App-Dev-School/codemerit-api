@@ -13,7 +13,7 @@ export interface IQuiz {
   label: TopicLabel;
   isPublished: boolean;
   goal: string;
-  createdBy: number;
+  createdBy?: number;
   updatedBy: number;
   createdAt: Date;
   updatedAt: Date;

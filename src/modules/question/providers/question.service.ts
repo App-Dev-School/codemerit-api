@@ -268,7 +268,7 @@ export class QuestionService {
       const questionEntity = this.questionRepo.create(dto);
       const errors = await validate(questionEntity);
       if (errors.length) {
-        msg = 'Failed to create question';
+        msg = 'Failed to create question => '+errors.toString();
         throw new BadRequestException();
       }
 

@@ -63,9 +63,9 @@ export class UsersController {
   ): Promise<ApiResponse<any>> {
     const result = await this.usersService.findByUsername(username);
     if (result) {
-      return new ApiResponse('User found', result);
+      return new ApiResponse('User found.', result);
     }
-    return new ApiResponse('User not found', result);
+    return new ApiResponse('User not found.', result);
   }
 
   @Put('update')

@@ -46,9 +46,6 @@ export class TopicsService {
       label: topic.label,
       slug: topic.slug,
       description: topic.description,
-      votes: topic.votes,
-      numQuestions: topic.numQuestions,
-      numQuizzes: topic.numQuizzes,
       isPublished: topic.isPublished,
     }));
   }
@@ -71,9 +68,6 @@ export class TopicsService {
       label: topicWithSubject.label,
       slug: topicWithSubject.slug,
       description: topicWithSubject.description,
-      votes: topicWithSubject.votes,
-      numQuestions: topicWithSubject.numQuestions,
-      numQuizzes: topicWithSubject.numQuizzes,
       isPublished: topicWithSubject.isPublished,
     };
   }

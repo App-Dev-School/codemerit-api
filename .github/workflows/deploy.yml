@@ -36,10 +36,8 @@ jobs:
 
           rsync -avz --delete \
             --exclude=vendor \
-            --exclude=node_modules \
             --exclude=.github \
             --exclude=.vscode \
-            --exclude=src \
             -e "ssh -i private_key.pem -o StrictHostKeyChecking=no" \
             ./dist/ "$SSH_USERNAME@appdevops.in:$FTP_REMOTE_DIR" || echo "⚠️ rsync exited with non-zero code"
 

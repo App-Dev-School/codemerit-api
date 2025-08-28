@@ -22,7 +22,5 @@ export class TopicListItemDto {
   slug: string;
   label: string;
   votes?: number;
-  numQuestions?: number;
-  numQuizzes?: number;
   isPublished: boolean;
 }
