@@ -31,7 +31,7 @@ export class JobRoleSubject extends AbstractEntity implements IJobSubject {
   @JoinColumn({ name: 'jobRoleId', referencedColumnName: 'id' })
   jobRole: JobRole;
 
-  @ManyToOne(() => Subject, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'subjectId', referencedColumnName: 'id' })
+  @ManyToOne(() => Subject, (subject) => subject.jobRoleSubjects, { eager: true })
+  @JoinColumn({ name: 'subjectId' })
   subject: Subject;
 }

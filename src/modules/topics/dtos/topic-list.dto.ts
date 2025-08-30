@@ -2,9 +2,11 @@ export class TopicListDto {
   id: number;
   title: string;
   description: string;
+  slug?: string;
   subjectId: number;
   subjectName: string;
   subTopics?: TopicDto[];
+  coverage?: number
 }
 export class TopicDto {
   id: number;
@@ -23,4 +25,5 @@ export class TopicListItemDto {
   label: string;
   votes?: number;
   isPublished: boolean;
+  coverage?: number;
 }

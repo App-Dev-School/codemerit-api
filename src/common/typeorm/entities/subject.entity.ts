@@ -1,7 +1,7 @@
-import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, OneToMany, UpdateDateColumn } from 'typeorm';
 import { ISubject } from '../interface/subject.interface';
 import { AbstractEntity } from './abstract.entity';
-import { JobRole } from './job-role.entity';
+import { JobRoleSubject } from './job-role-subject.entity';
 
 @Entity()
 export class Subject extends AbstractEntity implements ISubject {
@@ -63,11 +63,6 @@ export class Subject extends AbstractEntity implements ISubject {
   @UpdateDateColumn({ name: 'updatedAt', select: false })
   updatedAt: Date;
 
-  // @ManyToMany(() => JobRole, (jobRole) => jobRole.subjects)
-  // @JoinTable({
-  //   name: 'job_role_subject',
-  //   joinColumn: { name: 'subject_id', referencedColumnName: 'id' },
-  //   inverseJoinColumn: { name: 'job_role_id', referencedColumnName: 'id' },
-  // })
-  // jobRoles: JobRole[];
+  @OneToMany(() => JobRoleSubject, (jrs) => jrs.subject)
+  jobRoleSubjects: JobRoleSubject[];
 }
