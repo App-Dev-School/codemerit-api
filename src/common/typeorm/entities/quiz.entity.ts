@@ -13,6 +13,7 @@ import { AbstractEntity } from './abstract.entity';
 import { Subject } from './subject.entity';
 import { QuizTypeEnum } from 'src/common/enum/quiz-type.enum';
 import { QuizQuestion } from './quiz-quesion.entity';
+import { User } from './user.entity';
 
 @Entity()
 export class Quiz extends AbstractEntity implements IQuiz {
@@ -100,6 +101,9 @@ export class Quiz extends AbstractEntity implements IQuiz {
     })
     tag: string;
 
+    @Column({ name: 'createdBy', default: null, select: false })
+    createdBy: number;
+
     @Column({ name: 'updatedBy', default: null, select: false })
     updatedBy: number;
 
@@ -108,6 +112,10 @@ export class Quiz extends AbstractEntity implements IQuiz {
 
     @UpdateDateColumn({ name: 'updatedAt', select: false })
     updatedAt: Date;
+
+    @ManyToOne(() => User)
+    @JoinColumn({ name: 'createdBy', referencedColumnName: 'id' })
+    userCreatedBy: User;
 
     // @ManyToOne(() => Subject)
     // @JoinColumn({ name: 'subjectId' })
