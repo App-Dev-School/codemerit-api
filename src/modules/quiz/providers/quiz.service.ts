@@ -12,7 +12,10 @@ import { QuizQuestion } from 'src/common/typeorm/entities/quiz-quesion.entity';
 import { QuizTopic } from 'src/common/typeorm/entities/quiz-topic.entity';
 import { QuizSubject } from 'src/common/typeorm/entities/quiz-subject.entity';
 import { MasterService } from 'src/modules/master/master.service';
-import { getTitleBySubjectIds, getTitleByTopicIds } from 'src/common/utils/common-functions';
+import { generate6DigitNumber, getTitleBySubjectIds, getTitleByTopicIds } from 'src/common/utils/common-functions';
+import { SubmitQuizDto } from '../dtos/submit-quiz.dto';
+import { QuizResult } from 'src/common/typeorm/entities/quiz-result.entity';
+import { QuestionAttempt } from 'src/common/typeorm/entities/question-attempt.entity';
 
 @Injectable()
 export class QuizService {
@@ -36,7 +39,7 @@ export class QuizService {
   ) { }
 
   async createQuiz(createQuizDto: CreateQuizDto): Promise<Quiz> {
-    
+
     if (createQuizDto?.quizType === QuizTypeEnum.UserQuiz) {
       if (
         (!createQuizDto?.subjectIds) &&
@@ -171,7 +174,7 @@ export class QuizService {
           }
 
           await manager.save(QuizQuestion, quizQuestion);
-          
+
           return savedQuizzes;
         });
       } catch (error) {
@@ -184,9 +187,46 @@ export class QuizService {
 
     return null;
   }
-  async submitQuiz(createQuizDto: CreateQuizDto): Promise<Quiz[]> {
+  async submitQuiz(submitQuizDto: SubmitQuizDto): Promise<QuizResult> {
+    try {
+      return this.dataSource.transaction(async (manager) => {
+        const result = manager.create(QuizResult, {
+          quizId: submitQuizDto?.quizId,
+          userId: submitQuizDto?.userId,
+          resultCode: generate6DigitNumber(),
+          total: submitQuizDto?.total,
+          correct: submitQuizDto?.correct,
+          wrong: submitQuizDto?.wrong,
+          unanswered: submitQuizDto?.unanswered,
+          timeSpent: submitQuizDto?.timeSpent,
+          score: submitQuizDto?.score,
+        });
 
+        await manager.save(QuizResult, result);
+        // 3. Save QuestionAttempts
+        for (const attempt of submitQuizDto?.attempts) {
 
-    return null;
+          const questionAttempt = manager.create(QuestionAttempt, {
+            userId: submitQuizDto?.userId,
+            questionId: attempt.questionId,
+            selectedOption: attempt?.selectedOption,
+            timeTaken: attempt?.timeTaken,
+            isSkipped: attempt?.isSkipped,
+            hintUsed: attempt?.hintUsed,
+            isCorrect: attempt?.isCorrect,
+            answer: attempt?.answer,
+          });
+
+          await manager.save(QuestionAttempt, questionAttempt);
+        }
+
+        return null;
+      });
+    } catch (error) {
+      throw new AppCustomException(
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        'Failed to save quiz and questions: ' + error.message
+      );
+    }
   }
 }

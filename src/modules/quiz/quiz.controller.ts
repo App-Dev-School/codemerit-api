@@ -12,6 +12,7 @@ import {
 import { QuizService } from './providers/quiz.service';
 import { ApiResponse } from 'src/common/utils/api-response';
 import { CreateQuizDto } from './dtos/create-quiz.dto';
+import { SubmitQuizDto } from './dtos/submit-quiz.dto';
 
 @Controller('apis/quiz')
 export class QuizController {
@@ -29,11 +30,11 @@ export class QuizController {
 
   @Post('submit')
   async submitQuiz(
-    @Body() createQuizDto: CreateQuizDto,
+    @Body() submitQuizDto: SubmitQuizDto,
   ): Promise<ApiResponse<any>> {
-    const result = await this.quizService.submitQuiz(createQuizDto);
+    const result = await this.quizService.submitQuiz(submitQuizDto);
 
-    return new ApiResponse(`${createQuizDto.title} added successfully.`, result);
+    return new ApiResponse(`successfully submitted.`, result);
   }
 
   // @Get('/all')
