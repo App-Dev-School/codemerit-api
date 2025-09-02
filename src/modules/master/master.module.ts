@@ -10,6 +10,7 @@ import { JobRoleSubject } from 'src/common/typeorm/entities/job-role-subject.ent
 @Module({
   imports: [TypeOrmModule.forFeature([Subject, JobRole, JobRoleSubject, Topic])],
   controllers: [MasterController],
-  providers: [MasterService]
+  providers: [MasterService],
+  exports: [MasterService]
 })
 export class MasterModule {}

@@ -1,5 +1,5 @@
-import { TopicLabel } from 'src/common/enum/TopicLabel.enum';
-import { Question } from '../entities/question.entity';
+import { QuizTypeEnum } from 'src/common/enum/quiz-type.enum';
+import { TopicLabelEnum } from 'src/common/enum/topic-label.enum';
 
 export interface IQuiz {
   id: number;
@@ -7,12 +7,13 @@ export interface IQuiz {
   shortDesc: string;
   description: string;
   slug: string;
-  subjectId: number;
-  quizType: string;
+  // subjectId: number;
+  quizType: QuizTypeEnum;
   image: string;
-  label: TopicLabel;
+  label: TopicLabelEnum;
   isPublished: boolean;
   goal: string;
+  tag: string;
   createdBy?: number;
   updatedBy: number;
   createdAt: Date;

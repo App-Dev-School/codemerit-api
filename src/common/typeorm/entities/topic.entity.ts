@@ -10,7 +10,7 @@ import {
 import { AbstractEntity } from './abstract.entity';
 import { ITopic } from '../interface/topic.interface';
 import { Subject } from './subject.entity';
-import { TopicLabel } from 'src/common/enum/TopicLabel.enum';
+import { TopicLabelEnum } from 'src/common/enum/topic-label.enum';
 
 @Entity()
 export class Topic extends AbstractEntity implements ITopic {
@@ -38,11 +38,11 @@ export class Topic extends AbstractEntity implements ITopic {
 
   @Column({
     type: 'enum',
-    enum: TopicLabel,
+    enum: TopicLabelEnum,
     nullable: true,
-    default: TopicLabel.Beginner,
+    default: TopicLabelEnum.Foundation,
   })
-  label: TopicLabel;
+  label: TopicLabelEnum;
 
   @Column({
     type: 'varchar',

@@ -14,5 +14,6 @@ import { QuestionOption } from 'src/common/typeorm/entities/question-option.enti
   ],
   providers: [QuestionService, QuestionTopicService, QuestionOptionService],
   controllers: [QuestionController],
+  exports: [QuestionService, QuestionOptionService, QuestionTopicService],
 })
 export class QuestionModule {}

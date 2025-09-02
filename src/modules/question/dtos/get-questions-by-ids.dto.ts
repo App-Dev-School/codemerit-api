@@ -3,7 +3,6 @@ import {
   IsArray,
   ArrayNotEmpty,
   IsOptional,
-  ValidateIf,
 } from 'class-validator';
 
 export class GetQuestionsByIdsDto {

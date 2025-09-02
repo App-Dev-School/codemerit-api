@@ -12,6 +12,12 @@ import { Profile } from 'src/common/typeorm/entities/profile.entity';
 import { QuestionTopic } from 'src/common/typeorm/entities/quesion-topic.entity';
 import { JobRole } from 'src/common/typeorm/entities/job-role.entity';
 import { JobRoleSubject } from 'src/common/typeorm/entities/job-role-subject.entity';
+import { QuestionAttempt } from 'src/common/typeorm/entities/question-attempt.entity';
+import { Quiz } from 'src/common/typeorm/entities/quiz.entity';
+import { QuizResult } from 'src/common/typeorm/entities/quiz-result.entity';
+import { QuizQuestion } from 'src/common/typeorm/entities/quiz-quesion.entity';
+import { QuizSubject } from 'src/common/typeorm/entities/quiz-subject.entity';
+import { QuizTopic } from 'src/common/typeorm/entities/quiz-topic.entity';
 @Injectable()
 export class TypeormConfigService implements TypeOrmOptionsFactory {
   constructor(private configService: ConfigService) {}
@@ -45,6 +51,12 @@ export class TypeormConfigService implements TypeOrmOptionsFactory {
         Question,
         QuestionOption,
         QuestionTopic,
+        QuestionAttempt,
+        Quiz,
+        QuizResult,
+        QuizQuestion,
+        QuizSubject,
+        QuizTopic,
       ],
       // entities: [__dirname + '/../**/*.entity.{ts,js}'],
       // entities: ['src/**/*.entity.ts'],

@@ -34,7 +34,6 @@ export class QuestionService {
     @InjectRepository(Question)
     private questionRepo: Repository<Question>,
     private readonly dataSource: DataSource,
-    private readonly questionTopicRepo: QuestionTopicService,
     private readonly questionOptionService: QuestionOptionService,
   ) {}
 
