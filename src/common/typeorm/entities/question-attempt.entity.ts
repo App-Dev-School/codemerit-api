@@ -1,31 +1,30 @@
 import {
-  Entity,
-  PrimaryGeneratedColumn,
   Column,
-  ManyToOne,
-  ManyToMany,
-  JoinTable,
   CreateDateColumn,
-  UpdateDateColumn,
+  Entity,
   JoinColumn,
+  ManyToOne,
+  UpdateDateColumn
 } from 'typeorm';
+import { IQuestionAttempt } from '../interface/question-attempt.interface';
+import { AbstractEntity } from './abstract.entity';
 import { QuestionOption } from './question-option.entity';
 import { Question } from './question.entity';
-import { AbstractEntity } from './abstract.entity';
-import { IQuestionAttempt } from '../interface/question-attempt.interface';
 import { User } from './user.entity';
 
 @Entity()
-export class QuestionAttempt  extends AbstractEntity implements IQuestionAttempt {
-  
+export class QuestionAttempt extends AbstractEntity implements IQuestionAttempt {
+
   @Column({
     type: 'integer',
-    nullable: false,})
+    nullable: false,
+  })
   userId: number;
 
   @Column({
     type: 'integer',
-    nullable: false,})
+    nullable: false,
+  })
   questionId: number;
 
 
@@ -42,25 +41,28 @@ export class QuestionAttempt  extends AbstractEntity implements IQuestionAttempt
   })
   timeTaken: number;
 
-  @Column({ 
+  @Column({
     type: 'boolean',
     nullable: true,
-    default: false, })
+    default: false,
+  })
   isSkipped: boolean;
 
-  @Column({ 
+  @Column({
     type: 'boolean',
     nullable: true,
-    default: false, })
+    default: false,
+  })
   hintUsed: boolean;
 
-  @Column({ 
+  @Column({
     type: 'boolean',
     nullable: true,
-    default: false, })
+    default: false,
+  })
   isCorrect: boolean;
 
-  @Column({ type: 'varchar',length:100, nullable: true, default: null })
+  @Column({ type: 'varchar', length: 100, nullable: true, default: null })
   answer?: string;
 
   @CreateDateColumn({ name: 'createdAt' })

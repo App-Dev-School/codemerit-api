@@ -7,10 +7,11 @@ import { QuestionService } from './providers/question.service';
 import { QuestionController } from './question.controller';
 import { QuestionOptionService } from './providers/question-option.service';
 import { QuestionOption } from 'src/common/typeorm/entities/question-option.entity';
+import { Topic } from 'src/common/typeorm/entities/topic.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Question, QuestionTopic, QuestionOption]),
+    TypeOrmModule.forFeature([Question, QuestionTopic, QuestionOption, Topic]),
   ],
   providers: [QuestionService, QuestionTopicService, QuestionOptionService],
   controllers: [QuestionController],

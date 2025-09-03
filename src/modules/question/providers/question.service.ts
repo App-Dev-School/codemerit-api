@@ -1,8 +1,7 @@
 import {
   BadRequestException,
   HttpStatus,
-  Injectable,
-  InternalServerErrorException,
+  Injectable
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { validate } from 'class-validator';
@@ -12,6 +11,7 @@ import { JobRoleSubject } from 'src/common/typeorm/entities/job-role-subject.ent
 import { QuestionTopic } from 'src/common/typeorm/entities/quesion-topic.entity';
 import { QuestionOption } from 'src/common/typeorm/entities/question-option.entity';
 import { Question } from 'src/common/typeorm/entities/question.entity';
+import { Topic } from 'src/common/typeorm/entities/topic.entity';
 import {
   generateSlug,
   generateUniqueSlug,
@@ -26,13 +26,15 @@ import { GetQuestionsByIdsDto } from '../dtos/get-questions-by-ids.dto';
 import { QuestionListResponseDto } from '../dtos/question-list-response.dto';
 import { UpdateQuestionDto } from '../dtos/update-question.dto';
 import { QuestionOptionService } from './question-option.service';
-import { QuestionTopicService } from './question-topic.service';
+import { QuestionStatusEnum } from 'src/common/enum/question-status.enum';
 
 @Injectable()
 export class QuestionService {
   constructor(
     @InjectRepository(Question)
     private questionRepo: Repository<Question>,
+    @InjectRepository(Topic)
+    private topicRepo: Repository<Topic>,
     private readonly dataSource: DataSource,
     private readonly questionOptionService: QuestionOptionService,
   ) {}
@@ -435,7 +437,8 @@ export class QuestionService {
     }
     await manager.save(QuestionTopic, questionList);
   }
-  async getQuestionsByIds(
+
+  async getQuestionsByIdsORG(
     dto: GetQuestionsByIdsDto,
   ): Promise<QuestionListResponseDto[]> {
     if (
@@ -514,11 +517,131 @@ export class QuestionService {
     return this.mappedQuestionList(questions, topicsMap, optionsMap);
   }
 
+async getQuestionsByIds(dto: GetQuestionsByIdsDto): Promise<QuestionListResponseDto[]> {
+  const { topicIds = [], subjectIds = [], jobIds = [], numberOfQuestions = 10 } = dto;
+
+  if (subjectIds.length === 0 && topicIds.length === 0 && jobIds.length === 0) {
+    throw new AppCustomException(
+      HttpStatus.BAD_REQUEST,
+      'At least one of subjectIds, topicIds, or jobIds must be provided.',
+    );
+  }
+
+  // Resolve subjectIds via jobIds if needed
+  let resolvedSubjectIds = [...subjectIds];
+  if (jobIds.length > 0) {
+    const jobRoleSubjects = await this.dataSource
+      .getRepository(JobRoleSubject)
+      .find({ where: { jobRoleId: In(jobIds) } });
+
+    const jobSubjectIds = jobRoleSubjects.map((jrs) => jrs.subjectId);
+    resolvedSubjectIds = [...new Set([...resolvedSubjectIds, ...jobSubjectIds])];
+  }
+
+  // Decide distribution
+  const isTopicBased = topicIds.length > 0;
+  const isSubjectBased = resolvedSubjectIds.length > 0;
+  const perGroupCount = isTopicBased
+    ? Math.ceil(numberOfQuestions / topicIds.length)
+    : isSubjectBased
+    ? Math.ceil(numberOfQuestions / resolvedSubjectIds.length)
+    : numberOfQuestions;
+
+  const totalQuestions: Question[] = [];
+
+  // 🔁 Fetch by topicId
+  if (isTopicBased) {
+    for (const topicId of topicIds) {
+      const qb = this.questionRepo.createQueryBuilder('question')
+        .innerJoin('question.questionTopics', 'qt')
+        .leftJoinAndSelect('question.subject', 'subject')
+        .leftJoinAndSelect('question.options', 'options')
+        .leftJoinAndSelect('question.questionTopics', 'questionTopics')
+        .leftJoinAndSelect('questionTopics.topic', 'topic')
+        .where('qt.topicId = :topicId', { topicId })
+        .andWhere('question.questionType = :type', { type: QuestionTypeEnum.Trivia })
+        .andWhere('question.status = :status', { status: QuestionStatusEnum.Active })
+        .orderBy('RAND()') // MySQL random
+        .take(perGroupCount);
+
+      const questions = await qb.getMany();
+
+      console.log(`Topic ID ${topicId}: fetched ${questions.length} questions`);
+      totalQuestions.push(...questions);
+    }
+  }
+
+  // 🔁 Fetch by subjectId
+  else if (isSubjectBased) {
+    for (const subjectId of resolvedSubjectIds) {
+      const qb = this.questionRepo.createQueryBuilder('question')
+        .leftJoinAndSelect('question.subject', 'subject')
+        .leftJoinAndSelect('question.options', 'options')
+        .leftJoinAndSelect('question.questionTopics', 'questionTopics')
+        .leftJoinAndSelect('questionTopics.topic', 'topic')
+        .where('question.subjectId = :subjectId', { subjectId })
+        .andWhere('question.questionType = :type', { type: QuestionTypeEnum.Trivia })
+        .andWhere('question.status = :status', { status: QuestionStatusEnum.Active })
+        .orderBy('RAND()')
+        .take(perGroupCount);
+
+      const questions = await qb.getMany();
+
+      console.log(`Subject ID ${subjectId}: fetched ${questions.length} questions`);
+      totalQuestions.push(...questions);
+    }
+  }
+
+  // 🧹 Deduplicate by question ID
+  const uniqueQuestions = Array.from(new Map(totalQuestions.map(q => [q.id, q])).values());
+
+  // ✅ If total is still insufficient, fetch more (fallback)
+  if (uniqueQuestions.length < numberOfQuestions) {
+    const missingCount = numberOfQuestions - uniqueQuestions.length;
+
+    const fallbackQb = this.questionRepo.createQueryBuilder('question')
+      .leftJoinAndSelect('question.subject', 'subject')
+      .leftJoinAndSelect('question.options', 'options')
+      .leftJoinAndSelect('question.questionTopics', 'questionTopics')
+      .leftJoinAndSelect('questionTopics.topic', 'topic')
+      .where('question.questionType = :type', { type: QuestionTypeEnum.Trivia })
+      .andWhere('question.status = :status', { status: QuestionStatusEnum.Active });
+
+    if (isTopicBased) {
+      fallbackQb.andWhere('questionTopics.topicId IN (:...topicIds)', { topicIds });
+    } else if (isSubjectBased) {
+      fallbackQb.andWhere('question.subjectId IN (:...subjectIds)', { subjectIds: resolvedSubjectIds });
+    }
+
+    fallbackQb
+      .andWhere('question.id NOT IN (:...existingIds)', { existingIds: uniqueQuestions.map(q => q.id) })
+      .orderBy('RAND()')
+      .take(missingCount);
+
+    const fallbackQuestions = await fallbackQb.getMany();
+    uniqueQuestions.push(...fallbackQuestions);
+
+    console.log(`Fallback: fetched ${fallbackQuestions.length} more questions`);
+  }
+
+  // Final trim
+  const finalQuestions = uniqueQuestions.slice(0, numberOfQuestions);
+
+  if (finalQuestions.length < numberOfQuestions) {
+    throw new AppCustomException(
+      HttpStatus.BAD_REQUEST,
+      `Not enough Trivia questions found. Found ${finalQuestions.length}, need ${numberOfQuestions}.`
+    );
+  }
+
+  return this.mappedQuestionList(finalQuestions);
+}
+
   private mappedQuestionList(
     questions: Question[],
-    topicsMap: Map<number, any[]>,
-    optionsMap: Map<number, any[]>,
-  ): QuestionListResponseDto[] {
+    topicsMap?: Map<number, any[]>,
+    optionsMap?: Map<number, any[]>,
+  ): any[] {
     return questions.map((q) => ({
       id: q.id,
       title: q.title,
@@ -536,8 +659,10 @@ export class QuestionService {
       order: q.orderId,
       createdAt: q.createdAt,
       subject: q.subject,
-      topics: topicsMap.get(q.id) || [],
-      options: optionsMap.get(q.id) || [],
+      //topics: topicsMap.get(q.id) || [],
+      //options: optionsMap.get(q.id) || [],
+      topics: q.questionTopics,
+      options: q.options,
       userCreatedBy: q?.userCreatedBy
         ? {
             id: q.userCreatedBy.id,
@@ -548,4 +673,101 @@ export class QuestionService {
         : null,
     }));
   }
+
+  //working but fetching few questions even if available
+async getQuestionsByIds3(dto: GetQuestionsByIdsDto): Promise<QuestionListResponseDto[]> {
+  const { topicIds = [], subjectIds = [], jobIds = [], numberOfQuestions = 10 } = dto;
+
+  if (subjectIds.length === 0 && topicIds.length === 0 && jobIds.length === 0) {
+    throw new AppCustomException(
+      HttpStatus.BAD_REQUEST,
+      'At least one of subjectIds, topicIds, or jobIds must be provided.',
+    );
+  }
+
+  // Resolve subjectIds via jobIds if needed
+  let resolvedSubjectIds = [...subjectIds];
+  if (jobIds.length > 0) {
+    const jobRoleSubjects = await this.dataSource
+      .getRepository(JobRoleSubject)
+      .find({ where: { jobRoleId: In(jobIds) } });
+
+    const jobSubjectIds = jobRoleSubjects.map((jrs) => jrs.subjectId);
+    resolvedSubjectIds = [...new Set([...resolvedSubjectIds, ...jobSubjectIds])];
+  }
+
+  // Final questions array
+  let finalQuestions: Question[] = [];
+
+  const isTopicBased = topicIds.length > 0;
+  const isSubjectBased = resolvedSubjectIds.length > 0;
+  const perGroupCount = isTopicBased
+    ? Math.ceil(numberOfQuestions / topicIds.length)
+    : Math.ceil(numberOfQuestions / resolvedSubjectIds.length);
+console.log('QquestionService isTopicBased:', isTopicBased);
+console.log('QquestionService perGroupCount:', perGroupCount);
+
+  if (isTopicBased) {
+    for (const topicId of topicIds) {
+      const qb = this.questionRepo.createQueryBuilder('question')
+        .innerJoin('question.questionTopics', 'qt')
+        .innerJoin('qt.topic', 'topic')
+        .leftJoinAndSelect('question.subject', 'subject')
+        .leftJoinAndSelect('question.options', 'options')
+        .leftJoinAndSelect('question.questionTopics', 'questionTopics')
+        .leftJoinAndSelect('questionTopics.topic', 'fullTopic')
+        .where('qt.topicId = :topicId', { topicId })
+        .andWhere('question.questionType = :type', { type: QuestionTypeEnum.Trivia })
+        .andWhere('question.status = :status', { status: QuestionStatusEnum.Active })
+        .orderBy('RAND()') // MySQL specific
+        .take(perGroupCount);
+
+      const questions = await qb.getMany();
+      finalQuestions.push(...questions);
+      //console.log('QquestionService LOOP:', topicId, ...questions);
+    }
+    console.log('QquestionService TopicBased finalQuestions @@1:', finalQuestions);
+  } else if (isSubjectBased) {
+    for (const subjectId of resolvedSubjectIds) {
+      const qb = this.questionRepo.createQueryBuilder('question')
+        .leftJoinAndSelect('question.subject', 'subject')
+        .leftJoinAndSelect('question.options', 'options')
+        .leftJoinAndSelect('question.questionTopics', 'questionTopics')
+        .leftJoinAndSelect('questionTopics.topic', 'fullTopic')
+        .where('question.subjectId = :subjectId', { subjectId })
+        .andWhere('question.questionType = :type', { type: QuestionTypeEnum.Trivia })
+        .andWhere('question.status = :status', { status: QuestionStatusEnum.Active })
+        .orderBy('RAND()')
+        .take(perGroupCount);
+
+      const questions = await qb.getMany();
+      finalQuestions.push(...questions);
+    }
+  }
+
+  // Deduplicate by questionId
+  const uniqueQuestionsMap = new Map<number, Question>();
+  for (const q of finalQuestions) {
+    uniqueQuestionsMap.set(q.id, q);
+  }
+
+  const uniqueQuestions = Array.from(uniqueQuestionsMap.values()).slice(0, numberOfQuestions);
+  //return uniqueQuestions;
+  return this.mappedQuestionList(uniqueQuestions); // You already have this method
+}
+
+
+private shuffleArray<T>(array: T[]): T[] {
+  return array
+    .map(item => ({ item, sort: Math.random() }))
+    .sort((a, b) => a.sort - b.sort)
+    .map(({ item }) => item);
+}
+
+private getRandomOrderClause(): { [key: string]: 'ASC' | 'DESC' } | string {
+  //const dbType = this.dataSource.options.type;
+  //return dbType === 'mysql' ? 'RAND()' : 'RANDOM()';
+  return 'RAND()';
+}
+
 }

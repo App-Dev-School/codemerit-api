@@ -15,9 +15,9 @@ import { TopicLabelEnum } from 'src/common/enum/topic-label.enum';
 
 export class CreateQuizDto {
 
-  // @ApiProperty()
-  // @IsNumber()
-  // userId: number;
+  @ApiProperty()
+  @IsNumber()
+  userId: number;
 
   @ApiPropertyOptional({
     description: 'Title of the topic',

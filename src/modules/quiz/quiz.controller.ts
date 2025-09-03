@@ -24,8 +24,7 @@ export class QuizController {
   ): Promise<ApiResponse<any>> {
     const result = await this.quizService.createQuiz(createQuizDto);
     console.log("QuizCreateAPI #1 result", result);
-
-    return new ApiResponse(`${result.title} added successfully.`, result);
+    return new ApiResponse(`Quiz added successfully.`, result);
   }
 
   @Post('submit')
@@ -33,8 +32,7 @@ export class QuizController {
     @Body() submitQuizDto: SubmitQuizDto,
   ): Promise<ApiResponse<any>> {
     const result = await this.quizService.submitQuiz(submitQuizDto);
-
-    return new ApiResponse(`successfully submitted.`, result);
+    return new ApiResponse(`Quiz submitted successfully.`, result);
   }
 
   // @Get('/all')

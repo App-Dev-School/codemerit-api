@@ -39,7 +39,7 @@ export class QuizService {
   ) { }
 
   async createQuiz(createQuizDto: CreateQuizDto): Promise<Quiz> {
-
+    let quizCategory = '';
     if (createQuizDto?.quizType === QuizTypeEnum.UserQuiz) {
       if (
         (!createQuizDto?.subjectIds) &&
@@ -47,7 +47,7 @@ export class QuizService {
         (!createQuizDto?.topicIds)
       ) {
         throw new AppCustomException(
-          HttpStatus.BAD_REQUEST, 'For User Quiz, at least one of subjectIds, jobIds, or topicIds must be provided.'
+          HttpStatus.BAD_REQUEST, 'Please specify job role, subjects or specific topics to generate a quiz.'
         );
       }
 
@@ -56,39 +56,48 @@ export class QuizService {
       let jobIds: number[] = [];
       if (createQuizDto?.topicIds) {
         topicIds = createQuizDto?.topicIds.split(',').map(id => parseInt(id.trim(), 10));
+        quizCategory = 'Topic';
       }
 
       if (createQuizDto?.subjectIds) {
         subjectIds = createQuizDto?.subjectIds.split(',').map(id => parseInt(id.trim(), 10));
+        quizCategory = 'Subject';
       }
 
       if (createQuizDto?.jobIds) {
         jobIds = createQuizDto?.jobIds.split(',').map(id => parseInt(id.trim(), 10));
+        quizCategory = 'Job Role';
       }
+      console.log('Quiz generator #1:', quizCategory);
 
+      //uselsss
       const ids = new GetQuestionsByIdsDto();
       ids.subjectIds = subjectIds;
       ids.jobIds = jobIds;
       ids.topicIds = topicIds;
+      ids.numberOfQuestions = 11;
+      console.log('Quiz generator #2:', ids);
       const questions = await this.questionService.getQuestionsByIds(ids);
+      console.log('Quiz generator #3:', questions);
       if (!questions || questions.length < 5) {
         throw new AppCustomException(
           HttpStatus.BAD_REQUEST,
-          'Minimum 5 questions must be provided.'
+          `Not enough questions found for the given ${quizCategory}`
         );
       }
       try {
         let title = '';
         if (subjectIds && subjectIds.length > 0) {
           const subjects = await this.masterService.getSubjectListByIds(subjectIds);
-          title = getTitleBySubjectIds(subjects);
+          title = getTitleBySubjectIds(subjects)+ 'Quiz';
         }
         if (topicIds && topicIds.length > 0) {
           const topics = await this.masterService.getTopicListByIds(topicIds);
-          title = getTitleByTopicIds(topics);
+          title = getTitleByTopicIds(topics)+ 'Quiz';
         }
         let quiz = new Quiz();
         quiz.title = title;
+        quiz.tag = quizCategory;
         quiz.quizType = createQuizDto.quizType;
         let slug = generateSlug(title);
         const existing = await this.quizRepository.findOne({ where: { slug } });
@@ -130,6 +139,7 @@ export class QuizService {
             }
             await manager.save(QuizTopic, quizTopic);
           }
+          savedQuizzes['questions'] = questions;
           return savedQuizzes;
         });
       } catch (error) {
@@ -187,6 +197,7 @@ export class QuizService {
 
     return null;
   }
+  
   async submitQuiz(submitQuizDto: SubmitQuizDto): Promise<QuizResult> {
     try {
       return this.dataSource.transaction(async (manager) => {
@@ -229,4 +240,6 @@ export class QuizService {
       );
     }
   }
+
+
 }
