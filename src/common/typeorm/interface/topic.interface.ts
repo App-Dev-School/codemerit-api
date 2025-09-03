@@ -1,11 +1,11 @@
-import { TopicLabel } from 'src/common/enum/TopicLabel.enum';
+import { TopicLabelEnum } from 'src/common/enum/topic-label.enum';
 
 export interface ITopic {
   id: number;
   title: string;
   subjectId: number;
   image: string;
-  label: TopicLabel;
+  label: TopicLabelEnum;
   order: number;
   parent?: number;
   isPublished: boolean;

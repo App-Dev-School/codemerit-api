@@ -1,16 +1,19 @@
-import { TopicLabel } from 'src/common/enum/TopicLabel.enum';
+import { QuizTypeEnum } from 'src/common/enum/quiz-type.enum';
+import { TopicLabelEnum } from 'src/common/enum/topic-label.enum';
 import {
     Column,
     CreateDateColumn,
     Entity,
     JoinColumn,
+    ManyToMany,
     ManyToOne,
+    OneToMany,
     UpdateDateColumn
 } from 'typeorm';
 import { IQuiz } from '../interface/quiz.interface';
 import { AbstractEntity } from './abstract.entity';
-import { Subject } from './subject.entity';
-import { QuizTypeEnum } from 'src/common/enum/quiz-type.enum';
+import { QuizQuestion } from './quiz-quesion.entity';
+import { User } from './user.entity';
 
 @Entity()
 export class Quiz extends AbstractEntity implements IQuiz {
@@ -21,12 +24,12 @@ export class Quiz extends AbstractEntity implements IQuiz {
     })
     title: string;
 
-    @Column({
-        type: 'integer',
-        name: 'subjectId',
-        nullable: false,
-    })
-    subjectId: number;
+    // @Column({
+    //     type: 'integer',
+    //     name: 'subjectId',
+    //     nullable: false,
+    // })
+    // subjectId: number;
 
     @Column({
         type: 'varchar',
@@ -38,15 +41,15 @@ export class Quiz extends AbstractEntity implements IQuiz {
 
     @Column({
         type: 'enum',
-        enum: TopicLabel,
-        nullable: true,
-        default: TopicLabel.Beginner,
+        enum: TopicLabelEnum,
+        nullable: false,
+        default: TopicLabelEnum.Foundation,
     })
-    label: TopicLabel;
+    label: TopicLabelEnum;
 
     @Column({
         type: 'varchar',
-        length: 20,
+        length: 200,
         nullable: true,
         default: null,
     })
@@ -75,18 +78,31 @@ export class Quiz extends AbstractEntity implements IQuiz {
     isPublished: boolean;
 
     @Column({
-        type: 'text',
+        type: 'varchar',
+        length: 200,
         nullable: true,
         default: null,
     })
     description: string;
 
     @Column({
-        type: 'text',
+        type: 'varchar',
+        length: 100,
         nullable: true,
         default: null,
     })
     goal: string;
+
+    @Column({
+        type: 'varchar',
+        length: 20,
+        nullable: true,
+        default: null,
+    })
+    tag: string;
+
+    @Column({ name: 'createdBy', default: null, select: false })
+    createdBy: number;
 
     @Column({ name: 'updatedBy', default: null, select: false })
     updatedBy: number;
@@ -97,11 +113,13 @@ export class Quiz extends AbstractEntity implements IQuiz {
     @UpdateDateColumn({ name: 'updatedAt', select: false })
     updatedAt: Date;
 
-    @ManyToOne(() => Subject)
-    @JoinColumn({ name: 'subjectId' })
-    subject: Subject;
+    @ManyToOne(() => User)
+    @JoinColumn({ name: 'createdBy', referencedColumnName: 'id' })
+    userCreatedBy: User;
+
+    @OneToMany(() => QuizQuestion, (quizQuestion) => quizQuestion.quiz, { cascade: true })
+    quizQuestions: QuizQuestion[];
 
     //Map for relation with one JobRole
-    //Map for relation with one/many Topic
-    //Map for relation with one/many Questions
+    //Map for relation with one/many Subject, Topic
 }

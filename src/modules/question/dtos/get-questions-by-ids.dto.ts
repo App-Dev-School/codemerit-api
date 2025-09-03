@@ -3,11 +3,11 @@ import {
   IsArray,
   ArrayNotEmpty,
   IsOptional,
-  ValidateIf,
+  IsNumber,
 } from 'class-validator';
 
 export class GetQuestionsByIdsDto {
-   @ApiPropertyOptional({
+  @ApiPropertyOptional({
     type: [Number],
     example: [1, 2, 3],
     description: 'Array of subject IDs',
@@ -17,7 +17,7 @@ export class GetQuestionsByIdsDto {
   @ArrayNotEmpty()
   subjectIds?: number[];
 
-   @ApiPropertyOptional({
+  @ApiPropertyOptional({
     type: [Number],
     example: [10, 20, 30],
     description: 'Array of topic IDs',
@@ -26,8 +26,8 @@ export class GetQuestionsByIdsDto {
   @IsArray()
   @ArrayNotEmpty()
   topicIds?: number[];
-  
-@ApiPropertyOptional({
+
+  @ApiPropertyOptional({
     type: [Number],
     example: [100, 200],
     description: 'Array of job IDs',
@@ -36,4 +36,14 @@ export class GetQuestionsByIdsDto {
   @IsArray()
   @ArrayNotEmpty()
   jobIds?: number[];
+
+  @IsOptional()
+  @IsNumber()
+  numberOfQuestions:number = 5;
+
+  //delete if unused
+  @IsOptional()
+  @IsArray()
+  @ArrayNotEmpty()
+  questionIds?: number[];
 }

@@ -4,7 +4,7 @@ import { JobRoleSubject } from 'src/common/typeorm/entities/job-role-subject.ent
 import { JobRole } from 'src/common/typeorm/entities/job-role.entity';
 import { Subject } from 'src/common/typeorm/entities/subject.entity';
 import { Topic } from 'src/common/typeorm/entities/topic.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { SubjectItemDto } from '../subjects/dtos/subject-item.dto';
 import { TopicListItemDto } from '../topics/dtos/topic-list.dto';
 
@@ -147,5 +147,16 @@ export class MasterService {
       }))
     }));
     return result;
+  }
+
+  async getTopicListByIds(topicIdsArray: number[]) {
+    return  this.topicRepo.findBy({
+    id: In(topicIdsArray),
+  });
+  }
+  async getSubjectListByIds(subjectIdsArray: number[]) {
+    return this.subjectRepo.findBy({
+    id: In(subjectIdsArray),
+  });
   }
 }

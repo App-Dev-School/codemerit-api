@@ -1,5 +1,5 @@
-export enum TopicLabel {
-  Beginner = 'Foundation',
+export enum TopicLabelEnum {
+  Foundation = 'Foundation',
   Intermediate = 'Intermediate',
   Advanced = 'Advanced',
 }
