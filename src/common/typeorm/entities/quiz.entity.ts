@@ -100,6 +100,9 @@ export class Quiz extends AbstractEntity implements IQuiz {
     })
     tag: string;
 
+    @Column({ name: 'createdBy', default: null, select: false })
+    createdBy: number;
+
     @Column({ name: 'updatedBy', default: null, select: false })
     updatedBy: number;
 

@@ -14,7 +14,7 @@ export interface IQuiz {
   isPublished: boolean;
   goal: string;
   tag: string;
-  createdBy?: number;
+  createdBy: number;
   updatedBy: number;
   createdAt: Date;
   updatedAt: Date;
