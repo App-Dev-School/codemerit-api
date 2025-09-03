@@ -42,11 +42,6 @@ export class CreateQuizDto {
   @IsString()
   subjectIds?: string;
 
-  @ApiPropertyOptional({ example: '10, 20' })
-  @IsOptional()
-  @IsString()
-  jobIds?: string;
-
   @ApiPropertyOptional({ example: '100, 200' })
   @IsOptional()
   @IsString()
@@ -55,6 +50,11 @@ export class CreateQuizDto {
   @ApiProperty({ enum: QuizTypeEnum, example: QuizTypeEnum.UserQuiz, description: 'Type of quiz' })
   @IsEnum(QuizTypeEnum)
   quizType: QuizTypeEnum; // user will create as UserQuiz
+
+  @ApiPropertyOptional({ example: '5, 10' })
+  @IsOptional()
+  @IsNumber()
+  numQuestions?: number;
 
   @ApiPropertyOptional({ enum: TopicLabelEnum, example: TopicLabelEnum.Foundation })
   @IsOptional()

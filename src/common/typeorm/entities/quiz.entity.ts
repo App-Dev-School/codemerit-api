@@ -1,3 +1,4 @@
+import { QuizTypeEnum } from 'src/common/enum/quiz-type.enum';
 import { TopicLabelEnum } from 'src/common/enum/topic-label.enum';
 import {
     Column,
@@ -6,12 +7,11 @@ import {
     JoinColumn,
     ManyToMany,
     ManyToOne,
+    OneToMany,
     UpdateDateColumn
 } from 'typeorm';
 import { IQuiz } from '../interface/quiz.interface';
 import { AbstractEntity } from './abstract.entity';
-import { Subject } from './subject.entity';
-import { QuizTypeEnum } from 'src/common/enum/quiz-type.enum';
 import { QuizQuestion } from './quiz-quesion.entity';
 import { User } from './user.entity';
 
@@ -121,7 +121,7 @@ export class Quiz extends AbstractEntity implements IQuiz {
     // @JoinColumn({ name: 'subjectId' })
     // subject: Subject;
 
-    @ManyToMany(() => QuizQuestion, (quizQuestion) => quizQuestion.question, {})
+    @OneToMany(() => QuizQuestion, (quizQuestion) => quizQuestion.quiz, { cascade: true })
     quizQuestions: QuizQuestion[];
 
     //Map for relation with one JobRole

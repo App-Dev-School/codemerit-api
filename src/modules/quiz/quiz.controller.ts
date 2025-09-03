@@ -1,22 +1,26 @@
 import {
+  Body,
   Controller,
   Get,
-  Post,
-  Body,
   Param,
-  Put,
-  Delete,
-  ParseIntPipe,
-  BadRequestException,
+  Post
 } from '@nestjs/common';
-import { QuizService } from './providers/quiz.service';
 import { ApiResponse } from 'src/common/utils/api-response';
+import { Public } from 'src/core/auth/decorators/public.decorator';
 import { CreateQuizDto } from './dtos/create-quiz.dto';
 import { SubmitQuizDto } from './dtos/submit-quiz.dto';
+import { QuizService } from './providers/quiz.service';
 
 @Controller('apis/quiz')
 export class QuizController {
-  constructor(private readonly quizService: QuizService) {}
+  constructor(private readonly quizService: QuizService) { }
+
+  @Public()
+  @Get('fetch/:slug')
+  async findOne(@Param('slug') slug: string): Promise<ApiResponse<any>> {
+    const result = await this.quizService.getQuizBySlug(slug);
+    return new ApiResponse('Question Found', result);
+  }
 
   @Post('create')
   async create(

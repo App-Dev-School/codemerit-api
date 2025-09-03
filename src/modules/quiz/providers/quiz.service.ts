@@ -38,12 +38,42 @@ export class QuizService {
     private readonly dataSource: DataSource,
   ) { }
 
+  async getQuizBySlug(slug: string): Promise<any> {
+    const quiz = await this.quizRepository.findOne({ where: { slug } });
+
+    if (!quiz) {
+      throw new AppCustomException(
+        HttpStatus.NOT_FOUND,
+        `Quiz not found.`,
+      );
+    }
+    const quizQuestions = await this.dataSource.getRepository(QuizQuestion).find({
+      where: { quizId: quiz.id },
+    });
+    const questionIds = quizQuestions.map(q => q.questionId);
+    if (!questionIds || questionIds.length === 0) {
+      throw new AppCustomException(
+        HttpStatus.BAD_REQUEST,
+        'No questions found for this quiz.'
+      );
+    }
+    // Use QuestionService method to get questions
+    const questions = await this.questionService.getQuestionsFromQIds({
+      questionIds,
+      numberOfQuestions: questionIds.length,
+    });
+    // Attach to quiz (like in createQuiz)
+    return {
+      ...quiz,
+      questions,
+    };
+  }
+
   async createQuiz(createQuizDto: CreateQuizDto): Promise<Quiz> {
     let quizCategory = '';
     if (createQuizDto?.quizType === QuizTypeEnum.UserQuiz) {
       if (
         (!createQuizDto?.subjectIds) &&
-        (!createQuizDto?.jobIds) &&
         (!createQuizDto?.topicIds)
       ) {
         throw new AppCustomException(
@@ -53,7 +83,6 @@ export class QuizService {
 
       let topicIds: number[] = [];
       let subjectIds: number[] = [];
-      let jobIds: number[] = [];
       if (createQuizDto?.topicIds) {
         topicIds = createQuizDto?.topicIds.split(',').map(id => parseInt(id.trim(), 10));
         quizCategory = 'Topic';
@@ -63,19 +92,13 @@ export class QuizService {
         subjectIds = createQuizDto?.subjectIds.split(',').map(id => parseInt(id.trim(), 10));
         quizCategory = 'Subject';
       }
-
-      if (createQuizDto?.jobIds) {
-        jobIds = createQuizDto?.jobIds.split(',').map(id => parseInt(id.trim(), 10));
-        quizCategory = 'Job Role';
-      }
-      console.log('Quiz generator #1:', quizCategory);
-
-      //uselsss
       const ids = new GetQuestionsByIdsDto();
       ids.subjectIds = subjectIds;
-      ids.jobIds = jobIds;
       ids.topicIds = topicIds;
-      ids.numberOfQuestions = 11;
+      ids.numberOfQuestions = 5;
+      if (createQuizDto?.numQuestions && createQuizDto?.numQuestions > 0) {
+        ids.numberOfQuestions = createQuizDto?.numQuestions;
+      }
       console.log('Quiz generator #2:', ids);
       const questions = await this.questionService.getQuestionsByIds(ids);
       console.log('Quiz generator #3:', questions);
@@ -86,14 +109,16 @@ export class QuizService {
         );
       }
       try {
-        let title = '';
-        if (subjectIds && subjectIds.length > 0) {
-          const subjects = await this.masterService.getSubjectListByIds(subjectIds);
-          title = getTitleBySubjectIds(subjects)+ 'Quiz';
-        }
-        if (topicIds && topicIds.length > 0) {
-          const topics = await this.masterService.getTopicListByIds(topicIds);
-          title = getTitleByTopicIds(topics)+ 'Quiz';
+        let title = createQuizDto.title;
+        if (!title) {
+          if (subjectIds && subjectIds.length > 0) {
+            const subjects = await this.masterService.getSubjectListByIds(subjectIds);
+            title = getTitleBySubjectIds(subjects) + ' Quiz';
+          }
+          if (topicIds && topicIds.length > 0) {
+            const topics = await this.masterService.getTopicListByIds(topicIds);
+            title = getTitleByTopicIds(topics) + ' Quiz';
+          }
         }
         let quiz = new Quiz();
         quiz.title = title;
@@ -190,14 +215,14 @@ export class QuizService {
       } catch (error) {
         throw new AppCustomException(
           HttpStatus.INTERNAL_SERVER_ERROR,
-          'Failed to save quiz and questions: ' + error.message
+          'Failed to save quiz. Error: ' + error.message
         );
       }
     }
 
     return null;
   }
-  
+
   async submitQuiz(submitQuizDto: SubmitQuizDto): Promise<QuizResult> {
     try {
       return this.dataSource.transaction(async (manager) => {
@@ -236,7 +261,7 @@ export class QuizService {
     } catch (error) {
       throw new AppCustomException(
         HttpStatus.INTERNAL_SERVER_ERROR,
-        'Failed to save quiz and questions: ' + error.message
+        'Failed to submit quiz result. Error: ' + error.message
       );
     }
   }
