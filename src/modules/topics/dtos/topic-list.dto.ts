@@ -20,10 +20,11 @@ export class TopicListItemDto {
   title: string;
   description: string;
   subjectId: number;
-  subjectName: string;
+  subjectName?: string;
   slug: string;
   label: string;
   votes?: number;
   isPublished: boolean;
+  isSubscribed?: boolean;
   coverage?: number;
 }

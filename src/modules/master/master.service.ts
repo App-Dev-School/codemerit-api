@@ -51,7 +51,6 @@ export class MasterService {
       topicDto.isSubscribed = false;
       topicDto.coverage = 0;
       topicDto.slug = topic.slug;
-
       topicsResponse.push(topicDto);
     }
 
