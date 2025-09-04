@@ -238,7 +238,7 @@ export class QuizService {
           score: submitQuizDto?.score,
         });
 
-        await manager.save(QuizResult, result);
+        const questionResult = await manager.save(QuizResult, result);
         // 3. Save QuestionAttempts
         for (const attempt of submitQuizDto?.attempts) {
 
@@ -256,7 +256,7 @@ export class QuizService {
           await manager.save(QuestionAttempt, questionAttempt);
         }
 
-        return null;
+        return questionResult;
       });
     } catch (error) {
       throw new AppCustomException(
