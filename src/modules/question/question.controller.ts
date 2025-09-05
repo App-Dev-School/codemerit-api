@@ -40,13 +40,13 @@ export class QuestionController {
     @Request() req: any,
   ): Promise<ApiResponse<any>> {
     const result = await this.service.updateQuestion(id, dto, req.user);
-    return new ApiResponse('Successfully updated Question', result);
+    return new ApiResponse('Question updated successfully.', result);
   }
 
   @Get(':slug')
   async findOne(@Param('slug') slug: string): Promise<ApiResponse<any>> {
     const result = await this.service.findOneBySlug(slug);
-    return new ApiResponse('Question Found', result);
+    return new ApiResponse('Question Found.', result);
   }
 
   @Delete('delete')
@@ -56,7 +56,7 @@ export class QuestionController {
   ): Promise<ApiResponse<any>> {
     const result = await this.service.remove(id, req.user);
 
-    return new ApiResponse('Successfully deleted question', null);
+    return new ApiResponse('Question deleted successfully.', null);
   }
 
   @Post('fetch')
@@ -67,6 +67,6 @@ export class QuestionController {
     if (!result || result.length === 0) {
       return new ApiResponse('No questions found', null);
     }
-    return new ApiResponse('Questions fetched successfully', result);
+    return new ApiResponse('Questions fetched successfully.', result);
   }
 }
