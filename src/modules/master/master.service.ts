@@ -150,13 +150,13 @@ export class MasterService {
   }
 
   async getTopicListByIds(topicIdsArray: number[]) {
-    return  this.topicRepo.findBy({
-    id: In(topicIdsArray),
-  });
+    return this.topicRepo.findBy({
+      id: In(topicIdsArray),
+    });
   }
   async getSubjectListByIds(subjectIdsArray: number[]) {
     return this.subjectRepo.findBy({
-    id: In(subjectIdsArray),
-  });
+      id: In(subjectIdsArray),
+    });
   }
 }

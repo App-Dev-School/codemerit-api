@@ -9,4 +9,6 @@ export class QuizResultService {
     @InjectRepository(QuizResult)
     private quizResultRepository: Repository<QuizResult>,
   ) { }
+
+  
 }

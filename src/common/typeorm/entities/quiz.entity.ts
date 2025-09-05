@@ -119,7 +119,4 @@ export class Quiz extends AbstractEntity implements IQuiz {
 
     @OneToMany(() => QuizQuestion, (quizQuestion) => quizQuestion.quiz, { cascade: true })
     quizQuestions: QuizQuestion[];
-
-    //Map for relation with one JobRole
-    //Map for relation with one/many Subject, Topic
 }

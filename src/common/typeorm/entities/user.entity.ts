@@ -1,4 +1,4 @@
-import { IsOptional, Matches } from 'class-validator';
+import { IsOptional } from 'class-validator';
 import { AccountStatusEnum } from 'src/core/users/enums/account-status.enum';
 import { UserRoleEnum } from 'src/core/users/enums/user-roles.enum';
 import {
@@ -6,14 +6,10 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
-  JoinColumn,
-  OneToOne,
-  UpdateDateColumn,
+  UpdateDateColumn
 } from 'typeorm';
 import { IUser } from '../interface/user.interface';
 import { AbstractEntity } from './abstract.entity';
-import { AuditEntity } from './audit.entity';
-import { Profile } from './profile.entity';
 
 @Entity()
 export class User extends AbstractEntity implements IUser {
