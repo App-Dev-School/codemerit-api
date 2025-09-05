@@ -2,7 +2,7 @@ export interface IQuestionAttempt {
     id: number;
     userId: number;
     questionId: number;
-    selectedOption: number;
+    selectedOption?: number;
     isSkipped: boolean;
     hintUsed: boolean;
     isCorrect: boolean;

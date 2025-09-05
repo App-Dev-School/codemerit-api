@@ -30,9 +30,9 @@ export class QuestionAttempt extends AbstractEntity implements IQuestionAttempt 
 
   @Column({
     type: 'integer',
-    nullable: false,
+    nullable: true,
   })
-  selectedOption: number;
+  selectedOption?: number;
 
   @Column({
     type: 'integer',
@@ -77,7 +77,7 @@ export class QuestionAttempt extends AbstractEntity implements IQuestionAttempt 
 
   @ManyToOne(() => QuestionOption)
   @JoinColumn({ name: 'selectedOption', referencedColumnName: 'id' })
-  selectedOptionDetails: QuestionOption;
+  selectedOptionDetails?: QuestionOption;
 
   @ManyToOne(() => Question)
   @JoinColumn({ name: 'questionId', referencedColumnName: 'id' })
