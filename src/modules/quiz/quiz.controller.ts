@@ -11,12 +11,10 @@ import { Public } from 'src/core/auth/decorators/public.decorator';
 import { CreateQuizDto } from './dtos/create-quiz.dto';
 import { SubmitQuizDto } from './dtos/submit-quiz.dto';
 import { QuizService } from './providers/quiz.service';
-import { QuizStatsService } from './providers/quiz-stats.service';
 
 @Controller('apis/quiz')
 export class QuizController {
-  constructor(private readonly quizService: QuizService,
-    private readonly quizStatsService: QuizStatsService
+  constructor(private readonly quizService: QuizService
   ) { }
 
   @Public()
@@ -41,25 +39,6 @@ export class QuizController {
   ): Promise<ApiResponse<any>> {
     const result = await this.quizService.submitQuiz(submitQuizDto);
     return new ApiResponse(`Quiz submitted successfully.`, result);
-  }
-
-  //@UseGuards(JwtAuthGuard)
-  @Get('user-quiz')
-  async getUserStats(@Req() req) {
-    const userId = req.user.id;
-    return await this.quizStatsService.getUserQuizStats(userId);
-  }
-
-  @Get('userSubjectStat')
-  async getSubjectStatsForUser(@Req() req) {
-    const userId = req.user.id;
-    return await this.quizStatsService.getSubjectStatsForUser(userId);
-  }
-
-  @Get('userTopicStat')
-  async getTopicStatsForUser(@Req() req) {
-    const userId = req.user.id;
-    return await this.quizStatsService.getTopicStatsForUser(userId);
   }
 
   // @Get('/all')

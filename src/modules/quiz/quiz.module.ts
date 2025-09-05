@@ -12,9 +12,11 @@ import { QuizSubject } from 'src/common/typeorm/entities/quiz-subject.entity';
 import { QuizTopic } from 'src/common/typeorm/entities/quiz-topic.entity';
 import { MasterModule } from '../master/master.module';
 import { QuizQuestion } from 'src/common/typeorm/entities/quiz-quesion.entity';
+import { Topic } from 'src/common/typeorm/entities/topic.entity';
+import { Subject } from 'src/common/typeorm/entities/subject.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Quiz, QuestionAttempt, QuizResult,QuizQuestion, QuizSubject, QuizTopic]), QuestionModule, MasterModule],
+  imports: [TypeOrmModule.forFeature([Quiz, QuestionAttempt, QuizResult, QuizQuestion, QuizSubject, QuizTopic]), QuestionModule, MasterModule],
   providers: [QuizService, QuestionAttemptService, QuizResultService],
   controllers: [QuizController],
   // exports: [QuizService, QuestionService]

@@ -20,7 +20,7 @@ jobs:
           git --version
 
       - name: 📦 Install dependencies
-        run: npm install --legacy-peer-dependencies
+        run: npm install
 
       - name: 🏗️ Build NestJS application
         run: npm run build

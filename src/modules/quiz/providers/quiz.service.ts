@@ -23,14 +23,14 @@ export class QuizService {
     @InjectRepository(Quiz)
     private quizRepository: Repository<Quiz>,
 
-    @InjectRepository(QuizTopic)
-    private quizTopicRepository: Repository<QuizTopic>,
+    // @InjectRepository(QuizTopic)
+    // private quizTopicRepository: Repository<QuizTopic>,
 
-    @InjectRepository(QuizSubject)
-    private quizSubjectRepository: Repository<QuizSubject>,
+    // @InjectRepository(QuizSubject)
+    // private quizSubjectRepository: Repository<QuizSubject>,
 
-    @InjectRepository(QuizQuestion)
-    private quizQuestionRepository: Repository<QuizQuestion>,
+    // @InjectRepository(QuizQuestion)
+    // private quizQuestionRepository: Repository<QuizQuestion>,
 
     private readonly questionService: QuestionService,
     private readonly masterService: MasterService,
@@ -80,6 +80,7 @@ export class QuizService {
           HttpStatus.BAD_REQUEST, 'Please specify job role, subjects or specific topics to generate a quiz.'
         );
       }
+      console.log("QuizBuilder #1 createQuizDto:", createQuizDto);
 
       let topicIds: number[] = [];
       let subjectIds: number[] = [];
@@ -93,6 +94,7 @@ export class QuizService {
         quizCategory = 'Subject';
       }
       const ids = new GetQuestionsByIdsDto();
+      console.log("QuizBuilder #2 Q-ids:", ids, quizCategory);
       ids.subjectIds = subjectIds;
       ids.topicIds = topicIds;
       ids.numberOfQuestions = 5;
@@ -101,10 +103,12 @@ export class QuizService {
       }
       console.log('Quiz generator #2:', ids);
       const questions = await this.questionService.getQuestionsByIds(ids);
-      console.log('Quiz generator #3:', questions);
+      console.log("QuizBuilder #3 Fetched Questions:", questions);
       if (!questions || questions.length < 5) {
+        //generate an error with custom message
+        console.log('QuizBuilder #4: @NotEnoughQuestions');
         throw new AppCustomException(
-          HttpStatus.BAD_REQUEST,
+          HttpStatus.NO_CONTENT,
           `Not enough questions found for the given ${quizCategory}`
         );
       }
@@ -130,9 +134,10 @@ export class QuizService {
           slug = generateUniqueSlug(title);
         }
         quiz.slug = slug;
+        console.log('QuizBuilder #4: QuizToSave', quiz);
         return this.dataSource.transaction(async manager => {
           const savedQuizzes = await manager.save(Quiz, quiz);
-
+          console.log('QuizBuilder #5: savedQuizzes', savedQuizzes);
           let quizQuestion: QuizQuestion[] = [];
           let quizSubject: QuizSubject[] = [];
           let quizTopic: QuizTopic[] = [];
@@ -168,6 +173,7 @@ export class QuizService {
           return savedQuizzes;
         });
       } catch (error) {
+        console.log('QuizBuilder #6: ERROR', error);
         throw new AppCustomException(
           HttpStatus.INTERNAL_SERVER_ERROR,
           'Failed to save quiz and questions: ' + error.message
