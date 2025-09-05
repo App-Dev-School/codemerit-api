@@ -474,7 +474,8 @@ export class QuestionService {
         qb.andWhere('question.subjectId = :groupId', { groupId });
       }
 
-      // qb.orderBy('RANDOM()'); // MySQL only; consider alternatives for large datasets
+      // qb.orderBy('RAND()'); // MySQL only; consider alternatives for large datasets
+      // qb.orderBy('RANDOM()'); // PostgreSQL only; consider alternatives for large datasets
 
       const questions = await qb.getMany();
       totalQuestions.push(...questions);
@@ -503,7 +504,7 @@ export class QuestionService {
         // .andWhere('question.id NOT IN (:...existingIds)', {
         //   existingIds: uniqueQuestions.map(q => q.id)
         // })
-        .orderBy('RANDOM()')
+        .orderBy('RAND()')
         .take(missingCount);
 
       if (uniqueQuestions.length > 0) {
