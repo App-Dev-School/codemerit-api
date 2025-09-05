@@ -433,149 +433,137 @@ export class QuestionService {
   }
 
   async getQuestionsByIds(dto: GetQuestionsByIdsDto): Promise<QuestionListResponseDto[]> {
-    // const { topicIds = [], subjectIds = [], numberOfQuestions = 5 } = dto;
+  const { subjectIds = [], topicIds = [], numberOfQuestions } = dto;
 
-    if (dto.subjectIds.length === 0 && dto.topicIds.length === 0) {
-      throw new AppCustomException(
-        HttpStatus.BAD_REQUEST,
-        'At least one of the subjects or topics must be provided.'
-      );
-    }
-
-    const resolvedSubjectIds = [...dto.subjectIds];
-    const isTopicBased = dto.topicIds.length > 0;
-    const isSubjectBased = resolvedSubjectIds.length > 0;
-
-    const perGroupCount = isTopicBased
-      ? Math.ceil(dto.numberOfQuestions / dto.topicIds.length)
-      : Math.ceil(dto.numberOfQuestions / resolvedSubjectIds.length);
-
-    const totalQuestions: Question[] = [];
-
-    const groupIds = isTopicBased ? dto.topicIds : resolvedSubjectIds;
-
-    // Fetch questions grouped by topic or subject
-    for (const groupId of groupIds) {
-      const qb = this.questionRepo.createQueryBuilder('question')
-        .addSelect('RAND()', 'rand')
-        .leftJoinAndSelect('question.subject', 'subject')
-        .leftJoinAndSelect('question.options', 'options')
-        .leftJoinAndSelect('question.questionTopics', 'questionTopics')
-        .leftJoinAndSelect('questionTopics.topic', 'topic')
-        .where('question.questionType = :type', { type: QuestionTypeEnum.Trivia })
-        .andWhere('question.status = :status', { status: QuestionStatusEnum.Active })
-        .take(perGroupCount)
-        .orderBy('rand'); // order by the alias instead
-
-      if (isTopicBased) {
-        qb.innerJoin('question.questionTopics', 'qt')
-          .andWhere('qt.topicId = :groupId', { groupId });
-      } else {
-        qb.andWhere('question.subjectId = :groupId', { groupId });
-      }
-
-      // qb.orderBy('RAND()'); // MySQL only; consider alternatives for large datasets
-      // qb.orderBy('RANDOM()'); // PostgreSQL only; consider alternatives for large datasets
-
-      const questions = await qb.getMany();
-      totalQuestions.push(...questions);
-    }
-
-
-    // Deduplicate questions by ID
-    const uniqueQuestionsMap = new Map<number, Question>();
-    for (const q of totalQuestions) {
-      uniqueQuestionsMap.set(q.id, q);
-    }
-
-    const uniqueQuestions = Array.from(uniqueQuestionsMap.values());
-
-    // Fallback if not enough questions
-    if (uniqueQuestions.length < dto.numberOfQuestions) {
-      const missingCount = dto.numberOfQuestions - uniqueQuestions.length;
-
-      const fallbackQb = this.questionRepo.createQueryBuilder('question')
-        .leftJoinAndSelect('question.subject', 'subject')
-        .leftJoinAndSelect('question.options', 'options')
-        .leftJoinAndSelect('question.questionTopics', 'questionTopics')
-        .leftJoinAndSelect('questionTopics.topic', 'topic')
-        .where('question.questionType = :type', { type: QuestionTypeEnum.Trivia })
-        .andWhere('question.status = :status', { status: QuestionStatusEnum.Active })
-        // .andWhere('question.id NOT IN (:...existingIds)', {
-        //   existingIds: uniqueQuestions.map(q => q.id)
-        // })
-        .orderBy('RAND()')
-        .take(missingCount);
-
-      if (uniqueQuestions.length > 0) {
-        fallbackQb.andWhere('question.id NOT IN (:...existingIds)', {
-          existingIds: uniqueQuestions.map(q => q.id)
-        });
-      }
-      if (isTopicBased && dto.topicIds.length > 0) {
-        fallbackQb.andWhere('questionTopics.topicId IN (:...topicIds)', { topicIds: dto.topicIds });
-        // fallbackQb.andWhere('questionTopics.topicId IN (:...topicIds)', { topicIds: dto.topicIds });
-      } else if (!isTopicBased && resolvedSubjectIds.length > 0) {
-        fallbackQb.andWhere('question.subjectId IN (:...subjectIds)', {
-          subjectIds: resolvedSubjectIds
-        });
-      }
-
-      const fallbackQuestions = await fallbackQb.getMany();
-
-      uniqueQuestions.push(...fallbackQuestions);
-    }
-
-    // Trim to requested number
-    const finalQuestions = uniqueQuestions.slice(0, dto.numberOfQuestions);
-
-    if (finalQuestions.length < dto.numberOfQuestions) {
-      throw new AppCustomException(
-        HttpStatus.BAD_REQUEST,
-        `Not enough Trivia questions found. Found ${finalQuestions.length}, need ${dto.numberOfQuestions}.`
-      );
-    }
-
-    // Batch fetch options and topics for all final questions
-    const questionIds = finalQuestions.map(q => q.id);
-
-    const [options, questionTopics] = await Promise.all([
-      this.dataSource.getRepository(QuestionOption).find({
-        where: { questionId: In(questionIds) },
-      }),
-      this.dataSource.getRepository(QuestionTopic).find({
-        where: { questionId: In(questionIds) },
-        relations: ['topic'],
-      }),
-    ]);
-
-    // Map options by questionId
-    const optionsMap = new Map<number, any[]>();
-    for (const option of options) {
-      if (!optionsMap.has(option.questionId)) {
-        optionsMap.set(option.questionId, []);
-      }
-      optionsMap.get(option.questionId).push(option);
-    }
-
-    // Map topics by questionId
-    const topicsMap = new Map<number, any[]>();
-    for (const qt of questionTopics) {
-      if (!topicsMap.has(qt.questionId)) {
-        topicsMap.set(qt.questionId, []);
-      }
-      if (qt.topic) {
-        topicsMap.get(qt.questionId).push({
-          id: qt.topic.id,
-          title: qt.topic.title,
-          description: qt.topic.description,
-          createdAt: qt.topic.createdAt,
-        });
-      }
-    }
-
-    return this.mappedQuestionList(finalQuestions, topicsMap, optionsMap);
+  if (subjectIds.length === 0 && topicIds.length === 0) {
+    throw new AppCustomException(
+      HttpStatus.BAD_REQUEST,
+      'At least one of the subjects or topics must be provided.'
+    );
   }
+
+  const isTopicBased = topicIds.length > 0;
+  const groupIds = isTopicBased ? topicIds : subjectIds;
+  const perGroupCount = Math.ceil(numberOfQuestions / groupIds.length);
+
+  // 🔄 Parallel query execution for groups
+  const groupPromises = groupIds.map(groupId => {
+    const qb = this.questionRepo.createQueryBuilder('question')
+      .addSelect('RAND()', 'rand')
+      .leftJoinAndSelect('question.subject', 'subject')
+      .leftJoinAndSelect('question.options', 'options')
+      .leftJoinAndSelect('question.questionTopics', 'questionTopics')
+      .leftJoinAndSelect('questionTopics.topic', 'topic')
+      .where('question.questionType = :type', { type: QuestionTypeEnum.Trivia })
+      .andWhere('question.status = :status', { status: QuestionStatusEnum.Active })
+      .take(perGroupCount)
+      .orderBy('rand');
+
+    if (isTopicBased) {
+      qb.innerJoin('question.questionTopics', 'qt')
+        .andWhere('qt.topicId = :groupId', { groupId });
+    } else {
+      qb.andWhere('question.subjectId = :groupId', { groupId });
+    }
+
+    return qb.getMany();
+  });
+
+  const groupResults = await Promise.all(groupPromises);
+  const totalQuestions = groupResults.flat();
+
+  // 🧹 Deduplicate by ID
+  const questionMap = new Map<number, Question>();
+  for (const q of totalQuestions) {
+    questionMap.set(q.id, q);
+  }
+
+  let uniqueQuestions = Array.from(questionMap.values());
+
+  // ⛑️ Fallback logic if not enough questions
+  if (uniqueQuestions.length < numberOfQuestions) {
+    const missingCount = numberOfQuestions - uniqueQuestions.length;
+
+    const fallbackQb = this.questionRepo.createQueryBuilder('question')
+     .addSelect('RAND()', 'rand') 
+    .leftJoinAndSelect('question.subject', 'subject')
+      .leftJoinAndSelect('question.options', 'options')
+      .leftJoinAndSelect('question.questionTopics', 'questionTopics')
+      .leftJoinAndSelect('questionTopics.topic', 'topic')
+      .where('question.questionType = :type', { type: QuestionTypeEnum.Trivia })
+      .andWhere('question.status = :status', { status: QuestionStatusEnum.Active })
+      .andWhere('question.id NOT IN (:...existingIds)', {
+        existingIds: uniqueQuestions.map(q => q.id),
+      })
+      .orderBy('rand')
+      .take(missingCount);
+
+    if (isTopicBased) {
+      fallbackQb.andWhere('questionTopics.topicId IN (:...topicIds)', { topicIds });
+    } else {
+      fallbackQb.andWhere('question.subjectId IN (:...subjectIds)', { subjectIds });
+    }
+
+    const fallbackQuestions = await fallbackQb.getMany();
+
+    for (const q of fallbackQuestions) {
+      questionMap.set(q.id, q);
+    }
+
+    uniqueQuestions = Array.from(questionMap.values());
+  }
+
+  // 🧵 Final trim
+  const finalQuestions = uniqueQuestions.slice(0, numberOfQuestions);
+
+  if (finalQuestions.length < numberOfQuestions) {
+    throw new AppCustomException(
+      HttpStatus.BAD_REQUEST,
+      `Not enough Trivia questions found. Found ${finalQuestions.length}, need ${numberOfQuestions}.`
+    );
+  }
+
+  const questionIds = finalQuestions.map(q => q.id);
+
+  // ⚡ Parallel batch fetch
+  const [options, questionTopics] = await Promise.all([
+    this.dataSource.getRepository(QuestionOption).find({
+      where: { questionId: In(questionIds) },
+    }),
+    this.dataSource.getRepository(QuestionTopic).find({
+      where: { questionId: In(questionIds) },
+      relations: ['topic'],
+    }),
+  ]);
+
+  // 🧭 Map options
+  const optionsMap = new Map<number, any[]>();
+  for (const opt of options) {
+    if (!optionsMap.has(opt.questionId)) {
+      optionsMap.set(opt.questionId, []);
+    }
+    optionsMap.get(opt.questionId).push(opt);
+  }
+
+  // 🧭 Map topics
+  const topicsMap = new Map<number, any[]>();
+  for (const qt of questionTopics) {
+    if (!topicsMap.has(qt.questionId)) {
+      topicsMap.set(qt.questionId, []);
+    }
+    if (qt.topic) {
+      topicsMap.get(qt.questionId).push({
+        id: qt.topic.id,
+        title: qt.topic.title,
+        description: qt.topic.description,
+        createdAt: qt.topic.createdAt,
+      });
+    }
+  }
+
+  return this.mappedQuestionList(finalQuestions, topicsMap, optionsMap);
+}
+
 
   private mappedQuestionList(
     questions: Question[],
