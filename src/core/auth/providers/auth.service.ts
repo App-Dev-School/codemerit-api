@@ -42,10 +42,7 @@ export class AuthService {
   }
 
   async login(user: User) {
-    console.log('LoginAPID AuthService :: user =>', user);
     //Auto ACC_VERIFY without notification + test email
-    //Where password is validated
-
     if (user.accountStatus != AccountStatusEnum.ACTIVE) {
       //Enable instant verification. Do not throw error if password is validated
       /*
@@ -76,6 +73,7 @@ export class AuthService {
     console.log("User Login user", user);
     const userData = await this.usersService.findByEmail(
         user?.email);
+        console.log("LoginProcessor userData", userData);
     const response = new LoginResponseDto({
       ...userData,
       token,

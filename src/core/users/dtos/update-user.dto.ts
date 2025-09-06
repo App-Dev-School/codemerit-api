@@ -5,6 +5,7 @@ import {
   IsEnum,
   Length,
   IsInt,
+  IsNumber,
 } from 'class-validator';
 import { UserRoleEnum } from '../enums/user-roles.enum';
 import { AccountStatusEnum } from '../enums/account-status.enum';
@@ -46,9 +47,8 @@ export class UpdateUserDto {
 
   @ApiPropertyOptional()
   @IsOptional()
-  @IsString()
-  @Length(1, 50)
-  designation?: string;
+  @IsNumber()
+  designation?: number;
 
   @ApiPropertyOptional()
   @IsOptional()

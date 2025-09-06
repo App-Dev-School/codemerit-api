@@ -38,27 +38,21 @@ export class CreateUserDto {
   // })
   mobile?: string;
 
-  @ApiProperty({
-    description: 'Please select your current status',
-    example: 'Tolle',
-  })
-  @IsNotEmpty({ message: 'Please select your current status.' })
-  designation: string;
+  @ApiPropertyOptional()
+  @IsOptional()
+  designation?: number;
 
-  @ApiProperty({
-    description: 'Please select your current status',
-    example: 'Tolle',
-  })
-  @IsNotEmpty({ message: 'Please let us know your city.' })
+  @ApiPropertyOptional()
+  @IsOptional()
   city: string;
 
-  @ApiProperty({
-    description: 'Please select your country',
-    example: 'India',
-  })
-  @IsNotEmpty({ message: 'Please let us know your country.' })
+  @ApiPropertyOptional()
+  @IsOptional()
   country: string;
-
+  
+  @ApiPropertyOptional()
+  @IsOptional()
+  about: string;
   @ApiPropertyOptional()
   @IsOptional()
   linkedinUrl?: string;

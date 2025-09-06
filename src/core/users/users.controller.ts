@@ -55,8 +55,8 @@ export class UsersController {
     return new ApiResponse('User lit not found.', null);
   }
 
-  @UseGuards(RolesGuard)
-  @Roles(UserRoleEnum.ADMIN)
+  // @UseGuards(RolesGuard)
+  // @Roles(UserRoleEnum.ADMIN)
   @Get('profile/:username')
   async getUserByUsername(
     @Param('username') username: string,

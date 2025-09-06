@@ -21,14 +21,15 @@ export class MasterService {
     private readonly dataSource: DataSource
   ) { }
 
-  async getMasterData(userId:number) {
+  async getMasterData(userId: number) {
     const subjects = await this.getSubjectStatsForUser(userId);
     const topics = await this.getTopicStatsForUser(userId);
+    const jobRoles = await this.getJobRolesWithSubjects(userId);
     //TopicListItemDto[]
 
     return {
       subjects: subjects,
-      jobRoles: this.getJobRolesWithSubjects(),
+      jobRoles: jobRoles,
       topics: topics
     };
   }
@@ -51,7 +52,7 @@ export class MasterService {
       .leftJoin('question', 'q', 'q.subjectId = s.id')
       .setParameter('questionType', QuestionTypeEnum.Trivia)
       .groupBy('s.id');
-  
+
     if (userId) {
       qb
         .addSelect('COUNT(DISTINCT qa.id)', 'attempted')
@@ -72,9 +73,9 @@ export class MasterService {
         .addSelect('0', 'wrong')
         .addSelect('0', 'skipped');
     }
-  
+
     const result = await qb.getRawMany();
-  
+
     return result.map((row) => ({
       id: +row.subjectId,
       title: row.subjectTitle,
@@ -90,7 +91,7 @@ export class MasterService {
       skipped: +row.skipped || 0,
     }));
   }
-  
+
   async getTopicStatsForUser(userId?: number) {
     const qb = this.dataSource
       .createQueryBuilder()
@@ -114,7 +115,7 @@ export class MasterService {
       .setParameter('questionType', QuestionTypeEnum.Trivia)
       .groupBy('t.id')
       .addGroupBy('t.subjectId');
-  
+
     if (userId) {
       qb.addSelect('COUNT(DISTINCT qa.id)', 'attempted')
         .addSelect('SUM(CASE WHEN qa.isCorrect = true THEN 1 ELSE 0 END)', 'correct')
@@ -133,9 +134,9 @@ export class MasterService {
         .addSelect('0', 'wrong')
         .addSelect('0', 'skipped');
     }
-  
+
     const result = await qb.getRawMany();
-  
+
     return result.map((row) => ({
       id: +row.topicId,
       title: row.topicTitle,
@@ -147,7 +148,7 @@ export class MasterService {
       label: row.label || '',
       numQuestions: +row.numQuestions || 0,
       numTrivia: +row.numTrivia || 0,
-      isSubscribed: row.isSubscribed || false,
+      isSubscribed: row.isSubscribed || true,
       coverage: row.coverage || 0,
       attempted: +row.attempted || 0,
       correct: +row.correct || 0,
@@ -156,7 +157,7 @@ export class MasterService {
     }));
   }
 
-    //  Combine Subject and Topic Stats
+  //  Combine Subject and Topic Stats
   async getUserQuizStats(userId: number) {
     const subjects = await this.getSubjectStatsForUser(userId);
     const topics = await this.getTopicStatsForUser(userId);
@@ -201,7 +202,7 @@ export class MasterService {
   }
    */
 
-  async getJobRolesWithSubjects() {
+  async getJobRolesWithSubjectsWithoutUser(userId?: number) {
     const jobRoles = await this.jobRoleRepo
       .createQueryBuilder('jobRole')
       .leftJoinAndSelect('jobRole.jobRoleSubjects', 'jrs')
@@ -211,6 +212,8 @@ export class MasterService {
         'jobRole.title',
         'jobRole.slug',
         'jobRole.description',
+        'jobRole.image',
+        'jobRole.isPublished',
         'jobRole.color',
         'jrs.id', // Optional: if you want the join ID
         'subject.id',
@@ -218,13 +221,19 @@ export class MasterService {
         'subject.image'
       ])
       .getMany();
-
     const result = jobRoles.map(jr => ({
       id: jr.id,
       title: jr.title,
       description: jr.description,
       slug: jr.slug,
+      image: jr.image,
       color: jr.color,
+      isPublished: jr.isPublished,
+      numQuestions: 0,
+      numusers: 0,
+      isSubscribed: true,
+      coverage: 0,
+      score: 0,
       subjects: jr.jobRoleSubjects.map(jrs => ({
         id: jrs.subject.id,
         title: jrs.subject.title,
@@ -233,6 +242,63 @@ export class MasterService {
     }));
     return result;
   }
+
+  async getJobRolesWithSubjects(userId?: number) {
+  const qb = this.jobRoleRepo
+    .createQueryBuilder('jobRole')
+    .leftJoinAndSelect('jobRole.jobRoleSubjects', 'jrs')
+    .leftJoinAndSelect('jrs.subject', 'subject')
+    .select([
+      'jobRole.id',
+      'jobRole.title',
+      'jobRole.slug',
+      'jobRole.description',
+      'jobRole.image',
+      'jobRole.isPublished',
+      'jobRole.color',
+      'jrs.id',
+      'subject.id',
+      'subject.title',
+      'subject.image'
+    ]);
+
+  if (userId) {
+    qb.addSelect('user.designation', 'userDes');
+    // join with user table to check subscription
+    qb.addSelect(
+      `CASE WHEN user.designation = jobRole.id THEN TRUE ELSE FALSE END`,
+      'isSubscribed'
+    ).leftJoin('user', 'user', 'user.id = :userId', { userId });
+  } else {
+    qb.addSelect('FALSE', 'isSubscribed');
+  }
+
+  const jobRoles = await qb.getRawAndEntities();
+
+  // Map results
+  return jobRoles.entities.map((jr, index) => {
+    const raw = jobRoles.raw[index];
+    return {
+      id: jr.id,
+      title: jr.title,
+      description: jr.description,
+      slug: jr.slug,
+      image: jr.image,
+      color: jr.color,
+      isPublished: jr.isPublished,
+      numQuestions: 0,
+      numusers: 0,
+      isSubscribed: !!raw.isSubscribed,
+      coverage: 0,
+      score: 0,
+      subjects: jr.jobRoleSubjects.map(jrs => ({
+        id: jrs.subject.id,
+        title: jrs.subject.title,
+        image: jrs.subject.image
+      }))
+    };
+  });
+}
 
   async getTopicListByIds(topicIdsArray: number[]) {
     return this.topicRepo.findBy({

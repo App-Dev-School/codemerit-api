@@ -6,10 +6,13 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
   UpdateDateColumn
 } from 'typeorm';
 import { IUser } from '../interface/user.interface';
 import { AbstractEntity } from './abstract.entity';
+import { JobRole } from './job-role.entity';
 
 @Entity()
 export class User extends AbstractEntity implements IUser {
@@ -54,12 +57,11 @@ export class User extends AbstractEntity implements IUser {
   role: UserRoleEnum;
 
   @Column({
-    type: 'varchar',
-    length: 50,
+    type: 'integer',
     nullable: true,
-    default: null,
+    default: null
   })
-  designation: string;
+  designation?: number;
 
   @Column({
     type: 'varchar',
@@ -152,4 +154,8 @@ export class User extends AbstractEntity implements IUser {
 
   @DeleteDateColumn({ name: 'deletedAt', default: null, select: false })
   deletedAt: Date;
+  
+  @ManyToOne(() => JobRole, (jobRole) => jobRole.users, { eager: false })
+  @JoinColumn({ name: 'designation' })
+  userJobRole: JobRole;
 }

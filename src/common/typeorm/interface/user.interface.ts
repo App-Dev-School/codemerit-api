@@ -4,12 +4,12 @@ import { UserRoleEnum } from 'src/core/users/enums/user-roles.enum';
 export interface IUser {
   id: number;
   firstName: string;
-  lastName: string;
+  lastName?: string;
   email: string;
-  mobile: string;
+  mobile?: string;
   username: string;
   role: UserRoleEnum;
-  designation: string;
+  designation?: number;
   city: string;
   country: string;
   password: string;

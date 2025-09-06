@@ -30,7 +30,7 @@ export class QuestionAttempt extends AbstractEntity implements IQuestionAttempt 
 
   @Column({
     type: 'integer',
-    nullable: false,
+    nullable: true,
   })
   selectedOption: number;
 
