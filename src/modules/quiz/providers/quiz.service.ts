@@ -77,7 +77,7 @@ export class QuizService {
         (!createQuizDto?.topicIds)
       ) {
         throw new AppCustomException(
-          HttpStatus.BAD_REQUEST, 'Please specify job role, subjects or specific topics to generate a quiz.'
+          HttpStatus.BAD_REQUEST, 'Please specify a job role, subjects or topics to generate a quiz.'
         );
       }
       console.log("QuizBuilder #1 createQuizDto:", createQuizDto);

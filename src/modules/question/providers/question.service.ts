@@ -110,13 +110,13 @@ export class QuestionService {
       } else {
         throw new AppCustomException(
           HttpStatus.NOT_FOUND,
-          `User dont have permission to delete`,
+          `User dont have permission to delete.`,
         );
       }
     } else {
       throw new AppCustomException(
         HttpStatus.NOT_FOUND,
-        `Question with id ${id} not found`,
+        `Question not found.`,
       );
     }
     // await this.questionRepo.delete(id);
@@ -142,7 +142,7 @@ export class QuestionService {
     ) {
       throw new AppCustomException(
         HttpStatus.NOT_FOUND,
-        `User dont have permission to update this question`,
+        `User dont have permission to update this question.`,
       );
     }
 
@@ -333,7 +333,7 @@ export class QuestionService {
     if (!questionList) {
       throw new AppCustomException(
         HttpStatus.NOT_FOUND,
-        'No Question found for the given subject',
+        'No Question found for the given subject.',
       );
     }
     for (const question of questionList) {
@@ -611,21 +611,17 @@ export class QuestionService {
 
   async getQuestionsFromQIds(dto: GetQuestionsByIdsDto): Promise<QuestionListResponseDto[]> {
     const { questionIds } = dto;
-
     if (!questionIds || questionIds.length === 0) {
       throw new AppCustomException(HttpStatus.BAD_REQUEST, 'No question IDs provided.');
     }
-
     // Fetch questions by ID
     const questions = await this.questionRepo.find({
       where: { id: In(questionIds) },
     });
-
     // Fetch related options
     const options = await this.dataSource.getRepository(QuestionOption).find({
       where: { questionId: In(questionIds) },
     });
-
     // Fetch related topics via QuestionTopic
     const questionTopics = await this.dataSource
       .getRepository(QuestionTopic)
@@ -633,7 +629,6 @@ export class QuestionService {
         where: { questionId: In(questionIds) },
         relations: ['topic'],
       });
-
     // Map options to questions
     const optionsMap = new Map<number, any[]>();
     for (const option of options) {
@@ -642,7 +637,6 @@ export class QuestionService {
       }
       optionsMap.get(option.questionId).push(option);
     }
-
     // Map topics to questions
     const topicsMap = new Map<number, any[]>();
     for (const qt of questionTopics) {
@@ -658,7 +652,6 @@ export class QuestionService {
         });
       }
     }
-
     // Use your existing mapper function
     return this.mappedQuestionList(questions, topicsMap, optionsMap);
   }

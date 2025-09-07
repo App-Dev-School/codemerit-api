@@ -13,6 +13,14 @@ export class Subject extends AbstractEntity implements ISubject {
   title: string;
 
   @Column({
+    type: 'varchar',
+    length: 100,
+    nullable: true,
+    unique: true,
+  })
+  slug: string;
+
+  @Column({
     type: 'text',
     nullable: true,
   })

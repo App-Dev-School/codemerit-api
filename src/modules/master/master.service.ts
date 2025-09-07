@@ -1,9 +1,14 @@
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { QuestionTypeEnum } from 'src/common/enum/question-type.enum';
+import { AppCustomException } from 'src/common/exceptions/app-custom-exception.filter';
 import { JobRole } from 'src/common/typeorm/entities/job-role.entity';
+import { QuestionAttempt } from 'src/common/typeorm/entities/question-attempt.entity';
 import { Subject } from 'src/common/typeorm/entities/subject.entity';
 import { Topic } from 'src/common/typeorm/entities/topic.entity';
+import { UserSubject } from 'src/common/typeorm/entities/user-subject.entity';
+import { User } from 'src/common/typeorm/entities/user.entity';
+import { AddUserSubjectsDto } from 'src/core/users/dtos/user-subject.dto';
 import { DataSource, In, Repository } from 'typeorm';
 
 @Injectable()
@@ -18,14 +23,17 @@ export class MasterService {
     @InjectRepository(JobRole)
     private jobRoleRepo: Repository<JobRole>,
 
+    @InjectRepository(UserSubject)
+    private readonly userSubjectRepo: Repository<UserSubject>,
+
     private readonly dataSource: DataSource
   ) { }
 
   async getMasterData(userId: number) {
-    const subjects = await this.getSubjectStatsForUser(userId);
+    const subjects = await this.getSubjectStatsMaster(userId);
     const topics = await this.getTopicStatsForUser(userId);
     const jobRoles = await this.getJobRolesWithSubjects(userId);
-    //TopicListItemDto[]
+    //TopicListItemDto[] - Map to exact dtos
 
     return {
       subjects: subjects,
@@ -34,7 +42,41 @@ export class MasterService {
     };
   }
 
-  async getSubjectStatsForUser(userId?: number) {
+  async addUserSubjects(userId: number, dto: AddUserSubjectsDto) {
+    // get existing subjectIds for this user
+    const existing = await this.userSubjectRepo.find({
+      where: { userId },
+      select: ['subjectId'],
+    });
+    if (existing.length > 0) {
+      const names = existing.map((e) => e.subject.title).join(', ');
+      throw new AppCustomException(
+        HttpStatus.BAD_REQUEST,
+        `Subjects already added for this user: ${names}`,
+      );
+    }
+    const existingIds = new Set(existing.map((us) => us.subjectId));
+    const newSubjects = dto.subjectIds
+      .filter((id) => !existingIds.has(id))
+      .map((subjectId) =>
+        this.userSubjectRepo.create({ userId, subjectId }),
+      );
+    if (newSubjects.length === 0) {
+      return [];
+    }
+    //return this.userSubjectRepo.save(newSubjects);
+    try {
+      return await this.userSubjectRepo.save(newSubjects);
+    } catch (err) {
+      throw new AppCustomException(
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        'Failed to add subjects. Please try again later.',
+      );
+    }
+  }
+
+  //returns all subjects with basic detail and stats
+  async getSubjectStatsMaster(userId?: number) {
     const qb = this.dataSource
       .createQueryBuilder()
       .select('s.id', 'subjectId')
@@ -59,10 +101,19 @@ export class MasterService {
         .addSelect('SUM(CASE WHEN qa.isCorrect = true THEN 1 ELSE 0 END)', 'correct')
         .addSelect('SUM(CASE WHEN qa.isCorrect = false THEN 1 ELSE 0 END)', 'wrong')
         .addSelect('SUM(CASE WHEN qa.isSkipped = true THEN 1 ELSE 0 END)', 'skipped')
+        .addSelect(
+          'CASE WHEN us.userId IS NOT NULL THEN 1 ELSE 0 END',
+          'isSubscribed')
         .leftJoin(
           'question_attempt',
           'qa',
           'qa.questionId = q.id AND qa.userId = :userId',
+          { userId }
+        )
+        .leftJoin(
+          'user_subject',
+          'us',
+          'us.subjectId = s.id AND us.userId = :userId',
           { userId }
         );
     } else {
@@ -71,7 +122,8 @@ export class MasterService {
         .addSelect('0', 'attempted')
         .addSelect('0', 'correct')
         .addSelect('0', 'wrong')
-        .addSelect('0', 'skipped');
+        .addSelect('0', 'skipped')
+        .addSelect('false', 'isSubscribed');
     }
 
     const result = await qb.getRawMany();
@@ -85,11 +137,187 @@ export class MasterService {
       color: row.color,
       numQuestions: +row.numQuestions || 0,
       numTrivia: +row.numTrivia || 0,
+      isSubscribed: row.isSubscribed,
+      attempted: +row.attempted || 0,
+      correct: +row.correct || 0,
+      wrong: +row.wrong || 0,
+      skipped: +row.skipped || 0
+    }));
+  }
+
+  //returns one subject full details wrt a userId
+  async getSubjectDashboard(subjectId: number, userId?: number, fullData = false) {
+    // Base query for subject stats
+    const qb = this.dataSource
+      .createQueryBuilder()
+      .select('s.id', 'subjectId')
+      .addSelect('s.title', 'subjectTitle')
+      .addSelect('s.description', 'description')
+      .addSelect('s.image', 'image')
+      .addSelect('s.isPublished', 'isPublished')
+      .addSelect('s.color', 'color')
+      .addSelect('COUNT(DISTINCT q.id)', 'numQuestions')
+      .addSelect(
+        'COUNT(DISTINCT IF(q.questionType = :questionType, q.id, NULL))',
+        'numTrivia'
+      )
+      .from(Subject, 's')
+      .leftJoin('question', 'q', 'q.subjectId = s.id')
+      .where('s.id = :subjectId', { subjectId })
+      .setParameter('questionType', QuestionTypeEnum.Trivia)
+      .groupBy('s.id');
+
+    if (userId) {
+      qb.addSelect('COUNT(DISTINCT qa.id)', 'attempted')
+        .addSelect('SUM(CASE WHEN qa.isCorrect = true THEN 1 ELSE 0 END)', 'correct')
+        .addSelect('SUM(CASE WHEN qa.isCorrect = false THEN 1 ELSE 0 END)', 'wrong')
+        .addSelect('SUM(CASE WHEN qa.isSkipped = true THEN 1 ELSE 0 END)', 'skipped')
+        .addSelect(
+          'CASE WHEN us.userId IS NOT NULL THEN 1 ELSE 0 END',
+          'isSubscribed')
+        .leftJoin(
+          'question_attempt',
+          'qa',
+          'qa.questionId = q.id AND qa.userId = :userId',
+          { userId }
+        )
+        .leftJoin(
+          'user_subject',
+          'us',
+          'us.subjectId = s.id AND us.userId = :userId',
+          { userId }
+        );
+    } else {
+      qb.addSelect('0', 'attempted')
+        .addSelect('0', 'correct')
+        .addSelect('0', 'wrong')
+        .addSelect('0', 'skipped')
+        .addSelect('false', 'isSubscribed');
+    }
+
+    const row = await qb.getRawOne();
+    if (!row) return null;
+
+    const dashboard = {
+      id: +row.subjectId,
+      title: row.subjectTitle,
+      description: row.description,
+      image: row.image,
+      isPublished: row.isPublished,
+      color: row.color,
+      numQuestions: +row.numQuestions || 0,
+      numTrivia: +row.numTrivia || 0,
+      isSubscribed: row.isSubscribed,
       attempted: +row.attempted || 0,
       correct: +row.correct || 0,
       wrong: +row.wrong || 0,
       skipped: +row.skipped || 0,
-    }));
+      meritList: [],
+      popularTopics: [],
+    };
+
+    if (fullData) {
+      // ✅ Merit list
+      const meritListRaw = await this.dataSource
+        .createQueryBuilder()
+        .select('u.id', 'id')
+        .addSelect("CONCAT(u.firstName, ' ', u.lastName)", 'name')
+        .addSelect('u.username', 'username')
+        .addSelect('u.image', 'image')
+        .addSelect('jr.title', 'designationName')
+        .addSelect('SUM(CASE WHEN qa.isCorrect = true THEN 1 ELSE 0 END)', 'totalCorrect')
+        .addSelect('COUNT(qa.id)', 'totalAttempts')
+        .from(QuestionAttempt, 'qa')
+        .innerJoin('user', 'u', 'u.id = qa.userId')
+        .leftJoin('job_role', 'jr', 'jr.id = u.designation')
+        .innerJoin('question', 'q', 'q.id = qa.questionId')
+        .where('q.subjectId = :subjectId', { subjectId })
+        .groupBy('u.id')
+        .getRawMany();
+
+      dashboard.meritList = meritListRaw
+        .map((row) => {
+          const totalCorrect = +row.totalCorrect;
+          const totalAttempts = +row.totalAttempts;
+          const avgAccuracy = totalAttempts > 0 ? totalCorrect / totalAttempts : 0;
+
+          const score =
+            totalCorrect * 0.5 +
+            totalAttempts * 0.2 +
+            avgAccuracy * 100 * 0.3;
+
+          return {
+            id: row.id,
+            name: row.name,
+            username: row.username,
+            image: row.image,
+            designationName: row.designationName,
+            totalCorrect,
+            totalAttempts,
+            avgAccuracy,
+            score,
+          };
+        })
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 10);
+
+      // ✅ Popular topics
+      const topicsRaw = await this.dataSource
+        .createQueryBuilder()
+        .select('t.id', 'id')
+        .addSelect('t.title', 'title')
+        .addSelect('t.slug', 'slug')
+        .addSelect('t.shortDesc', 'shortDesc')
+        .addSelect('t.popularity', 'popularity')
+        .from(Topic, 't')
+        .where('t.subjectId = :subjectId', { subjectId })
+        .orderBy('t.popularity', 'DESC')
+        .limit(10)
+        .getRawMany();
+
+      dashboard.popularTopics = topicsRaw.map((t) => ({
+        id: t.id,
+        title: t.title,
+        slug: t.slug,
+        shortDesc: t.shortDesc,
+        popularity: +t.popularity,
+      }));
+    }
+    return dashboard;
+  }
+  async getSubjectDashboardBySlug(slug: string, userId?: number, fullData = false) {
+    const subject = await this.dataSource.getRepository(Subject).findOne({
+      where: { slug },
+      select: ['id'],
+    });
+    if (!subject) {
+      throw new NotFoundException(`Subject not found`);
+    }
+    return this.getSubjectDashboard(subject.id, userId, fullData);
+  }
+
+  //get all my subjects dashboard
+  async getSubscribedSubjectDashboards(userId: number, fullData = false) {
+    console.log("here with ", userId);
+    const subs = await this.dataSource
+      .getRepository(UserSubject)
+      .createQueryBuilder('us')
+      .select('us.subjectId', 'subjectId')
+      .where('us.userId = :userId', { userId })
+      .getRawMany();
+
+    if (!subs.length) return [];
+
+    const subjectIds = subs.map((s) => +s.subjectId);
+
+    // Call dashboard function for each subscribed subject
+    const dashboards = [];
+    for (const sid of subjectIds) {
+      const dashboard = await this.getSubjectDashboard(sid, userId, fullData);
+      if (dashboard) dashboards.push(dashboard);
+    }
+
+    return dashboards;
   }
 
   async getTopicStatsForUser(userId?: number) {
@@ -159,7 +387,7 @@ export class MasterService {
 
   //  Combine Subject and Topic Stats
   async getUserQuizStats(userId: number) {
-    const subjects = await this.getSubjectStatsForUser(userId);
+    const subjects = await this.getSubjectStatsMaster(userId);
     const topics = await this.getTopicStatsForUser(userId);
 
     // Group topics under corresponding subject
@@ -182,25 +410,6 @@ export class MasterService {
 
     return Array.from(subjectMap.values());
   }
-
-  /*
-  Workable when direct relationships are established in entities
-  *
-   async findAllSubjectsWithJobRoles() {
-    const subjects = await this.subjectRepo.find({
-      relations: ['jobRoles'],
-    });
-
-    // Map jobRoles to roles array of titles
-    return subjects.map(subject => ({
-      id: subject.id,
-      title: subject.title,
-      description: subject.description,
-      image: subject.image,
-      roles: subject.jobRoles.map(role => role.title),
-    }));
-  }
-   */
 
   async getJobRolesWithSubjectsWithoutUser(userId?: number) {
     const jobRoles = await this.jobRoleRepo
@@ -244,61 +453,60 @@ export class MasterService {
   }
 
   async getJobRolesWithSubjects(userId?: number) {
-  const qb = this.jobRoleRepo
-    .createQueryBuilder('jobRole')
-    .leftJoinAndSelect('jobRole.jobRoleSubjects', 'jrs')
-    .leftJoinAndSelect('jrs.subject', 'subject')
-    .select([
-      'jobRole.id',
-      'jobRole.title',
-      'jobRole.slug',
-      'jobRole.description',
-      'jobRole.image',
-      'jobRole.isPublished',
-      'jobRole.color',
-      'jrs.id',
-      'subject.id',
-      'subject.title',
-      'subject.image'
-    ]);
+    const qb = this.jobRoleRepo
+      .createQueryBuilder('jobRole')
+      .leftJoinAndSelect('jobRole.jobRoleSubjects', 'jrs')
+      .leftJoinAndSelect('jrs.subject', 'subject')
+      .select([
+        'jobRole.id',
+        'jobRole.title',
+        'jobRole.slug',
+        'jobRole.description',
+        'jobRole.image',
+        'jobRole.isPublished',
+        'jobRole.color',
+        'jrs.id',
+        'subject.id',
+        'subject.title',
+        'subject.image'
+      ]);
 
-  if (userId) {
-    qb.addSelect('user.designation', 'userDes');
-    // join with user table to check subscription
-    qb.addSelect(
-      `CASE WHEN user.designation = jobRole.id THEN TRUE ELSE FALSE END`,
-      'isSubscribed'
-    ).leftJoin('user', 'user', 'user.id = :userId', { userId });
-  } else {
-    qb.addSelect('FALSE', 'isSubscribed');
+    if (userId) {
+      qb.addSelect(
+        `CASE WHEN user.designation = jobRole.id THEN 1 ELSE 0 END`,
+        'isSubscribed'
+      ).leftJoin(User, 'user', 'user.id = :userId', { userId });
+    } else {
+      qb.addSelect('FALSE', 'isSubscribed');
+    }
+
+    const jobRoles = await qb.getRawAndEntities();
+
+    // Map results
+    return jobRoles.entities.map((jr, index) => {
+      const raw = jobRoles.raw[index];
+      return {
+        id: jr.id,
+        title: jr.title,
+        description: jr.description,
+        slug: jr.slug,
+        image: jr.image,
+        color: jr.color,
+        isPublished: jr.isPublished,
+        numQuestions: 0,
+        numusers: 0,
+        isSubscribed: Boolean(Number(raw.isSubscribed)),
+        coverage: 0,
+        score: 0,
+        userId,
+        subjects: jr.jobRoleSubjects.map(jrs => ({
+          id: jrs.subject.id,
+          title: jrs.subject.title,
+          image: jrs.subject.image
+        }))
+      };
+    });
   }
-
-  const jobRoles = await qb.getRawAndEntities();
-
-  // Map results
-  return jobRoles.entities.map((jr, index) => {
-    const raw = jobRoles.raw[index];
-    return {
-      id: jr.id,
-      title: jr.title,
-      description: jr.description,
-      slug: jr.slug,
-      image: jr.image,
-      color: jr.color,
-      isPublished: jr.isPublished,
-      numQuestions: 0,
-      numusers: 0,
-      isSubscribed: !!raw.isSubscribed,
-      coverage: 0,
-      score: 0,
-      subjects: jr.jobRoleSubjects.map(jrs => ({
-        id: jrs.subject.id,
-        title: jrs.subject.title,
-        image: jrs.subject.image
-      }))
-    };
-  });
-}
 
   async getTopicListByIds(topicIdsArray: number[]) {
     return this.topicRepo.findBy({

@@ -17,15 +17,13 @@ import { Public } from 'src/core/auth/decorators/public.decorator';
 
 @Controller('apis/topics')
 export class TopicsController {
-  constructor(private readonly topicService: TopicsService) {}
+  constructor(private readonly topicService: TopicsService) { }
 
   @Post('create')
   async create(
     @Body() createTopicDto: CreateTopicDto,
   ): Promise<ApiResponse<any>> {
     const result = await this.topicService.create(createTopicDto);
-    console.log("TopicCreateAPI #1 result", result);
-    
     return new ApiResponse(`${createTopicDto.title} added successfully.`, result);
   }
 
@@ -58,7 +56,7 @@ export class TopicsController {
     @Param('topicId', new ParseIntPipe({ errorHttpStatusCode: 400, exceptionFactory: () => new BadRequestException('Topic Id must be a valid number') }))
     topicId: number
   ): Promise<ApiResponse<any>> {
-     await this.topicService.remove(topicId);
+    await this.topicService.remove(topicId);
     return new ApiResponse('Topic deleted.', null);
   }
 

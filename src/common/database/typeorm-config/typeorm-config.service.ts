@@ -18,6 +18,7 @@ import { QuizResult } from 'src/common/typeorm/entities/quiz-result.entity';
 import { QuizQuestion } from 'src/common/typeorm/entities/quiz-quesion.entity';
 import { QuizSubject } from 'src/common/typeorm/entities/quiz-subject.entity';
 import { QuizTopic } from 'src/common/typeorm/entities/quiz-topic.entity';
+import { UserSubject } from 'src/common/typeorm/entities/user-subject.entity';
 @Injectable()
 export class TypeormConfigService implements TypeOrmOptionsFactory {
   constructor(private configService: ConfigService) {}
@@ -46,6 +47,7 @@ export class TypeormConfigService implements TypeOrmOptionsFactory {
         Subject,
         JobRole,
         JobRoleSubject,
+        UserSubject,
         Topic,
         UserOtp,
         Question,

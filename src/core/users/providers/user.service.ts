@@ -171,7 +171,7 @@ export class UserService {
     if (!user) {
       throw new AppCustomException(
         HttpStatus.BAD_REQUEST,
-        'User is Not Found.',
+        'User not Found.',
       );
     }
     const profile = await this.userProfileService.findOneByUserId(user?.id);
@@ -196,7 +196,7 @@ export class UserService {
     if (!user) {
       throw new AppCustomException(
         HttpStatus.BAD_REQUEST,
-        'User is Not Found.',
+        'User not Found.',
       );
     }
     const profile = await this.userProfileService.findOneByUserId(user?.id);
@@ -339,7 +339,7 @@ export class UserService {
       }
     } else {
       // throw new HttpException('OTP Mismatch', HttpStatus.NOT_ACCEPTABLE);
-      throw new AppCustomException(HttpStatus.BAD_REQUEST, 'OTP Mismatch.');
+      throw new AppCustomException(HttpStatus.BAD_REQUEST, 'OTP mismatch. Please try again.');
     }
   }
 

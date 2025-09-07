@@ -6,9 +6,10 @@ import { Topic } from 'src/common/typeorm/entities/topic.entity';
 import { MasterController } from './master.controller';
 import { MasterService } from './master.service';
 import { JobRoleSubject } from 'src/common/typeorm/entities/job-role-subject.entity';
+import { UserSubject } from 'src/common/typeorm/entities/user-subject.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Subject, JobRole, JobRoleSubject, Topic])],
+  imports: [TypeOrmModule.forFeature([JobRole, Subject, JobRoleSubject, Topic, UserSubject])],
   controllers: [MasterController],
   providers: [MasterService],
   exports: [MasterService]
