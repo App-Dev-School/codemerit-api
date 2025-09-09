@@ -11,10 +11,12 @@ import { Public } from 'src/core/auth/decorators/public.decorator';
 import { CreateQuizDto } from './dtos/create-quiz.dto';
 import { SubmitQuizDto } from './dtos/submit-quiz.dto';
 import { QuizService } from './providers/quiz.service';
+import { QuizResultService } from './providers/quiz-result.service';
 
 @Controller('apis/quiz')
 export class QuizController {
-  constructor(private readonly quizService: QuizService
+  constructor(private readonly quizService: QuizService,
+    private readonly quizResultService: QuizResultService
   ) { }
 
   @Public()
@@ -81,4 +83,11 @@ export class QuizController {
   //   const result = await this.quizService.findAllBySubjectId(quizId);
   //   return new ApiResponse(`${result.length} quizzes found in Subject ${result[0].subjectName}`, result);
   // }
+
+  @Public()
+  @Get('result/:resultCode')
+  async getQuizResultByCode(@Param('resultCode') resultCode: string): Promise<ApiResponse<any>> {
+    const result = await this.quizResultService.getQuizResultByCode(resultCode);
+    return new ApiResponse('Quiz Result Found', result);
+  }
 }
