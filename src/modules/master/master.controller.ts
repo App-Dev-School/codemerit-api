@@ -1,8 +1,8 @@
 import { Body, Controller, Get, Post, Query, Request, UseGuards } from '@nestjs/common';
-import { MasterService } from './providers/master.service';
 import { Public } from 'src/core/auth/decorators/public.decorator';
 import { OptionalJwtAuthGuard } from 'src/core/auth/jwt/optional-jwt-auth-guard';
 import { AddUserSubjectsDto } from 'src/core/users/dtos/user-subject.dto';
+import { MasterService } from './providers/master.service';
 import { TopicAnalysisService } from './providers/topic-analysis.service';
 @Controller('apis/master')
 export class MasterController {

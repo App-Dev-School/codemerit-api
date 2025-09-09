@@ -23,34 +23,21 @@ export class QuizService {
     @InjectRepository(Quiz)
     private quizRepository: Repository<Quiz>,
 
-    // @InjectRepository(QuizTopic)
-    // private quizTopicRepository: Repository<QuizTopic>,
-
-    // @InjectRepository(QuizSubject)
-    // private quizSubjectRepository: Repository<QuizSubject>,
-
-    // @InjectRepository(QuizQuestion)
-    // private quizQuestionRepository: Repository<QuizQuestion>,
-
     private readonly questionService: QuestionService,
     private readonly masterService: MasterService,
 
     private readonly dataSource: DataSource,
   ) { }
 
-  async fetchQuizBySlug2(slug: string): Promise<any> {
+  async fetchQuizBySlug(slug: string): Promise<any> {
     const quiz = await this.quizRepository
       .createQueryBuilder('quiz')
       .leftJoinAndSelect('quiz.quizQuestions', 'quizQuestion')
-      .leftJoinAndSelect('quizQuestion.question', 'question')
       .where('quiz.slug = :slug', { slug })
       .getOne();
-    console.log("Fetcher #1 quiz.quizQuestions", quiz.quizQuestions);
+
     if (!quiz) {
-      throw new AppCustomException(
-        HttpStatus.NOT_FOUND,
-        `Quiz not found.`,
-      );
+      throw new AppCustomException(HttpStatus.NOT_FOUND, `Quiz not found.`);
     }
 
     if (!quiz.quizQuestions || quiz.quizQuestions.length === 0) {
@@ -60,50 +47,21 @@ export class QuizService {
       );
     }
 
-    // If you need to shape the questions (like via your QuestionService)
-    const questions = quiz.quizQuestions.map((qq) => ({
-      ...qq.question,
-    }));
-    console.log("Fetcher #2 questions", questions);
+    // Step 1: Collect questionIds
+    const questionIds = quiz.quizQuestions.map((qq) => qq.questionId);
+
+    // Step 2: Use QuestionService
+    const ids = new GetQuestionsByIdsDto();
+    ids.questionIds = questionIds;
+    ids.numberOfQuestions = 5;
+    const questions = await this.questionService.getQuestionsFromQIds(ids);
+
+    // Step 3: Return quiz with questions
     return {
       ...quiz,
       questions,
     };
   }
-
-async fetchQuizBySlug(slug: string): Promise<any> {
-  const quiz = await this.quizRepository
-    .createQueryBuilder('quiz')
-    .leftJoinAndSelect('quiz.quizQuestions', 'quizQuestion')
-    .where('quiz.slug = :slug', { slug })
-    .getOne();
-
-  if (!quiz) {
-    throw new AppCustomException(HttpStatus.NOT_FOUND, `Quiz not found.`);
-  }
-
-  if (!quiz.quizQuestions || quiz.quizQuestions.length === 0) {
-    throw new AppCustomException(
-      HttpStatus.BAD_REQUEST,
-      'No questions found for this quiz.'
-    );
-  }
-
-  // Step 1: Collect questionIds
-  const questionIds = quiz.quizQuestions.map((qq) => qq.questionId);
-
-  // Step 2: Use QuestionService
-  const ids = new GetQuestionsByIdsDto();
-      ids.questionIds = questionIds;
-      ids.numberOfQuestions = 5;
-  const questions = await this.questionService.getQuestionsFromQIds(ids);
-
-  // Step 3: Return quiz with questions
-  return {
-    ...quiz,
-    questions,
-  };
-}
 
   async createQuiz(createQuizDto: CreateQuizDto): Promise<Quiz> {
     let quizCategory = '';
@@ -283,7 +241,6 @@ async fetchQuizBySlug(slug: string): Promise<any> {
         const questionResult = await manager.save(QuizResult, result);
         // 3. Save QuestionAttempts
         for (const attempt of submitQuizDto?.attempts) {
-
           const questionAttempt = manager.create(QuestionAttempt, {
             userId: submitQuizDto?.userId,
             questionId: attempt.questionId,
@@ -294,10 +251,8 @@ async fetchQuizBySlug(slug: string): Promise<any> {
             isCorrect: attempt?.isCorrect,
             answer: attempt?.answer,
           });
-
           await manager.save(QuestionAttempt, questionAttempt);
         }
-
         return questionResult;
       });
     } catch (error) {
@@ -307,6 +262,5 @@ async fetchQuizBySlug(slug: string): Promise<any> {
       );
     }
   }
-
 
 }

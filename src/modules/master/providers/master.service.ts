@@ -11,6 +11,7 @@ import { User } from 'src/common/typeorm/entities/user.entity';
 import { AddUserSubjectsDto } from 'src/core/users/dtos/user-subject.dto';
 import { DataSource, In, Repository } from 'typeorm';
 import { TopicAnalysisService } from './topic-analysis.service';
+import { generateScore } from 'src/common/utils/common-functions';
 
 @Injectable()
 export class MasterService {
@@ -227,9 +228,10 @@ export class MasterService {
     const numTrivia = +row.numTrivia || 0;
 
     // Derived stats directly from the same row
-    const coverage = numTrivia > 0 ? attempted / numTrivia : 0;
-    const avgAccuracy = Number((attempted > 0 ? correct / attempted : 0).toFixed(1));
-    const rawScore = correct * 0.5 + attempted * 0.2 + avgAccuracy * 100 * 0.3;
+    const coverage = numTrivia > 0 ? (attempted * 100 / numTrivia) : 0;
+    const avgAccuracy = Number((attempted > 0 ? (correct * 100 / attempted) : 0).toFixed(1));
+    //const rawScore = correct * 0.5 + attempted * 0.2 + avgAccuracy * 100 * 0.3;
+    const rawScore = generateScore(attempted, correct, wrong, avgAccuracy);
     const score = Number(rawScore.toFixed(1));
 
     return {
@@ -265,6 +267,8 @@ export class MasterService {
       .addSelect('u.image', 'image')
       .addSelect('jr.title', 'designationName')
       .addSelect('SUM(CASE WHEN qa.isCorrect = true THEN 1 ELSE 0 END)', 'totalCorrect')
+      .addSelect(
+        'SUM(CASE WHEN qa.isCorrect = 0 AND qa.selectedOption IS NOT NULL THEN 1 ELSE 0 END)', 'totalWrong')
       .addSelect('COUNT(qa.id)', 'totalAttempts')
       .from(QuestionAttempt, 'qa')
       .innerJoin('user', 'u', 'u.id = qa.userId')
@@ -277,14 +281,11 @@ export class MasterService {
     return meritListRaw
       .map((row) => {
         const totalCorrect = +row.totalCorrect;
+        const totalWrong = +row.totalWrong;
         const totalAttempts = +row.totalAttempts;
         const rawAccuracy = totalAttempts > 0 ? totalCorrect / totalAttempts : 0;
         const avgAccuracy = Number(rawAccuracy.toFixed(1));
-        const rawScore =
-          totalCorrect * 0.5 +
-          totalAttempts * 0.2 +
-          avgAccuracy * 100 * 0.3;
-
+        const rawScore = generateScore(totalAttempts, totalCorrect, totalWrong, avgAccuracy);
         const score = Number(rawScore.toFixed(1));
         return {
           id: row.id,
@@ -293,6 +294,7 @@ export class MasterService {
           image: row.image,
           designationName: row.designationName,
           totalCorrect,
+          totalWrong,
           totalAttempts,
           avgAccuracy,
           score,
