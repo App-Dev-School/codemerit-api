@@ -11,6 +11,7 @@ import { AbstractEntity } from './abstract.entity';
 import { QuestionOption } from './question-option.entity';
 import { Question } from './question.entity';
 import { User } from './user.entity';
+import { Quiz } from './quiz.entity';
 
 @Entity()
 export class QuestionAttempt extends AbstractEntity implements IQuestionAttempt {
@@ -27,6 +28,8 @@ export class QuestionAttempt extends AbstractEntity implements IQuestionAttempt 
   })
   questionId: number;
 
+  @Column({ type: 'int', nullable: true })
+  quizId: number;
 
   @Column({
     type: 'integer',
@@ -82,4 +85,8 @@ export class QuestionAttempt extends AbstractEntity implements IQuestionAttempt 
   @ManyToOne(() => Question)
   @JoinColumn({ name: 'questionId', referencedColumnName: 'id' })
   question: Question;
+
+  @ManyToOne(() => Quiz, (quiz) => quiz.questionAttempts)
+  @JoinColumn({ name: 'quizId' })
+  quiz: Quiz;
 }

@@ -12,4 +12,7 @@ export const getTitleBySubjectIds = (subjects: Subject[]): string => {
 export const getTitleByTopicIds = (topics: Topic[]): string => {
    return topics && topics.length > 0 ? topics.map((t: Topic) => t.title).join(' ') : '';
 };
+export const generateScore = (attempted, correct, wrong, avgAccuracy): number => {
+  return correct * 0.5 + attempted * 0.2 + avgAccuracy * 100 * 0.3;
+};
 

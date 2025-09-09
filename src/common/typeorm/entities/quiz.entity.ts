@@ -5,7 +5,6 @@ import {
     CreateDateColumn,
     Entity,
     JoinColumn,
-    ManyToMany,
     ManyToOne,
     OneToMany,
     UpdateDateColumn
@@ -14,6 +13,7 @@ import { IQuiz } from '../interface/quiz.interface';
 import { AbstractEntity } from './abstract.entity';
 import { QuizQuestion } from './quiz-quesion.entity';
 import { User } from './user.entity';
+import { QuestionAttempt } from './question-attempt.entity';
 
 @Entity()
 export class Quiz extends AbstractEntity implements IQuiz {
@@ -23,13 +23,6 @@ export class Quiz extends AbstractEntity implements IQuiz {
         nullable: false,
     })
     title: string;
-
-    // @Column({
-    //     type: 'integer',
-    //     name: 'subjectId',
-    //     nullable: false,
-    // })
-    // subjectId: number;
 
     @Column({
         type: 'varchar',
@@ -119,4 +112,7 @@ export class Quiz extends AbstractEntity implements IQuiz {
 
     @OneToMany(() => QuizQuestion, (quizQuestion) => quizQuestion.quiz, { cascade: true })
     quizQuestions: QuizQuestion[];
+
+    @OneToMany(() => QuestionAttempt, (qa) => qa.quiz, { cascade: false })
+    questionAttempts: QuestionAttempt[];
 }
