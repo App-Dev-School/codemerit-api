@@ -3,8 +3,8 @@ import {
     CreateDateColumn,
     Entity,
 } from 'typeorm';
-import { AbstractEntity } from './abstract.entity';
 import { IQuizResult } from '../interface/quiz-result.interface';
+import { AbstractEntity } from './abstract.entity';
 
 @Entity()
 export class QuizResult extends AbstractEntity implements IQuizResult {

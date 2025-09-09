@@ -20,7 +20,7 @@ export class QuizController {
   @Public()
   @Get('fetch/:slug')
   async findOne(@Param('slug') slug: string): Promise<ApiResponse<any>> {
-    const result = await this.quizService.getQuizBySlug(slug);
+    const result = await this.quizService.fetchQuizBySlug(slug);
     return new ApiResponse('Question Found', result);
   }
 

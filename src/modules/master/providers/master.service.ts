@@ -10,6 +10,7 @@ import { UserSubject } from 'src/common/typeorm/entities/user-subject.entity';
 import { User } from 'src/common/typeorm/entities/user.entity';
 import { AddUserSubjectsDto } from 'src/core/users/dtos/user-subject.dto';
 import { DataSource, In, Repository } from 'typeorm';
+import { TopicAnalysisService } from './topic-analysis.service';
 
 @Injectable()
 export class MasterService {
@@ -26,7 +27,8 @@ export class MasterService {
     @InjectRepository(UserSubject)
     private readonly userSubjectRepo: Repository<UserSubject>,
 
-    private readonly dataSource: DataSource
+    private readonly dataSource: DataSource,
+    private topicAnalyzer: TopicAnalysisService
   ) { }
 
   async getMasterData(userId: number) {
@@ -83,6 +85,7 @@ export class MasterService {
       .addSelect('s.title', 'subjectTitle')
       .addSelect('s.description', 'description')
       .addSelect('s.image', 'image')
+      .addSelect('s.slug', 'slug')
       .addSelect('s.isPublished', 'isPublished')
       .addSelect('s.color', 'color')
       .addSelect('COUNT(DISTINCT q.id)', 'numQuestions')
@@ -127,12 +130,12 @@ export class MasterService {
     }
 
     const result = await qb.getRawMany();
-
     return result.map((row) => ({
       id: +row.subjectId,
       title: row.subjectTitle,
       description: row.description,
       image: row.image,
+      slug: row.slug || null,
       isPublished: row.isPublished,
       color: row.color,
       numQuestions: +row.numQuestions || 0,
@@ -147,13 +150,31 @@ export class MasterService {
 
   //returns one subject full details wrt a userId
   async getSubjectDashboard(subjectId: number, userId?: number, fullData = false) {
-    // Base query for subject stats
+    const baseStats = await this.getSubjectBaseStats(subjectId, userId);
+
+    const dashboard: any = {
+      ...baseStats,
+      meritList: [],
+      popularTopics: []
+    };
+    if (fullData) {
+      [dashboard.meritList, dashboard.popularTopics] = await Promise.all([
+        this.getMeritList(subjectId),
+        this.getPopularTopics(subjectId),
+      ]);
+    }
+    return dashboard;
+  }
+
+  private async getSubjectBaseStats(subjectId: number, userId?: number) {
     const qb = this.dataSource
       .createQueryBuilder()
       .select('s.id', 'subjectId')
       .addSelect('s.title', 'subjectTitle')
       .addSelect('s.description', 'description')
       .addSelect('s.image', 'image')
+      .addSelect('s.body', 'body')
+      .addSelect('s.scope', 'scope')
       .addSelect('s.isPublished', 'isPublished')
       .addSelect('s.color', 'color')
       .addSelect('COUNT(DISTINCT q.id)', 'numQuestions')
@@ -174,7 +195,8 @@ export class MasterService {
         .addSelect('SUM(CASE WHEN qa.isSkipped = true THEN 1 ELSE 0 END)', 'skipped')
         .addSelect(
           'CASE WHEN us.userId IS NOT NULL THEN 1 ELSE 0 END',
-          'isSubscribed')
+          'isSubscribed'
+        )
         .leftJoin(
           'question_attempt',
           'qa',
@@ -198,93 +220,111 @@ export class MasterService {
     const row = await qb.getRawOne();
     if (!row) return null;
 
-    const dashboard = {
+    const attempted = +row.attempted || 0;
+    const correct = +row.correct || 0;
+    const wrong = +row.wrong || 0;
+    const skipped = +row.skipped || 0;
+    const numTrivia = +row.numTrivia || 0;
+
+    // Derived stats directly from the same row
+    const coverage = numTrivia > 0 ? attempted / numTrivia : 0;
+    const avgAccuracy = Number((attempted > 0 ? correct / attempted : 0).toFixed(1));
+    const rawScore = correct * 0.5 + attempted * 0.2 + avgAccuracy * 100 * 0.3;
+    const score = Number(rawScore.toFixed(1));
+
+    return {
       id: +row.subjectId,
       title: row.subjectTitle,
       description: row.description,
       image: row.image,
       isPublished: row.isPublished,
       color: row.color,
+      body: row.body,
+      scope: row.scope,
       numQuestions: +row.numQuestions || 0,
-      numTrivia: +row.numTrivia || 0,
-      isSubscribed: row.isSubscribed,
-      attempted: +row.attempted || 0,
-      correct: +row.correct || 0,
-      wrong: +row.wrong || 0,
-      skipped: +row.skipped || 0,
+      numTrivia,
+      isSubscribed: row.isSubscribed === 1 || row.isSubscribed === '1',
+      attempted,
+      correct,
+      wrong,
+      skipped,
+      avgAccuracy,
+      coverage,
+      score,
       meritList: [],
       popularTopics: [],
     };
-
-    if (fullData) {
-      // ✅ Merit list
-      const meritListRaw = await this.dataSource
-        .createQueryBuilder()
-        .select('u.id', 'id')
-        .addSelect("CONCAT(u.firstName, ' ', u.lastName)", 'name')
-        .addSelect('u.username', 'username')
-        .addSelect('u.image', 'image')
-        .addSelect('jr.title', 'designationName')
-        .addSelect('SUM(CASE WHEN qa.isCorrect = true THEN 1 ELSE 0 END)', 'totalCorrect')
-        .addSelect('COUNT(qa.id)', 'totalAttempts')
-        .from(QuestionAttempt, 'qa')
-        .innerJoin('user', 'u', 'u.id = qa.userId')
-        .leftJoin('job_role', 'jr', 'jr.id = u.designation')
-        .innerJoin('question', 'q', 'q.id = qa.questionId')
-        .where('q.subjectId = :subjectId', { subjectId })
-        .groupBy('u.id')
-        .getRawMany();
-
-      dashboard.meritList = meritListRaw
-        .map((row) => {
-          const totalCorrect = +row.totalCorrect;
-          const totalAttempts = +row.totalAttempts;
-          const avgAccuracy = totalAttempts > 0 ? totalCorrect / totalAttempts : 0;
-
-          const score =
-            totalCorrect * 0.5 +
-            totalAttempts * 0.2 +
-            avgAccuracy * 100 * 0.3;
-
-          return {
-            id: row.id,
-            name: row.name,
-            username: row.username,
-            image: row.image,
-            designationName: row.designationName,
-            totalCorrect,
-            totalAttempts,
-            avgAccuracy,
-            score,
-          };
-        })
-        .sort((a, b) => b.score - a.score)
-        .slice(0, 10);
-
-      // ✅ Popular topics
-      const topicsRaw = await this.dataSource
-        .createQueryBuilder()
-        .select('t.id', 'id')
-        .addSelect('t.title', 'title')
-        .addSelect('t.slug', 'slug')
-        .addSelect('t.shortDesc', 'shortDesc')
-        .addSelect('t.popularity', 'popularity')
-        .from(Topic, 't')
-        .where('t.subjectId = :subjectId', { subjectId })
-        .orderBy('t.popularity', 'DESC')
-        .limit(10)
-        .getRawMany();
-
-      dashboard.popularTopics = topicsRaw.map((t) => ({
-        id: t.id,
-        title: t.title,
-        slug: t.slug,
-        shortDesc: t.shortDesc,
-        popularity: +t.popularity,
-      }));
-    }
-    return dashboard;
   }
+
+  private async getMeritList(subjectId: number) {
+    const meritListRaw = await this.dataSource
+      .createQueryBuilder()
+      .select('u.id', 'id')
+      .addSelect("CONCAT(u.firstName, ' ', u.lastName)", 'name')
+      .addSelect('u.username', 'username')
+      .addSelect('u.image', 'image')
+      .addSelect('jr.title', 'designationName')
+      .addSelect('SUM(CASE WHEN qa.isCorrect = true THEN 1 ELSE 0 END)', 'totalCorrect')
+      .addSelect('COUNT(qa.id)', 'totalAttempts')
+      .from(QuestionAttempt, 'qa')
+      .innerJoin('user', 'u', 'u.id = qa.userId')
+      .leftJoin('job_role', 'jr', 'jr.id = u.designation')
+      .innerJoin('question', 'q', 'q.id = qa.questionId')
+      .where('q.subjectId = :subjectId', { subjectId })
+      .groupBy('u.id')
+      .getRawMany();
+
+    return meritListRaw
+      .map((row) => {
+        const totalCorrect = +row.totalCorrect;
+        const totalAttempts = +row.totalAttempts;
+        const rawAccuracy = totalAttempts > 0 ? totalCorrect / totalAttempts : 0;
+        const avgAccuracy = Number(rawAccuracy.toFixed(1));
+        const rawScore =
+          totalCorrect * 0.5 +
+          totalAttempts * 0.2 +
+          avgAccuracy * 100 * 0.3;
+
+        const score = Number(rawScore.toFixed(1));
+        return {
+          id: row.id,
+          name: row.name,
+          username: row.username,
+          image: row.image,
+          designationName: row.designationName,
+          totalCorrect,
+          totalAttempts,
+          avgAccuracy,
+          score,
+        };
+      })
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 10);
+  }
+
+  private async getPopularTopics(subjectId: number) {
+    const topicsRaw = await this.dataSource
+      .createQueryBuilder()
+      .select('t.id', 'id')
+      .addSelect('t.title', 'title')
+      .addSelect('t.slug', 'slug')
+      .addSelect('t.shortDesc', 'shortDesc')
+      .addSelect('t.popularity', 'popularity')
+      .from(Topic, 't')
+      .where('t.subjectId = :subjectId', { subjectId })
+      .orderBy('t.popularity', 'DESC')
+      .limit(10)
+      .getRawMany();
+
+    return topicsRaw.map((t) => ({
+      id: t.id,
+      title: t.title,
+      slug: t.slug,
+      shortDesc: t.shortDesc,
+      popularity: +t.popularity,
+    }));
+  }
+
   async getSubjectDashboardBySlug(slug: string, userId?: number, fullData = false) {
     const subject = await this.dataSource.getRepository(Subject).findOne({
       where: { slug },
@@ -427,6 +467,7 @@ export class MasterService {
         'jrs.id', // Optional: if you want the join ID
         'subject.id',
         'subject.title',
+        'subject.description',
         'subject.image'
       ])
       .getMany();
@@ -446,7 +487,8 @@ export class MasterService {
       subjects: jr.jobRoleSubjects.map(jrs => ({
         id: jrs.subject.id,
         title: jrs.subject.title,
-        image: jrs.subject.image
+        image: jrs.subject.image,
+        description: jrs.subject.description
       }))
     }));
     return result;
@@ -468,6 +510,7 @@ export class MasterService {
         'jrs.id',
         'subject.id',
         'subject.title',
+        'subject.slug',
         'subject.image'
       ]);
 
@@ -502,6 +545,7 @@ export class MasterService {
         subjects: jr.jobRoleSubjects.map(jrs => ({
           id: jrs.subject.id,
           title: jrs.subject.title,
+          slug: jrs.subject.slug,
           image: jrs.subject.image
         }))
       };

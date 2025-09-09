@@ -17,7 +17,7 @@ import { QuestionService } from './providers/question.service';
 
 @Controller('apis/question')
 export class QuestionController {
-  constructor(private readonly service: QuestionService) {}
+  constructor(private readonly service: QuestionService) { }
 
   @Post('create')
   async create(@Body() data: CreateQuestionDto): Promise<ApiResponse<any>> {
@@ -28,8 +28,11 @@ export class QuestionController {
   }
 
   @Get()
-  async findQuestionList(): Promise<ApiResponse<any>> {
-    const result = await this.service.getQuestionListForAdmin();
+  async findQuestionList(
+    @Query('fullData') fullData?: string,
+  ): Promise<ApiResponse<any>> {
+    const isFullData = fullData === 'true' || fullData === '1';
+    const result = await this.service.getQuestionListForAdmin(isFullData);
     return new ApiResponse(`${result.length} Question fetched.`, result);
   }
 
@@ -59,6 +62,7 @@ export class QuestionController {
     return new ApiResponse('Question deleted successfully.', null);
   }
 
+  //For end-users
   @Post('fetch')
   async getQuestionsByIds(
     @Body() dto: GetQuestionsByIdsDto,

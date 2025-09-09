@@ -11,7 +11,7 @@ import { generateSlug, generateUniqueSlug } from 'src/common/utils/slugify.util'
 import { QuizQuestion } from 'src/common/typeorm/entities/quiz-quesion.entity';
 import { QuizTopic } from 'src/common/typeorm/entities/quiz-topic.entity';
 import { QuizSubject } from 'src/common/typeorm/entities/quiz-subject.entity';
-import { MasterService } from 'src/modules/master/master.service';
+import { MasterService } from 'src/modules/master/providers/master.service';
 import { generate6DigitNumber, getTitleBySubjectIds, getTitleByTopicIds } from 'src/common/utils/common-functions';
 import { SubmitQuizDto } from '../dtos/submit-quiz.dto';
 import { QuizResult } from 'src/common/typeorm/entities/quiz-result.entity';
@@ -38,36 +38,72 @@ export class QuizService {
     private readonly dataSource: DataSource,
   ) { }
 
-  async getQuizBySlug(slug: string): Promise<any> {
-    const quiz = await this.quizRepository.findOne({ where: { slug } });
-
+  async fetchQuizBySlug2(slug: string): Promise<any> {
+    const quiz = await this.quizRepository
+      .createQueryBuilder('quiz')
+      .leftJoinAndSelect('quiz.quizQuestions', 'quizQuestion')
+      .leftJoinAndSelect('quizQuestion.question', 'question')
+      .where('quiz.slug = :slug', { slug })
+      .getOne();
+    console.log("Fetcher #1 quiz.quizQuestions", quiz.quizQuestions);
     if (!quiz) {
       throw new AppCustomException(
         HttpStatus.NOT_FOUND,
         `Quiz not found.`,
       );
     }
-    const quizQuestions = await this.dataSource.getRepository(QuizQuestion).find({
-      where: { quizId: quiz.id },
-    });
-    const questionIds = quizQuestions.map(q => q.questionId);
-    if (!questionIds || questionIds.length === 0) {
+
+    if (!quiz.quizQuestions || quiz.quizQuestions.length === 0) {
       throw new AppCustomException(
         HttpStatus.BAD_REQUEST,
         'No questions found for this quiz.'
       );
     }
-    // Use QuestionService method to get questions
-    const questions = await this.questionService.getQuestionsFromQIds({
-      questionIds,
-      numberOfQuestions: questionIds.length,
-    });
-    // Attach to quiz (like in createQuiz)
+
+    // If you need to shape the questions (like via your QuestionService)
+    const questions = quiz.quizQuestions.map((qq) => ({
+      ...qq.question,
+    }));
+    console.log("Fetcher #2 questions", questions);
     return {
       ...quiz,
       questions,
     };
   }
+
+async fetchQuizBySlug(slug: string): Promise<any> {
+  const quiz = await this.quizRepository
+    .createQueryBuilder('quiz')
+    .leftJoinAndSelect('quiz.quizQuestions', 'quizQuestion')
+    .where('quiz.slug = :slug', { slug })
+    .getOne();
+
+  if (!quiz) {
+    throw new AppCustomException(HttpStatus.NOT_FOUND, `Quiz not found.`);
+  }
+
+  if (!quiz.quizQuestions || quiz.quizQuestions.length === 0) {
+    throw new AppCustomException(
+      HttpStatus.BAD_REQUEST,
+      'No questions found for this quiz.'
+    );
+  }
+
+  // Step 1: Collect questionIds
+  const questionIds = quiz.quizQuestions.map((qq) => qq.questionId);
+
+  // Step 2: Use QuestionService
+  const ids = new GetQuestionsByIdsDto();
+      ids.questionIds = questionIds;
+      ids.numberOfQuestions = 5;
+  const questions = await this.questionService.getQuestionsFromQIds(ids);
+
+  // Step 3: Return quiz with questions
+  return {
+    ...quiz,
+    questions,
+  };
+}
 
   async createQuiz(createQuizDto: CreateQuizDto): Promise<Quiz> {
     let quizCategory = '';
@@ -77,7 +113,7 @@ export class QuizService {
         (!createQuizDto?.topicIds)
       ) {
         throw new AppCustomException(
-          HttpStatus.BAD_REQUEST, 'Please specify a job role, subjects or topics to generate a quiz.'
+          HttpStatus.BAD_REQUEST, 'Please specify a job role, subject or topics to generate a quiz.'
         );
       }
       console.log("QuizBuilder #1 createQuizDto:", createQuizDto);
