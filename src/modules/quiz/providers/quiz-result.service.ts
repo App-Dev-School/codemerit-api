@@ -33,6 +33,7 @@ export class QuizResultService {
       .addSelect('q.title', 'quizTitle')
       .addSelect('q.description', 'quizDescription')
       .addSelect('q.slug', 'quizSlug')
+      .addSelect('q.quizType', 'quizType')
       .addSelect('u.id', 'uId')
       .addSelect('u.firstName', 'uFirstName')
       .addSelect('u.lastName', 'uLastName')
@@ -85,11 +86,9 @@ export class QuizResultService {
       const asked = Number(r.asked) || 0;
       const answered = Number(r.answered) || 0;
       const correct = Number(r.correct) || 0;
-
       const coverage = asked ? +((answered / asked) * 100).toFixed(1) : 0;
       const accuracy = answered ? +((correct / answered) * 100).toFixed(1) : 0;
-      const quizAccuracy = asked ? +((correct / asked) * 100).toFixed(1) : 0;
-
+     
       return {
         id: Number(r.topicId),
         title: r.topicTitle,
@@ -97,20 +96,20 @@ export class QuizResultService {
         answered,
         correct,
         coverage,
-        accuracy,
-        quizAccuracy,
+        accuracy
       };
     });
 
     // 4) Final response
     return {
       resultCode: base.resultCode,
-      score: Number(base.score) ?? null,
-      totalQuestions: Number(base.totalQuestions) ?? null,
-      correctAnswers: Number(base.correctAnswers) ?? null,
-      wrongAnswers: Number(base.wrongAnswers) ?? null,
-      unanswered: Number(base.unanswered) ?? null,
-      remarks: base.remarks ?? null,
+      score: Number(base.score) ?? 0,
+      accuracy: Number(base.accuracy) ?? 0,
+      total: Number(base.totalQuestions) ?? 0,
+      correct: Number(base.correctAnswers) ?? 0,
+      wrong: Number(base.wrongAnswers) ?? 0,
+      unanswered: Number(base.unanswered) ?? 0,
+      remarks: base.remarks ?? "",
       createdAt: base.createdAt,
       user: {
         id: Number(base.uId),
@@ -123,6 +122,7 @@ export class QuizResultService {
         title: base.quizTitle,
         description: base.quizDescription,
         slug: base.quizSlug,
+        quizType: base.quizType
       },
       topics,
     };
