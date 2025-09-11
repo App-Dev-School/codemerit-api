@@ -1,15 +1,8 @@
-import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { Injectable } from '@nestjs/common';
 import { QuestionTypeEnum } from 'src/common/enum/question-type.enum';
-import { AppCustomException } from 'src/common/exceptions/app-custom-exception.filter';
-import { JobRole } from 'src/common/typeorm/entities/job-role.entity';
-import { QuestionAttempt } from 'src/common/typeorm/entities/question-attempt.entity';
-import { Subject } from 'src/common/typeorm/entities/subject.entity';
 import { Topic } from 'src/common/typeorm/entities/topic.entity';
-import { UserSubject } from 'src/common/typeorm/entities/user-subject.entity';
 import { User } from 'src/common/typeorm/entities/user.entity';
-import { AddUserSubjectsDto } from 'src/core/users/dtos/user-subject.dto';
-import { DataSource, In, Repository } from 'typeorm';
+import { DataSource } from 'typeorm';
 
 @Injectable()
 export class TopicAnalysisService {

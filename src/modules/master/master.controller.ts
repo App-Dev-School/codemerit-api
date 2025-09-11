@@ -4,9 +4,11 @@ import { OptionalJwtAuthGuard } from 'src/core/auth/jwt/optional-jwt-auth-guard'
 import { AddUserSubjectsDto } from 'src/core/users/dtos/user-subject.dto';
 import { MasterService } from './providers/master.service';
 import { TopicAnalysisService } from './providers/topic-analysis.service';
+import { SubjectAnalysisService } from './providers/subject-analysis.service';
 @Controller('apis/master')
 export class MasterController {
     constructor(private readonly masterService: MasterService,
+        private subjectAnalyzer: SubjectAnalysisService,
         private readonly topicAnalysisProvider: TopicAnalysisService
     ) { }
 
@@ -30,7 +32,7 @@ export class MasterController {
         @Request() req
     ) {
         const userId = req.user?.id;
-        return this.masterService.getSubjectDashboardBySlug(slug, userId, true);
+        return this.subjectAnalyzer.getSubjectDashboardBySlug(slug, userId, true);
     }
 
     @Get('subjectTopicsDashboard')
@@ -53,7 +55,7 @@ export class MasterController {
     @Get('myJobDashboard')
     async getJobDashboard(@Request() req) {
         const userId = req.user?.id;
-        return await this.masterService.getSubscribedSubjectDashboards(userId, true);
+        return await this.subjectAnalyzer.getSubscribedSubjectDashboards(userId, true);
     }
 
     @Get('userQuizStats')

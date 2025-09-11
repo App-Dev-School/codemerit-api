@@ -15,18 +15,15 @@ export const getTitleByTopicIds = (topics: Topic[]): string => {
 export const generateScore = (
   attempted: number,
   correct: number,
-  wrong: number,
-  avgAccuracy: number
+  wrong: number
 ): number => {
-  // Base score: reward correct, partial reward for attempt
-  let score =
-    correct * 0.5 +               // correct answers
-    attempted * 0.2 +             // bonus for attempting
-    avgAccuracy * 100 * 0.1;      // less weightage to accuracy
-
-  // Apply negative marking: -20% of the value per wrong answer
-  score -= wrong * 0.5 * 0.2;     // deduct 20% of correct-answer value
-
-  return score < 0 ? 0 : score;   // prevent negative scores
+  if (attempted === 0) return 0;
+  // Correct answers = +1 point each
+  // Wrong answers = -0.2 penalty each (20% negative marking)
+  // Skipped = 0
+  const rawScore = correct - wrong * 0.2;
+  const normalized = (rawScore / attempted) * 100;
+  return Math.max(0, Math.min(100, Number(normalized.toFixed(1))));
 };
+
 
