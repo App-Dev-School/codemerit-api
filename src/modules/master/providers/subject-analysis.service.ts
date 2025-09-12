@@ -124,7 +124,7 @@ export class SubjectAnalysisService {
     const skipped = +row.skipped || 0;
     const numTrivia = +row.numTrivia || 0;
 
-    const coverage = numTrivia > 0 ? (attempted * 100) / numTrivia : 0;
+    const coverage = numTrivia > 0 ? +((attempted / numTrivia) * 100).toFixed(1) : 0;
     const avgAccuracy = Number(
       (attempted > 0 ? (correct * 100) / attempted : 0).toFixed(1)
     );
@@ -151,14 +151,16 @@ export class SubjectAnalysisService {
       avgAccuracy,
       coverage,
       score,
+      syllabus: [],
       meritList: [],
       popularTopics: []
     };
 
     if (fullData) {
       // Pass subjectId to both calls; getMeritList computes its own numTrivia.
-      [dashboard.meritList, dashboard.popularTopics] = await Promise.all([
+      [dashboard.meritList, dashboard.syllabus, dashboard.popularTopics] = await Promise.all([
         this.getMeritList(subjectId),
+        this.topicAnalyzer.getTopicStatsBySubject(subjectId, userId),
         this.getPopularTopics(subjectId)
       ]);
     }

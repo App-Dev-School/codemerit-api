@@ -35,6 +35,7 @@ private buildTopicStatsBaseQB(userId?: number) {
     // --- Base selects ---
     .select('t.id', 'topicId')
     .addSelect('t.title', 'topicTitle')
+    .addSelect('t.description', 'topicDesc')
     .addSelect('t.slug', 'slug')
     .addSelect('t.subjectId', 'subjectId')
     // counts
@@ -66,6 +67,7 @@ private buildTopicStatsBaseQB(userId?: number) {
 
 /** Map a raw row from base QB to the response shape (calculates derived fields in TS). */
 private mapTopicRow(raw: any) {
+  const numLessons = 0;
   const numTrivia = +raw.numTrivia || 0;
   const totalQuestions = +raw.totalQuestions || 0;
   const totalAttempts = +raw.totalAttempts || 0;
@@ -74,16 +76,18 @@ private mapTopicRow(raw: any) {
   const myDistinctQuestions = +raw.myDistinctQuestions || 0;
 
   const avgAccuracy = numMyAttempts > 0 ? myCorrect / numMyAttempts : 0;
-  const score = myCorrect * 0.5 + numMyAttempts * 0.2 + (avgAccuracy * 100) * 0.3;
+  const score = (myCorrect /numMyAttempts) * 100;
   const isStarted = numMyAttempts > 0;
   const isCompleted = totalQuestions > 0 && myDistinctQuestions >= totalQuestions;
 
   return {
     id: +raw.topicId,
     title: raw.topicTitle,
+    description: raw.topicDesc,
     slug: raw.slug,
     subjectId: +raw.subjectId,
     numTrivia,
+    numLessons,
     totalAttempts,
     numMyAttempts,
     myCorrect,

@@ -26,7 +26,7 @@ import { GetQuestionsByIdsDto } from '../dtos/get-questions-by-ids.dto';
 import { QuestionListResponseDto } from '../dtos/question-list-response.dto';
 import { UpdateQuestionDto } from '../dtos/update-question.dto';
 import { QuestionOptionService } from './question-option.service';
-
+import * as he from 'he';
 @Injectable()
 export class QuestionService {
   constructor(
@@ -338,7 +338,10 @@ export class QuestionService {
     for (const question of questionList) {
       const questionDto = new AdminQuestionResponseDto();
       questionDto.id = question.id;
-      questionDto.question = question.question;
+      //console.log("QuestionService Question", question.question);
+      //questionDto.question = question.question;
+      questionDto.question = he.encode(question.id+'} '+question.question);
+      console.log("QuestionService Question Transformed", he.encode(question.id+'} '+question.question));
       questionDto.subjectId = question.subjectId;
       questionDto.subject = question.subject.title;
       questionDto.status = question.status;
