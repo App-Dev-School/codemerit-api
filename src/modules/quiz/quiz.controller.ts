@@ -33,10 +33,11 @@ export class QuizController {
   async create(
     @Body() createQuizDto: CreateQuizDto,
   ): Promise<ApiResponse<any>> {
-    const result = await this.quizService.createQuiz(createQuizDto);
+    const result = await this.quizService.createQuiz(createQuizDto.userId, createQuizDto);
     console.log("QuizCreateAPI #1 result", result);
     return new ApiResponse(`Quiz added successfully.`, result);
   }
+  
 
   @ApiOperation({ summary: 'Submit Quiz', description: 'Accepts submission from a user and captures attempt details.' })
   @Post('submit')

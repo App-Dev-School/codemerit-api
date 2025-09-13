@@ -8,11 +8,13 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   UpdateDateColumn
 } from 'typeorm';
 import { IUser } from '../interface/user.interface';
 import { AbstractEntity } from './abstract.entity';
 import { JobRole } from './job-role.entity';
+import { QuizResult } from './quiz-result.entity';
 
 @Entity()
 export class User extends AbstractEntity implements IUser {
@@ -154,8 +156,11 @@ export class User extends AbstractEntity implements IUser {
 
   @DeleteDateColumn({ name: 'deletedAt', default: null, select: false })
   deletedAt: Date;
-  
+
   @ManyToOne(() => JobRole, (jobRole) => jobRole.users, { eager: false })
   @JoinColumn({ name: 'designation' })
   userJobRole: JobRole;
+
+  @OneToMany(() => QuizResult, (result) => result.user)
+  quizResults: QuizResult[];
 }

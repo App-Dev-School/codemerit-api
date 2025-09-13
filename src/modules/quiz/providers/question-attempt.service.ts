@@ -18,49 +18,49 @@ export class QuestionAttemptService {
 
   //quiz analytics
   async fetchQuizAnalyticsBySlug(slug: string): Promise<any> {
-  const quiz = await this.quizRepository
-    .createQueryBuilder('quiz')
-    .leftJoinAndSelect('quiz.quizQuestions', 'quizQuestion')
-    .leftJoinAndSelect('quizQuestion.question', 'question')
-    .leftJoinAndSelect('question.attempts', 'attempts')
-    .leftJoinAndSelect('quiz.questionAttempts', 'quizAttempts')
-    .where('quiz.slug = :slug', { slug })
-    .getOne();
+    const quiz = await this.quizRepository
+      .createQueryBuilder('quiz')
+      .leftJoinAndSelect('quiz.quizQuestions', 'quizQuestion')
+      .leftJoinAndSelect('quizQuestion.question', 'question')
+      .leftJoinAndSelect('question.attempts', 'attempts')
+      .leftJoinAndSelect('quiz.questionAttempts', 'quizAttempts')
+      .where('quiz.slug = :slug', { slug })
+      .getOne();
 
-  if (!quiz) {
-    throw new AppCustomException(HttpStatus.NOT_FOUND, `Quiz not found.`);
+    if (!quiz) {
+      throw new AppCustomException(HttpStatus.NOT_FOUND, `Quiz not found.`);
+    }
+
+    if (!quiz.quizQuestions || quiz.quizQuestions.length === 0) {
+      throw new AppCustomException(
+        HttpStatus.BAD_REQUEST,
+        'No questions found for this quiz.'
+      );
+    }
+
+    // Shape questions
+    const questionIds = quiz.quizQuestions.map((qq) => qq.questionId);
+
+    //verify this
+    const questions = await this.questionService.getQuestionsFromQIds({
+      questionIds,
+      numQuestions: quiz.quizQuestions.length
+    });
+
+    // Quiz-level stats
+    const totalAttempts = quiz.questionAttempts?.length || 0;
+    const totalQuestions = questions.length;
+
+    return {
+      ...quiz,
+      stats: {
+        totalQuestions,
+        totalAttempts,
+        avgAttemptsPerQuestion:
+          totalQuestions > 0 ? totalAttempts / totalQuestions : 0,
+      },
+      questions,
+    };
   }
-
-  if (!quiz.quizQuestions || quiz.quizQuestions.length === 0) {
-    throw new AppCustomException(
-      HttpStatus.BAD_REQUEST,
-      'No questions found for this quiz.'
-    );
-  }
-
-  // Shape questions
-  const questionIds = quiz.quizQuestions.map((qq) => qq.questionId);
-
-  //verify this
-  const questions = await this.questionService.getQuestionsFromQIds({
-    questionIds,
-    numberOfQuestions: quiz.quizQuestions.length
-  });
-
-  // Quiz-level stats
-  const totalAttempts = quiz.questionAttempts?.length || 0;
-  const totalQuestions = questions.length;
-
-  return {
-    ...quiz,
-    stats: {
-      totalQuestions,
-      totalAttempts,
-      avgAttemptsPerQuestion:
-        totalQuestions > 0 ? totalAttempts / totalQuestions : 0,
-    },
-    questions,
-  };
-}
 
 }

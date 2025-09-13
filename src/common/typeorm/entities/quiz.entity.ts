@@ -14,6 +14,7 @@ import { AbstractEntity } from './abstract.entity';
 import { QuizQuestion } from './quiz-quesion.entity';
 import { User } from './user.entity';
 import { QuestionAttempt } from './question-attempt.entity';
+import { QuizResult } from './quiz-result.entity';
 
 @Entity()
 export class Quiz extends AbstractEntity implements IQuiz {
@@ -115,4 +116,7 @@ export class Quiz extends AbstractEntity implements IQuiz {
 
     @OneToMany(() => QuestionAttempt, (qa) => qa.quiz, { cascade: false })
     questionAttempts: QuestionAttempt[];
+
+    @OneToMany(() => QuizResult, (result) => result.quiz)
+    results: QuizResult[];
 }

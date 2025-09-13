@@ -16,18 +16,16 @@ export class TopicsService {
 
   async create(createTopicDto: CreateTopicDto): Promise<TopicListItemDto> {
     let slug = generateSlug(createTopicDto.title);
-    const existing = await this.topicRepository.findOne({ where: { slug } });
-    if (existing) {
+    let existing = await this.topicRepository.findOne({ where: { slug } });
+    while (existing) {
       slug = generateUniqueSlug(createTopicDto.title);
+      existing = await this.topicRepository.findOne({ where: { slug } });
     }
     const topic = this.topicRepository.create({
       ...createTopicDto,
-      slug : slug,
+      slug: slug,
     });
     const savedTopic = await this.topicRepository.save(topic);
-    console.log("TopicCreateAPI #2 savedTopic", savedTopic);
-    //Fetch Topic List Item Format
-    //check this
     return this.getTopicItemByID(savedTopic.id);
   }
 
@@ -82,14 +80,6 @@ export class TopicsService {
     await this.topicRepository.delete(id);
   }
   async findAllBySubjectId(subjectId: number): Promise<TopicListDto[]> {
-
-    // return this.topicRepository.find({
-    //   where: {
-    //     subject: { id: subjectId }
-    //   },
-    //   relations: ['subject'],
-    //   order: { order: 'ASC' },
-    // });
     const topics = await this.topicRepository.find({
       relations: ['subject', 'parentTopic', 'subTopics'],
       where: {
@@ -98,8 +88,6 @@ export class TopicsService {
         parent: IsNull(),
       },
     });
-    console.log('topics', topics);
-
     return topics.map((t) => ({
       id: t.id,
       title: t.title,

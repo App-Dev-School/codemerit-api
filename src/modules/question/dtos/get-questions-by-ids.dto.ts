@@ -39,7 +39,7 @@ export class GetQuestionsByIdsDto {
 
   @IsOptional()
   @IsNumber()
-  numberOfQuestions:number = 5;
+  numQuestions?:number = 10;
 
   //delete if unused
   @IsOptional()

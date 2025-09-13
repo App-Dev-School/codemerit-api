@@ -19,7 +19,7 @@ export class TopicAnalysisService {
  * - totalAttempts: ALL attempts (all users) on any questions in the topic
  * - If userId provided: numMyAttempts, myCorrect, myDistinctQuestions
  */
-private buildTopicStatsBaseQB(userId?: number) {
+private buildTopicStatsBaseQBOLD(userId?: number) {
   const qb = this.dataSource
     .createQueryBuilder()
     .from(Topic, 't')
@@ -65,6 +65,64 @@ private buildTopicStatsBaseQB(userId?: number) {
   return qb;
 }
 
+private buildTopicStatsBaseQB(userId?: number) {
+  const qb = this.dataSource
+    .createQueryBuilder()
+    .from(Topic, 't')
+    // All questions in the topic
+    .leftJoin('question_topic', 'qt', 'qt.topicId = t.id')
+    .leftJoin('question', 'q', 'q.id = qt.questionId')
+
+    // Trivia questions only
+    .leftJoin(
+      'question',
+      'qTr',
+      'qTr.id = qt.questionId AND qTr.questionType = :trivia',
+      { trivia: QuestionTypeEnum.Trivia }
+    )
+
+    .select('t.id', 'topicId')
+    .addSelect('t.title', 'topicTitle')
+    .addSelect('t.description', 'topicDesc')
+    .addSelect('t.slug', 'slug')
+    .addSelect('t.subjectId', 'subjectId')
+    .addSelect('t.goal', 'goal')
+
+    // Total question counts
+    .addSelect('COUNT(DISTINCT q.id)', 'totalQuestions')
+    .addSelect('COUNT(DISTINCT qTr.id)', 'numTrivia');
+
+  // Now handle attempts separately
+  if (userId) {
+    qb
+      .leftJoin(
+        subQ => {
+          return subQ
+            .select('qa.questionId', 'questionId')
+            .addSelect('COUNT(*)', 'attempts')
+            .addSelect('SUM(CASE WHEN qa.isCorrect = 1 THEN 1 ELSE 0 END)', 'correct')
+            .from('question_attempt', 'qa')
+            .where('qa.userId = :userId', { userId })
+            .groupBy('qa.questionId');
+        },
+        'userAttempts',
+        'userAttempts.questionId = q.id'
+      )
+      .addSelect('COALESCE(SUM(userAttempts.attempts), 0)', 'numMyAttempts')
+      .addSelect('COALESCE(SUM(userAttempts.correct), 0)', 'myCorrect')
+      .addSelect('COUNT(DISTINCT userAttempts.questionId)', 'myDistinctQuestions');
+  } else {
+    qb
+      .addSelect('0', 'numMyAttempts')
+      .addSelect('0', 'myCorrect')
+      .addSelect('0', 'myDistinctQuestions');
+  }
+
+  qb.groupBy('t.id');
+
+  return qb;
+}
+
 /** Map a raw row from base QB to the response shape (calculates derived fields in TS). */
 private mapTopicRow(raw: any) {
   const numLessons = 0;
@@ -76,27 +134,31 @@ private mapTopicRow(raw: any) {
   const myDistinctQuestions = +raw.myDistinctQuestions || 0;
 
   const avgAccuracy = numMyAttempts > 0 ? myCorrect / numMyAttempts : 0;
-  const score = (myCorrect /numMyAttempts) * 100;
+  const score = numMyAttempts > 0 ? ((myCorrect /numMyAttempts) * 100) : 0;
   const isStarted = numMyAttempts > 0;
-  const isCompleted = totalQuestions > 0 && myDistinctQuestions >= totalQuestions;
+  const isCompleted = numTrivia > 0 && myDistinctQuestions >= totalQuestions;
 
-  return {
+  const topicsList = {
     id: +raw.topicId,
     title: raw.topicTitle,
-    description: raw.topicDesc,
     slug: raw.slug,
+    description: raw.topicDesc,
+    goal: raw.goal,
     subjectId: +raw.subjectId,
     numTrivia,
     numLessons,
     totalAttempts,
-    numMyAttempts,
-    myCorrect,
+    attempted: numMyAttempts,
+    correct : myCorrect,
     avgAccuracy,
     score,
     isStarted,
     isCompleted,
-    meritList: null
+    meritList: null,
+    coverage: Math.floor((numMyAttempts/numTrivia)*100)
   };
+  console.log("@@@1Topic Formatted", topicsList);
+  return topicsList;
 }
 
 /** Get stats for a SINGLE topic (fast, filtered server-side). */
@@ -106,7 +168,7 @@ async getTopicStatsById(topicId: number, userId?: number, fullData = false) {
 
   const raw = await qb.getRawOne();
   if (!raw) return null;
-
+  console.log("@@@0Topic Stats fetched", raw);
   const stats: any = this.mapTopicRow(raw);
 
   if (fullData) {
@@ -132,7 +194,6 @@ async getTopicStatsBySubject(subjectId: number, userId?: number, fullData = fals
       t.meritList = meritLists.get(t.id) || [];
     }
   }
-
   return topics;
 }
 

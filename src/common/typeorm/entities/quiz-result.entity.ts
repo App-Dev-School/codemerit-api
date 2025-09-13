@@ -2,9 +2,13 @@ import {
     Column,
     CreateDateColumn,
     Entity,
+    JoinColumn,
+    ManyToOne,
 } from 'typeorm';
 import { IQuizResult } from '../interface/quiz-result.interface';
 import { AbstractEntity } from './abstract.entity';
+import { Quiz } from './quiz.entity';
+import { User } from './user.entity';
 
 @Entity()
 export class QuizResult extends AbstractEntity implements IQuizResult {
@@ -82,5 +86,12 @@ export class QuizResult extends AbstractEntity implements IQuizResult {
 
     @CreateDateColumn()
     createdAt: Date;
-    
+
+     @ManyToOne(() => Quiz, (quiz) => quiz.results, { eager: true })
+  @JoinColumn({ name: 'quizId', referencedColumnName: 'id' })
+  quiz: Quiz;
+
+  @ManyToOne(() => User, (user) => user.quizResults, { eager: true })
+  @JoinColumn({ name: 'userId', referencedColumnName: 'id' })
+  user: User;
 }
