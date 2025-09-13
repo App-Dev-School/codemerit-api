@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { QuestionTypeEnum } from 'src/common/enum/question-type.enum';
 import { Topic } from 'src/common/typeorm/entities/topic.entity';
 import { User } from 'src/common/typeorm/entities/user.entity';
+import { generateScore } from 'src/common/utils/common-functions';
 import { DataSource } from 'typeorm';
 
 @Injectable()
@@ -19,52 +20,6 @@ export class TopicAnalysisService {
  * - totalAttempts: ALL attempts (all users) on any questions in the topic
  * - If userId provided: numMyAttempts, myCorrect, myDistinctQuestions
  */
-private buildTopicStatsBaseQBOLD(userId?: number) {
-  const qb = this.dataSource
-    .createQueryBuilder()
-    .from(Topic, 't')
-    // --- Joins for ALL questions in the topic ---
-    .leftJoin('question_topic', 'qtAll', 'qtAll.topicId = t.id')
-    .leftJoin('question', 'qAll', 'qAll.id = qtAll.questionId')
-    .leftJoin('question_attempt', 'qa', 'qa.questionId = qAll.id')
-    // --- Joins for TRIVIA questions (numTrivia only) ---
-    .leftJoin('question_topic', 'qtTr', 'qtTr.topicId = t.id')
-    .leftJoin('question', 'qTr', 'qTr.id = qtTr.questionId AND qTr.questionType = :trivia', {
-      trivia: QuestionTypeEnum.Trivia,
-    })
-    // --- Base selects ---
-    .select('t.id', 'topicId')
-    .addSelect('t.title', 'topicTitle')
-    .addSelect('t.description', 'topicDesc')
-    .addSelect('t.slug', 'slug')
-    .addSelect('t.subjectId', 'subjectId')
-    // counts
-    .addSelect('COUNT(DISTINCT qTr.id)', 'numTrivia')
-    .addSelect('COUNT(DISTINCT qAll.id)', 'totalQuestions')
-    .addSelect('COUNT(qa.id)', 'totalAttempts') // all user attempts on any question in topic
-    .groupBy('t.id');
-
-  if (userId) {
-    qb
-      .leftJoin(
-        'question_attempt',
-        'myQa',
-        'myQa.questionId = qAll.id AND myQa.userId = :userId',
-        { userId }
-      )
-      .addSelect('COUNT(myQa.id)', 'numMyAttempts')
-      .addSelect('SUM(CASE WHEN myQa.isCorrect = true THEN 1 ELSE 0 END)', 'myCorrect')
-      .addSelect('COUNT(DISTINCT myQa.questionId)', 'myDistinctQuestions');
-  } else {
-    qb
-      .addSelect('0', 'numMyAttempts')
-      .addSelect('0', 'myCorrect')
-      .addSelect('0', 'myDistinctQuestions');
-  }
-
-  return qb;
-}
-
 private buildTopicStatsBaseQB(userId?: number) {
   const qb = this.dataSource
     .createQueryBuilder()
@@ -101,6 +56,7 @@ private buildTopicStatsBaseQB(userId?: number) {
             .select('qa.questionId', 'questionId')
             .addSelect('COUNT(*)', 'attempts')
             .addSelect('SUM(CASE WHEN qa.isCorrect = 1 THEN 1 ELSE 0 END)', 'correct')
+            .addSelect('SUM(CASE WHEN qa.isCorrect = 0 AND qa.selectedOption IS NOT NULL THEN 1 ELSE 0 END)', 'wrong')
             .from('question_attempt', 'qa')
             .where('qa.userId = :userId', { userId })
             .groupBy('qa.questionId');
@@ -110,11 +66,13 @@ private buildTopicStatsBaseQB(userId?: number) {
       )
       .addSelect('COALESCE(SUM(userAttempts.attempts), 0)', 'numMyAttempts')
       .addSelect('COALESCE(SUM(userAttempts.correct), 0)', 'myCorrect')
+      .addSelect('COALESCE(SUM(userAttempts.wrong), 0)', 'myWrong')
       .addSelect('COUNT(DISTINCT userAttempts.questionId)', 'myDistinctQuestions');
   } else {
     qb
       .addSelect('0', 'numMyAttempts')
       .addSelect('0', 'myCorrect')
+      .addSelect('0', 'myWrong')
       .addSelect('0', 'myDistinctQuestions');
   }
 
@@ -131,10 +89,13 @@ private mapTopicRow(raw: any) {
   const totalAttempts = +raw.totalAttempts || 0;
   const numMyAttempts = +raw.numMyAttempts || 0;
   const myCorrect = +raw.myCorrect || 0;
+  const myWrong = +raw.myWrong || 0;
   const myDistinctQuestions = +raw.myDistinctQuestions || 0;
 
   const avgAccuracy = numMyAttempts > 0 ? myCorrect / numMyAttempts : 0;
-  const score = numMyAttempts > 0 ? ((myCorrect /numMyAttempts) * 100) : 0;
+  //const baseScore = numMyAttempts > 0 ? ((myCorrect /numMyAttempts) * 100) : 0;
+  const baseScore = generateScore(numMyAttempts, myCorrect, myWrong);
+  const score = Number(baseScore.toFixed(0));
   const isStarted = numMyAttempts > 0;
   const isCompleted = numTrivia > 0 && myDistinctQuestions >= totalQuestions;
 
@@ -148,14 +109,15 @@ private mapTopicRow(raw: any) {
     numTrivia,
     numLessons,
     totalAttempts,
-    attempted: numMyAttempts,
+    myAllAttempts: numMyAttempts,
+    myUniqueAttempts: myDistinctQuestions,
     correct : myCorrect,
     avgAccuracy,
     score,
     isStarted,
     isCompleted,
     meritList: null,
-    coverage: Math.floor((numMyAttempts/numTrivia)*100)
+    coverage: Number((myDistinctQuestions/numTrivia)*100).toFixed(0)
   };
   console.log("@@@1Topic Formatted", topicsList);
   return topicsList;

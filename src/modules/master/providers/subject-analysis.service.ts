@@ -78,7 +78,8 @@ export class SubjectAnalysisService {
         .leftJoin(`(${latestAttemptSub})`, 'la', 'la.questionId = q.id')
         .leftJoin('question_attempt', 'qa', 'qa.id = la.maxId')
         // attempted = number of distinct questions user has latest attempts for (one per question)
-        .addSelect('COUNT(qa.id)', 'attempted')
+        .addSelect('COUNT(qa.id)', 'totalAttempted')
+        .addSelect('COUNT(DISTINCT qa.questionId)', 'attempted')
         // correct/wrong/skipped computed from the latest attempt per question
         .addSelect('SUM(CASE WHEN qa.isCorrect = 1 THEN 1 ELSE 0 END)', 'correct')
         .addSelect(
@@ -97,6 +98,7 @@ export class SubjectAnalysisService {
         .setParameter('userId', userId);
     } else {
       qb
+        .addSelect('0', 'totalAttempted')
         .addSelect('0', 'attempted')
         .addSelect('0', 'correct')
         .addSelect('0', 'wrong')
@@ -131,7 +133,7 @@ export class SubjectAnalysisService {
 
     // generateScore is expected to return 0..100 (normalized percentage)
     const baseScore = generateScore(attempted, correct, wrong);
-    const score = Number(baseScore.toFixed(1));
+    const score = Number(baseScore.toFixed(0));
 
     const dashboard: any = {
       id: +row.subjectId,
