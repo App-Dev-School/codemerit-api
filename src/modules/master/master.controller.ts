@@ -55,7 +55,8 @@ export class MasterController {
     @Get('myJobDashboard')
     async getJobDashboard(@Request() req) {
         const userId = req.user?.id;
-        return await this.subjectAnalyzer.getSubscribedSubjectDashboards(userId, false);
+        return await this.subjectAnalyzer.getJobSubjectDashboards(userId, false);
+        //getSubscribedSubjectDashboards
     }
 
     @Get('userQuizStats')

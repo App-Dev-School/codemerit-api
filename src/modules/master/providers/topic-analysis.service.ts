@@ -92,10 +92,10 @@ private mapTopicRow(raw: any) {
   const myWrong = +raw.myWrong || 0;
   const myDistinctQuestions = +raw.myDistinctQuestions || 0;
 
-  const avgAccuracy = numMyAttempts > 0 ? myCorrect / numMyAttempts : 0;
+  const avgAccuracy = numMyAttempts > 0 ? Number((myCorrect / numMyAttempts)*100).toFixed(0) : 0;
   //const baseScore = numMyAttempts > 0 ? ((myCorrect /numMyAttempts) * 100) : 0;
   const baseScore = generateScore(numMyAttempts, myCorrect, myWrong);
-  const score = Number(baseScore.toFixed(0));
+  const score = Number(baseScore).toFixed(0);
   const isStarted = numMyAttempts > 0;
   const isCompleted = numTrivia > 0 && myDistinctQuestions >= totalQuestions;
 

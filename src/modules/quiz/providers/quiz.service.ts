@@ -56,7 +56,7 @@ export class QuizService {
     // Step 2: Use QuestionService
     const ids = new GetQuestionsByIdsDto();
     ids.questionIds = questionIds;
-    ids.numQuestions = 5;
+    ids.numQuestions = 10;
     const questions = await this.questionService.getQuestionsFromQIds(ids);
 
     // Step 3: Return quiz with questions
@@ -94,7 +94,7 @@ export class QuizService {
     const ids = new GetQuestionsByIdsDto();
     ids.subjectIds = subjectIds;
     ids.topicIds = topicIds;
-    ids.numQuestions = 5;
+    ids.numQuestions = 10;
     if (createQuizDto?.numQuestions && createQuizDto?.numQuestions > 0) {
       ids.numQuestions = createQuizDto?.numQuestions;
     }
@@ -105,12 +105,12 @@ export class QuizService {
     if (!questions || questions.length === 0) {
       throw new AppCustomException(
         HttpStatus.NO_CONTENT,
-        "No questions found to generate quiz."
+        "No unique questions found to generate quiz."
       );
     }
 
     // ✅ Save quiz in DB
-    if (!questions || questions.length < 5) {
+    if (!questions || questions.length < 1) {
       console.log('QuizBuilder #4: @NotEnoughQuestions', questions.length);
       throw new AppCustomException(
         HttpStatus.NO_CONTENT,

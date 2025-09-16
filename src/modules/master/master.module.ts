@@ -9,9 +9,10 @@ import { JobRoleSubject } from 'src/common/typeorm/entities/job-role-subject.ent
 import { UserSubject } from 'src/common/typeorm/entities/user-subject.entity';
 import { TopicAnalysisService } from './providers/topic-analysis.service';
 import { SubjectAnalysisService } from './providers/subject-analysis.service';
+import { User } from 'src/common/typeorm/entities/user.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([JobRole, Subject, JobRoleSubject, Topic, UserSubject])],
+  imports: [TypeOrmModule.forFeature([User, JobRole, Subject, JobRoleSubject, Topic, UserSubject])],
   controllers: [MasterController],
   providers: [MasterService, SubjectAnalysisService, TopicAnalysisService],
   exports: [MasterService]

@@ -1,11 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { QuestionTypeEnum } from 'src/common/enum/question-type.enum';
+import { JobRoleSubject } from 'src/common/typeorm/entities/job-role-subject.entity';
 import { JobRole } from 'src/common/typeorm/entities/job-role.entity';
 import { QuestionAttempt } from 'src/common/typeorm/entities/question-attempt.entity';
 import { Subject } from 'src/common/typeorm/entities/subject.entity';
 import { Topic } from 'src/common/typeorm/entities/topic.entity';
 import { UserSubject } from 'src/common/typeorm/entities/user-subject.entity';
+import { User } from 'src/common/typeorm/entities/user.entity';
 import { generateScore } from 'src/common/utils/common-functions';
 import { DataSource, Repository } from 'typeorm';
 import { TopicAnalysisService } from './topic-analysis.service';
@@ -13,11 +15,11 @@ import { TopicAnalysisService } from './topic-analysis.service';
 @Injectable()
 export class SubjectAnalysisService {
   constructor(
-    @InjectRepository(Subject)
-    private subjectRepo: Repository<Subject>,
+    @InjectRepository(User)
+    private userRepo: Repository<User>,
 
-    @InjectRepository(Topic)
-    private topicRepo: Repository<Topic>,
+    @InjectRepository(JobRoleSubject)
+    private jobRoleSubjectRepo: Repository<JobRoleSubject>,
 
     @InjectRepository(JobRole)
     private jobRoleRepo: Repository<JobRole>,
@@ -201,6 +203,34 @@ export class SubjectAnalysisService {
       subs.map((s) => this.getSubjectDashboard(+s.subjectId, userId, fullData))
     );
   }
+
+  async getJobSubjectDashboards(userId: number, fullData = false) {
+  // Step 1: Get the user with designation (job role id)
+  const user = await this.userRepo
+    .createQueryBuilder('u')
+    .select(['u.id', 'u.designation'])
+    .where('u.id = :userId', { userId })
+    .getOne();
+
+  if (!user?.designation) return [];
+
+  // Step 2: Get subjects mapped to that job role
+  const roleSubjects = await this.jobRoleSubjectRepo
+    .createQueryBuilder('jrs')
+    .select('jrs.subjectId', 'subjectId')
+    .where('jrs.jobId = :jobId', { jobId: user.designation })
+    .getRawMany();
+
+  if (!roleSubjects.length) return [];
+
+  // Step 3: Fetch dashboards for those subjects
+  return Promise.all(
+    roleSubjects.map((s) =>
+      this.getSubjectDashboard(+s.subjectId, userId, fullData),
+    ),
+  );
+}
+
 
   async getSubjectDashboardBySlug(slug: string, userId?: number, fullData = false) {
     const subject = await this.dataSource.getRepository(Subject).findOne({
