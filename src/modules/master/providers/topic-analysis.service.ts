@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { QuestionStatusEnum } from 'src/common/enum/question-status.enum';
 import { QuestionTypeEnum } from 'src/common/enum/question-type.enum';
 import { Topic } from 'src/common/typeorm/entities/topic.entity';
 import { User } from 'src/common/typeorm/entities/user.entity';
@@ -24,16 +25,18 @@ private buildTopicStatsBaseQB(userId?: number) {
   const qb = this.dataSource
     .createQueryBuilder()
     .from(Topic, 't')
+    .leftJoin('subject', 's', 's.id = t.subjectId')
     // All questions in the topic
     .leftJoin('question_topic', 'qt', 'qt.topicId = t.id')
     .leftJoin('question', 'q', 'q.id = qt.questionId')
-
     // Trivia questions only
     .leftJoin(
       'question',
       'qTr',
-      'qTr.id = qt.questionId AND qTr.questionType = :trivia',
-      { trivia: QuestionTypeEnum.Trivia }
+      'qTr.id = qt.questionId AND qTr.questionType = :trivia AND qTr.status = :questionStatus',
+      { trivia: QuestionTypeEnum.Trivia,
+        questionStatus : QuestionStatusEnum.Active
+       }
     )
 
     .select('t.id', 'topicId')
@@ -41,12 +44,15 @@ private buildTopicStatsBaseQB(userId?: number) {
     .addSelect('t.description', 'topicDesc')
     .addSelect('t.slug', 'slug')
     .addSelect('t.subjectId', 'subjectId')
+    .addSelect('s.title', 'subjectName')
     .addSelect('t.goal', 'goal')
 
     // Total question counts
     .addSelect('COUNT(DISTINCT q.id)', 'totalQuestions')
-    .addSelect('COUNT(DISTINCT qTr.id)', 'numTrivia');
-
+    .addSelect('COUNT(DISTINCT qTr.id)', 'numTrivia')
+    .addSelect(`COUNT(DISTINCT CASE WHEN qTr.level = 'Easy' THEN qTr.id END)`, 'numBasicTrivia')
+    .addSelect(`COUNT(DISTINCT CASE WHEN qTr.level = 'Intermediate' THEN qTr.id END)`, 'numIntTrivia')
+    .addSelect(`COUNT(DISTINCT CASE WHEN qTr.level = 'Advanced' THEN qTr.id END)`, 'numAdvTrivia');
   // Now handle attempts separately
   if (userId) {
     qb
@@ -106,7 +112,11 @@ private mapTopicRow(raw: any) {
     description: raw.topicDesc,
     goal: raw.goal,
     subjectId: +raw.subjectId,
+    subjectName: raw?.subjectName,
     numTrivia,
+    numBasicTrivia: raw?.numBasicTrivia,
+    numIntTrivia: raw?.numIntTrivia,
+    numAdvTrivia: raw?.numAdvTrivia,
     numLessons,
     totalAttempts,
     myAllAttempts: numMyAttempts,
@@ -160,7 +170,7 @@ async getTopicStatsBySubject(subjectId: number, userId?: number, fullData = fals
 }
 
 /** Get stats for ALL topics. Optionally pass pagination. */
-async getAllTopicStats(userId?: number, fullData = false, offset = 0, limit = 100) {
+async getAllTopicStats(userId?: number, fullData = false, offset = 0, limit = 300) {
   const qb = this.buildTopicStatsBaseQB(userId)
     .offset(offset)
     .limit(limit);
@@ -175,7 +185,6 @@ async getAllTopicStats(userId?: number, fullData = false, offset = 0, limit = 10
       t.meritList = meritLists.get(t.id) || [];
     }
   }
-
   return topics;
 }
 

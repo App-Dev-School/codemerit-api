@@ -11,6 +11,8 @@ import { User } from 'src/common/typeorm/entities/user.entity';
 import { generateScore } from 'src/common/utils/common-functions';
 import { DataSource, Repository } from 'typeorm';
 import { TopicAnalysisService } from './topic-analysis.service';
+import { QuestionStatusEnum } from 'src/common/enum/question-status.enum';
+import { DifficultyLevelEnum } from 'src/common/enum/difficulty-lavel.enum';
 
 @Injectable()
 export class SubjectAnalysisService {
@@ -29,7 +31,7 @@ export class SubjectAnalysisService {
 
     private readonly dataSource: DataSource,
     private topicAnalyzer: TopicAnalysisService
-  ) {}
+  ) { }
 
   /**
    * Core query for subject stats.
@@ -49,14 +51,20 @@ export class SubjectAnalysisService {
       .addSelect('s.slug', 'slug')
       .addSelect('s.color', 'color')
       .addSelect('s.isPublished', 'isPublished')
-      .addSelect('COUNT(DISTINCT q.id)', 'numQuestions')
+      .addSelect('COUNT(DISTINCT CASE WHEN q.status = :active THEN q.id END)', 'numQuestions')
       .addSelect(
-        'COUNT(DISTINCT IF(q.questionType = :questionType, q.id, NULL))',
-        'numTrivia'
-      )
+        'COUNT(DISTINCT CASE WHEN q.status = :active AND q.questionType = :questionType THEN q.id END)',
+        'numTrivia')
+      .addSelect('COUNT(DISTINCT CASE WHEN q.status = :active AND q.level = :easy THEN q.id END)', 'numEasyTrivia')
+      .addSelect('COUNT(DISTINCT CASE WHEN q.status = :active AND q.level = :medium THEN q.id END)', 'numIntTrivia')
+      .addSelect('COUNT(DISTINCT CASE WHEN q.status = :active AND q.level = :hard THEN q.id END)', 'numAdvTrivia')
       .from(Subject, 's')
       .leftJoin('question', 'q', 'q.subjectId = s.id')
       .setParameter('questionType', QuestionTypeEnum.Trivia)
+      .setParameter('active', QuestionStatusEnum.Active)
+      .setParameter('easy', DifficultyLevelEnum.Easy)
+      .setParameter('medium', DifficultyLevelEnum.Intermediate)
+      .setParameter('hard', DifficultyLevelEnum.Advanced)
       .groupBy('s.id');
 
     if (subjectId) {
@@ -82,8 +90,32 @@ export class SubjectAnalysisService {
         // attempted = number of distinct questions user has latest attempts for (one per question)
         .addSelect('COUNT(qa.id)', 'totalAttempted')
         .addSelect('COUNT(DISTINCT qa.questionId)', 'attempted')
+        .addSelect(
+          'SUM(CASE WHEN q.level = :easy AND qa.id IS NOT NULL THEN 1 ELSE 0 END)',
+          'attemptedEasy'
+        )
+        .addSelect(
+          'SUM(CASE WHEN q.level = :medium AND qa.id IS NOT NULL THEN 1 ELSE 0 END)',
+          'attemptedMedium'
+        )
+        .addSelect(
+          'SUM(CASE WHEN q.level = :hard AND qa.id IS NOT NULL THEN 1 ELSE 0 END)',
+          'attemptedHard'
+        )
         // correct/wrong/skipped computed from the latest attempt per question
         .addSelect('SUM(CASE WHEN qa.isCorrect = 1 THEN 1 ELSE 0 END)', 'correct')
+        .addSelect(
+          'SUM(CASE WHEN q.level = :easy AND qa.isCorrect = 1 THEN 1 ELSE 0 END)',
+          'correctEasy'
+        )
+        .addSelect(
+          'SUM(CASE WHEN q.level = :medium AND qa.isCorrect = 1 THEN 1 ELSE 0 END)',
+          'correctMedium'
+        )
+        .addSelect(
+          'SUM(CASE WHEN q.level = :hard AND qa.isCorrect = 1 THEN 1 ELSE 0 END)',
+          'correctHard'
+        )
         .addSelect(
           'SUM(CASE WHEN qa.isCorrect = 0 AND qa.selectedOption IS NOT NULL THEN 1 ELSE 0 END)',
           'wrong'
@@ -147,9 +179,18 @@ export class SubjectAnalysisService {
       color: row.color,
       numQuestions: +row.numQuestions || 0,
       numTrivia,
+      numEasyTrivia: row.numEasyTrivia,
+      numIntTrivia: row.numIntTrivia,
+      numAdvTrivia: row.numAdvTrivia,
       isSubscribed: row.isSubscribed === 1 || row.isSubscribed === '1',
       attempted,
+      attemptedEasy: row.attemptedEasy,
+      attemptedMedium: row.attemptedMedium,
+      attemptedHard: row.attemptedHard,
       correct,
+      correctEasy : row.correctEasy,
+      correctMedium : row.correctMedium,
+      correctHard : row.correctHard,
       wrong,
       skipped,
       avgAccuracy,
@@ -205,31 +246,31 @@ export class SubjectAnalysisService {
   }
 
   async getJobSubjectDashboards(userId: number, fullData = false) {
-  // Step 1: Get the user with designation (job role id)
-  const user = await this.userRepo
-    .createQueryBuilder('u')
-    .select(['u.id', 'u.designation'])
-    .where('u.id = :userId', { userId })
-    .getOne();
+    // Step 1: Get the user with designation (job role id)
+    const user = await this.userRepo
+      .createQueryBuilder('u')
+      .select(['u.id', 'u.designation'])
+      .where('u.id = :userId', { userId })
+      .getOne();
 
-  if (!user?.designation) return [];
+    if (!user?.designation) return [];
 
-  // Step 2: Get subjects mapped to that job role
-  const roleSubjects = await this.jobRoleSubjectRepo
-    .createQueryBuilder('jrs')
-    .select('jrs.subjectId', 'subjectId')
-    .where('jrs.jobId = :jobId', { jobId: user.designation })
-    .getRawMany();
+    // Step 2: Get subjects mapped to that job role
+    const roleSubjects = await this.jobRoleSubjectRepo
+      .createQueryBuilder('jrs')
+      .select('jrs.subjectId', 'subjectId')
+      .where('jrs.jobRoleId = :jobId', { jobId: user.designation })
+      .getRawMany();
 
-  if (!roleSubjects.length) return [];
+    if (!roleSubjects.length) return [];
 
-  // Step 3: Fetch dashboards for those subjects
-  return Promise.all(
-    roleSubjects.map((s) =>
-      this.getSubjectDashboard(+s.subjectId, userId, fullData),
-    ),
-  );
-}
+    // Step 3: Fetch dashboards for those subjects
+    return Promise.all(
+      roleSubjects.map((s) =>
+        this.getSubjectDashboard(+s.subjectId, userId, fullData),
+      ),
+    );
+  }
 
 
   async getSubjectDashboardBySlug(slug: string, userId?: number, fullData = false) {

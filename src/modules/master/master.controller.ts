@@ -41,7 +41,11 @@ export class MasterController {
         @Request() req
     ) {
         const userId = req.user?.id;
-        return this.topicAnalysisProvider.getTopicStatsBySubject(subjectId, userId, true);
+        if(subjectId > 0){
+            return this.topicAnalysisProvider.getTopicStatsBySubject(subjectId, userId, false);
+        }else{
+           return await this.topicAnalysisProvider.getAllTopicStats(userId, false);
+        }
         // Single topic (fast)
         //const t1 = await topicAnalysisProvider.getTopicStatsById(42, userId, true);
 
