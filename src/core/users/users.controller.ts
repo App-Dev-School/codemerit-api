@@ -19,13 +19,15 @@ import { RolesGuard } from '../auth/guards/roles.guard';
 import { ApiResponse } from 'src/common/utils/api-response';
 import { UserProfileService } from './providers/user-profile.service';
 import { UpdateUserProfileDto } from './dtos/update-user-profile.dto';
+import { UserPerformanceService } from './providers/user-performance.service';
 
 @Controller('apis/users')
 export class UsersController {
   constructor(
     private readonly usersService: UserService,
     private readonly userProfileService: UserProfileService,
-  ) {}
+    private readonly userPerformanceService: UserPerformanceService,
+  ) { }
   @Get('me')
   async getProfile(@Request() req): Promise<ApiResponse<any>> {
     const result = await this.usersService.getOwnUserInfo(req.user.id);
@@ -115,5 +117,22 @@ export class UsersController {
   ): Promise<ApiResponse<any>> {
     await this.usersService.remove(userId);
     return new ApiResponse('User deleted Successful.', null);
+  }
+
+  //Users performance stats
+  @UseGuards(RolesGuard)
+  @Roles(UserRoleEnum.ADMIN)
+  @Get('performance')
+  async getUsersPerformance(@Query('userId') userId: number): Promise<ApiResponse<any>> {
+    let result;
+    if (userId > 0) {
+      result = await this.userPerformanceService.getUserPerformance(userId, true);
+    } else {
+      result = await this.userPerformanceService.getUserPerformance();
+    }
+    if (result) {
+      return new ApiResponse('User Performance fetched successfully.', result);
+    }
+    return new ApiResponse('No user found.', null);
   }
 }
