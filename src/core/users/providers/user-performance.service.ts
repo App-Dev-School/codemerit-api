@@ -8,7 +8,13 @@ import { DataSource } from 'typeorm';
 export class UserPerformanceService {
   constructor(private dataSource: DataSource) {}
 
-  async getUserPerformance(userId?: number, fullData = false) {
+  /**
+   * Get user performance stats.
+   * - If userId is passed → single user
+   * - If fullData = true → include subject-wise breakdown
+   * - If showTrend = true → include trend analytics
+   */
+  async getUserPerformance(userId?: number, fullData = false, showTrend = false) {
     const latestAttemptSub = this.dataSource
       .createQueryBuilder()
       .subQuery()
@@ -42,7 +48,6 @@ export class UserPerformanceService {
         'numTotalWrongAttempts'
       )
       .addSelect('SUM(CASE WHEN qa.isSkipped = 1 THEN 1 ELSE 0 END)', 'numTotalSkipped')
-
       // level wise
       .addSelect('SUM(CASE WHEN q.level = :easy THEN 1 ELSE 0 END)', 'numEasy')
       .addSelect('SUM(CASE WHEN q.level = :medium THEN 1 ELSE 0 END)', 'numMedium')
@@ -53,20 +58,24 @@ export class UserPerformanceService {
       .addSelect('SUM(CASE WHEN q.level = :easy AND qa.isCorrect = 0 THEN 1 ELSE 0 END)', 'numWrongEasy')
       .addSelect('SUM(CASE WHEN q.level = :medium AND qa.isCorrect = 0 THEN 1 ELSE 0 END)', 'numWrongMedium')
       .addSelect('SUM(CASE WHEN q.level = :hard AND qa.isCorrect = 0 THEN 1 ELSE 0 END)', 'numWrongHard')
-
       .groupBy('u.id')
       .setParameter('easy', DifficultyLevelEnum.Easy)
       .setParameter('medium', DifficultyLevelEnum.Intermediate)
       .setParameter('hard', DifficultyLevelEnum.Advanced);
 
-    if (userId) {
-      overallQb.where('u.id = :userId', { userId });
-    }
+    if (userId) overallQb.where('u.id = :userId', { userId });
 
-    const overallRows = await overallQb.getRawMany();
+    const overallRow = await overallQb.getRawOne(); // fetch only one row if userId is passed
+
+    if (!overallRow) return null;
+
+    const overallData = this.mapOverall(overallRow);
 
     if (!fullData) {
-      return userId ? this.mapOverall(overallRows[0]) : overallRows.map(this.mapOverall);
+      if (showTrend && userId) {
+        overallData['trends'] = await this.getUserTrends(userId);
+      }
+      return overallData;
     }
 
     // ----------------------
@@ -91,7 +100,6 @@ export class UserPerformanceService {
         'numWrongAttempts'
       )
       .addSelect('SUM(CASE WHEN qa.isSkipped = 1 THEN 1 ELSE 0 END)', 'numSkipped')
-
       // difficulty-level splits
       .addSelect('SUM(CASE WHEN q.level = :easy THEN 1 ELSE 0 END)', 'numEasy')
       .addSelect('SUM(CASE WHEN q.level = :medium THEN 1 ELSE 0 END)', 'numMedium')
@@ -102,50 +110,36 @@ export class UserPerformanceService {
       .addSelect('SUM(CASE WHEN q.level = :easy AND qa.isCorrect = 0 THEN 1 ELSE 0 END)', 'numWrongEasy')
       .addSelect('SUM(CASE WHEN q.level = :medium AND qa.isCorrect = 0 THEN 1 ELSE 0 END)', 'numWrongMedium')
       .addSelect('SUM(CASE WHEN q.level = :hard AND qa.isCorrect = 0 THEN 1 ELSE 0 END)', 'numWrongHard')
-
       .groupBy('u.id')
       .addGroupBy('s.id')
       .setParameter('easy', DifficultyLevelEnum.Easy)
       .setParameter('medium', DifficultyLevelEnum.Intermediate)
       .setParameter('hard', DifficultyLevelEnum.Advanced);
 
-    if (userId) {
-      subjectQb.where('u.id = :userId', { userId });
-    }
+    if (userId) subjectQb.where('u.id = :userId', { userId });
 
     const subjectRows = await subjectQb.getRawMany();
 
-    // ----------------------
-    // 3. Merge & map
-    // ----------------------
-    const users = overallRows.map((u) => {
-      const subjects = subjectRows
-        .filter((s) => s.userId === u.userId)
-        .map(this.mapSubject);
+    const subjects = subjectRows.map(this.mapSubject);
+    overallData['subjects'] = subjects;
 
-      return {
-        ...this.mapOverall(u),
-        subjects,
-      };
-    });
+    if (showTrend && userId) {
+      overallData['trends'] = await this.getUserTrends(userId);
+    }
 
-    return userId ? users[0] : users;
+    return overallData;
   }
 
   // ----------------------
   // Mapper functions
   // ----------------------
-
   private mapOverall = (row: any) => {
     const numCorrect = +row.numTotalCorrectAttempts || 0;
     const numWrong = +row.numTotalWrongAttempts || 0;
     const numAttempts = +row.numTotalAttempts || 0;
-
     const rawScore = numAttempts > 0 ? ((numCorrect - 0.2 * numWrong) / numAttempts) * 100 : 0;
     const score = Math.max(0, Math.min(100, rawScore));
-
     const accuracy = numAttempts > 0 ? (numCorrect / numAttempts) * 100 : 0;
-
     const level = this.getUserLevel(+row.numEasy, +row.numMedium, +row.numHard);
 
     return {
@@ -166,7 +160,6 @@ export class UserPerformanceService {
         numWrongEasy: +row.numWrongEasy || 0,
         numWrongMedium: +row.numWrongMedium || 0,
         numWrongHard: +row.numWrongHard || 0,
-
         score: +score.toFixed(1),
         accuracy: +accuracy.toFixed(1),
         efficiency: +accuracy.toFixed(1),
@@ -180,12 +173,9 @@ export class UserPerformanceService {
     const numCorrect = +row.numCorrectAttempts || 0;
     const numWrong = +row.numWrongAttempts || 0;
     const numAttempts = +row.numAttempts || 0;
-
     const rawScore = numAttempts > 0 ? ((numCorrect - 0.2 * numWrong) / numAttempts) * 100 : 0;
     const score = Math.max(0, Math.min(100, rawScore));
-
     const accuracy = numAttempts > 0 ? (numCorrect / numAttempts) * 100 : 0;
-
     const level = this.getUserLevel(+row.numEasy, +row.numMedium, +row.numHard);
 
     return {
@@ -204,7 +194,6 @@ export class UserPerformanceService {
       numWrongEasy: +row.numWrongEasy || 0,
       numWrongMedium: +row.numWrongMedium || 0,
       numWrongHard: +row.numWrongHard || 0,
-
       score: +score.toFixed(1),
       accuracy: +accuracy.toFixed(1),
       efficiency: +accuracy.toFixed(1),
@@ -216,7 +205,6 @@ export class UserPerformanceService {
   // ----------------------
   // Helpers
   // ----------------------
-
   private getUserLevel(numEasy: number, numMedium: number, numHard: number): string {
     const max = Math.max(numEasy, numMedium, numHard);
     if (max === 0) return 'Unclassified';
@@ -229,4 +217,49 @@ export class UserPerformanceService {
     if (level === 'Unclassified') return 'Not enough data to classify';
     return `${level} level performance. Score: ${score.toFixed(1)}%, Accuracy: ${accuracy.toFixed(1)}%`;
   }
+
+  private async getUserTrends(userId: number) {
+  // Fetch attempts for last 30 days
+  const thirtyDaysAgo = new Date();
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+  const attempts = await this.dataSource
+    .getRepository(QuestionAttempt)
+    .createQueryBuilder('qa')
+    .where('qa.userId = :userId', { userId })
+    .andWhere('qa.createdAt >= :date', { date: thirtyDaysAgo.toISOString() })
+    .orderBy('qa.createdAt', 'ASC')
+    .getMany();
+
+  if (!attempts.length) return [];
+
+  // Aggregate by date
+  const trendsMap: Record<string, { numAttempts: number; numCorrect: number; numWrong: number }> = {};
+
+  for (const attempt of attempts) {
+    const dateKey = attempt.createdAt.toISOString().split('T')[0]; // YYYY-MM-DD
+    if (!trendsMap[dateKey]) trendsMap[dateKey] = { numAttempts: 0, numCorrect: 0, numWrong: 0 };
+
+    trendsMap[dateKey].numAttempts += 1;
+    if (attempt.isCorrect) trendsMap[dateKey].numCorrect += 1;
+    else if (!attempt.isCorrect && attempt.selectedOption !== null) trendsMap[dateKey].numWrong += 1;
+  }
+
+  // Convert to array with calculated score and accuracy
+  const trendsArray = Object.entries(trendsMap).map(([date, stats]) => {
+    const score = stats.numAttempts > 0 ? ((stats.numCorrect - 0.2 * stats.numWrong) / stats.numAttempts) * 100 : 0;
+    const accuracy = stats.numAttempts > 0 ? (stats.numCorrect / stats.numAttempts) * 100 : 0;
+    return {
+      date,
+      numAttempts: stats.numAttempts,
+      numCorrect: stats.numCorrect,
+      numWrong: stats.numWrong,
+      score: +Math.max(0, Math.min(100, score)).toFixed(1),
+      accuracy: +accuracy.toFixed(1),
+    };
+  });
+
+  return trendsArray;
+}
+
 }

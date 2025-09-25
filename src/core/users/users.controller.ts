@@ -126,7 +126,7 @@ export class UsersController {
   async getUsersPerformance(@Query('userId') userId: number): Promise<ApiResponse<any>> {
     let result;
     if (userId > 0) {
-      result = await this.userPerformanceService.getUserPerformance(userId, true);
+      result = await this.userPerformanceService.getUserPerformance(userId, true, true);
     } else {
       result = await this.userPerformanceService.getUserPerformance();
     }
