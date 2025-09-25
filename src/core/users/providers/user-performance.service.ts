@@ -8,13 +8,7 @@ import { DataSource } from 'typeorm';
 export class UserPerformanceService {
   constructor(private dataSource: DataSource) {}
 
-  /**
-   * Get user performance stats.
-   * - If userId is passed → single user
-   * - If fullData = true → include subject-wise breakdown
-   */
   async getUserPerformance(userId?: number, fullData = false) {
-    // Subquery: latest attempt per question for each user
     const latestAttemptSub = this.dataSource
       .createQueryBuilder()
       .subQuery()
@@ -48,7 +42,22 @@ export class UserPerformanceService {
         'numTotalWrongAttempts'
       )
       .addSelect('SUM(CASE WHEN qa.isSkipped = 1 THEN 1 ELSE 0 END)', 'numTotalSkipped')
-      .groupBy('u.id');
+
+      // level wise
+      .addSelect('SUM(CASE WHEN q.level = :easy THEN 1 ELSE 0 END)', 'numEasy')
+      .addSelect('SUM(CASE WHEN q.level = :medium THEN 1 ELSE 0 END)', 'numMedium')
+      .addSelect('SUM(CASE WHEN q.level = :hard THEN 1 ELSE 0 END)', 'numHard')
+      .addSelect('SUM(CASE WHEN q.level = :easy AND qa.isCorrect = 1 THEN 1 ELSE 0 END)', 'numCorrectEasy')
+      .addSelect('SUM(CASE WHEN q.level = :medium AND qa.isCorrect = 1 THEN 1 ELSE 0 END)', 'numCorrectMedium')
+      .addSelect('SUM(CASE WHEN q.level = :hard AND qa.isCorrect = 1 THEN 1 ELSE 0 END)', 'numCorrectHard')
+      .addSelect('SUM(CASE WHEN q.level = :easy AND qa.isCorrect = 0 THEN 1 ELSE 0 END)', 'numWrongEasy')
+      .addSelect('SUM(CASE WHEN q.level = :medium AND qa.isCorrect = 0 THEN 1 ELSE 0 END)', 'numWrongMedium')
+      .addSelect('SUM(CASE WHEN q.level = :hard AND qa.isCorrect = 0 THEN 1 ELSE 0 END)', 'numWrongHard')
+
+      .groupBy('u.id')
+      .setParameter('easy', DifficultyLevelEnum.Easy)
+      .setParameter('medium', DifficultyLevelEnum.Intermediate)
+      .setParameter('hard', DifficultyLevelEnum.Advanced);
 
     if (userId) {
       overallQb.where('u.id = :userId', { userId });
@@ -90,6 +99,9 @@ export class UserPerformanceService {
       .addSelect('SUM(CASE WHEN q.level = :easy AND qa.isCorrect = 1 THEN 1 ELSE 0 END)', 'numCorrectEasy')
       .addSelect('SUM(CASE WHEN q.level = :medium AND qa.isCorrect = 1 THEN 1 ELSE 0 END)', 'numCorrectMedium')
       .addSelect('SUM(CASE WHEN q.level = :hard AND qa.isCorrect = 1 THEN 1 ELSE 0 END)', 'numCorrectHard')
+      .addSelect('SUM(CASE WHEN q.level = :easy AND qa.isCorrect = 0 THEN 1 ELSE 0 END)', 'numWrongEasy')
+      .addSelect('SUM(CASE WHEN q.level = :medium AND qa.isCorrect = 0 THEN 1 ELSE 0 END)', 'numWrongMedium')
+      .addSelect('SUM(CASE WHEN q.level = :hard AND qa.isCorrect = 0 THEN 1 ELSE 0 END)', 'numWrongHard')
 
       .groupBy('u.id')
       .addGroupBy('s.id')
@@ -129,7 +141,12 @@ export class UserPerformanceService {
     const numWrong = +row.numTotalWrongAttempts || 0;
     const numAttempts = +row.numTotalAttempts || 0;
 
-    const rawScore = ((numCorrect - 0.2 * numWrong)/numAttempts)*100;
+    const rawScore = numAttempts > 0 ? ((numCorrect - 0.2 * numWrong) / numAttempts) * 100 : 0;
+    const score = Math.max(0, Math.min(100, rawScore));
+
+    const accuracy = numAttempts > 0 ? (numCorrect / numAttempts) * 100 : 0;
+
+    const level = this.getUserLevel(+row.numEasy, +row.numMedium, +row.numHard);
 
     return {
       userId: row.userId,
@@ -140,17 +157,21 @@ export class UserPerformanceService {
         numTotalCorrectAttempts: numCorrect,
         numTotalWrongAttempts: numWrong,
         numTotalSkipped: +row.numTotalSkipped || 0,
-        // capped score %
-        score: rawScore.toFixed(1),
-        // accuracy %
-        accuracy: numAttempts > 0
-          ? (numCorrect / numAttempts) * 100
-          : 0,
+        numEasy: +row.numEasy || 0,
+        numMedium: +row.numMedium || 0,
+        numHard: +row.numHard || 0,
+        numCorrectEasy: +row.numCorrectEasy || 0,
+        numCorrectMedium: +row.numCorrectMedium || 0,
+        numCorrectHard: +row.numCorrectHard || 0,
+        numWrongEasy: +row.numWrongEasy || 0,
+        numWrongMedium: +row.numWrongMedium || 0,
+        numWrongHard: +row.numWrongHard || 0,
 
-        // efficiency index
-        efficiency: numAttempts > 0
-          ? (numCorrect / numAttempts) * 100
-          : 0,
+        score: +score.toFixed(1),
+        accuracy: +accuracy.toFixed(1),
+        efficiency: +accuracy.toFixed(1),
+        userLevel: level,
+        feedback: this.getFeedback(level, score, accuracy),
       },
     };
   };
@@ -160,7 +181,12 @@ export class UserPerformanceService {
     const numWrong = +row.numWrongAttempts || 0;
     const numAttempts = +row.numAttempts || 0;
 
-    const rawScore = ((numCorrect - 0.2 * numWrong)/numAttempts)*100;
+    const rawScore = numAttempts > 0 ? ((numCorrect - 0.2 * numWrong) / numAttempts) * 100 : 0;
+    const score = Math.max(0, Math.min(100, rawScore));
+
+    const accuracy = numAttempts > 0 ? (numCorrect / numAttempts) * 100 : 0;
+
+    const level = this.getUserLevel(+row.numEasy, +row.numMedium, +row.numHard);
 
     return {
       subjectId: row.subjectId,
@@ -175,19 +201,32 @@ export class UserPerformanceService {
       numCorrectEasy: +row.numCorrectEasy || 0,
       numCorrectMedium: +row.numCorrectMedium || 0,
       numCorrectHard: +row.numCorrectHard || 0,
+      numWrongEasy: +row.numWrongEasy || 0,
+      numWrongMedium: +row.numWrongMedium || 0,
+      numWrongHard: +row.numWrongHard || 0,
 
-      // capped score %
-      score: rawScore.toFixed(1),
-
-      // accuracy %
-      accuracy: numAttempts > 0
-        ? (numCorrect / numAttempts) * 100
-        : 0,
-
-      // efficiency index
-      efficiency: numAttempts > 0
-        ? (numCorrect / numAttempts) * 100
-        : 0,
+      score: +score.toFixed(1),
+      accuracy: +accuracy.toFixed(1),
+      efficiency: +accuracy.toFixed(1),
+      userLevel: level,
+      feedback: this.getFeedback(level, score, accuracy),
     };
   };
+
+  // ----------------------
+  // Helpers
+  // ----------------------
+
+  private getUserLevel(numEasy: number, numMedium: number, numHard: number): string {
+    const max = Math.max(numEasy, numMedium, numHard);
+    if (max === 0) return 'Unclassified';
+    if (max === numHard) return 'Advanced';
+    if (max === numMedium) return 'Intermediate';
+    return 'Beginner';
+  }
+
+  private getFeedback(level: string, score: number, accuracy: number): string {
+    if (level === 'Unclassified') return 'Not enough data to classify';
+    return `${level} level performance. Score: ${score.toFixed(1)}%, Accuracy: ${accuracy.toFixed(1)}%`;
+  }
 }
