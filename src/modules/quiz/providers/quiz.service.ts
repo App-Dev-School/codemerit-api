@@ -1,22 +1,21 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, IsNull, Not, Repository } from 'typeorm';
-import { CreateQuizDto } from '../dtos/create-quiz.dto';
-import { QuizTypeEnum } from 'src/common/enum/quiz-type.enum';
 import { AppCustomException } from 'src/common/exceptions/app-custom-exception.filter';
-import { QuestionService } from 'src/modules/question/providers/question.service';
-import { GetQuestionsByIdsDto } from 'src/modules/question/dtos/get-questions-by-ids.dto';
-import { Quiz } from 'src/common/typeorm/entities/quiz.entity';
-import { generateSlug, generateUniqueSlug } from 'src/common/utils/slugify.util';
-import { QuizQuestion } from 'src/common/typeorm/entities/quiz-quesion.entity';
-import { QuizTopic } from 'src/common/typeorm/entities/quiz-topic.entity';
-import { QuizSubject } from 'src/common/typeorm/entities/quiz-subject.entity';
-import { MasterService } from 'src/modules/master/providers/master.service';
-import { generate6DigitNumber, getTitleBySubjectIds, getTitleByTopicIds } from 'src/common/utils/common-functions';
-import { SubmitQuizDto } from '../dtos/submit-quiz.dto';
-import { QuizResult } from 'src/common/typeorm/entities/quiz-result.entity';
 import { QuestionAttempt } from 'src/common/typeorm/entities/question-attempt.entity';
+import { QuizQuestion } from 'src/common/typeorm/entities/quiz-quesion.entity';
+import { QuizResult } from 'src/common/typeorm/entities/quiz-result.entity';
+import { QuizSubject } from 'src/common/typeorm/entities/quiz-subject.entity';
+import { QuizTopic } from 'src/common/typeorm/entities/quiz-topic.entity';
+import { Quiz } from 'src/common/typeorm/entities/quiz.entity';
+import { generate6DigitNumber, getTitleBySubjectIds, getTitleByTopicIds } from 'src/common/utils/common-functions';
+import { generateSlug, generateUniqueSlug } from 'src/common/utils/slugify.util';
+import { MasterService } from 'src/modules/master/providers/master.service';
+import { GetQuestionsByIdsDto } from 'src/modules/question/dtos/get-questions-by-ids.dto';
+import { QuestionService } from 'src/modules/question/providers/question.service';
 import { UserQuestionService } from 'src/modules/question/providers/user-question.service';
+import { DataSource, Repository } from 'typeorm';
+import { CreateQuizDto } from '../dtos/create-quiz.dto';
+import { SubmitQuizDto } from '../dtos/submit-quiz.dto';
 
 @Injectable()
 export class QuizService {
@@ -102,19 +101,24 @@ export class QuizService {
     //const questions = await this.questionService.getQuestionsByIds(ids);
     const questions = await this.userQuestionService.getUniqueQuizQuestionsFor(userId, ids);
     console.log("QuizBuilder @UniqueQuestions:", questions.length, questions.map(q => q.id));
+    /*
     if (!questions || questions.length === 0) {
       throw new AppCustomException(
-        HttpStatus.NO_CONTENT,
+        HttpStatus.REQUESTED_RANGE_NOT_SATISFIABLE,
         "No unique questions found to generate quiz."
       );
     }
+    */
 
-    // ✅ Save quiz in DB
-    if (!questions || questions.length < 1) {
+    //#Task2: Ensure Quiz creates with unique questions but if there are no unique questions, generate random quiz
+    //Implement specification with an easy to debug flow and proper response
+
+    // Save quiz in DB if at least 3 questions are available
+    if (!questions || questions.length < 3) {
       console.log('QuizBuilder #4: @NotEnoughQuestions', questions.length);
       throw new AppCustomException(
-        HttpStatus.NO_CONTENT,
-        `Not enough questions found for the given ${quizCategory}`
+        HttpStatus.REQUESTED_RANGE_NOT_SATISFIABLE,
+        `Not enough questions ${questions.length} found for the given ${quizCategory}`
       );
     }
     try {
@@ -189,6 +193,8 @@ export class QuizService {
     }
   }
 
+  //Generate a server level feedback utility
+  //Process any achievement
   async submitQuiz(submitQuizDto: SubmitQuizDto): Promise<QuizResult> {
     try {
       return this.dataSource.transaction(async (manager) => {

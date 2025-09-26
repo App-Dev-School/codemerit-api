@@ -10,11 +10,9 @@ import { QuestionTopic } from 'src/common/typeorm/entities/quesion-topic.entity'
 import { QuestionAttempt } from 'src/common/typeorm/entities/question-attempt.entity';
 import { QuestionOption } from 'src/common/typeorm/entities/question-option.entity';
 import { Question } from 'src/common/typeorm/entities/question.entity';
-import { Topic } from 'src/common/typeorm/entities/topic.entity';
 import { DataSource, In, Repository } from 'typeorm';
 import { GetQuestionsByIdsDto } from '../dtos/get-questions-by-ids.dto';
 import { QuestionListResponseDto } from '../dtos/question-list-response.dto';
-import { QuestionOptionService } from './question-option.service';
 @Injectable()
 export class UserQuestionService {
   constructor(
