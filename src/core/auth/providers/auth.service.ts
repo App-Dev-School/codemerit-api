@@ -1,15 +1,14 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { UserService } from 'src/core/users/providers/user.service';
-import { UserRoleEnum } from 'src/core/users/enums/user-roles.enum';
-import { CreateUserDto } from '../dto/create-user.dto';
+import * as bcrypt from 'bcrypt';
+import { AppCustomException } from 'src/common/exceptions/app-custom-exception.filter';
 import { User } from 'src/common/typeorm/entities/user.entity';
 import { AccountStatusEnum } from 'src/core/users/enums/account-status.enum';
-import { AccountVerificationDto } from '../dto/account-verification.dto';
-import { AppCustomException } from 'src/common/exceptions/app-custom-exception.filter';
-import { LoginResponseDto } from '../dto/login-response.dto';
-import * as bcrypt from 'bcrypt';
 import { UserProfileService } from 'src/core/users/providers/user-profile.service';
+import { UserService } from 'src/core/users/providers/user.service';
+import { AccountVerificationDto } from '../dto/account-verification.dto';
+import { CreateUserDto } from '../dto/create-user.dto';
+import { LoginResponseDto } from '../dto/login-response.dto';
 
 @Injectable()
 export class AuthService {
@@ -78,6 +77,22 @@ export class AuthService {
       ...userData,
       token,
       profile,
+    });
+    return response;
+  }
+
+    async autoLogin(user: User) {
+    const payload: any = {
+      username: user.username,
+      sub: user.id,
+      role: user.role,
+    };
+    const token = this.jwtService.sign(payload);
+    //do not attach profile level details
+    const response = new LoginResponseDto({
+      ...user,
+      token,
+      //profile,
     });
     return response;
   }

@@ -111,7 +111,8 @@ export class UserService {
         console.log('CMRegistration Send otp exception => ', error);
       }
 
-      return this.findOne(savedUser?.id);
+      const userResponse = this.findOne(savedUser?.id);
+      return userResponse;
     } catch (err) {
       await queryRunner.rollbackTransaction();
       throw new InternalServerErrorException(err.message);
