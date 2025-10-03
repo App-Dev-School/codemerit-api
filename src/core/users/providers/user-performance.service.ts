@@ -141,7 +141,6 @@ export class UserPerformanceService {
     const score = Math.max(0, Math.min(100, rawScore));
     const accuracy = numAttempts > 0 ? (numCorrect / numAttempts) * 100 : 0;
     const level = this.getUserLevel(+row.numEasy, +row.numMedium, +row.numHard);
-
     return {
       userId: row.userId,
       name: row.firstName + ' ' + row.lastName,

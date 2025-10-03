@@ -153,7 +153,6 @@ export class SubjectAnalysisService {
   async getSubjectDashboard(subjectId: number, userId?: number, fullData = false) {
     const row = await this.getSubjectStats(subjectId, userId);
     if (!row) return null;
-
     const attempted = +row.attempted || 0;
     const correct = +row.correct || 0;
     const wrong = +row.wrong || 0;

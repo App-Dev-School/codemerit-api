@@ -324,64 +324,148 @@ export class QuestionService {
     }
   }
 
-  async getQuestionListForAdmin(fullData = false)
-    : Promise<AdminQuestionResponseDto[]> {
-    let questionResponseDto: AdminQuestionResponseDto[] = [];
-    let questionList = await this.fetchAllLatestQuestions(fullData);
+async getQuestionListForAdmin(
+  fullData = false,
+  subjectId?: number,
+  topicId?: number,
+  fetchAll = false,
+  limit = 100
+): Promise<AdminQuestionResponseDto[]> {
 
-    if (!questionList) {
-      throw new AppCustomException(
-        HttpStatus.NOT_FOUND,
-        'No Question found for the given subject.',
-      );
-    }
-    for (const question of questionList) {
-      const questionDto = new AdminQuestionResponseDto();
-      questionDto.id = question.id;
-      //console.log("QuestionService Question", question.question);
-      //questionDto.question = question.question;
-      questionDto.question = he.encode(question.id + '} ' + question.question);
-      console.log("QuestionService Question Transformed", he.encode(question.id + '} ' + question.question));
-      questionDto.subjectId = question.subjectId;
-      questionDto.subject = question.subject.title;
-      questionDto.status = question.status;
-      questionDto.level = question.level;
-      questionDto.questionType = question.questionType;
-      questionDto.slug = question.slug;
-      questionDto.createdByUsername = question.userCreatedBy?.username;
-      questionDto.createdByName =
-        question.userCreatedBy?.firstName +
-        ' ' +
-        question.userCreatedBy?.lastName;
-      questionResponseDto.push(questionDto);
-    }
-    // }
+  const questionList = await this.fetchAllLatestQuestions(
+    fullData,
+    subjectId,
+    topicId,
+    fetchAll,
+    limit,
+  );
 
-    return questionList;
+  if (!questionList || questionList.length === 0) {
+    throw new AppCustomException(
+      HttpStatus.NOT_FOUND,
+      'No Question found for the given filters.',
+    );
   }
 
-  async fetchAllLatestQuestions(fullData = false): Promise<any[] | undefined> {
-    const qb = this.questionRepo
-      .createQueryBuilder('question')
+  return questionList;
+}
+
+  async fetchAllLatestQuestions(
+    fullData = false,
+    subjectId?: number,
+    topicId?: number,
+    fetchAll = false,
+    limit = 100
+  ): Promise<any[] | undefined> {
+
+    // Step 1: fetch limited question IDs
+    const idQb = this.questionRepo.createQueryBuilder('q')
+      .select('q.id', 'id')
+      .orderBy('q.id', 'DESC');
+
+    if (subjectId) {
+      idQb.andWhere('q.subjectId = :subjectId', { subjectId });
+    }
+
+    if (topicId) {
+      idQb.innerJoin('q.questionTopics', 'qt').andWhere('qt.topicId = :topicId', { topicId });
+    }
+
+    if (!fetchAll) {
+      idQb.take(limit);
+    }
+
+    const ids = (await idQb.getRawMany()).map(r => r.id);
+    if (!ids.length) return [];
+
+    // Step 2: fetch full data
+    const qb = this.questionRepo.createQueryBuilder('question')
+      .whereInIds(ids)
+      .orderBy('question.id', 'DESC')
+      // question fields
+      .select('question.id', 'question_id')
+      .addSelect('question.title', 'question_title')
+      .addSelect('question.question', 'question_text')
+      .addSelect('question.slug', 'question_slug')
+      .addSelect('question.createdAt', 'question_createdAt')
+      // subject
       .leftJoin('question.subject', 'subject')
-      .addSelect(['subject.id', 'subject.title'])
+      .addSelect('subject.id', 'subject_id')
+      .addSelect('subject.title', 'subject_title')
+      // user
       .leftJoin('question.userCreatedBy', 'user')
-      .addSelect(['user.id', 'user.firstName', 'user.lastName', 'user.username'])
+      .addSelect('user.id', 'user_id')
+      .addSelect('user.firstName', 'user_firstName')
+      .addSelect('user.lastName', 'user_lastName')
+      .addSelect('user.username', 'user_username')
+      // topics
       .leftJoin('question.questionTopics', 'questionTopic')
       .leftJoin('questionTopic.topic', 'topic')
-      .addSelect(['topic.id'])
-      .orderBy('question.id', 'DESC')
-      .take(100);
+      .addSelect('topic.id', 'topic_id')
+      .addSelect('topic.title', 'topic_title');
 
-    // Conditionally join options if fullData = true
+    // options (with raw aliases)
     if (fullData) {
       qb.leftJoin('question.options', 'options')
-        .addSelect(['options.id', 'options.option', 'options.correct']);
+        .addSelect('options.id', 'option_id')
+        .addSelect('options.option', 'option_text')
+        .addSelect('options.correct', 'option_correct');
     }
 
-    const questions = await qb.getMany();
-    return questions;
+    const raws = await qb.getRawMany();
+
+    // group rows into questions
+    const map = new Map<number, any>();
+
+    for (const row of raws) {
+      const qid = row['question_id'];
+      if (!map.has(qid)) {
+        map.set(qid, {
+          id: qid,
+          title: row['question_title'] ?? null,
+          question: row['question_text'] ?? null,
+          slug: row['question_slug'] ?? null,
+          createdAt: row['question_createdAt'] ?? null,
+          subject: row['subject_id']
+            ? { id: row['subject_id'], title: row['subject_title'] }
+            : null,
+          userCreatedBy: row['user_id']
+            ? {
+              id: row['user_id'],
+              firstName: row['user_firstName'],
+              lastName: row['user_lastName'],
+              username: row['user_username'],
+            }
+            : null,
+          topics: [],
+          options: [],
+        });
+      }
+
+      const qObj = map.get(qid);
+
+      // add topic
+      if (row['topic_id']) {
+        if (!qObj.topics.some((t: any) => t.id === row['topic_id'])) {
+          qObj.topics.push({ id: row['topic_id'], title: row['topic_title'] });
+        }
+      }
+
+      // add option
+      if (fullData && row['option_id']) {
+        if (!qObj.options.some((o: any) => o.id === row['option_id'])) {
+          qObj.options.push({
+            id: row['option_id'],
+            option: row['option_text'],
+            correct: !!row['option_correct'],
+          });
+        }
+      }
+    }
+
+    return Array.from(map.values());
   }
+
 
   private async saveOption(
     manager: EntityManager,
@@ -460,7 +544,7 @@ export class QuestionService {
 
     // Fallback if not enough questions
     if (uniqueQuestions.length < numberOfQuestions) {
-      console.log("QuizBuilder Query :: uniqueQuestions Not Enough", uniqueQuestions.length , numberOfQuestions);
+      console.log("QuizBuilder Query :: uniqueQuestions Not Enough", uniqueQuestions.length, numberOfQuestions);
       const missingCount = numberOfQuestions - uniqueQuestions.length;
       const existingIds = uniqueQuestions.map(q => q.id);
       console.log("QuizBuilder Query :: Fallback started", uniqueQuestions);

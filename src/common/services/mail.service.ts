@@ -22,9 +22,9 @@ export class MailService {
     //     }
     //   });
     const mailSent = this.mailerService.sendMail({
-        from: 'Test <testing@gmail.com>',
-        to: 'digitechgeeksolutions@gmail.com',
-        subject: `SkillTest Nest JS AppDev`,
+        from: 'CodeMerit <no-reply@codemerit.in>',
+        to: to,
+        subject: `Welcome to CodeMerit`,
         text: content,
       });
       Logger.log("##AuthStep6: SendEmail Success => " + JSON.stringify(mailSent));

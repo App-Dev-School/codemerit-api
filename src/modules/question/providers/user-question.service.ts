@@ -33,7 +33,7 @@ async getUniqueQuizQuestionsFor(
     );
   }
   console.log("getUniqueQuizQuestionsFor #1 Input DTO:", dto);
-  // ✅ Step 1: Get all questions the user has already answered correctly
+  // Step 1: Get all questions the user has already answered correctly
   const correctAttempts = await this.dataSource.getRepository(QuestionAttempt)
     .createQueryBuilder("qa")
     .select("qa.questionId", "questionId")
@@ -50,7 +50,7 @@ async getUniqueQuizQuestionsFor(
 
   console.log("getUniqueQuizQuestionsFor #3 Group Type:", isTopicBased ? "Topics" : "Subjects", "Groups:", groupIds);
 
-  // ✅ Step 2: Fetch random questions per group
+  // Step 2: Fetch random questions per group
   const groupPromises = groupIds.map(groupId => {
     const qb = this.questionRepo.createQueryBuilder("question")
       .addSelect("RAND()", "rand")
@@ -78,7 +78,7 @@ async getUniqueQuizQuestionsFor(
   let uniqueQuestions = [...new Map(groupResults.flat().map(q => [q.id, q])).values()];
   console.log("getUniqueQuizQuestionsFor #5 Questions fetched initially:", uniqueQuestions.map(q => q.id));
 
-  // ✅ Step 3: Fallback if not enough questions
+  // Step 3: Fallback if not enough questions
   if (uniqueQuestions.length < numQuestions) {
     const missingCount = numQuestions - uniqueQuestions.length;
     const existingIds = uniqueQuestions.map(q => q.id);
@@ -123,7 +123,7 @@ async getUniqueQuizQuestionsFor(
     );
   }
 
-  // ✅ Step 4: Fetch relations (options, topics) for mapping
+  // Step 4: Fetch relations (options, topics) for mapping
   const questionIds = finalQuestions.map(q => q.id);
 
   const [options, questionTopics] = await Promise.all([

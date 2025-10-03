@@ -30,11 +30,31 @@ export class QuestionController {
   @Get()
   async findQuestionList(
     @Query('fullData') fullData?: string,
+    @Query('subjectId') subjectId?: string,
+    @Query('topicId') topicId?: string,
+    @Query('fetchAll') fetchAll?: string,
+    @Query('limit') limit?: string,
   ): Promise<ApiResponse<any>> {
+
     const isFullData = fullData === 'true' || fullData === '1';
-    const result = await this.service.getQuestionListForAdmin(isFullData);
-    return new ApiResponse(`${result.length} Question fetched.`, result);
+    const subjectIdNum = subjectId ? parseInt(subjectId, 10) : undefined;
+    const topicIdNum = topicId ? parseInt(topicId, 10) : undefined;
+    const fetchAllFlag = fetchAll === 'true' || fetchAll === '1';
+    const limitNum = limit ? parseInt(limit, 10) : 100; // default 100
+
+    const result = await this.service.getQuestionListForAdmin(
+      isFullData,
+      subjectIdNum,
+      topicIdNum,
+      fetchAllFlag,
+      limitNum,
+    );
+    //?subjectId=5&fetchAll=true - Fetch all questions for a subject
+    //?fullData=true&limit=5 - Fetch first 5 questions with full options and topics
+    //?fullData=true&topicId=11
+    return new ApiResponse(`${result.length} Question(s) fetched.`, result);
   }
+
 
   @Put('update')
   async update(

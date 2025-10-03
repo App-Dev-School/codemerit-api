@@ -1,25 +1,22 @@
-import {
-  Entity,
-  Column,
-  JoinColumn,
-  OneToOne,
-  ManyToOne,
-  CreateDateColumn,
-  UpdateDateColumn,
-  OneToMany,
-} from 'typeorm';
-import { AbstractEntity } from './abstract.entity';
-import { DifficultyLevelEnum } from 'src/common/enum/difficulty-lavel.enum';
-import { LabelEnum } from 'src/common/enum/label.enum';
-import { Subject } from './subject.entity';
-import { IQuestion } from '../interface/question.interface';
-import { AuditEntity } from './audit.entity';
-import { QuestionTypeEnum } from 'src/common/enum/question-type.enum';
-import { QuestionStatusEnum } from 'src/common/enum/question-status.enum';
-import { User } from './user.entity';
-import { QuestionOption } from './question-option.entity';
-import { QuestionTopic } from './quesion-topic.entity';
 import { IsEnum } from 'class-validator';
+import { DifficultyLevelEnum } from 'src/common/enum/difficulty-lavel.enum';
+import { QuestionStatusEnum } from 'src/common/enum/question-status.enum';
+import { QuestionTypeEnum } from 'src/common/enum/question-type.enum';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  UpdateDateColumn
+} from 'typeorm';
+import { IQuestion } from '../interface/question.interface';
+import { AbstractEntity } from './abstract.entity';
+import { QuestionTopic } from './quesion-topic.entity';
+import { QuestionOption } from './question-option.entity';
+import { Subject } from './subject.entity';
+import { User } from './user.entity';
 
 @Entity()
 export class Question extends AbstractEntity implements IQuestion {
