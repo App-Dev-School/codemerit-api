@@ -47,62 +47,62 @@ export class MasterService {
     };
   }
 
-async addUserSubjects(userId: number, dto: AddUserSubjectsDto) {
-  try {
-    // get all existing subjects for the user with subject info
-    const existing = await this.userSubjectRepo.find({
-      where: { userId },
-      relations: ['subject'],
-      select: ['id', 'subjectId', 'subject'],
-    });
+  async addUserSubjects(userId: number, dto: AddUserSubjectsDto) {
+    try {
+      // get all existing subjects for the user with subject info
+      const existing = await this.userSubjectRepo.find({
+        where: { userId },
+        relations: ['subject'],
+        select: ['id', 'subjectId', 'subject'],
+      });
 
-    const existingIds = new Set(existing.map((us) => us.subjectId));
-    const existingNames = existing.map((us) => us.subject.title);
+      const existingIds = new Set(existing.map((us) => us.subjectId));
+      const existingNames = existing.map((us) => us.subject.title);
 
-    const results: { subjectId: number; status: string }[] = [];
+      const results: { subjectId: number; status: string }[] = [];
 
-    // prepare new subjects
-    for (const subjectId of dto.subjectIds) {
-      if (existingIds.has(subjectId)) {
+      // prepare new subjects
+      for (const subjectId of dto.subjectIds) {
+        if (existingIds.has(subjectId)) {
+          results.push({
+            subjectId,
+            status: `Subject already added: ${existing.find(
+              (e) => e.subjectId === subjectId,
+            )?.subject.title}`,
+          });
+          continue;
+        }
+
+        const newUserSubject = this.userSubjectRepo.create({
+          userId,
+          subjectId,
+        });
+
+        await this.userSubjectRepo.save(newUserSubject);
         results.push({
           subjectId,
-          status: `Subject already added: ${existing.find(
-            (e) => e.subjectId === subjectId,
-          )?.subject.title}`,
+          status: 'Added successfully',
         });
-        continue;
       }
 
-      const newUserSubject = this.userSubjectRepo.create({
-        userId,
-        subjectId,
-      });
+      if (results.length === 0) {
+        return {
+          message: 'No new subjects added',
+          results,
+        };
+      }
 
-      await this.userSubjectRepo.save(newUserSubject);
-      results.push({
-        subjectId,
-        status: 'Added successfully',
-      });
-    }
-
-    if (results.length === 0) {
       return {
-        message: 'No new subjects added',
+        message: 'Subjects processed successfully',
         results,
       };
+    } catch (err) {
+      throw new AppCustomException(
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        'Failed to add subjects. Please try again later.',
+      );
     }
-
-    return {
-      message: 'Subjects processed successfully',
-      results,
-    };
-  } catch (err) {
-    throw new AppCustomException(
-      HttpStatus.INTERNAL_SERVER_ERROR,
-      'Failed to add subjects. Please try again later.',
-    );
   }
-}
 
 
   async getTopicStatsForUser(userId?: number) {
@@ -257,7 +257,9 @@ async addUserSubjects(userId: number, dto: AddUserSubjectsDto) {
         'subject.title',
         'subject.slug',
         'subject.image'
-      ]);
+      ])
+      .where('jobRole.isPublished = :isPublished', { isPublished: 1 })
+      .orderBy('jobRole.orderId', 'ASC');
 
     if (userId) {
       qb.addSelect(

@@ -42,6 +42,7 @@ export class SubjectAnalysisService {
    * so counts are per-question (not per-attempt row).
    */
   private async getSubjectStats(subjectId?: number, userId?: number) {
+    const isPublished = 1;
     const qb = this.dataSource
       .createQueryBuilder()
       .select('s.id', 'subjectId')
@@ -59,13 +60,14 @@ export class SubjectAnalysisService {
       .addSelect('COUNT(DISTINCT CASE WHEN q.status = :active AND q.level = :medium THEN q.id END)', 'numIntTrivia')
       .addSelect('COUNT(DISTINCT CASE WHEN q.status = :active AND q.level = :hard THEN q.id END)', 'numAdvTrivia')
       .from(Subject, 's')
+      .where('s.isPublished = :isPublished', { isPublished })
       .leftJoin('question', 'q', 'q.subjectId = s.id')
       .setParameter('questionType', QuestionTypeEnum.Trivia)
       .setParameter('active', QuestionStatusEnum.Active)
       .setParameter('easy', DifficultyLevelEnum.Easy)
       .setParameter('medium', DifficultyLevelEnum.Intermediate)
       .setParameter('hard', DifficultyLevelEnum.Advanced)
-      .groupBy('s.id');
+      .groupBy('s.id')
 
     if (subjectId) {
       qb.where('s.id = :subjectId', { subjectId });
