@@ -36,18 +36,24 @@ jobs:
           rsync-options: --archive --verbose --compress --human-readable --progress --exclude=vendor --exclude=node_modules --exclude=.github --exclude=.vscode --exclude=src
 
       - name: 🚀 Restart app with PM2 on Hostinger
+        env:
+          SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
+          SSH_PRIVATE: ${{ secrets.SSH_PRIVATE }}
+          REMOTE_DIR: ${{ secrets.FTP_REMOTE_DIR }}
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USERNAME }}@appdevops.in << 'EOF'
-            export NVM_DIR="$HOME/.nvm"
-            source "$NVM_DIR/nvm.sh"
-            nvm use node
+          ssh -o StrictHostKeyChecking=no $SSH_USERNAME@appdevops.in <<EOF
+          cd $REMOTE_DIR
 
-            cd ${{ secrets.FTP_REMOTE_DIR }}
-            
-            # Check if already running, restart or start
-            if pm2 describe main > /dev/null; then
-              pm2 restart main
-            else
-              pm2 start main.js --name main
-            fi
-EOF
+          # Check if PM2 is installed
+          if ! command -v pm2 &> /dev/null; then
+            echo "PM2 not found. Installing..."
+            npm install -g pm2
+          fi
+
+          # Restart or start the app
+          if pm2 describe main > /dev/null; then
+            pm2 restart main
+          else
+            pm2 start main.js --name main
+          fi
+          EOF
