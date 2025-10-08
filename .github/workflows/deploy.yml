@@ -30,7 +30,7 @@ jobs:
         env:
           SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
         run: |
-          echo "=== REMOTE SERVER ENVIRONMENT TEST ==="
+          echo "=== SERVER ENVIRONMENT TEST ==="
           ssh -o StrictHostKeyChecking=no $SSH_USERNAME@appdevops.in <<'EOF'
           echo "Node Version:"
           node -v || echo "❌ Node not found"
