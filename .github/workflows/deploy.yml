@@ -13,47 +13,77 @@ jobs:
       - name: ✅ Checkout code
         uses: actions/checkout@v4
 
-      - name: 🧪 Print versions (debug)
+      - name: 🧪 Print local versions (runner)
         run: |
+          echo "=== LOCAL (GitHub Runner) ENVIRONMENT ==="
           node --version
           npm --version
           git --version
 
       - name: 📦 Install dependencies
-        run: npm install
+        run: npm install --force
 
       - name: 🏗️ Build NestJS application
         run: npm run build
 
-      - name: 📂 Deploy built files via rsync
+      - name: 🧾 Test remote environment (before deploy)
         env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE }}
           SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
-          FTP_REMOTE_DIR: ${{ secrets.FTP_REMOTE_DIR }}
         run: |
-          echo "$SSH_PRIVATE_KEY" > private_key.pem
-          chmod 600 private_key.pem
+          echo "=== SERVER ENVIRONMENT TEST ==="
+          ssh -o StrictHostKeyChecking=no $SSH_USERNAME@appdevops.in <<'EOF'
+          echo "Node Version:"
+          node -v || echo "❌ Node not found"
+          echo "NPM Version:"
+          npm -v || echo "❌ NPM not found"
+          echo "PM2 Version:"
+          pm2 -v || echo "❌ PM2 not found"
+          echo "Current Working Directory:"
+          pwd
+          echo "List of running PM2 processes:"
+          pm2 list || echo "No PM2 processes running"
+          EOF
 
-          rsync -avz --delete \
-            --exclude=vendor \
-            --exclude=.github \
-            --exclude=.vscode \
-            -e "ssh -i private_key.pem -o StrictHostKeyChecking=no" \
-            ./dist/ "$SSH_USERNAME@appdevops.in:$FTP_REMOTE_DIR" || echo "⚠️ rsync exited with non-zero code"
-
-      - name: 🔍 List contents of ./dist
-        run: ls -al ./dist
+      - name: 📂 Deploy built files to Hostinger
+        uses: SamKirkland/web-deploy@v1
+        with:
+          target-server: appdevops.in
+          remote-user: ${{ secrets.SSH_USERNAME }}
+          private-ssh-key: ${{ secrets.SSH_PRIVATE }}
+          source-path: ./dist/
+          destination-path: ${{ secrets.FTP_REMOTE_DIR }}
+          rsync-options: --archive --verbose --compress --human-readable --progress --exclude=vendor --exclude=node_modules --exclude=.github --exclude=.vscode --exclude=src --delete-after
 
       - name: 🚀 Restart app with PM2 on Hostinger
         env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE }}
           SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
-          FTP_REMOTE_DIR: ${{ secrets.FTP_REMOTE_DIR }}
+          REMOTE_DIR: ${{ secrets.FTP_REMOTE_DIR }}
         run: |
-          echo "$SSH_PRIVATE_KEY" > private_key.pem
-          chmod 600 private_key.pem
+          echo "=== RESTARTING REMOTE APP ==="
+          ssh -o StrictHostKeyChecking=no $SSH_USERNAME@appdevops.in <<EOF
+          set -e  # Exit if any command fails
+          cd $REMOTE_DIR || { echo "❌ Directory not found: $REMOTE_DIR"; exit 1; }
 
-          ssh -i private_key.pem -o StrictHostKeyChecking=no "$SSH_USERNAME@appdevops.in" << EOF
-            cd "$FTP_REMOTE_DIR"
-            pm2 restart cloud-codemerit || pm2 start main.js --name cloud-codemerit
+          echo "Using directory: $(pwd)"
+          echo "Node Version: $(node -v)"
+          echo "PM2 Version: $(pm2 -v || echo 'not installed')"
+
+          # Ensure PM2 is installed
+          if ! command -v pm2 &> /dev/null; then
+            echo "Installing PM2 globally..."
+            npm install -g pm2
+          fi
+
+          # Restart or start app
+          if pm2 describe main > /dev/null; then
+            echo "Restarting existing PM2 process: main"
+            pm2 restart main
+          else
+            echo "Starting new PM2 process for dist/main.js"
+            pm2 start dist/main.js --name main
+          fi
+
+          pm2 save
+          echo "✅ PM2 restart complete."
+          pm2 list
           EOF

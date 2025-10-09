@@ -386,7 +386,17 @@ async getQuestionListForAdmin(
       .select('question.id', 'question_id')
       .addSelect('question.title', 'question_title')
       .addSelect('question.question', 'question_text')
+      .addSelect('question.subjectId', 'subjectId')
+      .addSelect('question.level', 'level')
       .addSelect('question.slug', 'question_slug')
+      .addSelect('question.questionType', 'questionType')
+      .addSelect('question.status', 'status')
+      .addSelect('question.timeAllowed', 'timeAllowed')
+      .addSelect('question.tag', 'tag')
+      .addSelect('question.orderId', 'orderId')
+      .addSelect('question.marks', 'marks')
+      .addSelect('question.hint', 'hint')
+      .addSelect('question.answer', 'answer')
       .addSelect('question.createdAt', 'question_createdAt')
       // subject
       .leftJoin('question.subject', 'subject')
@@ -425,6 +435,18 @@ async getQuestionListForAdmin(
           title: row['question_title'] ?? null,
           question: row['question_text'] ?? null,
           slug: row['question_slug'] ?? null,
+          //map details
+          subjectId: row['subjectId'] ?? null,
+          questionType: row['questionType'] ?? null,
+          level: row['level'] ?? null,
+          status: row['status'] ?? null,
+          timeAllowed: row['timeAllowed'] ?? null,
+          tag: row['tag'] ?? null,
+          marks: row['marks'] ?? null,
+          orderId: row['orderId'] ?? null,
+          hint: row['hint'] ?? null,
+          answer: row['answer'] ?? null,
+          //map other fields
           createdAt: row['question_createdAt'] ?? null,
           subject: row['subject_id']
             ? { id: row['subject_id'], title: row['subject_title'] }
