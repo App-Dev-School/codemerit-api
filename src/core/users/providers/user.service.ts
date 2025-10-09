@@ -25,12 +25,10 @@ import { AccountStatusEnum } from '../enums/account-status.enum';
 import { UserOtpTagsEnum } from '../enums/user-otp-Tags.enum';
 import { UserOtpService } from './user-otp.service';
 import { UserProfileService } from './user-profile.service';
-import { MailService } from 'src/common/services/mail.service';
 
 @Injectable()
 export class UserService {
   constructor(
-    private mailService: MailService,
     @InjectRepository(User)
     private userRepo: Repository<User>,
     private readonly userOtpService: UserOtpService,
@@ -84,11 +82,11 @@ export class UserService {
       }
       const savedUser = await queryRunner.manager.save(user);
       //Send e-mail
-      try {
-        this.mailService.sendMail(savedUser?.email, "You are registered successfully with CodeMerit. Use "+pass+" as the OTP to activate your account.");
-      } catch (error) {
-        console.log('CMRegistration Error sending e-mail => ', error);
-      }
+      // try {
+      //   this.mailService.sendMail(savedUser?.email, "You are registered successfully with CodeMerit. Use "+pass+" as the OTP to activate your account.");
+      // } catch (error) {
+      //   console.log('CMRegistration Error sending e-mail => ', error);
+      // }
       const profile = new Profile();
       profile.userId = savedUser.id;
       //validate on client

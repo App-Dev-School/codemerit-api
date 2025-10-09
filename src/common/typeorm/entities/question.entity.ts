@@ -45,13 +45,17 @@ export class Question extends AbstractEntity implements IQuestion {
   //if questionType == General, then no options are required
   //if questionType == Trivia, then options are required
 
-  @Column({
-    type: 'enum',
-    enum: DifficultyLevelEnum,
-    nullable: true,
-  })
-  @IsEnum(DifficultyLevelEnum, { message: 'Enter question level' })
-  level: DifficultyLevelEnum;
+  // @Column({
+  //   type: 'enum',
+  //   enum: DifficultyLevelEnum,
+  //   nullable: true,
+  // })
+  // @IsEnum(DifficultyLevelEnum, { message: 'Enter question level' })
+  // level: DifficultyLevelEnum;
+  
+  @Column({ type: 'int', default: 1 })
+  level: number;
+
 
   @Column({ type: 'int', default: 1 })
   marks: number;

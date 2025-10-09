@@ -21,147 +21,88 @@ export class UserQuestionService {
     private readonly dataSource: DataSource
   ) { }
 
-async getUniqueQuizQuestionsFor(
-  userId: number,
-  dto: GetQuestionsByIdsDto
-): Promise<QuestionListResponseDto[]> {
-  const { subjectIds = [], topicIds = [], numQuestions = 10 } = dto;
-  if (subjectIds.length === 0 && topicIds.length === 0) {
-    throw new AppCustomException(
-      HttpStatus.BAD_REQUEST,
-      'At least one of the subjects or topics must be provided.'
-    );
-  }
-  console.log("getUniqueQuizQuestionsFor #1 Input DTO:", dto);
-  // Step 1: Get all questions the user has already answered correctly
-  const correctAttempts = await this.dataSource.getRepository(QuestionAttempt)
-    .createQueryBuilder("qa")
-    .select("qa.questionId", "questionId")
-    .where("qa.userId = :userId", { userId })
-    .andWhere("qa.isCorrect = true")
-    .getRawMany();
+  async getUniqueQuizForQuestions(
+    userId: number,
+    dto: GetQuestionsByIdsDto
+  ): Promise<QuestionListResponseDto[]> {
 
-  const excludedIds = correctAttempts.map(a => a.questionId);
-  console.log("getUniqueQuizQuestionsFor #2 Excluded QuestionIds (already correct):", excludedIds);
+    const { subjectIds = [], topicIds = [], numQuestions = 10 } = dto;
+    if (subjectIds.length === 0 && topicIds.length === 0) {
+      throw new AppCustomException(
+        HttpStatus.BAD_REQUEST,
+        'At least one of the subjects or topics must be provided.'
+      );
+    }
+    const isTopicBased = topicIds.length > 0;
+    const groupIds = isTopicBased ? topicIds : subjectIds;
+    const perGroupCount = Math.ceil(numQuestions / groupIds.length);
 
-  const isTopicBased = topicIds.length > 0;
-  const groupIds = isTopicBased ? topicIds : subjectIds;
-  const perGroupCount = Math.ceil(numQuestions / groupIds.length);
+    const groupColumn = isTopicBased ? 'qt.topicId' : 'q.subjectId';
+    const groupIdList = groupIds.map(() => '?').join(',');
 
-  console.log("getUniqueQuizQuestionsFor #3 Group Type:", isTopicBased ? "Topics" : "Subjects", "Groups:", groupIds);
+    let uniqueQuestions = await this.getUniqueQuestions(groupColumn, groupIdList, userId, groupIds, perGroupCount);
 
-  // Step 2: Fetch random questions per group
-  const groupPromises = groupIds.map(groupId => {
-    const qb = this.questionRepo.createQueryBuilder("question")
-      .addSelect("RAND()", "rand")
-      .leftJoinAndSelect("question.subject", "subject")
-      .leftJoinAndSelect("question.options", "options")
-      .leftJoinAndSelect("question.questionTopics", "qt")
-      .leftJoinAndSelect("qt.topic", "topic")
-      .where("question.questionType = :type", { type: QuestionTypeEnum.Trivia })
-      .andWhere("question.status = :status", { status: QuestionStatusEnum.Active })
-      .andWhere("question.id NOT IN (:...excludedIds)", { excludedIds: excludedIds.length ? excludedIds : [0] })
-      .take(perGroupCount)
-      .orderBy("rand");
+    // let uniqueQuestions = rawResults;
 
-    if (isTopicBased) {
-      qb.andWhere("qt.topicId = :groupId", { groupId });
-    } else {
-      qb.andWhere("question.subjectId = :groupId", { groupId });
+    if (uniqueQuestions.length < numQuestions) {
+      // 2nd part
+      const missingCount = numQuestions - uniqueQuestions.length;
+      const existingIds = uniqueQuestions.map(q => q.questionId);
+
+      // Avoid empty IN () issues by falling back to [0]
+      const listOfExistingIds = existingIds.length ? existingIds : [0];
+
+      const randomQuestions = await this.getRandomQuestions(groupColumn, groupIdList, userId, groupIds, listOfExistingIds, missingCount);
+
+      uniqueQuestions = [...uniqueQuestions, ...randomQuestions];
+      // uniqueQuestions = [...new Map([...uniqueQuestions, ...randomQuestions].map((q:any) => [q.questionId, q])).values()];
     }
 
-    console.log(`getUniqueQuizQuestionsFor #4 Query for groupId=${groupId}`);
-    return qb.getMany();
-  });
-
-  let groupResults = await Promise.all(groupPromises);
-  let uniqueQuestions = [...new Map(groupResults.flat().map(q => [q.id, q])).values()];
-  console.log("getUniqueQuizQuestionsFor #5 Questions fetched initially:", uniqueQuestions.map(q => q.id));
-
-  // Step 3: Fallback if not enough questions
-  if (uniqueQuestions.length < numQuestions) {
-    const missingCount = numQuestions - uniqueQuestions.length;
-    const existingIds = uniqueQuestions.map(q => q.id);
-
-    console.log(`getUniqueQuizQuestionsFor #6 Not enough questions. Missing: ${missingCount}`);
-
-    const fallbackQb = this.questionRepo.createQueryBuilder("question")
-      .addSelect("RAND()", "rand")
-      .leftJoinAndSelect("question.subject", "subject")
-      .leftJoinAndSelect("question.options", "options")
-      .leftJoinAndSelect("question.questionTopics", "qt")
-      .leftJoinAndSelect("qt.topic", "topic")
-      .where("question.questionType = :type", { type: QuestionTypeEnum.Trivia })
-      .andWhere("question.status = :status", { status: QuestionStatusEnum.Active })
-      .andWhere("question.id NOT IN (:...excludedIds)", { excludedIds: excludedIds.length ? excludedIds : [0] })
-      .orderBy("rand")
-      .take(missingCount);
-
-    if (existingIds.length > 0) {
-      fallbackQb.andWhere("question.id NOT IN (:...existingIds)", { existingIds });
+    if (uniqueQuestions.length < numQuestions) {
+      throw new AppCustomException(
+        HttpStatus.NOT_FOUND,
+        `Not enough unique questions available. Found ${uniqueQuestions.length}, need ${numQuestions}.`
+      );
     }
 
-    if (isTopicBased) {
-      fallbackQb.andWhere("qt.topicId IN (:...topicIds)", { topicIds });
-    } else {
-      fallbackQb.andWhere("question.subjectId IN (:...subjectIds)", { subjectIds });
+    // Step 4: Fetch relations (options, topics) for mapping
+    const questionIds = uniqueQuestions.map(q => q.questionId);
+
+    const [options, questionTopics] = await Promise.all([
+      this.dataSource.getRepository(QuestionOption).find({ where: { questionId: In(questionIds) } }),
+      this.dataSource.getRepository(QuestionTopic).find({ where: { questionId: In(questionIds) }, relations: ["topic"] }),
+    ]);
+
+    const optionsMap = new Map<number, QuestionOption[]>();
+    for (const opt of options) {
+      if (!optionsMap.has(opt.questionId)) optionsMap.set(opt.questionId, []);
+      optionsMap.get(opt.questionId).push(opt);
     }
 
-    const fallbackQuestions = await fallbackQb.getMany();
-    console.log("getUniqueQuizQuestionsFor #7 Fallback questions fetched:", fallbackQuestions.map(q => q.id));
-
-    uniqueQuestions = [...new Map([...uniqueQuestions, ...fallbackQuestions].map(q => [q.id, q])).values()];
-  }
-
-  const finalQuestions = uniqueQuestions.slice(0, numQuestions);
-  console.log("getUniqueQuizQuestionsFor #8 Final Questions Selected:", finalQuestions.map(q => q.id));
-
-  if (finalQuestions.length < numQuestions) {
-    throw new AppCustomException(
-      HttpStatus.NO_CONTENT,
-      `Not enough unique questions available. Found ${finalQuestions.length}, need ${numQuestions}.`
-    );
-  }
-
-  // Step 4: Fetch relations (options, topics) for mapping
-  const questionIds = finalQuestions.map(q => q.id);
-
-  const [options, questionTopics] = await Promise.all([
-    this.dataSource.getRepository(QuestionOption).find({ where: { questionId: In(questionIds) } }),
-    this.dataSource.getRepository(QuestionTopic).find({ where: { questionId: In(questionIds) }, relations: ["topic"] }),
-  ]);
-
-  const optionsMap = new Map<number, QuestionOption[]>();
-  for (const opt of options) {
-    if (!optionsMap.has(opt.questionId)) optionsMap.set(opt.questionId, []);
-    optionsMap.get(opt.questionId).push(opt);
-  }
-
-  const topicsMap = new Map<number, any[]>();
-  for (const qt of questionTopics) {
-    if (!topicsMap.has(qt.questionId)) topicsMap.set(qt.questionId, []);
-    if (qt.topic) {
-      topicsMap.get(qt.questionId).push({
-        id: qt.topic.id,
-        title: qt.topic.title,
-        description: qt.topic.description,
-        createdAt: qt.topic.createdAt,
-      });
+    const topicsMap = new Map<number, any[]>();
+    for (const qt of questionTopics) {
+      if (!topicsMap.has(qt.questionId)) topicsMap.set(qt.questionId, []);
+      if (qt.topic) {
+        topicsMap.get(qt.questionId).push({
+          id: qt.topic.id,
+          title: qt.topic.title,
+          description: qt.topic.description,
+          createdAt: qt.topic.createdAt,
+        });
+      }
     }
+    return this.mappedQuestionList(uniqueQuestions, topicsMap, optionsMap);
+
   }
 
-  console.log("getUniqueQuizQuestionsFor #9 Mapping completed. Returning response.");
-  return this.mappedQuestionList(finalQuestions, topicsMap, optionsMap);
-}
-
-//Also in question.service
+  //Also in question.service
   private mappedQuestionList(
     questions: Question[],
     topicsMap?: Map<number, any[]>,
     optionsMap?: Map<number, any[]>,
   ): any[] {
-    return questions.map((q) => ({
-      id: q.id,
+    return questions.map((q: any) => ({
+      id: (q.id) ? q.id : q.questionId,
       title: q.title,
       question: q.question,
       subjectId: q.subjectId,
@@ -177,18 +118,112 @@ async getUniqueQuizQuestionsFor(
       order: q.orderId,
       createdAt: q.createdAt,
       subject: q.subject,
-      topics: topicsMap.get(q.id) || [],
-      options: optionsMap.get(q.id) || [],
+      topics: topicsMap.get((q.id) ? q.id : q.questionId) || [],
+      options: optionsMap.get((q.id) ? q.id : q.questionId) || [],
       //topics: q.questionTopics,
       //options: q.options,
-      userCreatedBy: q?.userCreatedBy
-        ? {
-          id: q.userCreatedBy.id,
-          firstName: q.userCreatedBy.firstName,
-          lastName: q.userCreatedBy.lastName,
-          email: q.userCreatedBy.email,
-        }
-        : null,
+      // userCreatedBy: q?.userCreatedBy
+      //   ? {
+      //     id: q.userCreatedBy.id,
+      //     firstName: q.userCreatedBy.firstName,
+      //     lastName: q.userCreatedBy.lastName,
+      //     email: q.userCreatedBy.email,
+      //   }
+      //   : null,
     }));
   }
+
+
+  private async getUniqueQuestions(groupColumn: any, groupIdList: any, userId: any, groupIds: any,
+    perGroupCount: any): Promise<any[]> {
+
+    const rawQuery = `
+      WITH correct_questions AS (
+        SELECT questionId
+        FROM question_attempt
+        WHERE userId = ? AND isCorrect = TRUE
+      ),
+      grouped_questions AS (
+        SELECT 
+        q.id AS questionId, q.title, q.question, q.questionType, q.level, q.marks, q.slug, q.timeAllowed, q.tag, q.status, q.answer, q.hint,
+          q.orderId, q.createdAt,
+
+          s.id AS subjectId, s.title AS subjectName,
+
+          t.id AS topicId, t.title AS topicTitle, t.description AS topicDescription,
+
+          ${groupColumn} AS groupId,
+          ROW_NUMBER() OVER (PARTITION BY ${groupColumn} ORDER BY RAND()) as rn
+
+        FROM question q
+
+        LEFT JOIN subject s ON s.id = q.subjectId
+        LEFT JOIN question_topic qt ON qt.questionId = q.id
+        LEFT JOIN topic t ON t.id = qt.topicId
+
+        WHERE q.questionType = 'Trivia'
+          AND q.status = 'Active'
+          AND ${groupColumn} IN (${groupIdList})
+          AND NOT EXISTS (
+            SELECT 1 FROM correct_questions cq WHERE cq.questionId = q.id
+          )
+      )
+      SELECT *
+      FROM grouped_questions
+      WHERE rn <= ?
+      ORDER BY level, groupId, RAND()
+      `;
+    const params = [
+      userId,
+      ...groupIds,
+      perGroupCount
+    ];
+    return this.dataSource.query(rawQuery, params);
+  }
+  private async getRandomQuestions(groupColumn: any, groupIdList: any, userId: any, groupIds: any,
+    listOfExistingIds: any, missingCount: any): Promise<any[]> {
+
+    const params2 = [
+      QuestionTypeEnum.Trivia,         // questionType
+      QuestionStatusEnum.Active,       // status
+      userId,                     // already selected
+      listOfExistingIds,                 // existingIds from earlier selection
+      ...groupIds,
+      missingCount                     // limit
+    ];
+    const checkExistQuestionIds = `
+      SELECT questionId
+      FROM question_attempt
+      WHERE userId = ? AND isCorrect = TRUE`;
+
+    const query2 = `
+      SELECT 
+        q.id AS questionId, q.title, q.question, q.questionType, q.level, q.marks, q.slug, q.timeAllowed, q.tag, q.status, q.answer,
+        q.hint, q.orderId, q.createdAt,
+
+        s.id AS subjectId, s.title AS subjectName,
+
+        t.id AS topicId, t.title AS topicTitle, t.description AS topicDescription
+
+      FROM question q
+      LEFT JOIN subject s ON s.id = q.subjectId
+      LEFT JOIN question_topic qt ON qt.questionId = q.id
+      LEFT JOIN topic t ON t.id = qt.topicId
+
+      WHERE q.questionType = ?
+        AND q.status = ?
+        AND q.id NOT IN (${checkExistQuestionIds})
+        AND q.id NOT IN (?)
+        AND ${groupColumn} IN (${groupIdList})
+
+      ORDER BY q.level, RAND()
+      LIMIT ?;
+  `;
+    return this.dataSource.query(
+      query2,
+      params2
+    );
+  }
+
+
 }

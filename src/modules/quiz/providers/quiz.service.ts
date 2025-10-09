@@ -66,6 +66,7 @@ export class QuizService {
   }
 
   async createQuiz(userId: number, createQuizDto: CreateQuizDto): Promise<Quiz> {
+    console.log('quiz service called');
     console.log('QuizBuilder @createQuiz called:', createQuizDto);
     let quizCategory = '';
     if (!createQuizDto?.subjectIds?.length && !createQuizDto?.topicIds?.length) {
@@ -93,14 +94,17 @@ export class QuizService {
     const ids = new GetQuestionsByIdsDto();
     ids.subjectIds = subjectIds;
     ids.topicIds = topicIds;
-    ids.numQuestions = 10;
     if (createQuizDto?.numQuestions && createQuizDto?.numQuestions > 0) {
       ids.numQuestions = createQuizDto?.numQuestions;
+    } else {
+      ids.numQuestions = 10;
     }
+
     console.log('QuizBuilder @Input:', ids);
     //const questions = await this.questionService.getQuestionsByIds(ids);
-    const questions = await this.userQuestionService.getUniqueQuizQuestionsFor(userId, ids);
-    console.log("QuizBuilder @UniqueQuestions:", questions.length, questions.map(q => q.id));
+
+    const questions = await this.userQuestionService.getUniqueQuizForQuestions(userId, ids);
+
     /*
     if (!questions || questions.length === 0) {
       throw new AppCustomException(
@@ -117,7 +121,7 @@ export class QuizService {
     if (!questions || questions.length < 3) {
       console.log('QuizBuilder #4: @NotEnoughQuestions', questions.length);
       throw new AppCustomException(
-        HttpStatus.REQUESTED_RANGE_NOT_SATISFIABLE,
+        HttpStatus.NOT_FOUND,
         `Not enough questions ${questions.length} found for the given ${quizCategory}`
       );
     }
