@@ -58,7 +58,7 @@ export class UserQuestionService {
       // uniqueQuestions = [...new Map([...uniqueQuestions, ...randomQuestions].map((q:any) => [q.questionId, q])).values()];
     }
 
-    if (uniqueQuestions.length < numQuestions) {
+    if (uniqueQuestions && uniqueQuestions.length == 0) {
       throw new AppCustomException(
         HttpStatus.NOT_FOUND,
         `Not enough unique questions available. Found ${uniqueQuestions.length}, need ${numQuestions}.`
