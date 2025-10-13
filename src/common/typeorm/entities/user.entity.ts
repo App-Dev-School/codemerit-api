@@ -166,5 +166,6 @@ export class User extends AbstractEntity implements IUser {
   quizResults: QuizResult[];
 
   @OneToMany(() => Permission, p => p.user)
-  permissions: Permission[];
+  permissions?: Permission[];
+
 }
