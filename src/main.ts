@@ -46,8 +46,8 @@ async function bootstrap() {
   app.useGlobalInterceptors(
     new ResponseInterceptor(),
     new AuditInterceptor(),
-    new RequestDecryptionInterceptor(cryptoService),
-    new ResponseEncryptionInterceptor(cryptoService)
+    // new RequestDecryptionInterceptor(cryptoService),
+    // new ResponseEncryptionInterceptor(cryptoService)
   );
 
   app.useGlobalFilters(new GlobalExceptionsFilter());

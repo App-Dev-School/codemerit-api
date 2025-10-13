@@ -16,7 +16,10 @@ export class ResponseEncryptionInterceptor implements NestInterceptor {
         return next.handle().pipe(
             map((data) => {
                 // Encrypt the response
+                // console.log('calling ResponseEncryptionInterceptor### 01', data);
+
                 const encrypted = this.cryptoService.encrypt(JSON.stringify(data));
+                // console.log('calling ResponseEncryptionInterceptor### 02', encrypted);
                 return { payload: encrypted }; // Wrap it in a "payload"
             }),
         );

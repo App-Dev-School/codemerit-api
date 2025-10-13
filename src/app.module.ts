@@ -7,11 +7,13 @@ import { jwtConfig } from './config/jwt-config';
 import { LoggerModule } from './common/services/logger.module';
 import { CoreModule } from './core/core.module';
 import { DomainModule } from './modules/domain.module';
-import { APP_GUARD } from '@nestjs/core';
+import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { JwtAuthGuard } from './core/auth/jwt/jwt-auth-guard';
 import { RolesGuard } from './core/auth/guards/roles.guard';
 import { MonitoringModule } from './modules/monitoring/monitoring.module';
 import { MasterModule } from './modules/master/master.module';
+import { CryptoService } from './common/utils/crypto.service';
+import { ResponseEncryptionInterceptor } from './common/exceptions/response-encryption.interceptor';
 
 @Module({
   imports: [
@@ -34,6 +36,11 @@ import { MasterModule } from './modules/master/master.module';
     {
       provide: APP_GUARD,
       useClass: RolesGuard,
+    },
+    CryptoService,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ResponseEncryptionInterceptor,
     },
   ],
 })
