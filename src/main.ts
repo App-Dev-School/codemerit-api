@@ -7,6 +7,9 @@ import { GlobalExceptionsFilter } from './common/filters/global-exception.filter
 import { AuditInterceptor } from './common/interceptors/audit.interceptor';
 import { ResponseInterceptor } from './common/interceptors/response.interceptor';
 import { IAppConfig, appConfig } from './config/app-config';
+import { RequestDecryptionInterceptor } from './common/exceptions/request-decryption.interceptor';
+import { CryptoService } from './common/utils/crypto.service';
+import { ResponseEncryptionInterceptor } from './common/exceptions/response-encryption.interceptor';
 
 configDotenv({
   path: `.env`,
@@ -39,7 +42,14 @@ async function bootstrap() {
     credentials: true,
   });
 
-  app.useGlobalInterceptors(new ResponseInterceptor(), new AuditInterceptor());
+  const cryptoService = app.get(CryptoService);
+  app.useGlobalInterceptors(
+    new ResponseInterceptor(),
+    new AuditInterceptor(),
+    new RequestDecryptionInterceptor(cryptoService),
+    new ResponseEncryptionInterceptor(cryptoService)
+  );
+
   app.useGlobalFilters(new GlobalExceptionsFilter());
   /* Add Swagger  */
   const options = new DocumentBuilder()
