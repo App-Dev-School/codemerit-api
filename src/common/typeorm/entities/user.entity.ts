@@ -15,7 +15,7 @@ import { IUser } from '../interface/user.interface';
 import { AbstractEntity } from './abstract.entity';
 import { JobRole } from './job-role.entity';
 import { QuizResult } from './quiz-result.entity';
-import { Permission } from './permission.entity';
+import { UserPermission } from './user-permission.entity';
 
 @Entity()
 export class User extends AbstractEntity implements IUser {
@@ -165,7 +165,7 @@ export class User extends AbstractEntity implements IUser {
   @OneToMany(() => QuizResult, (result) => result.user)
   quizResults: QuizResult[];
 
-  @OneToMany(() => Permission, p => p.user)
-  permissions?: Permission[];
+  @OneToMany(() => UserPermission, p => p.user)
+  permissions?: UserPermission[];
 
 }

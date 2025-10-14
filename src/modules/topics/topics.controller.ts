@@ -33,7 +33,7 @@ export class TopicsController {
   }
 
   @UseGuards(AuthGuard('jwt'), PermissionsGuard)
-  @RequirePermission(UserPermissionEnum.CanGetTopic, UserPermissionTitleEnum.Topic)
+  @RequirePermission(UserPermissionEnum.TopicGet, UserPermissionTitleEnum.Topic)
   @Get('/all')
   async findAll(): Promise<ApiResponse<any>> {
     const result = await this.topicService.findAll();

@@ -3,6 +3,6 @@ export enum UserPermissionTitleEnum {
     Topic = 'Topic',
 }
 export enum UserPermissionEnum {
-    CanGetTopic = 'CanGetTopic',
-    CanAddTopic = 'CanAddTopic',
+    TopicGet = 'Topic:Get',
+    TopicCreate = 'Topic:Create',
 }

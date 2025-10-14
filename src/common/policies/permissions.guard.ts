@@ -9,6 +9,7 @@ import { Repository } from 'typeorm';
 import { REQUIRE_PERMISSION_KEY } from './require-permission.decorator';
 import { Permission } from '../typeorm/entities/permission.entity';
 import { Reflector } from '@nestjs/core';
+import { UserPermission } from '../typeorm/entities/user-permission.entity';
 
 @Injectable()
 export class PermissionsGuard implements CanActivate {
@@ -16,15 +17,17 @@ export class PermissionsGuard implements CanActivate {
         private reflector: Reflector,
         @InjectRepository(Permission)
         private permissionRepo: Repository<Permission>,
+        @InjectRepository(UserPermission)
+        private userPermissionRepo: Repository<UserPermission>,
     ) { }
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
-        const { permissionId, resourceType } = this.reflector.getAllAndOverride(REQUIRE_PERMISSION_KEY, [
+        const { permission, resourceType } = this.reflector.getAllAndOverride(REQUIRE_PERMISSION_KEY, [
             context.getHandler(),
             context.getClass(),
         ]) || {};
 
-        if (!permissionId || !resourceType) {
+        if (!permission || !resourceType) {
             return true; // No permission required
         }
 
@@ -33,19 +36,23 @@ export class PermissionsGuard implements CanActivate {
 
         // You might get this from a param, body, or query
         const resourceId = +request.params.id || +request.body.resourceId || null;
-        console.log('hasPermission', { user, permissionId, resourceType, resourceId });
+        console.log('hasPermission', { user, permission, resourceType, resourceId });
 
-        const hasPermission = await this.permissionRepo.findOne({
+        const hasPermission = await this.userPermissionRepo.findOne({
             where: {
-                user: { id: user.id },
-                permissionId,
-                resourceType: resourceType,
-                resourceId: resourceId,
+                userId: user.id,
+                permission: {
+                    permission: permission,
+                },
+                resourceType,
+                resourceId,
             },
+            relations: ['permission'],
         });
 
+
         if (!hasPermission) {
-            throw new ForbiddenException(`You do not have permission: ${permissionId} on ${resourceType} ${resourceId}`);
+            throw new ForbiddenException(`You do not have permission: ${permission} on ${resourceType} ${resourceId}`);
         }
 
         return true;

@@ -17,6 +17,7 @@ import { Quiz } from 'src/common/typeorm/entities/quiz.entity';
 import { Subject } from 'src/common/typeorm/entities/subject.entity';
 import { Topic } from 'src/common/typeorm/entities/topic.entity';
 import { UserOtp } from 'src/common/typeorm/entities/user-otp.entity';
+import { UserPermission } from 'src/common/typeorm/entities/user-permission.entity';
 import { UserSubject } from 'src/common/typeorm/entities/user-subject.entity';
 import { User } from 'src/common/typeorm/entities/user.entity';
 import { IDatabaseConfig } from 'src/config/database-config';
@@ -60,7 +61,8 @@ export class TypeormConfigService implements TypeOrmOptionsFactory {
         QuizQuestion,
         QuizSubject,
         QuizTopic,
-        Permission
+        Permission,
+        UserPermission
       ],
       // entities: [__dirname + '/../**/*.entity.{ts,js}'],
       // entities: ['src/**/*.entity.ts'],

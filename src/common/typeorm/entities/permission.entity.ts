@@ -1,28 +1,25 @@
 import {
-    Column,
-    Entity,
-    ManyToOne,
-    PrimaryGeneratedColumn
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn
 } from 'typeorm';
-import { User } from './user.entity';
+import { IPermission } from '../interface/permission.interface';
 
 @Entity()
-export class Permission {
+export class Permission implements IPermission {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
-  permissionId: string; // e.g. 'CanAddQuestion'
+  permission: string; // e.g. 'CanAddQuestion'
 
   @Column()
   description: string;
 
-  @Column()
-  resourceType: string; // e.g. 'Subject' | 'Topic'
+  @Column({ name: 'createdBy', default: null, select: false })
+  createdBy: number;
 
-  @Column()
-  resourceId: number; // e.g. 12
-
-  @ManyToOne(() => User, user => user.permissions)
-  user: User;
+  @CreateDateColumn({ name: 'createdAt' })
+  createdAt: Date;
 }
