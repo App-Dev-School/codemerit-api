@@ -62,4 +62,11 @@ export class CreateTopicDto {
   @IsString({ message: 'Description must be a string' })
   @IsNotEmpty({ message: 'Description is required' })
   description: string;
+
+   @ApiProperty({
+    description: 'Goal of the topic'
+  })
+  @IsString({ message: 'Goal must be a string' })
+  @IsOptional({ message: 'Goal is optional' })
+  goal: string;
 }
