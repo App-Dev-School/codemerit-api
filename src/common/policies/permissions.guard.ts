@@ -4,25 +4,20 @@ import {
     Injectable,
     ForbiddenException,
 } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { REQUIRE_PERMISSION_KEY } from './require-permission.decorator';
-import { Permission } from '../typeorm/entities/permission.entity';
 import { Reflector } from '@nestjs/core';
-import { UserPermission } from '../typeorm/entities/user-permission.entity';
+import { UserPermissionTitleEnum } from './user-permission.enum';
+import { PermissionsService } from './permissions.service';
 
 @Injectable()
 export class PermissionsGuard implements CanActivate {
     constructor(
         private reflector: Reflector,
-        @InjectRepository(Permission)
-        private permissionRepo: Repository<Permission>,
-        @InjectRepository(UserPermission)
-        private userPermissionRepo: Repository<UserPermission>,
+        private readonly permissionService: PermissionsService,
     ) { }
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
-        const { permission, resourceType } = this.reflector.getAllAndOverride(REQUIRE_PERMISSION_KEY, [
+        let { permission, resourceType } = this.reflector.getAllAndOverride(REQUIRE_PERMISSION_KEY, [
             context.getHandler(),
             context.getClass(),
         ]) || {};
@@ -33,22 +28,31 @@ export class PermissionsGuard implements CanActivate {
 
         const request = context.switchToHttp().getRequest();
         const user = request.user;
-
+        const payload = request.body;
+        let resourceId: any = null;
+        console.log('request permission', permission, resourceType);
         // You might get this from a param, body, or query
-        const resourceId = +request.params.id || +request.body.resourceId || null;
+        let hasPermission: boolean = null;
+        if (resourceType == UserPermissionTitleEnum.Question) {
+            if (payload.subjectId) {
+                resourceType = UserPermissionTitleEnum.Subject;
+                resourceId = payload.subjectId;
+                hasPermission = await this.permissionService.findOneByUser(user.id, permission, resourceType, resourceId);
+                console.log('has permission subject', hasPermission);
+
+            }
+            if (!hasPermission && (payload.topicIds || payload.topicIds > 0)) {
+                resourceType = UserPermissionTitleEnum.Topic;
+                resourceId = payload.topicIds;
+                hasPermission = await this.permissionService.findByUserTopics(user.id, permission, resourceType, resourceId);
+                console.log('has permission topic', hasPermission);
+            }
+        } else {
+            resourceId = +request.params.id || +request.body.resourceId || null;
+            hasPermission = await this.permissionService.findOneByUser(user.id, permission, resourceType, resourceId);
+        }
         console.log('hasPermission', { user, permission, resourceType, resourceId });
 
-        const hasPermission = await this.userPermissionRepo.findOne({
-            where: {
-                userId: user.id,
-                permission: {
-                    permission: permission,
-                },
-                resourceType,
-                resourceId,
-            },
-            relations: ['permission'],
-        });
 
 
         if (!hasPermission) {

@@ -32,8 +32,6 @@ export class QuestionService {
   constructor(
     @InjectRepository(Question)
     private questionRepo: Repository<Question>,
-    @InjectRepository(Topic)
-    private topicRepo: Repository<Topic>,
     private readonly dataSource: DataSource,
     private readonly questionOptionService: QuestionOptionService,
   ) { }
@@ -324,31 +322,31 @@ export class QuestionService {
     }
   }
 
-async getQuestionListForAdmin(
-  fullData = false,
-  subjectId?: number,
-  topicId?: number,
-  fetchAll = false,
-  limit = 100
-): Promise<AdminQuestionResponseDto[]> {
+  async getQuestionListForAdmin(
+    fullData = false,
+    subjectId?: number,
+    topicId?: number,
+    fetchAll = false,
+    limit = 100
+  ): Promise<AdminQuestionResponseDto[]> {
 
-  const questionList = await this.fetchAllLatestQuestions(
-    fullData,
-    subjectId,
-    topicId,
-    fetchAll,
-    limit,
-  );
-
-  if (!questionList || questionList.length === 0) {
-    throw new AppCustomException(
-      HttpStatus.NOT_FOUND,
-      'No Question found for the given filters.',
+    const questionList = await this.fetchAllLatestQuestions(
+      fullData,
+      subjectId,
+      topicId,
+      fetchAll,
+      limit,
     );
-  }
 
-  return questionList;
-}
+    if (!questionList || questionList.length === 0) {
+      throw new AppCustomException(
+        HttpStatus.NOT_FOUND,
+        'No Question found for the given filters.',
+      );
+    }
+
+    return questionList;
+  }
 
   async fetchAllLatestQuestions(
     fullData = false,
