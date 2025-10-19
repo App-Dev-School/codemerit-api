@@ -8,12 +8,17 @@ import {
   Delete,
   ParseIntPipe,
   BadRequestException,
+  UseGuards,
 } from '@nestjs/common';
 import { TopicsService } from './providers/topics.service';
 import { CreateTopicDto } from './dtos/create-topics.dto';
 import { UpdateTopicDto } from './dtos/update-topics.dto';
 import { ApiResponse } from 'src/common/utils/api-response';
 import { Public } from 'src/core/auth/decorators/public.decorator';
+import { RequirePermission } from 'src/common/policies/require-permission.decorator';
+import { AuthGuard } from '@nestjs/passport';
+import { PermissionsGuard } from 'src/common/policies/permissions.guard';
+import { UserPermissionEnum, UserPermissionTitleEnum } from 'src/common/policies/user-permission.enum';
 
 @Controller('apis/topics')
 export class TopicsController {
@@ -27,6 +32,8 @@ export class TopicsController {
     return new ApiResponse(`${createTopicDto.title} added successfully.`, result);
   }
 
+  @UseGuards(AuthGuard('jwt'), PermissionsGuard)
+  @RequirePermission(UserPermissionEnum.TopicGet, UserPermissionTitleEnum.Topic)
   @Get('/all')
   async findAll(): Promise<ApiResponse<any>> {
     const result = await this.topicService.findAll();

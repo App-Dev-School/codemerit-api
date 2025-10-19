@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm';
 import { JobRoleSubject } from 'src/common/typeorm/entities/job-role-subject.entity';
 import { JobRole } from 'src/common/typeorm/entities/job-role.entity';
+import { Permission } from 'src/common/typeorm/entities/permission.entity';
 import { Profile } from 'src/common/typeorm/entities/profile.entity';
 import { QuestionTopic } from 'src/common/typeorm/entities/quesion-topic.entity';
 import { QuestionAttempt } from 'src/common/typeorm/entities/question-attempt.entity';
@@ -16,12 +17,13 @@ import { Quiz } from 'src/common/typeorm/entities/quiz.entity';
 import { Subject } from 'src/common/typeorm/entities/subject.entity';
 import { Topic } from 'src/common/typeorm/entities/topic.entity';
 import { UserOtp } from 'src/common/typeorm/entities/user-otp.entity';
+import { UserPermission } from 'src/common/typeorm/entities/user-permission.entity';
 import { UserSubject } from 'src/common/typeorm/entities/user-subject.entity';
 import { User } from 'src/common/typeorm/entities/user.entity';
 import { IDatabaseConfig } from 'src/config/database-config';
 @Injectable()
 export class TypeormConfigService implements TypeOrmOptionsFactory {
-  constructor(private configService: ConfigService) {}
+  constructor(private configService: ConfigService) { }
 
   createTypeOrmOptions(): TypeOrmModuleOptions {
     const databaseConfig = this.configService.get(
@@ -59,6 +61,8 @@ export class TypeormConfigService implements TypeOrmOptionsFactory {
         QuizQuestion,
         QuizSubject,
         QuizTopic,
+        Permission,
+        UserPermission
       ],
       // entities: [__dirname + '/../**/*.entity.{ts,js}'],
       // entities: ['src/**/*.entity.ts'],
