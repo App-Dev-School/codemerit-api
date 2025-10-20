@@ -1,15 +1,15 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { AppCustomException } from 'src/common/exceptions/app-custom-exception.filter';
 import { Topic } from 'src/common/typeorm/entities/topic.entity';
-import { In, IsNull, Not, Repository } from 'typeorm';
-import { CreateTopicDto } from '../dtos/create-topics.dto';
-import { UpdateTopicDto } from '../dtos/update-topics.dto';
-import { TopicListDto, TopicListItemDto } from '../dtos/topic-list.dto';
 import {
   generateSlug,
   generateUniqueSlug,
 } from 'src/common/utils/slugify.util';
-import { AppCustomException } from 'src/common/exceptions/app-custom-exception.filter';
+import { In, IsNull, Repository } from 'typeorm';
+import { CreateTopicDto } from '../dtos/create-topics.dto';
+import { TopicListDto, TopicListItemDto } from '../dtos/topic-list.dto';
+import { UpdateTopicDto } from '../dtos/update-topics.dto';
 
 @Injectable()
 export class TopicsService {
@@ -20,16 +20,16 @@ export class TopicsService {
 
   async create(createTopicDto: CreateTopicDto): Promise<TopicListItemDto> {
     let slug = generateSlug(createTopicDto.title);
-    const existing = await this.topicRepository.findOne({ where: { slug } });
-    if (existing) {
+    let existing = await this.topicRepository.findOne({ where: { slug } });
+    while (existing) {
       slug = generateUniqueSlug(createTopicDto.title);
+      existing = await this.topicRepository.findOne({ where: { slug } });
     }
     const topic = this.topicRepository.create({
       ...createTopicDto,
       slug: slug,
     });
     const savedTopic = await this.topicRepository.save(topic);
-
     return this.getTopicItemByID(savedTopic.id);
   }
 
@@ -47,9 +47,6 @@ export class TopicsService {
       label: topic.label,
       slug: topic.slug,
       description: topic.description,
-      votes: topic.votes,
-      numQuestions: topic.numQuestions,
-      numQuizzes: topic.numQuizzes,
       isPublished: topic.isPublished,
     }));
   }
@@ -71,9 +68,6 @@ export class TopicsService {
       label: topicWithSubject.label,
       slug: topicWithSubject.slug,
       description: topicWithSubject.description,
-      votes: topicWithSubject.votes,
-      numQuestions: topicWithSubject.numQuestions,
-      numQuizzes: topicWithSubject.numQuizzes,
       isPublished: topicWithSubject.isPublished,
     };
   }
@@ -98,13 +92,6 @@ export class TopicsService {
     await this.topicRepository.delete(id);
   }
   async findAllBySubjectId(subjectId: number): Promise<TopicListDto[]> {
-    // return this.topicRepository.find({
-    //   where: {
-    //     subject: { id: subjectId }
-    //   },
-    //   relations: ['subject'],
-    //   order: { order: 'ASC' },
-    // });
     const topics = await this.topicRepository.find({
       relations: ['subject', 'parentTopic', 'subTopics'],
       where: {

@@ -1,0 +1,322 @@
+import { Injectable } from '@nestjs/common';
+import { QuestionStatusEnum } from 'src/common/enum/question-status.enum';
+import { QuestionTypeEnum } from 'src/common/enum/question-type.enum';
+import { Topic } from 'src/common/typeorm/entities/topic.entity';
+import { User } from 'src/common/typeorm/entities/user.entity';
+import { generateScore } from 'src/common/utils/common-functions';
+import { DataSource } from 'typeorm';
+
+@Injectable()
+export class TopicAnalysisService {
+  constructor(
+    private readonly dataSource: DataSource
+  ) { }
+
+  // In your service class
+
+/**
+ * Build a base QB that returns per-topic aggregates.
+ * - numTrivia: count of Trivia questions in the topic
+ * - totalQuestions: ALL questions in the topic (any type)
+ * - totalAttempts: ALL attempts (all users) on any questions in the topic
+ * - If userId provided: numMyAttempts, myCorrect, myDistinctQuestions
+ */
+private buildTopicStatsBaseQB(userId?: number) {
+  const qb = this.dataSource
+    .createQueryBuilder()
+    .from(Topic, 't')
+    .leftJoin('subject', 's', 's.id = t.subjectId')
+    // All questions in the topic
+    .leftJoin('question_topic', 'qt', 'qt.topicId = t.id')
+    .leftJoin('question', 'q', 'q.id = qt.questionId')
+    // Trivia questions only
+    .leftJoin(
+      'question',
+      'qTr',
+      'qTr.id = qt.questionId AND qTr.questionType = :trivia AND qTr.status = :questionStatus',
+      { trivia: QuestionTypeEnum.Trivia,
+        questionStatus : QuestionStatusEnum.Active
+       }
+    )
+
+    .select('t.id', 'topicId')
+    .addSelect('t.title', 'topicTitle')
+    .addSelect('t.description', 'topicDesc')
+    .addSelect('t.slug', 'slug')
+    .addSelect('t.subjectId', 'subjectId')
+    .addSelect('s.title', 'subjectName')
+    .addSelect('t.goal', 'goal')
+
+    // Total question counts
+    .addSelect('COUNT(DISTINCT q.id)', 'totalQuestions')
+    .addSelect('COUNT(DISTINCT qTr.id)', 'numTrivia')
+    .addSelect(`COUNT(DISTINCT CASE WHEN qTr.level = 'Easy' THEN qTr.id END)`, 'numBasicTrivia')
+    .addSelect(`COUNT(DISTINCT CASE WHEN qTr.level = 'Intermediate' THEN qTr.id END)`, 'numIntTrivia')
+    .addSelect(`COUNT(DISTINCT CASE WHEN qTr.level = 'Advanced' THEN qTr.id END)`, 'numAdvTrivia');
+  // Now handle attempts separately
+  if (userId) {
+    qb
+      .leftJoin(
+        subQ => {
+          return subQ
+            .select('qa.questionId', 'questionId')
+            .addSelect('COUNT(*)', 'attempts')
+            .addSelect('SUM(CASE WHEN qa.isCorrect = 1 THEN 1 ELSE 0 END)', 'correct')
+            .addSelect('SUM(CASE WHEN qa.isCorrect = 0 AND qa.selectedOption IS NOT NULL THEN 1 ELSE 0 END)', 'wrong')
+            .from('question_attempt', 'qa')
+            .where('qa.userId = :userId', { userId })
+            .groupBy('qa.questionId');
+        },
+        'userAttempts',
+        'userAttempts.questionId = q.id'
+      )
+      .addSelect('COALESCE(SUM(userAttempts.attempts), 0)', 'numMyAttempts')
+      .addSelect('COALESCE(SUM(userAttempts.correct), 0)', 'myCorrect')
+      .addSelect('COALESCE(SUM(userAttempts.wrong), 0)', 'myWrong')
+      .addSelect('COUNT(DISTINCT userAttempts.questionId)', 'myDistinctQuestions');
+  } else {
+    qb
+      .addSelect('0', 'numMyAttempts')
+      .addSelect('0', 'myCorrect')
+      .addSelect('0', 'myWrong')
+      .addSelect('0', 'myDistinctQuestions');
+  }
+
+  qb.groupBy('t.id');
+
+  return qb;
+}
+
+/** Map a raw row from base QB to the response shape (calculates derived fields in TS). */
+private mapTopicRow(raw: any) {
+  const numLessons = 0;
+  const numTrivia = +raw.numTrivia || 0;
+  const totalQuestions = +raw.totalQuestions || 0;
+  const totalAttempts = +raw.totalAttempts || 0;
+  const numMyAttempts = +raw.numMyAttempts || 0;
+  const myCorrect = +raw.myCorrect || 0;
+  const myWrong = +raw.myWrong || 0;
+  const myDistinctQuestions = +raw.myDistinctQuestions || 0;
+
+  const avgAccuracy = numMyAttempts > 0 ? Number((myCorrect / numMyAttempts)*100).toFixed(0) : 0;
+  //const baseScore = numMyAttempts > 0 ? ((myCorrect /numMyAttempts) * 100) : 0;
+  const baseScore = generateScore(numMyAttempts, myCorrect, myWrong);
+  const score = Number(baseScore).toFixed(0);
+  const isStarted = numMyAttempts > 0;
+  const isCompleted = numTrivia > 0 && myDistinctQuestions >= totalQuestions;
+
+  const topicsList = {
+    id: +raw.topicId,
+    title: raw.topicTitle,
+    slug: raw.slug,
+    description: raw.topicDesc,
+    goal: raw.goal,
+    subjectId: +raw.subjectId,
+    subjectName: raw?.subjectName,
+    numTrivia,
+    numBasicTrivia: raw?.numBasicTrivia,
+    numIntTrivia: raw?.numIntTrivia,
+    numAdvTrivia: raw?.numAdvTrivia,
+    numLessons,
+    totalAttempts,
+    myAllAttempts: numMyAttempts,
+    myUniqueAttempts: myDistinctQuestions,
+    correct : myCorrect,
+    avgAccuracy,
+    score,
+    isStarted,
+    isCompleted,
+    meritList: null,
+    coverage: Number((myDistinctQuestions/numTrivia)*100).toFixed(0)
+  };
+  console.log("@@@1Topic Formatted", topicsList);
+  return topicsList;
+}
+
+/** Get stats for a SINGLE topic (fast, filtered server-side). */
+async getTopicStatsById(topicId: number, userId?: number, fullData = false) {
+  const qb = this.buildTopicStatsBaseQB(userId)
+    .where('t.id = :topicId', { topicId });
+
+  const raw = await qb.getRawOne();
+  if (!raw) return null;
+  console.log("@@@0Topic Stats fetched", raw);
+  const stats: any = this.mapTopicRow(raw);
+
+  if (fullData) {
+    // Single-topic leaderboard
+    stats.meritList = await this.getTopicMeritList(topicId, 10);
+  }
+
+  return stats;
+}
+
+/** Get stats for ALL topics under ONE subject (single grouped query). */
+async getTopicStatsBySubject(subjectId: number, userId?: number, fullData = false) {
+  const qb = this.buildTopicStatsBaseQB(userId)
+    .where('t.subjectId = :subjectId', { subjectId });
+
+  const raws = await qb.getRawMany();
+  const topics = raws.map((r) => this.mapTopicRow(r));
+
+  if (fullData && topics.length) {
+    const topicIds = topics.map((t) => t.id);
+    const meritLists = await this.getTopicMeritListForTopics(topicIds, 10);
+    for (const t of topics) {
+      t.meritList = meritLists.get(t.id) || [];
+    }
+  }
+  return topics;
+}
+
+/** Get stats for ALL topics. Optionally pass pagination. */
+async getAllTopicStats(userId?: number, fullData = false, offset = 0, limit = 300) {
+  const qb = this.buildTopicStatsBaseQB(userId)
+    .offset(offset)
+    .limit(limit);
+
+  const raws = await qb.getRawMany();
+  const topics = raws.map((r) => this.mapTopicRow(r));
+
+  if (fullData && topics.length) {
+    const topicIds = topics.map((t) => t.id);
+    const meritLists = await this.getTopicMeritListForTopics(topicIds, 10);
+    for (const t of topics) {
+      t.meritList = meritLists.get(t.id) || [];
+    }
+  }
+  return topics;
+}
+
+/** 🏆 Single-topic merit list (all question types in the topic). */
+private async getTopicMeritList(topicId: number, limit = 10) {
+  const raw = await this.dataSource
+    .createQueryBuilder()
+    .from(User, 'u')
+    .innerJoin('question_attempt', 'qa', 'qa.userId = u.id')
+    .innerJoin('question', 'q', 'q.id = qa.questionId')
+    .innerJoin('question_topic', 'qt', 'qt.questionId = q.id')
+    .leftJoin('job_role', 'jr', 'jr.id = u.designation')
+    .where('qt.topicId = :topicId', { topicId })
+    .select('u.id', 'userId')
+    .addSelect("CONCAT(u.firstName, ' ', u.lastName)", 'name')
+    .addSelect('u.username', 'username')
+    .addSelect('u.image', 'image') // keep if you have this column
+    .addSelect('jr.title', 'designationName')
+    .addSelect('COUNT(qa.id)', 'totalAttempts')
+    .addSelect('SUM(CASE WHEN qa.isCorrect = true THEN 1 ELSE 0 END)', 'totalCorrect')
+    .addSelect(
+      'ROUND(100.0 * SUM(CASE WHEN qa.isCorrect = true THEN 1 ELSE 0 END) / NULLIF(COUNT(qa.id),0), 2)',
+      'accuracyPct'
+    )
+    .groupBy('u.id')
+    .orderBy('totalCorrect', 'DESC')
+    .addOrderBy('totalAttempts', 'DESC')
+    .limit(limit)
+    .getRawMany();
+
+  return raw
+    .map((r) => {
+      const totalCorrect = +r.totalCorrect || 0;
+      const totalAttempts = +r.totalAttempts || 0;
+      const avgAccuracy = totalAttempts > 0 ? totalCorrect / totalAttempts : 0;
+      const score = totalCorrect * 0.5 + totalAttempts * 0.2 + (avgAccuracy * 100) * 0.3;
+
+      return {
+        id: +r.userId,
+        name: r.name,
+        username: r.username,
+        image: r.image,
+        designationName: r.designationName,
+        totalCorrect,
+        totalAttempts,
+        avgAccuracy,
+        score,
+      };
+    })
+    .sort((a, b) => b.score - a.score)
+    .slice(0, limit);
+}
+
+/**
+ * 🧮 Batched merit list for MANY topics using a window function (MySQL 8+).
+ * Returns a Map<topicId, MeritRow[]> limited per-topic.
+ */
+private async getTopicMeritListForTopics(topicIds: number[], limitPerTopic = 10) {
+  if (!topicIds.length) return new Map<number, any[]>();
+
+  // Window function to pick top-N per topic
+  const rows = await this.dataSource
+    .createQueryBuilder()
+    .from((qb) => {
+      return qb
+        .from('question_topic', 'qt')
+        .innerJoin('question', 'q', 'q.id = qt.questionId')
+        .innerJoin('question_attempt', 'qa', 'qa.questionId = q.id')
+        .innerJoin('user', 'u', 'u.id = qa.userId')
+        .leftJoin('job_role', 'jr', 'jr.id = u.designation')
+        .where('qt.topicId IN (:...topicIds)', { topicIds })
+        .select('qt.topicId', 'topicId')
+        .addSelect('u.id', 'userId')
+        .addSelect("CONCAT(u.firstName, ' ', u.lastName)", 'name')
+        .addSelect('u.username', 'username')
+        .addSelect('u.image', 'image')
+        .addSelect('jr.title', 'designationName')
+        .addSelect('COUNT(qa.id)', 'totalAttempts')
+        .addSelect('SUM(CASE WHEN qa.isCorrect = true THEN 1 ELSE 0 END)', 'totalCorrect')
+        .groupBy('qt.topicId')
+        .addGroupBy('u.id');
+    }, 'x')
+    .addSelect('x.topicId', 'topicId')
+    .addSelect('x.userId', 'userId')
+    .addSelect('x.name', 'name')
+    .addSelect('x.username', 'username')
+    .addSelect('x.image', 'image')
+    .addSelect('x.designationName', 'designationName')
+    .addSelect('x.totalAttempts', 'totalAttempts')
+    .addSelect('x.totalCorrect', 'totalCorrect')
+    .addSelect(
+      // compute rank by a proxy of score: correct desc, attempts desc, accuracy desc
+      `ROW_NUMBER() OVER (
+         PARTITION BY x.topicId
+         ORDER BY x.totalCorrect DESC, x.totalAttempts DESC
+       )`,
+      'rn'
+    )
+    .where('1 = 1') // wrapper needs a where to add selects in TypeORM
+    .getRawMany();
+
+  // post-process: compute true score and filter top-N per topic
+  const buckets = new Map<number, any[]>();
+  for (const r of rows) {
+    const topicId = +r.topicId;
+    const totalCorrect = +r.totalCorrect || 0;
+    const totalAttempts = +r.totalAttempts || 0;
+    const avgAccuracy = totalAttempts > 0 ? totalCorrect / totalAttempts : 0;
+    const score = totalCorrect * 0.5 + totalAttempts * 0.2 + (avgAccuracy * 100) * 0.3;
+
+    const arr = buckets.get(topicId) || [];
+    arr.push({
+      id: +r.userId,
+      name: r.name,
+      username: r.username,
+      image: r.image,
+      designationName: r.designationName,
+      totalCorrect,
+      totalAttempts,
+      avgAccuracy,
+      score,
+    });
+    buckets.set(topicId, arr);
+  }
+
+  // sort by score and cap per-topic
+  for (const [topicId, arr] of buckets) {
+    arr.sort((a, b) => b.score - a.score);
+    buckets.set(topicId, arr.slice(0, limitPerTopic));
+  }
+
+  return buckets;
+}
+ 
+}

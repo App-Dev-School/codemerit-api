@@ -9,7 +9,12 @@ export interface UserProfileResponseDto {
   email?: string;
   username?: string;
   role?: UserRoleEnum;
-  designation?: string;
+  designation?: number;
+  userDesignation?: {
+  id?: number;
+  title?: string;
+  slug?: string;
+  }
   city?: string;
   country?: string;
   mobile?: string;

@@ -4,26 +4,27 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from 'src/common/typeorm/entities/user.entity';
-import { Profile } from 'src/common/typeorm/entities/profile.entity';
-import { DataSource, Repository } from 'typeorm';
-import { generate6DigitNumber } from 'src/common/utils/common-functions';
-import { UserOtpService } from './user-otp.service';
-import { UserOtp } from 'src/common/typeorm/entities/user-otp.entity';
-import { UserOtpTagsEnum } from '../enums/user-otp-Tags.enum';
-import { AccountVerificationDto } from 'src/core/auth/dto/account-verification.dto';
-import { AccountStatusEnum } from '../enums/account-status.enum';
-import { UpdateUserDto } from '../dtos/update-user.dto';
-import { AppCustomException } from 'src/common/exceptions/app-custom-exception.filter';
+import * as bcrypt from 'bcrypt';
 import { validate } from 'class-validator';
-import { UserProfileService } from './user-profile.service';
+import { AppCustomException } from 'src/common/exceptions/app-custom-exception.filter';
+import { Profile } from 'src/common/typeorm/entities/profile.entity';
+import { UserOtp } from 'src/common/typeorm/entities/user-otp.entity';
+import { User } from 'src/common/typeorm/entities/user.entity';
+import { generate6DigitNumber } from 'src/common/utils/common-functions';
 import {
   generateSlug,
   generateUniqueSlug,
 } from 'src/common/utils/slugify.util';
-import * as bcrypt from 'bcrypt';
+import { AccountVerificationDto } from 'src/core/auth/dto/account-verification.dto';
 import { CreateUserDto } from 'src/core/auth/dto/create-user.dto';
+import { UserWithDesignation } from 'src/core/auth/dto/login-response.dto';
+import { DataSource, Repository } from 'typeorm';
+import { UpdateUserDto } from '../dtos/update-user.dto';
 import { UserProfileResponseDto } from '../dtos/user-profile-response.dto';
+import { AccountStatusEnum } from '../enums/account-status.enum';
+import { UserOtpTagsEnum } from '../enums/user-otp-Tags.enum';
+import { UserOtpService } from './user-otp.service';
+import { UserProfileService } from './user-profile.service';
 
 @Injectable()
 export class UserService {
@@ -36,7 +37,6 @@ export class UserService {
   ) {}
 
   async create(data: Partial<CreateUserDto>): Promise<User> {
-    /** Validate important fields  */
     const existingEmail = await this.findByEmail(data.email);
     console.log('existingEmail', existingEmail);
 
@@ -81,9 +81,18 @@ export class UserService {
         );
       }
       const savedUser = await queryRunner.manager.save(user);
+      //Send e-mail
+      // try {
+      //   this.mailService.sendMail(savedUser?.email, "You are registered successfully with CodeMerit. Use "+pass+" as the OTP to activate your account.");
+      // } catch (error) {
+      //   console.log('CMRegistration Error sending e-mail => ', error);
+      // }
       const profile = new Profile();
       profile.userId = savedUser.id;
       //validate on client
+	  if (data.about) {
+        profile.about = data.about;
+      }
       if (data.linkedinUrl) {
         profile.linkedinUrl = data.linkedinUrl;
       }
@@ -108,7 +117,8 @@ export class UserService {
         console.log('CMRegistration Send otp exception => ', error);
       }
 
-      return this.findOne(savedUser?.id);
+      const userResponse = this.findOne(savedUser?.id);
+      return userResponse;
     } catch (err) {
       await queryRunner.rollbackTransaction();
       throw new InternalServerErrorException(err.message);
@@ -117,8 +127,26 @@ export class UserService {
     }
   }
 
-  async findByEmail(email: string): Promise<User | undefined> {
-    return this.userRepo.findOne({ where: { email } });
+  async findByEmail(email: string): Promise<UserWithDesignation | undefined> {
+    //Gives all fields
+    const user = await this.userRepo.findOne({
+    where: { email },
+    relations: ['userJobRole'],
+  });
+
+  if (!user) return undefined;
+
+  // filter designation fields
+  return {
+    ...user,
+    userDesignation: user.userJobRole
+      ? {
+          id: user.userJobRole.id,
+          title: user.userJobRole.title,
+          slug: user.userJobRole.slug,
+        }
+      : null,
+  };
   }
 
   async findByEmailForLogin(email: string): Promise<User | undefined> {
@@ -150,7 +178,7 @@ export class UserService {
     if (!user) {
       throw new AppCustomException(
         HttpStatus.BAD_REQUEST,
-        'User is Not Found.',
+        'User not Found.',
       );
     }
     const profile = await this.userProfileService.findOneByUserId(user?.id);
@@ -175,7 +203,7 @@ export class UserService {
     if (!user) {
       throw new AppCustomException(
         HttpStatus.BAD_REQUEST,
-        'User is Not Found.',
+        'User not Found.',
       );
     }
     const profile = await this.userProfileService.findOneByUserId(user?.id);
@@ -206,6 +234,7 @@ export class UserService {
         'level',
         'points',
         'accountStatus',
+        'createdAt',
       ],
     });
   }
@@ -317,7 +346,7 @@ export class UserService {
       }
     } else {
       // throw new HttpException('OTP Mismatch', HttpStatus.NOT_ACCEPTABLE);
-      throw new AppCustomException(HttpStatus.BAD_REQUEST, 'OTP Mismatch.');
+      throw new AppCustomException(HttpStatus.BAD_REQUEST, 'OTP mismatch. Please try again.');
     }
   }
 

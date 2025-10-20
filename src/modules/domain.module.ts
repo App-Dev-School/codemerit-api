@@ -3,8 +3,10 @@ import { SubjectsModule } from './subjects/subjects.module';
 import { TopicsModule } from './topics/topics.module';
 import { QuestionModule } from './question/question.module';
 import { SkillRatingModule } from './skill-rating/skill-rating.module';
+import { PermissionsModule } from './shared-module/permissions.module';
+import { QuizModule } from './quiz/quiz.module';
 
 @Module({
-  imports: [SubjectsModule, QuestionModule, TopicsModule, SkillRatingModule],
+  imports: [PermissionsModule, SubjectsModule, QuestionModule, TopicsModule, QuizModule, SkillRatingModule],
 })
-export class DomainModule {}
+export class DomainModule { }

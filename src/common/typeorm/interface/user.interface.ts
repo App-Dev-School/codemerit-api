@@ -1,15 +1,16 @@
 import { AccountStatusEnum } from 'src/core/users/enums/account-status.enum';
 import { UserRoleEnum } from 'src/core/users/enums/user-roles.enum';
+import { UserPermission } from '../entities/user-permission.entity';
 
 export interface IUser {
   id: number;
   firstName: string;
-  lastName: string;
+  lastName?: string;
   email: string;
-  mobile: string;
+  mobile?: string;
   username: string;
   role: UserRoleEnum;
-  designation: string;
+  designation?: number;
   city: string;
   country: string;
   password: string;
@@ -23,4 +24,5 @@ export interface IUser {
   createdAt: Date;
   updatedAt: Date;
   deletedAt?: Date;
+  permissions?: UserPermission[];
 }

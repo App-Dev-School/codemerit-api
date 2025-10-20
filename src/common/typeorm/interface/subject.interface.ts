@@ -1,4 +1,3 @@
-import { ITimeStamp } from './timestamp.interface';
 
 export interface ISubject {
   title: string;

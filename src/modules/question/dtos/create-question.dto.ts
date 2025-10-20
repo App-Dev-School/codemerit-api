@@ -73,10 +73,11 @@ export class CreateQuestionDto {
   @IsEnum(DifficultyLevelEnum, { message: 'Level must be a valid value' })
   level: DifficultyLevelEnum;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Order of the question within the quiz or exam',
     example: 1,
   })
+  @IsOptional()
   @Type(() => Number)
   @IsNumber({}, { message: 'Order must be a number' })
   order: number;
@@ -85,16 +86,27 @@ export class CreateQuestionDto {
     description: 'Marks assigned to the question.',
     example: 5,
   })
+  @IsOptional()
   @Type(() => Number)
   @IsNumber({}, { message: 'Marks must be a number.' })
   marks: number;
 
-  @ApiProperty({
+    @ApiProperty({
+    description: 'Marks assigned to the question.',
+    example: 5,
+  })
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber({}, { message: 'Time allowed in seconds.' })
+  timeAllowed: number;
+
+  @ApiPropertyOptional({
     description: 'Publishing status of the question',
     enum: QuestionStatusEnum,
     example: QuestionStatusEnum.Pending,
     default: QuestionStatusEnum.Pending,
   })
+  @IsOptional()
   @IsEnum(QuestionStatusEnum, { message: 'Status must be valid.' })
   status: QuestionStatusEnum;
 

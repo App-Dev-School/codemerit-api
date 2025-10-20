@@ -33,6 +33,10 @@ export class AuthController {
     @Body() createUserDto: CreateUserDto,
   ): Promise<ApiResponse<any>> {
     const result = await this.authService.signup(createUserDto);
+    if(createUserDto.flow && createUserDto.flow === 'QuickRegistration'){
+      const resultWithToken = await this.authService.autoLogin(result);
+      return new ApiResponse('Succesfully Registered', resultWithToken);
+    }
     return new ApiResponse('Succesfully Registered', result);
   }
 

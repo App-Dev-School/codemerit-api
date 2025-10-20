@@ -8,30 +8,32 @@ import {
   Delete,
   ParseIntPipe,
   BadRequestException,
+  UseGuards,
 } from '@nestjs/common';
 import { TopicsService } from './providers/topics.service';
 import { CreateTopicDto } from './dtos/create-topics.dto';
 import { UpdateTopicDto } from './dtos/update-topics.dto';
 import { ApiResponse } from 'src/common/utils/api-response';
 import { Public } from 'src/core/auth/decorators/public.decorator';
+import { RequirePermission } from 'src/common/policies/require-permission.decorator';
+import { AuthGuard } from '@nestjs/passport';
+import { PermissionsGuard } from 'src/common/policies/permissions.guard';
+import { UserPermissionEnum, UserPermissionTitleEnum } from 'src/common/policies/user-permission.enum';
 
 @Controller('apis/topics')
 export class TopicsController {
-  constructor(private readonly topicService: TopicsService) {}
+  constructor(private readonly topicService: TopicsService) { }
 
   @Post('create')
   async create(
     @Body() createTopicDto: CreateTopicDto,
   ): Promise<ApiResponse<any>> {
     const result = await this.topicService.create(createTopicDto);
-    console.log('TopicCreateAPI #1 result', result);
-
-    return new ApiResponse(
-      `${createTopicDto.title} added successfully.`,
-      result,
-    );
+    return new ApiResponse(`${createTopicDto.title} added successfully.`, result);
   }
 
+  @UseGuards(AuthGuard('jwt'), PermissionsGuard)
+  @RequirePermission(UserPermissionEnum.TopicGet, UserPermissionTitleEnum.Topic)
   @Get('/all')
   async findAll(): Promise<ApiResponse<any>> {
     const result = await this.topicService.findAll();
@@ -86,13 +88,8 @@ export class TopicsController {
     )
     topicId: number,
   ): Promise<ApiResponse<any>> {
-    const oldTopic = await this.topicService.findOne(topicId);
-    if (oldTopic && oldTopic?.id) {
-      await this.topicService.remove(topicId);
-      return new ApiResponse('Topic deleted.', null);
-    } else {
-      return new ApiResponse(`Topic id: ${topicId} not found`, null);
-    }
+    await this.topicService.remove(topicId);
+    return new ApiResponse('Topic deleted.', null);
   }
 
   @Public()

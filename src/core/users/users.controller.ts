@@ -55,17 +55,17 @@ export class UsersController {
     return new ApiResponse('User lit not found.', null);
   }
 
-  @UseGuards(RolesGuard)
-  @Roles(UserRoleEnum.ADMIN)
+  // @UseGuards(RolesGuard)
+  // @Roles(UserRoleEnum.ADMIN)
   @Get('profile/:username')
   async getUserByUsername(
     @Param('username') username: string,
   ): Promise<ApiResponse<any>> {
     const result = await this.usersService.findByUsername(username);
     if (result) {
-      return new ApiResponse('User found', result);
+      return new ApiResponse('User found.', result);
     }
-    return new ApiResponse('User not found', result);
+    return new ApiResponse('User not found.', result);
   }
 
   @Put('update')

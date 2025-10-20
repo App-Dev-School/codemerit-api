@@ -1,6 +1,6 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IsBoolean, IsEnum, IsInt, IsOptional, IsString, Min } from 'class-validator';
-import { TopicLabel } from 'src/common/enum/TopicLabel.enum';
+import { TopicLabelEnum } from 'src/common/enum/topic-label.enum';
 
 export class UpdateTopicDto {
   @ApiPropertyOptional({ description: 'Title of the topic', example: 'Forms in Angular' })
@@ -22,8 +22,8 @@ export class UpdateTopicDto {
     example: 'Angular',
   })
   @IsOptional()
-  @IsEnum(TopicLabel, { message: 'Invalid label value' })
-  label?: TopicLabel;
+  @IsEnum(TopicLabelEnum, { message: 'Invalid label value' })
+  label?: TopicLabelEnum;
 
   @ApiPropertyOptional({ description: 'Slug for the topic URL', example: 'forms-in-angular' })
   @IsOptional()

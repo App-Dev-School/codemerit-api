@@ -10,4 +10,4 @@ import { TopicsController } from './topics.controller';
   controllers: [TopicsController],
   exports: [TopicsService],
 })
-export class TopicsModule {}
+export class TopicsModule { }

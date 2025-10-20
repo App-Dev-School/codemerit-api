@@ -1,7 +1,7 @@
-import { Entity, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
-import { AbstractEntity } from './abstract.entity';
+import { Column, CreateDateColumn, Entity, OneToMany, UpdateDateColumn } from 'typeorm';
 import { ISubject } from '../interface/subject.interface';
-import { AuditEntity } from './audit.entity';
+import { AbstractEntity } from './abstract.entity';
+import { JobRoleSubject } from './job-role-subject.entity';
 
 @Entity()
 export class Subject extends AbstractEntity implements ISubject {
@@ -11,6 +11,14 @@ export class Subject extends AbstractEntity implements ISubject {
     nullable: false,
   })
   title: string;
+
+  @Column({
+    type: 'varchar',
+    length: 100,
+    nullable: true,
+    unique: true,
+  })
+  slug: string;
 
   @Column({
     type: 'text',
@@ -62,4 +70,7 @@ export class Subject extends AbstractEntity implements ISubject {
 
   @UpdateDateColumn({ name: 'updatedAt', select: false })
   updatedAt: Date;
+
+  @OneToMany(() => JobRoleSubject, (jrs) => jrs.subject)
+  jobRoleSubjects: JobRoleSubject[];
 }

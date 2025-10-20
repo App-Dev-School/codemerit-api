@@ -27,7 +27,7 @@ export class QuestionTopic extends AbstractEntity implements IQuestionTopic {
   @CreateDateColumn({ name: 'createdAt' })
   createdAt: Date;
 
-  @ManyToOne(() => Topic, { eager: true })
+  @ManyToOne(() => Topic, { eager: false })
   @JoinColumn({ name: 'topicId', referencedColumnName: 'id' })
   topic: Topic;
 

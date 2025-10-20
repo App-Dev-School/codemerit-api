@@ -10,7 +10,7 @@ import {
 import { AbstractEntity } from './abstract.entity';
 import { ITopic } from '../interface/topic.interface';
 import { Subject } from './subject.entity';
-import { TopicLabel } from 'src/common/enum/TopicLabel.enum';
+import { TopicLabelEnum } from 'src/common/enum/topic-label.enum';
 
 @Entity()
 export class Topic extends AbstractEntity implements ITopic {
@@ -38,11 +38,11 @@ export class Topic extends AbstractEntity implements ITopic {
 
   @Column({
     type: 'enum',
-    enum: TopicLabel,
+    enum: TopicLabelEnum,
     nullable: true,
-    default: TopicLabel.Beginner,
+    default: TopicLabelEnum.Foundation,
   })
-  label: TopicLabel;
+  label: TopicLabelEnum;
 
   @Column({
     type: 'varchar',
@@ -105,38 +105,6 @@ export class Topic extends AbstractEntity implements ITopic {
     default: null,
   })
   goal: string;
-
-  @Column({
-    type: 'int',
-    default: 0,
-  })
-  votes: number;
-
-  @Column({
-    type: 'int',
-    default: 0,
-  })
-  numLessons: number;
-
-  @Column({
-    type: 'int',
-    default: 0,
-  })
-  numQuestions: number;
-
-  @Column({
-    type: 'int',
-    default: 0,
-  })
-  numQuestion: number;
-
-  @Column({
-    type: 'int',
-    default: 0,
-  })
-  numQuizzes: number;
-  @Column({ name: 'createdBy', default: null, select: false })
-  createdBy: number;
 
   @Column({ name: 'updatedBy', default: null, select: false })
   updatedBy: number;

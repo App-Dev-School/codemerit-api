@@ -1,4 +1,3 @@
-import { QuestionStatusEnum } from 'src/common/enum/question-status.enum';
 import { QuestionOptionResponseDto } from './question-option-response.dto';
 import { QuestionTopicResponseDto } from './question-topic-response.dto';
 
@@ -9,7 +8,6 @@ export class QuestionResponseDto {
   subjectId: number;
   subject: string;
   topics: QuestionTopicResponseDto[];
-  level: string;
   order: number;
   marks: number;
   status: string;

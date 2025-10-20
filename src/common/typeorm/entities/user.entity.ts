@@ -1,4 +1,4 @@
-import { IsOptional, Matches } from 'class-validator';
+import { IsOptional } from 'class-validator';
 import { AccountStatusEnum } from 'src/core/users/enums/account-status.enum';
 import { UserRoleEnum } from 'src/core/users/enums/user-roles.enum';
 import {
@@ -7,20 +7,22 @@ import {
   DeleteDateColumn,
   Entity,
   JoinColumn,
-  OneToOne,
-  UpdateDateColumn,
+  ManyToOne,
+  OneToMany,
+  UpdateDateColumn
 } from 'typeorm';
 import { IUser } from '../interface/user.interface';
 import { AbstractEntity } from './abstract.entity';
-import { AuditEntity } from './audit.entity';
-import { Profile } from './profile.entity';
+import { JobRole } from './job-role.entity';
+import { QuizResult } from './quiz-result.entity';
+import { UserPermission } from './user-permission.entity';
 
 @Entity()
 export class User extends AbstractEntity implements IUser {
   @Column({
     type: 'varchar',
     length: 50,
-    nullable: true,
+    nullable: false,
     default: null,
   })
   firstName: string;
@@ -58,12 +60,11 @@ export class User extends AbstractEntity implements IUser {
   role: UserRoleEnum;
 
   @Column({
-    type: 'varchar',
-    length: 50,
+    type: 'integer',
     nullable: true,
-    default: null,
+    default: null
   })
-  designation: string;
+  designation?: number;
 
   @Column({
     type: 'varchar',
@@ -156,4 +157,15 @@ export class User extends AbstractEntity implements IUser {
 
   @DeleteDateColumn({ name: 'deletedAt', default: null, select: false })
   deletedAt: Date;
+
+  @ManyToOne(() => JobRole, (jobRole) => jobRole.users, { eager: false })
+  @JoinColumn({ name: 'designation' })
+  userJobRole: JobRole;
+
+  @OneToMany(() => QuizResult, (result) => result.user)
+  quizResults: QuizResult[];
+
+  @OneToMany(() => UserPermission, p => p.user)
+  permissions?: UserPermission[];
+
 }
