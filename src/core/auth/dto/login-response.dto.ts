@@ -1,5 +1,7 @@
+import { Permission } from 'src/common/typeorm/entities/permission.entity';
 import { Profile } from 'src/common/typeorm/entities/profile.entity';
 import { Subject } from 'src/common/typeorm/entities/subject.entity';
+import { UserPermission } from 'src/common/typeorm/entities/user-permission.entity';
 import { User } from 'src/common/typeorm/entities/user.entity';
 import { AccountStatusEnum } from 'src/core/users/enums/account-status.enum';
 import { UserRoleEnum } from 'src/core/users/enums/user-roles.enum';
@@ -28,6 +30,7 @@ export class LoginResponseDto implements LoginUser {
   //other conditional fields
   profile: Profile;
   mySubjects: Subject[];
+  permissions: UserPermission[];
   //fields for admin
   lmsMetrics: {
     numAllQuestions: number;
@@ -72,7 +75,7 @@ export interface LoginUser {
   token: string;
 }
 
-  export type UserWithDesignation = User & {
+export type UserWithDesignation = User & {
   userDesignation?: {
     id: number;
     title: string;

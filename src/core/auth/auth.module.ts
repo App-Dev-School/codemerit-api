@@ -7,6 +7,7 @@ import { UsersModule } from '../users/users.module';
 import { AuthService } from './providers/auth.service';
 import { LocalStrategy } from './guards/local.strategy';
 import { LoginValidationMiddleware } from './middleware/login-validation.middleware';
+import { UserPermissionModule } from 'src/modules/user-permission/user-permission.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { LoginValidationMiddleware } from './middleware/login-validation.middlew
       secret: 'secret@1234#',
       signOptions: { expiresIn: '1d' },
     }),
+    UserPermissionModule,
   ],
   providers: [AuthService, JwtStrategy, LocalStrategy],
   controllers: [AuthController],

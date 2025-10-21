@@ -103,7 +103,8 @@ export class QuizService {
     console.log('QuizBuilder @Input:', ids);
     //const questions = await this.questionService.getQuestionsByIds(ids);
 
-    const questions = await this.userQuestionService.getUniqueQuizForQuestions(userId, ids);
+    const questionObj: any = await this.userQuestionService.getUniqueQuizForQuestions(userId, ids);
+    const questions = questionObj?.questions;
 
     /*
     if (!questions || questions.length === 0) {
@@ -118,7 +119,7 @@ export class QuizService {
     //Implement specification with an easy to debug flow and proper response
 
     // Save quiz in DB if at least 3 questions are available
-    if (!questions || questions.length < 3) {
+    if (!questions || questions.length == 0) {
       console.log('QuizBuilder #4: @NotEnoughQuestions', questions.length);
       throw new AppCustomException(
         HttpStatus.NOT_FOUND,
@@ -186,7 +187,11 @@ export class QuizService {
           await manager.save(QuizTopic, quizTopic);
         }
         savedQuizzes['questions'] = questions;
-        return savedQuizzes;
+        const response: any = {
+          message: (questionObj?.message) ? questionObj?.message : 'Quiz created successfully.',
+          quiz: savedQuizzes,
+        };
+        return response;
       });
     } catch (error) {
       console.log('QuizBuilder #6: ERROR', error);

@@ -71,6 +71,8 @@ export class TypeormConfigService implements TypeOrmOptionsFactory {
       // entities: [__dirname + '/../**/*.entity.{ts,js}'],
       // entities: ['src/**/*.entity.ts'],
       synchronize: true,
+      // logging: true,
+      // logger: 'advanced-console',
     } as TypeOrmModuleOptions;
   }
 }
