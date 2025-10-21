@@ -27,6 +27,7 @@ export class UserQuestionService {
   ): Promise<QuestionListResponseDto[]> {
 
     const { subjectIds = [], topicIds = [], numQuestions = 10 } = dto;
+    let msg: string = 'unique';
     if (subjectIds.length === 0 && topicIds.length === 0) {
       throw new AppCustomException(
         HttpStatus.BAD_REQUEST,
@@ -56,12 +57,13 @@ export class UserQuestionService {
 
       uniqueQuestions = [...uniqueQuestions, ...randomQuestions];
       // uniqueQuestions = [...new Map([...uniqueQuestions, ...randomQuestions].map((q:any) => [q.questionId, q])).values()];
+      msg = 'random';
     }
 
     if (uniqueQuestions && uniqueQuestions.length == 0) {
       throw new AppCustomException(
         HttpStatus.NOT_FOUND,
-        `Not enough unique questions available. Found ${uniqueQuestions.length}, need ${numQuestions}.`
+        `Not enough ${msg} questions available. Found ${uniqueQuestions.length}, need ${numQuestions}.`
       );
     }
 
@@ -91,7 +93,12 @@ export class UserQuestionService {
         });
       }
     }
-    return this.mappedQuestionList(uniqueQuestions, topicsMap, optionsMap);
+    // Quiz created successfully
+    const response: any = {
+      message: `Quiz created successfully with ${msg} questions.`,
+      questions: this.mappedQuestionList(uniqueQuestions, topicsMap, optionsMap),
+    }
+    return response;
 
   }
 
