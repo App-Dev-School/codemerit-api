@@ -4,15 +4,15 @@ import { SkillRating } from '../entities/skill-rating.entity';
 import { ITimeStamp } from './timestamp.interface';
 
 export interface IAssessmentSession {
-  id: number;
+  id?: number;
   userId: number;
-  assessmentTitle: string;
+  assessmentTitle?: string;
   notes?: string;
   skillRatings: SkillRating[];
   ratedBy?: number;
   ratingType: RatingTypeEnum;
-  createdBy: number;
-  updatedBy: number;
-  createdAt: Date;
-  updatedAt: Date;
+  createdBy?: number;
+  updatedBy?: number;
+  createdAt?: Date;
+  updatedAt?: Date;
 }

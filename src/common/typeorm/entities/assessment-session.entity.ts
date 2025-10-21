@@ -1,32 +1,29 @@
+import { RatingTypeEnum } from 'src/common/enum/rating-type.enum';
 import {
-  Entity,
   Column,
-  PrimaryGeneratedColumn,
   CreateDateColumn,
+  Entity,
   JoinColumn,
   ManyToOne,
   OneToMany,
-  UpdateDateColumn,
+  UpdateDateColumn
 } from 'typeorm';
-import { AbstractEntity } from './abstract.entity';
-import { SkillTypeEnum } from 'src/common/enum/skill-type.enum';
-import { RatingTypeEnum } from 'src/common/enum/rating-type.enum';
-import { AuditEntity } from './audit.entity';
-import { Subject } from './subject.entity';
-import { Topic } from './topic.entity';
 import { IAssessmentSession } from '../interface/assessment-session.interface';
+import { AbstractEntity } from './abstract.entity';
 import { SkillRating } from './skill-rating.entity';
 import { User } from './user.entity';
+import { Type } from 'class-transformer';
 
 @Entity()
 export class AssessmentSession
   extends AbstractEntity
   implements IAssessmentSession
 {
+  @Type(() => Number)
   @Column({
     type: 'integer',
-    nullable: false,
-    default: null,
+    nullable: true,
+    default: 0,
   })
   userId: number;
 
@@ -68,11 +65,11 @@ export class AssessmentSession
   })
   skillRatings: SkillRating[];
 
-  @ManyToOne(() => User, { eager: true })
-  @JoinColumn({ name: 'userId', referencedColumnName: 'id' })
-  user: User;
+  // @ManyToOne(() => User, { eager: true })
+  // @JoinColumn({ name: 'userId', referencedColumnName: 'id' })
+  // user: User;
 
-  @ManyToOne(() => User, { eager: true })
-  @JoinColumn({ name: 'ratedBy', referencedColumnName: 'id' })
-  rater: User;
+  // @ManyToOne(() => User, { eager: true })
+  // @JoinColumn({ name: 'ratedBy', referencedColumnName: 'id' })
+  // rater: User;
 }

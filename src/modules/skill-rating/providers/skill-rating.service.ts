@@ -36,7 +36,7 @@ export class SkillRatingService {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
-
+    console.log("CreateSkillRating", dto);
     try {
       // Create and validate AssessmentSession
       const session = this.sessionRepo.create({
@@ -44,11 +44,11 @@ export class SkillRatingService {
         assessmentTitle: dto.assessmentTitle,
         notes: dto.notes,
         ratedBy: dto.ratedBy,
-        ratingType: dto.ratingType,
-        audit: { createdBy: dto.userId },
+        ratingType: dto.ratingType
       });
 
       const errors = await validate(session);
+      console.log("CreateSkillRating sessionsetup", errors);
       if (errors.length) {
         throw new AppCustomException(
           HttpStatus.BAD_REQUEST,
@@ -65,8 +65,7 @@ export class SkillRatingService {
           skillId: ratingDto.skillId,
           skillType: ratingDto.skillType,
           rating: ratingDto.rating,
-          assessmentSessionId: savedSession.id,
-          audit: { createdBy: dto.userId },
+          assessmentSessionId: savedSession.id
         });
 
         const errors = await validate(skillRating);
@@ -172,7 +171,7 @@ export class SkillRatingService {
       ratedByName:
         `${session.rater?.firstName} ${session.rater?.lastName}` || '',
       ratingType: session.ratingType,
-      createdAt: session.audit.createdAt,
+      createdAt: session.createdAt,
       skillRatings: session.skillRatings.map((rating) => {
         let skillName = '';
 
