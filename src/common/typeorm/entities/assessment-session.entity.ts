@@ -65,11 +65,11 @@ export class AssessmentSession
   })
   skillRatings: SkillRating[];
 
-  // @ManyToOne(() => User, { eager: true })
-  // @JoinColumn({ name: 'userId', referencedColumnName: 'id' })
-  // user: User;
+  @ManyToOne(() => User, { eager: true })
+  @JoinColumn({ name: 'userId', referencedColumnName: 'id' })
+  user: User;
 
-  // @ManyToOne(() => User, { eager: true })
-  // @JoinColumn({ name: 'ratedBy', referencedColumnName: 'id' })
-  // rater: User;
+  @ManyToOne(() => User, { eager: true })
+  @JoinColumn({ name: 'ratedBy', referencedColumnName: 'id' })
+  rater: User;
 }
