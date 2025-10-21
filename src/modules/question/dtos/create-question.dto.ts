@@ -7,7 +7,7 @@ import {
   IsString,
   IsInt,
 } from 'class-validator';
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import { DifficultyLevelEnum } from 'src/common/enum/difficulty-lavel.enum';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { QuestionStatusEnum } from 'src/common/enum/question-status.enum';
@@ -32,6 +32,7 @@ export class CreateQuestionDto {
     description: 'The text of the question',
     example: 'What is the capital of France?',
   })
+  @Transform(({ value }) => value?.trim())
   @IsString({ message: 'Question must be a string' })
   @IsNotEmpty({ message: 'Question is required' })
   question: string;

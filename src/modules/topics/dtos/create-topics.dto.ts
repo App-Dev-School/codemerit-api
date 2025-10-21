@@ -1,4 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
 import {
   IsString,
   IsInt,
@@ -13,6 +14,7 @@ export class CreateTopicDto {
     description: 'Title of the topic',
     example: 'Forms in Angular',
   })
+  @Transform(({ value }) => value?.trim())
   @IsString({ message: 'Title must be a string' })
   @IsNotEmpty({ message: 'Title is required' })
   title: string;

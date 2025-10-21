@@ -8,6 +8,9 @@ import { AuthService } from './providers/auth.service';
 import { LocalStrategy } from './guards/local.strategy';
 import { LoginValidationMiddleware } from './middleware/login-validation.middleware';
 import { UserPermissionModule } from 'src/modules/user-permission/user-permission.module';
+import { TopicAnalysisService } from 'src/modules/master/providers/topic-analysis.service';
+import { SubjectAnalysisService } from 'src/modules/master/providers/subject-analysis.service';
+import { MasterModule } from 'src/modules/master/master.module';
 
 @Module({
   imports: [
@@ -19,6 +22,9 @@ import { UserPermissionModule } from 'src/modules/user-permission/user-permissio
       signOptions: { expiresIn: '1d' },
     }),
     UserPermissionModule,
+    MasterModule
+    //TopicAnalysisService,
+    //SubjectAnalysisService
   ],
   providers: [AuthService, JwtStrategy, LocalStrategy],
   controllers: [AuthController],

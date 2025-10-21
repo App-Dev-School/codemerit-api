@@ -30,7 +30,9 @@ export class LoginResponseDto implements LoginUser {
   //other conditional fields
   profile: Profile;
   mySubjects: Subject[];
-  permissions: UserPermission[];
+  permissions?: UserPermission[];
+  courseStats?: any;
+  topicStats?: any;
   //fields for admin
   lmsMetrics: {
     numAllQuestions: number;

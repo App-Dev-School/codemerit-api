@@ -1,5 +1,6 @@
 import { IsString, IsBoolean, IsOptional, IsInt } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
 
 export class CreateOptionDto {
   @ApiPropertyOptional({
@@ -14,6 +15,7 @@ export class CreateOptionDto {
     description: 'Text of the option',
     example: '42 is the correct answer',
   })
+  @Transform(({ value }) => value?.trim())
   @IsString({ message: 'Option must be a string' })
   option: string;
 

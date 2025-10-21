@@ -10,6 +10,8 @@ import { AccountVerificationDto } from '../dto/account-verification.dto';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { LoginResponseDto } from '../dto/login-response.dto';
 import { UserPermissionService } from 'src/modules/user-permission/providers/user-permission.service';
+import { TopicAnalysisService } from 'src/modules/master/providers/topic-analysis.service';
+import { SubjectAnalysisService } from 'src/modules/master/providers/subject-analysis.service';
 
 @Injectable()
 export class AuthService {
@@ -18,6 +20,8 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly userProfileService: UserProfileService,
     private readonly userPermissionService: UserPermissionService,
+    private readonly subjectAnalyzer: SubjectAnalysisService,
+    private readonly topicAnalysisProvider: TopicAnalysisService
   ) { }
 
   async validateUser(email: string, pass: string) {
@@ -43,6 +47,7 @@ export class AuthService {
   }
 
   async login(user: User) {
+    //temporary logic. To be updated after e-mail integration
     //Auto ACC_VERIFY without notification + test email
     if (user.accountStatus != AccountStatusEnum.ACTIVE) {
       //Enable instant verification. Do not throw error if password is validated
@@ -76,11 +81,15 @@ export class AuthService {
     const userData = await this.usersService.findByEmail(
       user?.email);
     console.log("LoginProcessor userData", userData);
+    const courseStats = await this.subjectAnalyzer.getJobSubjectDashboards(user?.id, false);
+    const topicStats = await this.topicAnalysisProvider.getAllTopicStats(user?.id, false);
     const response = new LoginResponseDto({
       ...userData,
       token,
       profile,
       permissions,
+      courseStats,
+      //topicStats
     });
     return response;
   }

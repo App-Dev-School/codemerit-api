@@ -15,6 +15,6 @@ import { User } from 'src/common/typeorm/entities/user.entity';
   imports: [TypeOrmModule.forFeature([User, JobRole, Subject, JobRoleSubject, Topic, UserSubject])],
   controllers: [MasterController],
   providers: [MasterService, SubjectAnalysisService, TopicAnalysisService],
-  exports: [MasterService]
+  exports: [MasterService, SubjectAnalysisService, TopicAnalysisService]
 })
 export class MasterModule {}
