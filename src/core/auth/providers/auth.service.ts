@@ -9,6 +9,7 @@ import { UserService } from 'src/core/users/providers/user.service';
 import { AccountVerificationDto } from '../dto/account-verification.dto';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { LoginResponseDto } from '../dto/login-response.dto';
+import { UserPermissionService } from 'src/modules/user-permission/providers/user-permission.service';
 
 @Injectable()
 export class AuthService {
@@ -16,7 +17,8 @@ export class AuthService {
     private readonly usersService: UserService,
     private readonly jwtService: JwtService,
     private readonly userProfileService: UserProfileService,
-  ) {}
+    private readonly userPermissionService: UserPermissionService,
+  ) { }
 
   async validateUser(email: string, pass: string) {
     if (email && pass) {
@@ -69,19 +71,21 @@ export class AuthService {
     console.log('JWT Sign Payload =>', payload);
     const token = this.jwtService.sign(payload);
     const profile = await this.userProfileService.findOneByUserId(user?.id);
+    const permissions = await this.userPermissionService.findUserPermissionList(user?.id);
     console.log("User Login user", user);
     const userData = await this.usersService.findByEmail(
-        user?.email);
-        console.log("LoginProcessor userData", userData);
+      user?.email);
+    console.log("LoginProcessor userData", userData);
     const response = new LoginResponseDto({
       ...userData,
       token,
       profile,
+      permissions,
     });
     return response;
   }
 
-    async autoLogin(user: User) {
+  async autoLogin(user: User) {
     const payload: any = {
       username: user.username,
       sub: user.id,
