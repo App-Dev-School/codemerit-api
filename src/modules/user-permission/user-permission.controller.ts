@@ -3,33 +3,45 @@ import {
   Controller,
   Delete,
   Get,
-  Param,
   Post,
   Query,
 } from '@nestjs/common';
 import { ApiResponse } from 'src/common/utils/api-response';
 import { UserPermissionService } from './providers/user-permission.service';
 import { GrantPermissionDto } from './dto/grant-permission.dto';
+import { ApiOperation } from '@nestjs/swagger';
 
 @Controller('apis/permissions')
 export class UserPermissionController {
   constructor(private readonly service: UserPermissionService) { }
 
   @Post('grant')
-  async grantPermission(@Body() dto: GrantPermissionDto) {
-    return this.service.grantPermission(dto);
+  @ApiOperation({ summary: 'Save user wise permission', description: 'Save per user wise find grand permission' })
+  async grantPermission(@Body() dto: GrantPermissionDto): Promise<ApiResponse<any>> {
+    const result: any = await this.service.grantPermission(dto);
+
+    return new ApiResponse(`Create api Success: ${result.firstName} ${result.lastName} is granted the ${result.permission} successfully.`, result);
   }
 
   @Get('master-permissions')
-  async masterPermissionList() {
-    return this.service.masterPermissions();
+  @ApiOperation({ summary: 'Fetch Master permission', description: 'Get all master permission list' })
+  async masterPermissionList(): Promise<ApiResponse<any>> {
+    const result = await this.service.masterPermissions();
+    if (result) {
+      return new ApiResponse(`Successfully found permission list.`, result);
+    }
+    return new ApiResponse(`No permission list available.`, null);
   }
 
   @Delete('revoke')
+  @ApiOperation({ summary: 'Revoke user wise permission', description: 'Revoke user wise find grand permission' })
   async revokePermission(
     @Query('id') id: number,
-  ) {
-    return this.service.revokePermission(id);
+  ): Promise<ApiResponse<any>> {
+    const result = await this.service.revokePermission(id);
+    if (result) {
+      return new ApiResponse(`Successfully revoke the permission for id: ${id}.`, result);
+    }
+    return new ApiResponse(`Failed to revoke the permission with id: ${id}.`, result);
   }
-
 }

@@ -42,7 +42,11 @@ export class UserPermissionService {
       resourceId,
     });
 
-    return this.userPermissionRepo.save(newEntry);
+    const permissionObj = await this.userPermissionRepo.save(newEntry);
+    console.log('permissionObj', permissionObj);
+
+    return this.findUsersByPermissionId(permissionObj.id);
+
 
   }
 
@@ -61,7 +65,7 @@ export class UserPermissionService {
     if (deleted.affected && deleted.affected > 0) {
       return 'Successfully Deleted';
     }
-    return false;
+    return null;
   }
 
   async masterPermissions() {
@@ -86,5 +90,27 @@ export class UserPermissionService {
       ])
       .getRawMany();
   }
+
+  async findUsersByPermissionId(id: number) {
+    const result = await this.userPermissionRepo
+      .createQueryBuilder('userPermission')
+      .leftJoin('userPermission.user', 'user')
+      .leftJoin('userPermission.permission', 'permission')
+      .where('userPermission.id = :id', { id })
+      .select([
+        'userPermission.id AS id',
+        'user.id AS userId',
+        'user.firstName AS firstName',
+        'user.lastName AS lastName',
+        'permission.permission AS permission',
+        'userPermission.resourceType AS resourceType',
+        'userPermission.resourceId AS resourceId',
+
+      ])
+      .getRawOne();
+
+    return result;
+  }
+
 
 }
