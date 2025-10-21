@@ -3,11 +3,13 @@ import {
     ExecutionContext,
     Injectable,
     ForbiddenException,
+    HttpStatus,
 } from '@nestjs/common';
 import { REQUIRE_PERMISSION_KEY } from './require-permission.decorator';
 import { Reflector } from '@nestjs/core';
 import { UserPermissionTitleEnum } from './user-permission.enum';
 import { PermissionsService } from './permissions.service';
+import { AppCustomException } from '../exceptions/app-custom-exception.filter';
 
 @Injectable()
 export class PermissionsGuard implements CanActivate {
@@ -56,7 +58,10 @@ export class PermissionsGuard implements CanActivate {
 
 
         if (!hasPermission) {
-            throw new ForbiddenException(`You do not have permission: ${permission} on ${resourceType} ${resourceId}`);
+            throw new AppCustomException(
+                HttpStatus.FORBIDDEN,
+                `You do not have permission: ${permission} on ${resourceType} ${resourceId}. Please contact admin.`,
+            );
         }
 
         return true;
