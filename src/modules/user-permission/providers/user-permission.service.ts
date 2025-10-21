@@ -69,9 +69,22 @@ export class UserPermissionService {
   }
 
   async findUserPermissionList(userId: number) {
-    return this.userPermissionRepo.find({
-      where: { userId }
-    });
+    // return this.userPermissionRepo.find({
+    //   where: { userId }
+    // });
+    return this.userPermissionRepo
+      .createQueryBuilder('userPermission')
+      .leftJoin('userPermission.permission', 'permission')
+      .where('userPermission.userId = :userId', { userId })
+      .select([
+        'userPermission.id as id',
+        'userPermission.userId as userId',
+        'userPermission.permissionId as permissionId',
+        'userPermission.resourceType as resourceType',
+        'userPermission.resourceId as resourceId',
+        'permission.permission AS permissionName',
+      ])
+      .getRawMany();
   }
 
 }
