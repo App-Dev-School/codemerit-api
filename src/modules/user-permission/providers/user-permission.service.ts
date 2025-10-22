@@ -1,6 +1,6 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { IsNull, Not, Repository } from 'typeorm';
+import { In, IsNull, Not, Repository } from 'typeorm';
 import { UserPermission } from 'src/common/typeorm/entities/user-permission.entity';
 import { GrantPermissionDto } from '../dto/grant-permission.dto';
 import { AppCustomException } from 'src/common/exceptions/app-custom-exception.filter';
@@ -16,13 +16,25 @@ export class UserPermissionService {
   ) { }
 
   async grantPermission(dto: GrantPermissionDto) {
-    const { userId, permissionId, resourceType, resourceId } = dto;
+    const { userId, resourceType, resourceId } = dto;
+    const permissionIds: number[] = dto.permissionIds;
+    const existingPermission = await this.permissionRepo.find({
+      where: {
+        id: In([permissionIds]),
+      },
+    });
 
+    if (!existingPermission || existingPermission.length !== permissionIds.length) {
+      throw new AppCustomException(
+        HttpStatus.NOT_FOUND,
+        `Could not find the permission.`
+      );
+    }
 
     const existing = await this.userPermissionRepo.findOne({
       where: {
         userId,
-        permissionId,
+        permissionId: In([permissionIds]),
         resourceType,
         resourceId,
       },
@@ -34,18 +46,20 @@ export class UserPermissionService {
         `Already exist this permission.`
       );
     }
+    let permission: any[] = [];
+    for (const permissionId of permissionIds) {
+      const newEntry = this.userPermissionRepo.create({
+        userId,
+        permissionId,
+        resourceType,
+        resourceId,
+      });
+      permission.push(newEntry);
+    }
 
-    const newEntry = this.userPermissionRepo.create({
-      userId,
-      permissionId,
-      resourceType,
-      resourceId,
-    });
+    const result = await this.userPermissionRepo.save(permission);
 
-    const permissionObj = await this.userPermissionRepo.save(newEntry);
-    console.log('permissionObj', permissionObj);
-
-    return this.findUsersByPermissionId(permissionObj.id);
+    return result;
 
 
   }

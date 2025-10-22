@@ -20,7 +20,7 @@ export class UserPermissionController {
   async grantPermission(@Body() dto: GrantPermissionDto): Promise<ApiResponse<any>> {
     const result: any = await this.service.grantPermission(dto);
 
-    return new ApiResponse(`Create api Success: ${result.firstName} ${result.lastName} is granted the ${result.permission} successfully.`, result);
+    return new ApiResponse(`Successfully create fine granted for ${result.firstName} ${result.lastName}.`, result);
   }
 
   @Get('master-permissions')

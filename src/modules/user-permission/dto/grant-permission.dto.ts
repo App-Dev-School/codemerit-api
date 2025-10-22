@@ -1,5 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsString, IsNumber, IsInt, IsOptional } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsString, IsNumber, IsInt, IsOptional, IsArray } from 'class-validator';
 
 export class GrantPermissionDto {
 
@@ -8,10 +9,17 @@ export class GrantPermissionDto {
     @IsNumber()
     userId: number;
 
-    @ApiProperty({ example: 101 })
-    @IsInt()
-    @IsNumber()
-    permissionId: number;
+    @ApiProperty({
+        description: 'IDs of the permission associated with the question',
+        example: [2, 3],
+        isArray: true,
+        type: Number,
+    })
+    @IsArray({ message: 'Permission IDs must be an array' })
+    @Type(() => Number)
+    @IsNumber({}, { each: true, message: 'Each permission ID must be a number' })
+    permissionIds: number[];
+
 
     @ApiPropertyOptional({ example: 'subject/topic' })
     @IsOptional()

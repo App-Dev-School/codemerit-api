@@ -60,7 +60,7 @@ export class PermissionsGuard implements CanActivate {
         if (!hasPermission) {
             throw new AppCustomException(
                 HttpStatus.FORBIDDEN,
-                `You do not have permission: ${permission} on ${resourceType} ${resourceId}. Please contact admin.`,
+                `You do not have sufficient permissions to take this action. Request grant for ${permission}. Please contact admin.`,
             );
         }
 
