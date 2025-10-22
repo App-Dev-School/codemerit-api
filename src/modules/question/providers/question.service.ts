@@ -128,10 +128,22 @@ export class QuestionService {
   ): Promise<Question> {
     if (!dto.questionType) {
       throw new AppCustomException(
-        HttpStatus.NOT_FOUND,
+        HttpStatus.BAD_REQUEST,
         `Question Type is required`,
       );
     }
+    if (!dto.subjectId) {
+      throw new AppCustomException(
+        HttpStatus.BAD_REQUEST,
+        `Question subject is required`,
+      );
+    }
+    // if (!dto.topicIds || dto.topicIds.length <= 0) {
+    //   throw new AppCustomException(
+    //     HttpStatus.BAD_REQUEST,
+    //     `Question topic is required`+dto.topicIds,
+    //   );
+    // }
 
     const questionAdut = await this.findOneWithAuidt(id);
     if (

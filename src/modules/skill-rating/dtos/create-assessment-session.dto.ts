@@ -1,12 +1,12 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
-  IsEnum,
   IsArray,
+  IsEnum,
   IsInt,
+  IsNumber,
   IsOptional,
-  IsString,
-  ValidateNested,
+  IsString
 } from 'class-validator';
 import { RatingTypeEnum } from 'src/common/enum/rating-type.enum';
 import { CreateSkillRatingDto } from './create-skill-rating.dto';
@@ -18,7 +18,7 @@ export class CreateAssessmentSessionDto {
   id?: number;
 
   @ApiProperty({ example: 101 })
-  @IsInt()
+  @IsNumber()
   userId: number;
 
   @ApiProperty({ example: 'Initial interview' })
