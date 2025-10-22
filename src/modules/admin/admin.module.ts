@@ -9,9 +9,10 @@ import { Topic } from 'src/common/typeorm/entities/topic.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Subject } from 'src/common/typeorm/entities/subject.entity';
 import { Quiz } from 'src/common/typeorm/entities/quiz.entity';
+import { QuizResult } from 'src/common/typeorm/entities/quiz-result.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, Subject, Topic, Question, Quiz, QuestionAttempt])],
+  imports: [TypeOrmModule.forFeature([User, Subject, Topic, Question, QuestionAttempt, Quiz, QuizResult])],
   providers: [AdminService],
   controllers: [AdminController],
   exports: [AdminService],
