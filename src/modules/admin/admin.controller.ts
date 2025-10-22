@@ -21,7 +21,7 @@ export class AdminController {
   @Get('dashboard')
   async getAdminDash(): Promise<ApiResponse<any>> {
     const result = await this.adminService.getDashboardSummary();
-    if (result && !result.error) {
+    if (result) {
       return new ApiResponse('Data fetched successfully.', result);
     }
     return new ApiResponse('Error fetching data.', null);

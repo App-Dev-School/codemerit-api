@@ -51,9 +51,6 @@ export class AdminService {
         ]);
 
         return {
-            error: false,
-            message: 'Admin dashboard fetched successfully.',
-            data: {
                 attempts,
                 questions,
                 users,
@@ -61,7 +58,6 @@ export class AdminService {
                 subjects,
                 quizzes,
                 timeSeries,
-            },
         };
     }
 
