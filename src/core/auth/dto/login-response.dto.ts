@@ -1,3 +1,4 @@
+import { AppNotification } from 'src/common/typeorm/entities/app-notification.entity';
 import { Permission } from 'src/common/typeorm/entities/permission.entity';
 import { Profile } from 'src/common/typeorm/entities/profile.entity';
 import { Subject } from 'src/common/typeorm/entities/subject.entity';
@@ -31,6 +32,7 @@ export class LoginResponseDto implements LoginUser {
   profile: Profile;
   mySubjects: Subject[];
   permissions?: UserPermission[];
+  notifications: AppNotification[];
   courseStats?: any;
   topicStats?: any;
   //fields for admin

@@ -12,6 +12,8 @@ import { LoginResponseDto } from '../dto/login-response.dto';
 import { UserPermissionService } from 'src/modules/user-permission/providers/user-permission.service';
 import { TopicAnalysisService } from 'src/modules/master/providers/topic-analysis.service';
 import { SubjectAnalysisService } from 'src/modules/master/providers/subject-analysis.service';
+import { AppNotification } from 'src/common/typeorm/entities/app-notification.entity';
+import { AppNotificationService } from 'src/modules/notification/providers/notification.service';
 
 @Injectable()
 export class AuthService {
@@ -21,7 +23,8 @@ export class AuthService {
     private readonly userProfileService: UserProfileService,
     private readonly userPermissionService: UserPermissionService,
     private readonly subjectAnalyzer: SubjectAnalysisService,
-    private readonly topicAnalysisProvider: TopicAnalysisService
+    private readonly topicAnalysisProvider: TopicAnalysisService,
+    private readonly notificationService: AppNotificationService
   ) { }
 
   async validateUser(email: string, pass: string) {
@@ -83,12 +86,14 @@ export class AuthService {
     console.log("LoginProcessor userData", userData);
     const courseStats = await this.subjectAnalyzer.getJobSubjectDashboards(user?.id, false);
     const topicStats = await this.topicAnalysisProvider.getAllTopicStats(user?.id, false);
+    const notifications: AppNotification[] = await this.notificationService.getByUserId(user?.id);
     const response = new LoginResponseDto({
       ...userData,
       token,
       profile,
       permissions,
       courseStats,
+      notifications,
       //topicStats
     });
     return response;

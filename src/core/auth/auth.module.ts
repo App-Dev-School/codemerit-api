@@ -11,6 +11,7 @@ import { UserPermissionModule } from 'src/modules/user-permission/user-permissio
 import { TopicAnalysisService } from 'src/modules/master/providers/topic-analysis.service';
 import { SubjectAnalysisService } from 'src/modules/master/providers/subject-analysis.service';
 import { MasterModule } from 'src/modules/master/master.module';
+import { AppNotificationModule } from 'src/modules/notification/app-notification.module';
 
 @Module({
   imports: [
@@ -22,7 +23,8 @@ import { MasterModule } from 'src/modules/master/master.module';
       signOptions: { expiresIn: '1d' },
     }),
     UserPermissionModule,
-    MasterModule
+    MasterModule,
+    AppNotificationModule,
     //TopicAnalysisService,
     //SubjectAnalysisService
   ],
