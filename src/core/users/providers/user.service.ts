@@ -34,7 +34,7 @@ export class UserService {
     private readonly userOtpService: UserOtpService,
     private readonly userProfileService: UserProfileService,
     private readonly dataSource: DataSource,
-  ) {}
+  ) { }
 
   async create(data: Partial<CreateUserDto>): Promise<User> {
     const existingEmail = await this.findByEmail(data.email);
@@ -90,7 +90,7 @@ export class UserService {
       const profile = new Profile();
       profile.userId = savedUser.id;
       //validate on client
-	  if (data.about) {
+      if (data.about) {
         profile.about = data.about;
       }
       if (data.linkedinUrl) {
@@ -130,23 +130,23 @@ export class UserService {
   async findByEmail(email: string): Promise<UserWithDesignation | undefined> {
     //Gives all fields
     const user = await this.userRepo.findOne({
-    where: { email },
-    relations: ['userJobRole'],
-  });
+      where: { email },
+      relations: ['userJobRole'],
+    });
 
-  if (!user) return undefined;
+    if (!user) return undefined;
 
-  // filter designation fields
-  return {
-    ...user,
-    userDesignation: user.userJobRole
-      ? {
+    // filter designation fields
+    return {
+      ...user,
+      userDesignation: user.userJobRole
+        ? {
           id: user.userJobRole.id,
           title: user.userJobRole.title,
           slug: user.userJobRole.slug,
         }
-      : null,
-  };
+        : null,
+    };
   }
 
   async findByEmailForLogin(email: string): Promise<User | undefined> {
@@ -219,25 +219,31 @@ export class UserService {
     return this.userRepo.find();
   }
 
-  async findUserList(): Promise<User[]> {
-    return this.userRepo.find({
-      select: [
-        'firstName',
-        'lastName',
-        'username',
-        'role',
-        'designation',
-        'city',
-        'country',
-        'email',
-        'mobile',
-        'level',
-        'points',
-        'accountStatus',
-        'createdAt',
-      ],
-    });
+  async findUserList(): Promise<any[]> {
+    return this.userRepo
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.userJobRole', 'userJobRole')
+      .select([
+        'user.firstName',
+        'user.lastName',
+        'user.username',
+        'user.role',
+        'user.designation',
+        'user.city',
+        'user.country',
+        'user.email',
+        'user.mobile',
+        'user.level',
+        'user.points',
+        'user.accountStatus',
+        'user.createdAt',
+        'userJobRole.title',
+      ])
+      .getMany();
   }
+
+
+
   async updateUserAccountStatus(
     id: number,
     accountStatusEnum: AccountStatusEnum,
