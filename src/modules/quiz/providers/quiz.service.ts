@@ -16,6 +16,8 @@ import { UserQuestionService } from 'src/modules/question/providers/user-questio
 import { DataSource, Repository } from 'typeorm';
 import { CreateQuizDto } from '../dtos/create-quiz.dto';
 import { SubmitQuizDto } from '../dtos/submit-quiz.dto';
+import { CreateNotificationDto } from 'src/modules/notification/dto/create-notification.dto';
+import { AppNotification } from 'src/common/typeorm/entities/app-notification.entity';
 
 @Injectable()
 export class QuizService {
@@ -234,6 +236,20 @@ export class QuizService {
           });
           await manager.save(QuestionAttempt, questionAttempt);
         }
+
+        // notification can be sent here
+        let notificationDto: CreateNotificationDto = {
+          userId: submitQuizDto?.userId,
+          title: 'On Quiz Submit',
+          senderId: 0,
+          message: `You have scored ${submitQuizDto?.score}% in this Quiz.`,
+          isSeen: 0,
+          dataId: '1',
+          dataTitle: 'quiz submitted'
+        };
+        manager.create(AppNotification, notificationDto);
+        await manager.save(AppNotification, notificationDto);
+
         return questionResult;
       });
     } catch (error) {

@@ -23,6 +23,7 @@ import { UserPermission } from 'src/common/typeorm/entities/user-permission.enti
 import { UserSubject } from 'src/common/typeorm/entities/user-subject.entity';
 import { User } from 'src/common/typeorm/entities/user.entity';
 import { IDatabaseConfig } from 'src/config/database-config';
+import { AppNotification } from 'src/common/typeorm/entities/app-notification.entity';
 @Injectable()
 export class TypeormConfigService implements TypeOrmOptionsFactory {
   constructor(private configService: ConfigService) { }
@@ -66,7 +67,8 @@ export class TypeormConfigService implements TypeOrmOptionsFactory {
         QuizSubject,
         QuizTopic,
         Permission,
-        UserPermission
+        UserPermission,
+        AppNotification,
       ],
       // entities: [__dirname + '/../**/*.entity.{ts,js}'],
       // entities: ['src/**/*.entity.ts'],

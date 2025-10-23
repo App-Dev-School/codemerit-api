@@ -9,12 +9,13 @@ import { UserPerformanceService } from './providers/user-performance.service';
 import { UserProfileService } from './providers/user-profile.service';
 import { UserService } from './providers/user.service';
 import { UsersController } from './users.controller';
+import { AppNotificationModule } from 'src/modules/notification/app-notification.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, Profile, UserOtp])],
-  providers: [UserService, UserOtpService, UserProfileService, 
+  imports: [TypeOrmModule.forFeature([User, Profile, UserOtp]), AppNotificationModule],
+  providers: [UserService, UserOtpService, UserProfileService,
     UserPerformanceService],
   controllers: [UsersController],
   exports: [UserService, UserOtpService, UserProfileService, UserPerformanceService],
 })
-export class UsersModule {}
+export class UsersModule { }

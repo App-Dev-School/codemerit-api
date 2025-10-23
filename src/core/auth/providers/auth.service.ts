@@ -115,6 +115,6 @@ export class AuthService {
   }
 
   async accountVerification(accountVerificationDto: AccountVerificationDto) {
-    return this.usersService.acoountVerification(accountVerificationDto);
+    return this.usersService.accountVerification(accountVerificationDto);
   }
 }

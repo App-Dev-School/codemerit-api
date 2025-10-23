@@ -25,6 +25,8 @@ import { AccountStatusEnum } from '../enums/account-status.enum';
 import { UserOtpTagsEnum } from '../enums/user-otp-Tags.enum';
 import { UserOtpService } from './user-otp.service';
 import { UserProfileService } from './user-profile.service';
+import { CreateNotificationDto } from 'src/modules/notification/dto/create-notification.dto';
+import { AppNotificationService } from 'src/modules/notification/providers/notification.service';
 
 @Injectable()
 export class UserService {
@@ -33,6 +35,7 @@ export class UserService {
     private userRepo: Repository<User>,
     private readonly userOtpService: UserOtpService,
     private readonly userProfileService: UserProfileService,
+    private readonly notificationService: AppNotificationService,
     private readonly dataSource: DataSource,
   ) { }
 
@@ -303,7 +306,7 @@ export class UserService {
     return null;
   }
 
-  async acoountVerification(
+  async accountVerification(
     accountVerificationDto: AccountVerificationDto,
   ): Promise<string | null> {
     const user: User = await this.findByEmail(accountVerificationDto?.email);
@@ -334,6 +337,20 @@ export class UserService {
           AccountStatusEnum.ACTIVE,
         );
         msg = 'Your account is now verified.';
+
+        // notification can be sent here
+        let notificationDto: CreateNotificationDto = {
+          userId: user.id,
+          title: 'On Account verified',
+          senderId: 0,
+          message: 'Your account is verified successfully.',
+          isSeen: 0,
+          dataId: '1',
+          dataTitle: 'account verified',
+        };
+        this.notificationService.create(notificationDto);
+
+
       }
       if (accountVerificationDto.tag == UserOtpTagsEnum.PWD_RECOVER) {
         userRs = await this.updateUserPassword(
