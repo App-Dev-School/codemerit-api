@@ -44,7 +44,7 @@ export class QuestionService {
     return this.questionRepo.findOne({ where: { id } });
   }
 
-  findOneWithAuidt(id: number) {
+  findOneWithAudit(id: number) {
     return this.questionRepo.findOne({
       where: { id },
       select: ['id', 'createdBy', 'updatedBy', 'questionType', 'status'],
@@ -94,7 +94,7 @@ export class QuestionService {
   }
 
   async remove(id: number, user: GetUserRequestDto) {
-    const question = await this.findOneWithAuidt(id);
+    const question = await this.findOneWithAudit(id);
     if (question) {
       if (
         user.role == UserRoleEnum.ADMIN ||
@@ -145,10 +145,10 @@ export class QuestionService {
     //   );
     // }
 
-    const questionAdut = await this.findOneWithAuidt(id);
+    const questionAudit = await this.findOneWithAudit(id);
     if (
       user.role == UserRoleEnum.MODERATOR &&
-      user.id !== questionAdut?.createdBy
+      user.id !== questionAudit?.createdBy
     ) {
       throw new AppCustomException(
         HttpStatus.NOT_FOUND,

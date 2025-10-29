@@ -15,6 +15,8 @@ import { QuizQuestion } from './quiz-quesion.entity';
 import { User } from './user.entity';
 import { QuestionAttempt } from './question-attempt.entity';
 import { QuizResult } from './quiz-result.entity';
+import { QuizSubject } from './quiz-subject.entity';
+import { QuizTopic } from './quiz-topic.entity';
 
 @Entity()
 export class Quiz extends AbstractEntity implements IQuiz {
@@ -111,12 +113,19 @@ export class Quiz extends AbstractEntity implements IQuiz {
     @JoinColumn({ name: 'createdBy', referencedColumnName: 'id' })
     userCreatedBy: User;
 
-    @OneToMany(() => QuizQuestion, (quizQuestion) => quizQuestion.quiz, { cascade: true })
+    @OneToMany(() => QuizQuestion, (quizQuestion) => quizQuestion.quiz, { cascade: true, onDelete: 'CASCADE' })
     quizQuestions: QuizQuestion[];
 
-    @OneToMany(() => QuestionAttempt, (qa) => qa.quiz, { cascade: false })
+    @OneToMany(() => QuestionAttempt, (qa) => qa.quiz, { cascade: true, onDelete: 'CASCADE' })
     questionAttempts: QuestionAttempt[];
 
-    @OneToMany(() => QuizResult, (result) => result.quiz)
+    @OneToMany(() => QuizResult, (result) => result.quiz, { cascade: true, onDelete: 'CASCADE' })
     results: QuizResult[];
+
+
+    @OneToMany(() => QuizSubject, (quizSubject) => quizSubject.quiz, { cascade: true, onDelete: 'CASCADE' })
+    quizSubjects: QuizSubject[];
+
+    @OneToMany(() => QuizTopic, (quizTopic) => quizTopic.quiz, { cascade: true, onDelete: 'CASCADE' })
+    quizTopics: QuizTopic[];
 }

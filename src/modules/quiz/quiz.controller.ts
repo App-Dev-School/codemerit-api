@@ -1,9 +1,13 @@
 import {
+  BadRequestException,
   Body,
   Controller,
+  Delete,
   Get,
   Param,
+  ParseIntPipe,
   Post,
+  Query,
   Req
 } from '@nestjs/common';
 import { ApiResponse } from 'src/common/utils/api-response';
@@ -55,4 +59,29 @@ export class QuizController {
     const result = await this.quizResultService.getQuizResultByCode(resultCode);
     return new ApiResponse('Quiz Result Found', result);
   }
+
+  @ApiOperation({ summary: 'Get Quiz list', description: 'Get all quiz list or based on userid get quiz list.' })
+  @Get('get-quizzes')
+  async getAllQuizzes(@Query('userId') userId?: number): Promise<ApiResponse<any>> {
+    const result = await this.quizService.getQuizzes(userId);
+    return new ApiResponse('Quiz Result Found', result);
+  }
+
+
+  @ApiOperation({ summary: 'Delete Quiz by id', description: 'Delete quiz by quid id.' })
+  @Delete(':id')
+  async deleteQuiz(
+    @Param(
+      'id',
+      new ParseIntPipe({
+        errorHttpStatusCode: 400,
+        exceptionFactory: () =>
+          new BadRequestException('Id must be a valid number'),
+      }),
+    )
+    id: number,) {
+    await this.quizService.deleteQuiz(id);
+    return new ApiResponse(`Quiz ${id} and all related data deleted successfully`, null);
+  }
+
 }

@@ -261,4 +261,79 @@ export class QuizService {
     }
   }
 
+  async getQuizzes(userId?: number) {
+    const query = this.quizRepository
+      .createQueryBuilder('quiz')
+      .leftJoinAndSelect('quiz.quizSubjects', 'quizSubject')
+      .leftJoinAndSelect('quizSubject.subject', 'subject')
+      .leftJoinAndSelect('quiz.quizTopics', 'quizTopic')
+      .leftJoinAndSelect('quizTopic.topic', 'topic')
+      .leftJoinAndSelect('quiz.userCreatedBy', 'user');
+
+    if (userId) {
+      query.where('quiz.createdBy = :userId', { userId });
+    }
+
+    query.orderBy('quiz.createdAt', 'DESC');
+
+    const quizzes = await query.getMany();
+
+    return this.mappedQuizList(quizzes);
+  }
+
+  private mappedQuizList(quizzes: any[]): any[] {
+    return quizzes.map((q) => ({
+      id: q.id,
+      title: q.title,
+      image: q.image,
+      slug: q.slug,
+      description: q.description,
+      tag: q.tag,
+      isPublished: q.isPublished,
+      label: q.label,
+      quizType: q.quizType,
+      subjects: q.quizSubjects?.map((s) => ({
+        id: s.subject.id,
+        name: s.subject.title,
+      })),
+      topics: q.quizTopics?.map((t) => ({
+        id: t.topic.id,
+        name: t.topic.title,
+      })),
+      user: q.userCreatedBy
+        ? {
+          id: q.userCreatedBy.id,
+          name: q.userCreatedBy.firstName + ' ' + q.userCreatedBy.lastName,
+          email: q.userCreatedBy.email,
+        }
+        : null,
+    }));
+  }
+
+  async deleteQuiz(quizId: number): Promise<void> {
+    try {
+      await this.dataSource.transaction(async (manager) => {
+        const quiz = await manager.findOne(Quiz, { where: { id: quizId } });
+        if (!quiz) {
+          throw new AppCustomException(
+            HttpStatus.BAD_REQUEST,
+            `Quiz ${quizId} not found`
+          );
+        }
+
+        await manager.delete(QuizResult, { quiz: { id: quizId } });
+        await manager.delete(QuestionAttempt, { quiz: { id: quizId } });
+        await manager.delete(QuizQuestion, { quiz: { id: quizId } });
+        await manager.delete(QuizSubject, { quiz: { id: quizId } });
+        await manager.delete(QuizTopic, { quiz: { id: quizId } });
+        await manager.delete(Quiz, { id: quizId });
+      });
+    } catch (error) {
+      throw new AppCustomException(
+        HttpStatus.BAD_REQUEST,
+        'Failed to delete quiz. please try again ' + error.message
+      );
+    }
+  }
+
 }
