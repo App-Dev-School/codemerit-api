@@ -3,18 +3,22 @@ import {
   IsString,
   IsOptional,
   IsBoolean,
-  IsNotEmpty,
-  Min,
-  IsArray,
-  ArrayNotEmpty,
   IsEnum,
   IsNumber,
+  IsNotEmpty,
+  IsDefined,
+  ValidateNested,
 } from 'class-validator';
+import { Type } from 'class-transformer';
 import { QuizTypeEnum } from 'src/common/enum/quiz-type.enum';
 import { TopicLabelEnum } from 'src/common/enum/topic-label.enum';
+import {
+  IsStandardQuizFieldRequired,
+  IsSubjectOrTopicRequired,
+} from './is-standard-quiz-field-required.validator';
+import { QuizSettingsDto } from './quiz-settings.dto';
 
 export class CreateQuizDto {
-
   @ApiProperty()
   @IsNumber()
   userId: number;
@@ -23,31 +27,53 @@ export class CreateQuizDto {
     description: 'Title of the topic',
     example: 'Forms in Angular',
   })
-  @IsString({ message: 'Title must be a string' })
-  @IsOptional()
+  @IsString()
+  @IsStandardQuizFieldRequired({
+    message: 'Title is required for Standard quiz',
+  })
   title?: string;
 
-  @ApiPropertyOptional({ example: 'Short description of the quiz' })
-  @IsOptional()
+  @ApiPropertyOptional({
+    description: 'Short description of the quiz',
+    example: 'Short description of the quiz',
+  })
   @IsString()
+  @IsStandardQuizFieldRequired({
+    message: 'Short description is required for Standard quiz',
+  })
   shortDesc?: string;
 
-  @ApiPropertyOptional({ example: 'Detailed description of the quiz' })
-  @IsOptional()
+  @ApiPropertyOptional({
+    description: 'Detailed description of the quiz',
+    example: 'Detailed description of the quiz',
+  })
   @IsString()
-  description?: string;
+  @IsStandardQuizFieldRequired({
+    message: 'Description is required for Standard quiz',
+  })
+  description: string;
 
   @ApiPropertyOptional({ example: '1, 2' })
   @IsOptional()
   @IsString()
+  @IsSubjectOrTopicRequired({
+    message: 'Either subjectIds or topicIds is required',
+  })
   subjectIds?: string;
 
   @ApiPropertyOptional({ example: '100, 200' })
   @IsOptional()
   @IsString()
+  @IsSubjectOrTopicRequired({
+    message: 'Either subjectIds or topicIds is required',
+  })
   topicIds?: string;
 
-  @ApiProperty({ enum: QuizTypeEnum, example: QuizTypeEnum.UserQuiz, description: 'Type of quiz' })
+  @ApiProperty({
+    enum: QuizTypeEnum,
+    example: QuizTypeEnum.UserQuiz,
+    description: 'Type of quiz',
+  })
   @IsEnum(QuizTypeEnum)
   quizType: QuizTypeEnum; // user will create as UserQuiz
 
@@ -56,14 +82,19 @@ export class CreateQuizDto {
   @IsNumber()
   numQuestions?: number;
 
-  @ApiPropertyOptional({ enum: TopicLabelEnum, example: TopicLabelEnum.Foundation })
+  @ApiPropertyOptional({
+    enum: TopicLabelEnum,
+    example: TopicLabelEnum.Foundation,
+  })
   @IsOptional()
   @IsEnum(TopicLabelEnum)
   label?: TopicLabelEnum;
 
   @ApiPropertyOptional({ example: '5, 6, 7' })
-  @IsOptional()
   @IsString()
+  @IsStandardQuizFieldRequired({
+    message: 'questionIds is required for Standard quiz',
+  })
   questionIds?: string; // admin will provide
 
   @ApiPropertyOptional({ example: true })
@@ -80,4 +111,12 @@ export class CreateQuizDto {
   @IsOptional()
   @IsString()
   tag?: string;
+
+  @ApiPropertyOptional({
+    description: 'Quiz settings (only for Standard quiz)',
+  })
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => QuizSettingsDto)
+  settings?: QuizSettingsDto;
 }

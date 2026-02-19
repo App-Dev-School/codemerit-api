@@ -23,9 +23,10 @@ import { UserPermission } from 'src/common/typeorm/entities/user-permission.enti
 import { UserSubject } from 'src/common/typeorm/entities/user-subject.entity';
 import { User } from 'src/common/typeorm/entities/user.entity';
 import { IDatabaseConfig } from 'src/config/database-config';
+import { QuizSettings } from 'src/common/typeorm/entities/quiz-settings.entity';
 @Injectable()
 export class TypeormConfigService implements TypeOrmOptionsFactory {
-  constructor(private configService: ConfigService) { }
+  constructor(private configService: ConfigService) {}
 
   createTypeOrmOptions(): TypeOrmModuleOptions {
     const databaseConfig = this.configService.get(
@@ -65,8 +66,9 @@ export class TypeormConfigService implements TypeOrmOptionsFactory {
         QuizQuestion,
         QuizSubject,
         QuizTopic,
+        QuizSettings,
         Permission,
-        UserPermission
+        UserPermission,
       ],
       // entities: [__dirname + '/../**/*.entity.{ts,js}'],
       // entities: ['src/**/*.entity.ts'],

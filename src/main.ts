@@ -68,12 +68,15 @@ async function bootstrap() {
       stopAtFirstError: true,
     }),
   );
-
+  app.use((req, res, next) => {
+    console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+    next();
+  });
   // Set global API prefix
   // app.setGlobalPrefix('api');
   await app.listen(config.port, () => {
     console.log(`Server is listening on port ${config.port}`);
-    console.log('##### DATABASE_URL:', process.env.DATABASE_URL);
+    // console.log('##### DATABASE_URL:', process.env.DATABASE_URL);
   });
 }
 bootstrap();
