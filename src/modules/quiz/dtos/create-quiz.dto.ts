@@ -6,16 +6,12 @@ import {
   IsEnum,
   IsNumber,
   IsNotEmpty,
-  IsDefined,
+  ValidateIf,
   ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { QuizTypeEnum } from 'src/common/enum/quiz-type.enum';
 import { TopicLabelEnum } from 'src/common/enum/topic-label.enum';
-import {
-  IsStandardQuizFieldRequired,
-  IsSubjectOrTopicRequired,
-} from './is-standard-quiz-field-required.validator';
 import { QuizSettingsDto } from './quiz-settings.dto';
 
 export class CreateQuizDto {
@@ -27,46 +23,39 @@ export class CreateQuizDto {
     description: 'Title of the topic',
     example: 'Forms in Angular',
   })
+  @ValidateIf((o) => o.quizType === QuizTypeEnum.Standard)
   @IsString()
-  @IsStandardQuizFieldRequired({
-    message: 'Title is required for Standard quiz',
-  })
+  @IsNotEmpty({ message: 'Title is required ' })
   title?: string;
 
   @ApiPropertyOptional({
     description: 'Short description of the quiz',
     example: 'Short description of the quiz',
   })
+  @ValidateIf((o) => o.quizType === QuizTypeEnum.Standard)
   @IsString()
-  @IsStandardQuizFieldRequired({
-    message: 'Short description is required for Standard quiz',
-  })
+  @IsNotEmpty({ message: 'Short description is required ' })
   shortDesc?: string;
 
   @ApiPropertyOptional({
     description: 'Detailed description of the quiz',
     example: 'Detailed description of the quiz',
   })
+  @ValidateIf((o) => o.quizType === QuizTypeEnum.Standard)
   @IsString()
-  @IsStandardQuizFieldRequired({
-    message: 'Description is required for Standard quiz',
-  })
+  @IsNotEmpty({ message: 'Description is required ' })
   description: string;
 
   @ApiPropertyOptional({ example: '1, 2' })
-  @IsOptional()
+  @ValidateIf((o) => !o.topicIds)
   @IsString()
-  @IsSubjectOrTopicRequired({
-    message: 'Either subjectIds or topicIds is required',
-  })
+  @IsNotEmpty({ message: 'Either subjectIds or topicIds is required' })
   subjectIds?: string;
 
   @ApiPropertyOptional({ example: '100, 200' })
-  @IsOptional()
+  @ValidateIf((o) => !o.subjectIds)
   @IsString()
-  @IsSubjectOrTopicRequired({
-    message: 'Either subjectIds or topicIds is required',
-  })
+  @IsNotEmpty({ message: 'Either subjectIds or topicIds is required' })
   topicIds?: string;
 
   @ApiProperty({
@@ -91,10 +80,9 @@ export class CreateQuizDto {
   label?: TopicLabelEnum;
 
   @ApiPropertyOptional({ example: '5, 6, 7' })
+  @ValidateIf((o) => o.quizType === QuizTypeEnum.Standard)
   @IsString()
-  @IsStandardQuizFieldRequired({
-    message: 'questionIds is required for Standard quiz',
-  })
+  @IsNotEmpty({ message: 'questionIds is required ' })
   questionIds?: string; // admin will provide
 
   @ApiPropertyOptional({ example: true })

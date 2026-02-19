@@ -170,7 +170,7 @@ export class QuizService {
       quiz.shortDesc = createQuizDto.shortDesc;
       quiz.description = createQuizDto.description;
       quiz.goal = createQuizDto.goal ?? null;
-      quiz.label = createQuizDto.label ?? null;
+      quiz.label = createQuizDto.label;
       quiz.isPublished = createQuizDto.isPublished ?? false;
       let slug = generateSlug(title);
       let existingSlug = await this.quizRepository.findOne({ where: { slug } });
@@ -227,7 +227,6 @@ export class QuizService {
           );
         }
 
-        savedQuizzes['questions'] = questions;
         const response: any = {
           message: questionObj?.message
             ? questionObj?.message
@@ -300,44 +299,38 @@ export class QuizService {
 
     const quizIds = quizzes.map((quiz) => quiz.id);
 
-    const [quizSubjects, quizTopics, quizQuestions, quizSettings] =
-      await Promise.all([
-        this.quizSubjectRepo.find({
-          where: { quizId: In(quizIds) },
-          relations: ['subject'],
-        }),
-        this.quizTopicRepo.find({
-          where: { quizId: In(quizIds) },
-          relations: ['topic'],
-        }),
-        this.quizQuestionRepo.find({
-          where: { quizId: In(quizIds) },
-          relations: ['question'],
-        }),
-        this.quizSettingsRepository.find({
-          where: { quizId: In(quizIds) },
-        }),
-      ]);
+    const [quizSubjects, quizTopics, quizSettings] = await Promise.all([
+      this.quizSubjectRepo.find({
+        where: { quizId: In(quizIds) },
+        relations: ['subject'],
+      }),
+      this.quizTopicRepo.find({
+        where: { quizId: In(quizIds) },
+        relations: ['topic'],
+      }),
+      this.quizSettingsRepository.find({
+        where: { quizId: In(quizIds) },
+      }),
+    ]);
 
     const subjectMap = new Map<number, any[]>();
     for (const quizSubject of quizSubjects) {
       const existing = subjectMap.get(quizSubject.quizId) || [];
-      existing.push(quizSubject.subject);
+      if (quizSubject.subject) {
+        const { id, title, description, createdAt } = quizSubject.subject;
+        existing.push({ id, title, description, createdAt });
+      }
       subjectMap.set(quizSubject.quizId, existing);
     }
 
     const topicMap = new Map<number, any[]>();
     for (const quizTopic of quizTopics) {
       const existing = topicMap.get(quizTopic.quizId) || [];
-      existing.push(quizTopic.topic);
+      if (quizTopic.topic) {
+        const { id, title, description, createdAt } = quizTopic.topic;
+        existing.push({ id, title, description, createdAt });
+      }
       topicMap.set(quizTopic.quizId, existing);
-    }
-
-    const questionMap = new Map<number, any[]>();
-    for (const quizQuestion of quizQuestions) {
-      const existing = questionMap.get(quizQuestion.quizId) || [];
-      existing.push(quizQuestion.question);
-      questionMap.set(quizQuestion.quizId, existing);
     }
 
     const settingsMap = new Map<number, QuizSettings>();
@@ -349,7 +342,6 @@ export class QuizService {
       ...quiz,
       subjects: subjectMap.get(quiz.id) || [],
       topics: topicMap.get(quiz.id) || [],
-      questions: questionMap.get(quiz.id) || [],
       settings: settingsMap.get(quiz.id) || null,
     }));
   }
