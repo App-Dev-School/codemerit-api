@@ -6,6 +6,7 @@ import { QuizResult } from 'src/common/typeorm/entities/quiz-result.entity';
 import { QuizSubject } from 'src/common/typeorm/entities/quiz-subject.entity';
 import { QuizTopic } from 'src/common/typeorm/entities/quiz-topic.entity';
 import { Quiz } from 'src/common/typeorm/entities/quiz.entity';
+import { QuizSettings } from 'src/common/typeorm/entities/quiz-settings.entity';
 import { MasterModule } from '../master/master.module';
 import { UserQuestionService } from '../question/providers/user-question.service';
 import { QuestionModule } from '../question/question.module';
@@ -15,7 +16,19 @@ import { QuizService } from './providers/quiz.service';
 import { QuizController } from './quiz.controller';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Quiz, QuestionAttempt, QuizResult, QuizQuestion, QuizSubject, QuizTopic]), QuestionModule, MasterModule],
+  imports: [
+    TypeOrmModule.forFeature([
+      Quiz,
+      QuestionAttempt,
+      QuizResult,
+      QuizQuestion,
+      QuizSubject,
+      QuizTopic,
+      QuizSettings,
+    ]),
+    QuestionModule,
+    MasterModule,
+  ],
   providers: [QuizService, QuestionAttemptService, QuizResultService],
   controllers: [QuizController],
   // exports: [QuizService, QuestionService]

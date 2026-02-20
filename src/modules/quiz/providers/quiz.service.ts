@@ -7,13 +7,22 @@ import { QuizResult } from 'src/common/typeorm/entities/quiz-result.entity';
 import { QuizSubject } from 'src/common/typeorm/entities/quiz-subject.entity';
 import { QuizTopic } from 'src/common/typeorm/entities/quiz-topic.entity';
 import { Quiz } from 'src/common/typeorm/entities/quiz.entity';
-import { generate6DigitNumber, getTitleBySubjectIds, getTitleByTopicIds } from 'src/common/utils/common-functions';
-import { generateSlug, generateUniqueSlug } from 'src/common/utils/slugify.util';
+import { QuizSettings } from 'src/common/typeorm/entities/quiz-settings.entity';
+import { QuizTypeEnum } from 'src/common/enum/quiz-type.enum';
+import {
+  generate6DigitNumber,
+  getTitleBySubjectIds,
+  getTitleByTopicIds,
+} from 'src/common/utils/common-functions';
+import {
+  generateSlug,
+  generateUniqueSlug,
+} from 'src/common/utils/slugify.util';
 import { MasterService } from 'src/modules/master/providers/master.service';
 import { GetQuestionsByIdsDto } from 'src/modules/question/dtos/get-questions-by-ids.dto';
 import { QuestionService } from 'src/modules/question/providers/question.service';
 import { UserQuestionService } from 'src/modules/question/providers/user-question.service';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, In, Repository } from 'typeorm';
 import { CreateQuizDto } from '../dtos/create-quiz.dto';
 import { SubmitQuizDto } from '../dtos/submit-quiz.dto';
 
@@ -24,12 +33,20 @@ export class QuizService {
     private quizRepository: Repository<Quiz>,
     @InjectRepository(QuizQuestion)
     private quizQuestionRepo: Repository<QuizQuestion>,
+    @InjectRepository(QuizSettings)
+    private quizSettingsRepository: Repository<QuizSettings>,
+    @InjectRepository(QuizSubject)
+    private quizSubjectRepo: Repository<QuizSubject>,
+    @InjectRepository(QuizTopic)
+    private quizTopicRepo: Repository<QuizTopic>,
+    @InjectRepository(QuizResult)
+    private quizResultRepository: Repository<QuizResult>,
     private readonly userQuestionService: UserQuestionService,
     private readonly questionService: QuestionService,
     private readonly masterService: MasterService,
 
     private readonly dataSource: DataSource,
-  ) { }
+  ) {}
 
   async fetchQuizBySlug(slug: string): Promise<any> {
     const quiz = await this.quizRepository
@@ -45,7 +62,7 @@ export class QuizService {
     if (!quiz.quizQuestions || quiz.quizQuestions.length === 0) {
       throw new AppCustomException(
         HttpStatus.BAD_REQUEST,
-        'No questions found for this quiz.'
+        'No questions found for this quiz.',
       );
     }
 
@@ -65,14 +82,20 @@ export class QuizService {
     };
   }
 
-  async createQuiz(userId: number, createQuizDto: CreateQuizDto): Promise<Quiz> {
+  async createQuiz(
+    createQuizDto: CreateQuizDto,
+    userId: number,
+  ): Promise<Quiz> {
     console.log('quiz service called');
     console.log('QuizBuilder @createQuiz called:', createQuizDto);
     let quizCategory = '';
-    if (!createQuizDto?.subjectIds?.length && !createQuizDto?.topicIds?.length) {
+    if (
+      !createQuizDto?.subjectIds?.length &&
+      !createQuizDto?.topicIds?.length
+    ) {
       throw new AppCustomException(
         HttpStatus.BAD_REQUEST,
-        "Please specify at least one subject or topic to generate a quiz."
+        'Please specify at least one subject or topic to generate a quiz.',
       );
     }
     console.log('QuizBuilder @createQuiz Start:', createQuizDto?.subjectIds);
@@ -81,13 +104,13 @@ export class QuizService {
 
     if (createQuizDto?.topicIds) {
       const topicStr = String(createQuizDto.topicIds); // ensure it's a string
-      topicIds = topicStr.split(',').map(id => parseInt(id.trim(), 10));
+      topicIds = topicStr.split(',').map((id) => parseInt(id.trim(), 10));
       quizCategory = 'Topic';
     }
 
     if (createQuizDto?.subjectIds) {
       const subjectStr = String(createQuizDto.subjectIds); // ensure it's a string
-      subjectIds = subjectStr.split(',').map(id => parseInt(id.trim(), 10));
+      subjectIds = subjectStr.split(',').map((id) => parseInt(id.trim(), 10));
       quizCategory = 'Subject';
     }
 
@@ -103,7 +126,8 @@ export class QuizService {
     console.log('QuizBuilder @Input:', ids);
     //const questions = await this.questionService.getQuestionsByIds(ids);
 
-    const questionObj: any = await this.userQuestionService.getUniqueQuizForQuestions(userId, ids);
+    const questionObj: any =
+      await this.userQuestionService.getUniqueQuizForQuestions(userId, ids);
     const questions = questionObj?.questions;
 
     /*
@@ -123,14 +147,15 @@ export class QuizService {
       console.log('QuizBuilder #4: @NotEnoughQuestions', questions.length);
       throw new AppCustomException(
         HttpStatus.NOT_FOUND,
-        `Not enough questions ${questions.length} found for the given ${quizCategory}`
+        `Not enough questions ${questions.length} found for the given ${quizCategory}`,
       );
     }
     try {
       let title = createQuizDto.title;
       if (!title) {
         if (subjectIds && subjectIds.length > 0) {
-          const subjects = await this.masterService.getSubjectListByIds(subjectIds);
+          const subjects =
+            await this.masterService.getSubjectListByIds(subjectIds);
           title = getTitleBySubjectIds(subjects) + ' Quiz';
         }
         if (topicIds && topicIds.length > 0) {
@@ -138,10 +163,15 @@ export class QuizService {
           title = getTitleByTopicIds(topics) + ' Quiz';
         }
       }
-      let quiz = new Quiz();
+      const quiz = new Quiz();
       quiz.title = title;
       quiz.tag = quizCategory;
       quiz.quizType = createQuizDto.quizType;
+      quiz.shortDesc = createQuizDto.shortDesc;
+      quiz.description = createQuizDto.description;
+      quiz.goal = createQuizDto.goal ?? null;
+      quiz.label = createQuizDto.label;
+      quiz.isPublished = createQuizDto.isPublished ?? false;
       let slug = generateSlug(title);
       let existingSlug = await this.quizRepository.findOne({ where: { slug } });
       while (existingSlug) {
@@ -152,14 +182,14 @@ export class QuizService {
       //quiz.userId = userId;
       quiz.createdBy = userId;
       console.log('QuizBuilder #4: QuizToSave', quiz);
-      return this.dataSource.transaction(async manager => {
+      return this.dataSource.transaction(async (manager) => {
         const savedQuizzes = await manager.save(Quiz, quiz);
         console.log('QuizBuilder #5: savedQuizzes', savedQuizzes);
-        let quizQuestion: QuizQuestion[] = [];
-        let quizSubject: QuizSubject[] = [];
-        let quizTopic: QuizTopic[] = [];
+        const quizQuestion: QuizQuestion[] = [];
+        const quizSubject: QuizSubject[] = [];
+        const quizTopic: QuizTopic[] = [];
         for (const question of questions) {
-          let quizQuestionItem = new QuizQuestion();
+          const quizQuestionItem = new QuizQuestion();
           quizQuestionItem.quizId = savedQuizzes.id;
           quizQuestionItem.questionId = question.id;
           quizQuestion.push(quizQuestionItem);
@@ -168,8 +198,7 @@ export class QuizService {
         await manager.save(QuizQuestion, quizQuestion);
         if (subjectIds && subjectIds.length > 0) {
           for (const id of subjectIds) {
-
-            let quizSubjectItem = new QuizSubject();
+            const quizSubjectItem = new QuizSubject();
             quizSubjectItem.quizId = savedQuizzes.id;
             quizSubjectItem.subjectId = id;
             quizSubject.push(quizSubjectItem);
@@ -177,18 +206,31 @@ export class QuizService {
           await manager.save(QuizSubject, quizSubject);
         }
         if (topicIds && topicIds.length > 0) {
-
           for (const id of topicIds) {
-            let quizTopicItem = new QuizTopic();
+            const quizTopicItem = new QuizTopic();
             quizTopicItem.quizId = savedQuizzes.id;
             quizTopicItem.topicId = id;
             quizTopic.push(quizTopicItem);
           }
           await manager.save(QuizTopic, quizTopic);
         }
-        savedQuizzes['questions'] = questions;
+
+        // Create quiz settings if Standard quiz (settings optional in payload, defaults applied in DTO)
+        if (createQuizDto.quizType === 'Standard' && createQuizDto.settings) {
+          const quizSettings = manager.create(QuizSettings, {
+            ...createQuizDto.settings,
+            quizId: savedQuizzes.id,
+          });
+          savedQuizzes.settings = await manager.save(
+            QuizSettings,
+            quizSettings,
+          );
+        }
+
         const response: any = {
-          message: (questionObj?.message) ? questionObj?.message : 'Quiz created successfully.',
+          message: questionObj?.message
+            ? questionObj?.message
+            : 'Quiz created successfully.',
           quiz: savedQuizzes,
         };
         return response;
@@ -197,7 +239,7 @@ export class QuizService {
       console.log('QuizBuilder #6: ERROR', error);
       throw new AppCustomException(
         HttpStatus.INTERNAL_SERVER_ERROR,
-        'Failed to save quiz and questions: ' + error.message
+        'Failed to save quiz and questions: ' + error.message,
       );
     }
   }
@@ -240,9 +282,84 @@ export class QuizService {
       console.log('QuizBuilder #6: Exception', error);
       throw new AppCustomException(
         HttpStatus.INTERNAL_SERVER_ERROR,
-        'Failed to submit quiz result.'
+        'Failed to submit quiz result.',
       );
     }
   }
 
+  async getAllStandardQuizzes(): Promise<any[]> {
+    const quizzes = await this.quizRepository.find({
+      where: { quizType: QuizTypeEnum.Standard, isPublished: true },
+      order: { createdAt: 'DESC' },
+    });
+
+    if (!quizzes.length) {
+      return [];
+    }
+
+    const quizIds = quizzes.map((quiz) => quiz.id);
+
+    const [quizSubjects, quizTopics, quizSettings] = await Promise.all([
+      this.quizSubjectRepo.find({
+        where: { quizId: In(quizIds) },
+        relations: ['subject'],
+      }),
+      this.quizTopicRepo.find({
+        where: { quizId: In(quizIds) },
+        relations: ['topic'],
+      }),
+      this.quizSettingsRepository.find({
+        where: { quizId: In(quizIds) },
+      }),
+    ]);
+
+    const subjectMap = new Map<number, any[]>();
+    for (const quizSubject of quizSubjects) {
+      const existing = subjectMap.get(quizSubject.quizId) || [];
+      if (quizSubject.subject) {
+        const { id, title, description, createdAt } = quizSubject.subject;
+        existing.push({ id, title, description, createdAt });
+      }
+      subjectMap.set(quizSubject.quizId, existing);
+    }
+
+    const topicMap = new Map<number, any[]>();
+    for (const quizTopic of quizTopics) {
+      const existing = topicMap.get(quizTopic.quizId) || [];
+      if (quizTopic.topic) {
+        const { id, title, description, createdAt } = quizTopic.topic;
+        existing.push({ id, title, description, createdAt });
+      }
+      topicMap.set(quizTopic.quizId, existing);
+    }
+
+    const settingsMap = new Map<number, QuizSettings>();
+    for (const settings of quizSettings) {
+      settingsMap.set(settings.quizId, settings);
+    }
+
+    return quizzes.map((quiz) => ({
+      ...quiz,
+      subjects: subjectMap.get(quiz.id) || [],
+      topics: topicMap.get(quiz.id) || [],
+      settings: settingsMap.get(quiz.id) || null,
+    }));
+  }
+
+  async getUserQuizzes(userId: number): Promise<any> {
+    const quizzesByTitle = await this.quizRepository
+      .createQueryBuilder('quiz')
+      .leftJoin(QuizResult, 'qr', 'qr.quizId = quiz.id')
+      .select('quiz.title', 'title')
+      .addSelect('COUNT(qr.id)', 'total_attempts')
+      .where('quiz.createdBy = :userId', { userId })
+      .groupBy('quiz.title')
+      .orderBy('quiz.title', 'ASC')
+      .getRawMany();
+
+    return quizzesByTitle.map((item) => ({
+      title: item.title,
+      total_attempts: parseInt(item.total_attempts, 10) || 0,
+    }));
+  }
 }
