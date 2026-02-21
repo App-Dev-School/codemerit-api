@@ -5,6 +5,9 @@ import { UserPermission } from 'src/common/typeorm/entities/user-permission.enti
 import { GrantPermissionDto } from '../dto/grant-permission.dto';
 import { AppCustomException } from 'src/common/exceptions/app-custom-exception.filter';
 import { Permission } from 'src/common/typeorm/entities/permission.entity';
+import { Subject } from 'src/common/typeorm/entities/subject.entity';
+import { Topic } from 'src/common/typeorm/entities/topic.entity';
+import { User } from 'src/common/typeorm/entities/user.entity';
 
 @Injectable()
 export class UserPermissionService {
@@ -13,6 +16,12 @@ export class UserPermissionService {
     private userPermissionRepo: Repository<UserPermission>,
     @InjectRepository(Permission)
     private permissionRepo: Repository<Permission>,
+    @InjectRepository(Subject)
+    private subjectRepo: Repository<Subject>,
+    @InjectRepository(Topic)
+    private topicRepo: Repository<Topic>,
+    @InjectRepository(User)
+    private userRepo: Repository<User>,
   ) { }
 
   async grantPermission(dto: GrantPermissionDto) {
@@ -87,9 +96,6 @@ export class UserPermissionService {
   }
 
   async findUserPermissionList(userId: number) {
-    // return this.userPermissionRepo.find({
-    //   where: { userId }
-    // });
     return this.userPermissionRepo
       .createQueryBuilder('userPermission')
       .leftJoin('userPermission.permission', 'permission')
@@ -126,5 +132,51 @@ export class UserPermissionService {
     return result;
   }
 
+  async getAllUserPermissions() {
+    const userPermissions = await this.userPermissionRepo.find({
+      relations: ['user', 'permission'],
+    });
+
+    // Fetch all subjects and topics
+    const [subjects, topics] = await Promise.all([
+      this.subjectRepo.find(),
+      this.topicRepo.find(),
+    ]);
+
+    // Map user permissions with additional details
+    const result = userPermissions.map((up) => {
+      let resourceName = "";
+
+      if (up.resourceType === 'Subject' && up.resourceId) {
+        const subject = subjects.find((s) => s.id === up.resourceId);
+        resourceName = subject?.title || "";
+      } else if (up.resourceType === 'Topic' && up.resourceId) {
+        const topic = topics.find((t) => t.id === up.resourceId);
+        resourceName = topic?.title || "";
+      }
+
+      return {
+        id: up.id,
+        permissionId: up.permissionId,
+        permissionName: up.permission?.permission || null,
+        resourceType: up.resourceType,
+        resourceId: up.resourceId,
+        resourceName,
+        user: up.user
+          ? {
+              id: up.user.id,
+              firstName: up.user.firstName,
+              lastName: up.user.lastName,
+              email: up.user.email,
+              role: up.user.role,
+              designation: up.user.designation,
+              createdAt: up.user.createdAt,
+            }
+          : null,
+      };
+    });
+
+    return result;
+  }
 
 }

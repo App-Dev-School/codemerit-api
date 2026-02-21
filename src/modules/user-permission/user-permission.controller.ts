@@ -5,11 +5,15 @@ import {
   Get,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiResponse } from 'src/common/utils/api-response';
 import { UserPermissionService } from './providers/user-permission.service';
 import { GrantPermissionDto } from './dto/grant-permission.dto';
 import { ApiOperation } from '@nestjs/swagger';
+import { Roles } from 'src/core/auth/decorators/roles.decorator';
+import { RolesGuard } from 'src/core/auth/guards/roles.guard';
+import { UserRoleEnum } from 'src/core/users/enums/user-roles.enum';
 
 @Controller('apis/permissions')
 export class UserPermissionController {
@@ -24,7 +28,7 @@ export class UserPermissionController {
   }
 
   @Get('master-permissions')
-  @ApiOperation({ summary: 'Fetch Master permission', description: 'Get all master permission list' })
+  @ApiOperation({ summary: 'Fetch Master permission', description: 'Get list of master permissions' })
   async masterPermissionList(): Promise<ApiResponse<any>> {
     const result = await this.service.masterPermissions();
     if (result) {
@@ -34,7 +38,7 @@ export class UserPermissionController {
   }
 
   @Delete('revoke')
-  @ApiOperation({ summary: 'Revoke user wise permission', description: 'Revoke user wise find grand permission' })
+  @ApiOperation({ summary: 'Revoke user wise permission', description: 'Revoke a user permission' })
   async revokePermission(
     @Query('id') id: number,
   ): Promise<ApiResponse<any>> {
@@ -43,5 +47,14 @@ export class UserPermissionController {
       return new ApiResponse(`Successfully revoke the permission for id: ${id}.`, result);
     }
     return new ApiResponse(`Failed to revoke the permission with id: ${id}.`, result);
+  }
+
+  @UseGuards(RolesGuard)
+  @Roles(UserRoleEnum.ADMIN)
+  @Get('user-permissions')
+  @ApiOperation({ summary: 'List all user permissions', description: 'Get list of all user permissions (admin only)' })
+  async getUserPermissions(): Promise<ApiResponse<any>> {
+    const result = await this.service.getAllUserPermissions();
+    return new ApiResponse('User permissions fetched successfully.', result);
   }
 }
