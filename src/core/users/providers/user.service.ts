@@ -34,7 +34,7 @@ export class UserService {
     private readonly userOtpService: UserOtpService,
     private readonly userProfileService: UserProfileService,
     private readonly dataSource: DataSource,
-  ) { }
+  ) {}
 
   async create(data: Partial<CreateUserDto>): Promise<User> {
     const existingEmail = await this.findByEmail(data.email);
@@ -141,10 +141,10 @@ export class UserService {
       ...user,
       userDesignation: user.userJobRole
         ? {
-          id: user.userJobRole.id,
-          title: user.userJobRole.title,
-          slug: user.userJobRole.slug,
-        }
+            id: user.userJobRole.id,
+            title: user.userJobRole.title,
+            slug: user.userJobRole.slug,
+          }
         : null,
     };
   }
@@ -176,10 +176,7 @@ export class UserService {
     const user = await this.userRepo.findOne({ where: { username } });
 
     if (!user) {
-      throw new AppCustomException(
-        HttpStatus.BAD_REQUEST,
-        'User not Found.',
-      );
+      throw new AppCustomException(HttpStatus.BAD_REQUEST, 'User not Found.');
     }
     const profile = await this.userProfileService.findOneByUserId(user?.id);
     const userProfileResponse: UserProfileResponseDto = {
@@ -201,10 +198,7 @@ export class UserService {
       where: { id },
     });
     if (!user) {
-      throw new AppCustomException(
-        HttpStatus.BAD_REQUEST,
-        'User not Found.',
-      );
+      throw new AppCustomException(HttpStatus.BAD_REQUEST, 'User not Found.');
     }
     const profile = await this.userProfileService.findOneByUserId(user?.id);
     const userProfileResponse: UserProfileResponseDto = {
@@ -224,6 +218,7 @@ export class UserService {
       .createQueryBuilder('user')
       .leftJoinAndSelect('user.userJobRole', 'userJobRole')
       .select([
+        'user.id',
         'user.firstName',
         'user.lastName',
         'user.username',
@@ -241,8 +236,6 @@ export class UserService {
       ])
       .getMany();
   }
-
-
 
   async updateUserAccountStatus(
     id: number,
@@ -352,7 +345,10 @@ export class UserService {
       }
     } else {
       // throw new HttpException('OTP Mismatch', HttpStatus.NOT_ACCEPTABLE);
-      throw new AppCustomException(HttpStatus.BAD_REQUEST, 'OTP mismatch. Please try again.');
+      throw new AppCustomException(
+        HttpStatus.BAD_REQUEST,
+        'OTP mismatch. Please try again.',
+      );
     }
   }
 

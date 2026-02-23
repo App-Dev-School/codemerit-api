@@ -22,7 +22,7 @@ export class UserPermissionService {
     private topicRepo: Repository<Topic>,
     @InjectRepository(User)
     private userRepo: Repository<User>,
-  ) { }
+  ) {}
 
   async grantPermission(dto: GrantPermissionDto) {
     const { userId, resourceType, resourceId } = dto;
@@ -33,10 +33,13 @@ export class UserPermissionService {
       },
     });
 
-    if (!existingPermission || existingPermission.length !== permissionIds.length) {
+    if (
+      !existingPermission ||
+      existingPermission.length !== permissionIds.length
+    ) {
       throw new AppCustomException(
         HttpStatus.NOT_FOUND,
-        `Could not find the permission.`
+        `Could not find the permission.`,
       );
     }
 
@@ -52,7 +55,7 @@ export class UserPermissionService {
     if (existing) {
       throw new AppCustomException(
         HttpStatus.NOT_FOUND,
-        `Already exist this permission.`
+        `Already exist this permission.`,
       );
     }
     let permission: any[] = [];
@@ -66,21 +69,64 @@ export class UserPermissionService {
       permission.push(newEntry);
     }
 
-    const result = await this.userPermissionRepo.save(permission);
+    const savedPermissions = await this.userPermissionRepo.save(permission);
+
+    // Fetch user details
+    const user = await this.userRepo.findOne({
+      where: { id: userId },
+    });
+
+    // Fetch all subjects and topics
+    const [subjects, topics] = await Promise.all([
+      this.subjectRepo.find(),
+      this.topicRepo.find(),
+    ]);
+
+    // Build enriched response (same format as getAllUserPermissions)
+    const result = savedPermissions.map((up) => {
+      let resourceName = '';
+
+      if (up.resourceType === 'Subject' && up.resourceId) {
+        const subject = subjects.find((s) => s.id === up.resourceId);
+        resourceName = subject?.title || '';
+      } else if (up.resourceType === 'Topic' && up.resourceId) {
+        const topic = topics.find((t) => t.id === up.resourceId);
+        resourceName = topic?.title || '';
+      }
+
+      // Get permission name
+      const perm = existingPermission.find((p) => p.id === up.permissionId);
+
+      return {
+        id: up.id,
+        permissionId: up.permissionId,
+        permissionName: perm?.permission || null,
+        resourceType: up.resourceType,
+        resourceId: up.resourceId,
+        resourceName,
+        user: user
+          ? {
+              id: user.id,
+              firstName: user.firstName,
+              lastName: user.lastName,
+              email: user.email,
+              role: user.role,
+              designation: user.designation,
+              createdAt: user.createdAt,
+            }
+          : null,
+      };
+    });
 
     return result;
-
-
   }
 
-
   async revokePermission(id: number) {
-
     const perm = await this.userPermissionRepo.findOne({ where: { id } });
     if (!perm) {
       throw new AppCustomException(
         HttpStatus.NOT_FOUND,
-        `Could not deleted due to not find this permission with id ${id}.`
+        `Could not deleted due to not find this permission with id ${id}.`,
       );
     }
 
@@ -125,7 +171,6 @@ export class UserPermissionService {
         'permission.permission AS permission',
         'userPermission.resourceType AS resourceType',
         'userPermission.resourceId AS resourceId',
-
       ])
       .getRawOne();
 
@@ -145,14 +190,14 @@ export class UserPermissionService {
 
     // Map user permissions with additional details
     const result = userPermissions.map((up) => {
-      let resourceName = "";
+      let resourceName = '';
 
       if (up.resourceType === 'Subject' && up.resourceId) {
         const subject = subjects.find((s) => s.id === up.resourceId);
-        resourceName = subject?.title || "";
+        resourceName = subject?.title || '';
       } else if (up.resourceType === 'Topic' && up.resourceId) {
         const topic = topics.find((t) => t.id === up.resourceId);
-        resourceName = topic?.title || "";
+        resourceName = topic?.title || '';
       }
 
       return {
@@ -178,5 +223,4 @@ export class UserPermissionService {
 
     return result;
   }
-
 }
