@@ -30,7 +30,10 @@ export class UserPermissionController {
   ): Promise<ApiResponse<any>> {
     const result: any = await this.service.grantPermission(dto);
 
-    return new ApiResponse(`Successfully create fine granted.`, result);
+    return new ApiResponse(
+      `Permission(s) granted successfully to the user.`,
+      result,
+    );
   }
 
   @Get('master-permissions')
