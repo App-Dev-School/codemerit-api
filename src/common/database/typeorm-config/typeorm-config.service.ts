@@ -24,6 +24,7 @@ import { UserSubject } from 'src/common/typeorm/entities/user-subject.entity';
 import { User } from 'src/common/typeorm/entities/user.entity';
 import { IDatabaseConfig } from 'src/config/database-config';
 import { QuizSettings } from 'src/common/typeorm/entities/quiz-settings.entity';
+import { UserJobRole } from 'src/common/typeorm/entities/user-job-role.entity';
 @Injectable()
 export class TypeormConfigService implements TypeOrmOptionsFactory {
   constructor(private configService: ConfigService) {}
@@ -69,6 +70,7 @@ export class TypeormConfigService implements TypeOrmOptionsFactory {
         QuizSettings,
         Permission,
         UserPermission,
+        UserJobRole,
       ],
       // entities: [__dirname + '/../**/*.entity.{ts,js}'],
       // entities: ['src/**/*.entity.ts'],

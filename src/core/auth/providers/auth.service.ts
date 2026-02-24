@@ -1,8 +1,12 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { AppCustomException } from 'src/common/exceptions/app-custom-exception.filter';
 import { User } from 'src/common/typeorm/entities/user.entity';
+import { UserJobRole } from 'src/common/typeorm/entities/user-job-role.entity';
+import { JobRole } from 'src/common/typeorm/entities/job-role.entity';
 import { AccountStatusEnum } from 'src/core/users/enums/account-status.enum';
 import { UserProfileService } from 'src/core/users/providers/user-profile.service';
 import { UserService } from 'src/core/users/providers/user.service';
@@ -21,8 +25,10 @@ export class AuthService {
     private readonly userProfileService: UserProfileService,
     private readonly userPermissionService: UserPermissionService,
     private readonly subjectAnalyzer: SubjectAnalysisService,
-    private readonly topicAnalysisProvider: TopicAnalysisService
-  ) { }
+    private readonly topicAnalysisProvider: TopicAnalysisService,
+    @InjectRepository(UserJobRole)
+    private userJobRoleRepo: Repository<UserJobRole>,
+  ) {}
 
   async validateUser(email: string, pass: string) {
     if (email && pass) {
@@ -76,21 +82,56 @@ export class AuthService {
     console.log('JWT Sign Payload =>', payload);
     const token = this.jwtService.sign(payload);
     const profile = await this.userProfileService.findOneByUserId(user?.id);
-    const permissions = await this.userPermissionService.findUserPermissionList(user?.id);
-    console.log("User Login user", user);
-    const userData = await this.usersService.findByEmail(
-      user?.email);
-    console.log("LoginProcessor userData", userData);
-    const courseStats = await this.subjectAnalyzer.getJobSubjectDashboards(user?.id, false);
-    const topicStats = await this.topicAnalysisProvider.getAllTopicStats(user?.id, false);
+    const permissions = await this.userPermissionService.findUserPermissionList(
+      user?.id,
+    );
+    console.log('User Login user', user);
+    const userData = await this.usersService.findByEmail(user?.email);
+    console.log('LoginProcessor userData', userData);
+    const courseStats = await this.subjectAnalyzer.getJobSubjectDashboards(
+      user?.id,
+      false,
+    );
+    const topicStats = await this.topicAnalysisProvider.getAllTopicStats(
+      user?.id,
+      false,
+    );
+
+    // Fetch user job role enrollments
+    const enrollments = await this.userJobRoleRepo.find({
+      where: { userId: user.id },
+      relations: ['jobRole'],
+    });
+
+    const userJobRoles = enrollments.map((enrollment) => ({
+      userId: enrollment.userId,
+      jobRoleId: enrollment.jobRoleId,
+      jobRoleTitle: enrollment.jobRole?.title || null,
+      createdAt: enrollment.createdAt,
+    }));
+
     const response = new LoginResponseDto({
-      ...userData,
+      id: userData.id,
+      firstName: userData.firstName,
+      lastName: userData.lastName,
+      email: userData.email,
+      username: userData.username,
+      role: userData.role,
+      city: userData.city,
+      country: userData.country,
+      mobile: userData.mobile,
+      image: userData.image,
+      level: userData.level,
+      points: userData.points,
+      accountStatus: userData.accountStatus,
       token,
       profile,
       permissions,
       courseStats,
+      userJobRoles,
       //topicStats
     });
+
     return response;
   }
 

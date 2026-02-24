@@ -68,15 +68,6 @@ export class UsersController {
     return new ApiResponse('User not found.', result);
   }
 
-  @Put('update')
-  async updateUser(
-    @Query('userId', ParseIntPipe) userId: number,
-    @Body() updateUserDto: UpdateUserDto,
-  ): Promise<ApiResponse<any>> {
-    const result = await this.usersService.updateUser(userId, updateUserDto);
-    return new ApiResponse('User profile updated successfully.', result);
-  }
-
   @Put('/profile-update/:id')
   async updateUserProfile(
     @Query('id', ParseIntPipe) id: number,
@@ -87,6 +78,18 @@ export class UsersController {
       updateProfileDto,
     );
     return new ApiResponse('User profile updated successfully.', result);
+  }
+
+  @Put('jobRoleEnrollment')
+  async enrollJobRole(
+    @Request() req,
+    @Body() dto: { jobRoleId: number },
+  ): Promise<ApiResponse<any>> {
+    const result = await this.usersService.enrollJobRole(
+      req.user.id,
+      dto.jobRoleId,
+    );
+    return new ApiResponse('User enrolled in job role successfully.', result);
   }
 
   // @Get(':userId')

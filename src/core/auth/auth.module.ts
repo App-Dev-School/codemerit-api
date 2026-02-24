@@ -1,4 +1,5 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthController } from './auth.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
@@ -11,9 +12,12 @@ import { UserPermissionModule } from 'src/modules/user-permission/user-permissio
 import { TopicAnalysisService } from 'src/modules/master/providers/topic-analysis.service';
 import { SubjectAnalysisService } from 'src/modules/master/providers/subject-analysis.service';
 import { MasterModule } from 'src/modules/master/master.module';
+import { UserJobRole } from 'src/common/typeorm/entities/user-job-role.entity';
+import { JobRole } from 'src/common/typeorm/entities/job-role.entity';
 
 @Module({
   imports: [
+    TypeOrmModule.forFeature([UserJobRole, JobRole]),
     UsersModule,
     PassportModule,
     JwtModule.register({
@@ -22,7 +26,7 @@ import { MasterModule } from 'src/modules/master/master.module';
       signOptions: { expiresIn: '1d' },
     }),
     UserPermissionModule,
-    MasterModule
+    MasterModule,
     //TopicAnalysisService,
     //SubjectAnalysisService
   ],
