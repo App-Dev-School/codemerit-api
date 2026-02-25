@@ -342,16 +342,6 @@ export class UserService {
     }
   }
 
-  async updateUser(
-    userId: number,
-    updateUserDto: UpdateUserDto,
-  ): Promise<User> {
-    const user = await this.findOne(userId);
-    if (!user) {
-      throw new AppCustomException(HttpStatus.BAD_REQUEST, 'User not found');
-    }
-  }
-
   async remove(id: number): Promise<void> {
     const user = await this.findOne(id);
     if (user) {
