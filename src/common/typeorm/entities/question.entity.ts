@@ -9,7 +9,7 @@ import {
   JoinColumn,
   ManyToOne,
   OneToMany,
-  UpdateDateColumn
+  UpdateDateColumn,
 } from 'typeorm';
 import { IQuestion } from '../interface/question.interface';
 import { AbstractEntity } from './abstract.entity';
@@ -52,10 +52,9 @@ export class Question extends AbstractEntity implements IQuestion {
   // })
   // @IsEnum(DifficultyLevelEnum, { message: 'Enter question level' })
   // level: DifficultyLevelEnum;
-  
+
   @Column({ type: 'int', default: 1 })
   level: number;
-
 
   @Column({ type: 'int', default: 1 })
   marks: number;
@@ -88,6 +87,12 @@ export class Question extends AbstractEntity implements IQuestion {
   @IsEnum(QuestionStatusEnum, { message: 'Enter question status' })
   status: QuestionStatusEnum;
   //fetched questions for users (non-admin) should have status = Active
+
+  @Column({
+    type: 'boolean',
+    default: false,
+  })
+  isWhitelisted: boolean;
 
   @Column({ type: 'text', nullable: true })
   answer: string;

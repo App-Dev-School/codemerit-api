@@ -1,8 +1,4 @@
-import {
-  BadRequestException,
-  HttpStatus,
-  Injectable
-} from '@nestjs/common';
+import { BadRequestException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { validate } from 'class-validator';
 import { QuestionStatusEnum } from 'src/common/enum/question-status.enum';
@@ -34,7 +30,7 @@ export class QuestionService {
     private questionRepo: Repository<Question>,
     private readonly dataSource: DataSource,
     private readonly questionOptionService: QuestionOptionService,
-  ) { }
+  ) {}
 
   findAll() {
     return this.questionRepo.find();
@@ -47,7 +43,14 @@ export class QuestionService {
   findOneWithAuidt(id: number) {
     return this.questionRepo.findOne({
       where: { id },
-      select: ['id', 'createdBy', 'updatedBy', 'questionType', 'status'],
+      select: [
+        'id',
+        'createdBy',
+        'updatedBy',
+        'questionType',
+        'status',
+        'isWhitelisted',
+      ],
     });
   }
 
@@ -72,12 +75,12 @@ export class QuestionService {
     const subjectTitle = question.subject?.title ?? null;
     const userCreatedBy = question.userCreatedBy
       ? {
-        id: question.userCreatedBy.id,
-        firstName: question.userCreatedBy.firstName,
-        lastName: question.userCreatedBy.lastName,
-        email: question.userCreatedBy.email,
-        username: question.userCreatedBy.username,
-      }
+          id: question.userCreatedBy.id,
+          firstName: question.userCreatedBy.firstName,
+          lastName: question.userCreatedBy.lastName,
+          email: question.userCreatedBy.email,
+          username: question.userCreatedBy.username,
+        }
       : null;
 
     // Destructure to remove questionTopics and userCreatedBy from the base object
@@ -96,6 +99,14 @@ export class QuestionService {
   async remove(id: number, user: GetUserRequestDto) {
     const question = await this.findOneWithAuidt(id);
     if (question) {
+      // Check if question is whitelisted and user is not admin
+      if (question['isWhitelisted'] && user.role !== UserRoleEnum.ADMIN) {
+        throw new AppCustomException(
+          HttpStatus.FORBIDDEN,
+          'This question is whitelisted and can only be deleted by administrators.',
+        );
+      }
+
       if (
         user.role == UserRoleEnum.ADMIN ||
         (user.role == UserRoleEnum.MODERATOR && user.id == question?.createdBy)
@@ -112,10 +123,7 @@ export class QuestionService {
         );
       }
     } else {
-      throw new AppCustomException(
-        HttpStatus.NOT_FOUND,
-        `Question not found.`,
-      );
+      throw new AppCustomException(HttpStatus.NOT_FOUND, `Question not found.`);
     }
     // await this.questionRepo.delete(id);
     // return { deleted: true };
@@ -146,6 +154,15 @@ export class QuestionService {
     // }
 
     const questionAdut = await this.findOneWithAuidt(id);
+
+    // Check if question is whitelisted and user is not admin
+    if (questionAdut['isWhitelisted'] && user.role !== UserRoleEnum.ADMIN) {
+      throw new AppCustomException(
+        HttpStatus.FORBIDDEN,
+        'This question is whitelisted and can only be modified by administrators.',
+      );
+    }
+
     if (
       user.role == UserRoleEnum.MODERATOR &&
       user.id !== questionAdut?.createdBy
@@ -339,9 +356,8 @@ export class QuestionService {
     subjectId?: number,
     topicId?: number,
     fetchAll = false,
-    limit = 100
+    limit = 100,
   ): Promise<AdminQuestionResponseDto[]> {
-
     const questionList = await this.fetchAllLatestQuestions(
       fullData,
       subjectId,
@@ -365,11 +381,11 @@ export class QuestionService {
     subjectId?: number,
     topicId?: number,
     fetchAll = false,
-    limit = 100
+    limit = 100,
   ): Promise<any[] | undefined> {
-
     // Step 1: fetch limited question IDs
-    const idQb = this.questionRepo.createQueryBuilder('q')
+    const idQb = this.questionRepo
+      .createQueryBuilder('q')
       .select('q.id', 'id')
       .orderBy('q.id', 'DESC');
 
@@ -378,18 +394,21 @@ export class QuestionService {
     }
 
     if (topicId) {
-      idQb.innerJoin('q.questionTopics', 'qt').andWhere('qt.topicId = :topicId', { topicId });
+      idQb
+        .innerJoin('q.questionTopics', 'qt')
+        .andWhere('qt.topicId = :topicId', { topicId });
     }
 
     if (!fetchAll) {
       idQb.take(limit);
     }
 
-    const ids = (await idQb.getRawMany()).map(r => r.id);
+    const ids = (await idQb.getRawMany()).map((r) => r.id);
     if (!ids.length) return [];
 
     // Step 2: fetch full data
-    const qb = this.questionRepo.createQueryBuilder('question')
+    const qb = this.questionRepo
+      .createQueryBuilder('question')
       .whereInIds(ids)
       .orderBy('question.id', 'DESC')
       // question fields
@@ -463,11 +482,11 @@ export class QuestionService {
             : null,
           userCreatedBy: row['user_id']
             ? {
-              id: row['user_id'],
-              firstName: row['user_firstName'],
-              lastName: row['user_lastName'],
-              username: row['user_username'],
-            }
+                id: row['user_id'],
+                firstName: row['user_firstName'],
+                lastName: row['user_lastName'],
+                username: row['user_username'],
+              }
             : null,
           topics: [],
           options: [],
@@ -497,7 +516,6 @@ export class QuestionService {
 
     return Array.from(map.values());
   }
-
 
   private async saveOption(
     manager: EntityManager,
@@ -535,13 +553,19 @@ export class QuestionService {
     await manager.save(QuestionTopic, questionList);
   }
 
-  async getQuestionsByIds(dto: GetQuestionsByIdsDto): Promise<QuestionListResponseDto[]> {
-    const { subjectIds = [], topicIds = [], numQuestions: numberOfQuestions } = dto;
+  async getQuestionsByIds(
+    dto: GetQuestionsByIdsDto,
+  ): Promise<QuestionListResponseDto[]> {
+    const {
+      subjectIds = [],
+      topicIds = [],
+      numQuestions: numberOfQuestions,
+    } = dto;
 
     if (subjectIds.length === 0 && topicIds.length === 0) {
       throw new AppCustomException(
         HttpStatus.BAD_REQUEST,
-        'At least one of the subjects or topics must be provided.'
+        'At least one of the subjects or topics must be provided.',
       );
     }
 
@@ -550,15 +574,20 @@ export class QuestionService {
     const perGroupCount = Math.ceil(numberOfQuestions / groupIds.length);
 
     // Run queries in parallel for each group
-    const groupPromises = groupIds.map(groupId => {
-      const qb = this.questionRepo.createQueryBuilder('question')
+    const groupPromises = groupIds.map((groupId) => {
+      const qb = this.questionRepo
+        .createQueryBuilder('question')
         .addSelect('RAND()', 'rand')
         .leftJoinAndSelect('question.subject', 'subject')
         .leftJoinAndSelect('question.options', 'options')
         .leftJoinAndSelect('question.questionTopics', 'qt')
         .leftJoinAndSelect('qt.topic', 'topic')
-        .where('question.questionType = :type', { type: QuestionTypeEnum.Trivia })
-        .andWhere('question.status = :status', { status: QuestionStatusEnum.Active })
+        .where('question.questionType = :type', {
+          type: QuestionTypeEnum.Trivia,
+        })
+        .andWhere('question.status = :status', {
+          status: QuestionStatusEnum.Active,
+        })
         .take(perGroupCount)
         .orderBy('rand');
 
@@ -572,40 +601,63 @@ export class QuestionService {
     });
 
     const groupResults = await Promise.all(groupPromises);
-    let uniqueQuestions = [...new Map(groupResults.flat().map(q => [q.id, q])).values()];
+    let uniqueQuestions = [
+      ...new Map(groupResults.flat().map((q) => [q.id, q])).values(),
+    ];
 
     // Fallback if not enough questions
     if (uniqueQuestions.length < numberOfQuestions) {
-      console.log("QuizBuilder Query :: uniqueQuestions Not Enough", uniqueQuestions.length, numberOfQuestions);
+      console.log(
+        'QuizBuilder Query :: uniqueQuestions Not Enough',
+        uniqueQuestions.length,
+        numberOfQuestions,
+      );
       const missingCount = numberOfQuestions - uniqueQuestions.length;
-      const existingIds = uniqueQuestions.map(q => q.id);
-      console.log("QuizBuilder Query :: Fallback started", uniqueQuestions);
+      const existingIds = uniqueQuestions.map((q) => q.id);
+      console.log('QuizBuilder Query :: Fallback started', uniqueQuestions);
 
-      const fallbackQb = this.questionRepo.createQueryBuilder('question')
+      const fallbackQb = this.questionRepo
+        .createQueryBuilder('question')
         .addSelect('RAND()', 'rand')
         .leftJoinAndSelect('question.subject', 'subject')
         .leftJoinAndSelect('question.options', 'options')
         .leftJoinAndSelect('question.questionTopics', 'qt')
         .leftJoinAndSelect('qt.topic', 'topic')
-        .where('question.questionType = :type', { type: QuestionTypeEnum.Trivia })
-        .andWhere('question.status = :status', { status: QuestionStatusEnum.Active })
+        .where('question.questionType = :type', {
+          type: QuestionTypeEnum.Trivia,
+        })
+        .andWhere('question.status = :status', {
+          status: QuestionStatusEnum.Active,
+        })
         .orderBy('rand')
         .take(missingCount);
 
       if (existingIds.length > 0) {
-        fallbackQb.andWhere('question.id NOT IN (:...existingIds)', { existingIds });
+        fallbackQb.andWhere('question.id NOT IN (:...existingIds)', {
+          existingIds,
+        });
       }
 
       if (isTopicBased) {
         fallbackQb.andWhere('qt.topicId IN (:...topicIds)', { topicIds });
       } else {
-        fallbackQb.andWhere('question.subjectId IN (:...subjectIds)', { subjectIds });
+        fallbackQb.andWhere('question.subjectId IN (:...subjectIds)', {
+          subjectIds,
+        });
       }
 
       const fallbackQuestions = await fallbackQb.getMany();
-      console.log("QuizBuilder Query :: Fallback Questions", fallbackQuestions.length, fallbackQuestions);
-      uniqueQuestions = [...new Map([...uniqueQuestions, ...fallbackQuestions].map(q => [q.id, q])).values()];
-      console.log("QuizBuilder Query :: uniqueQuestions Now", uniqueQuestions);
+      console.log(
+        'QuizBuilder Query :: Fallback Questions',
+        fallbackQuestions.length,
+        fallbackQuestions,
+      );
+      uniqueQuestions = [
+        ...new Map(
+          [...uniqueQuestions, ...fallbackQuestions].map((q) => [q.id, q]),
+        ).values(),
+      ];
+      console.log('QuizBuilder Query :: uniqueQuestions Now', uniqueQuestions);
     }
 
     const finalQuestions = uniqueQuestions.slice(0, numberOfQuestions);
@@ -613,16 +665,20 @@ export class QuestionService {
     if (finalQuestions.length < numberOfQuestions) {
       throw new AppCustomException(
         HttpStatus.BAD_REQUEST,
-        `Not enough Trivia questions found. Found ${finalQuestions.length}, need ${numberOfQuestions}.`
+        `Not enough Trivia questions found. Found ${finalQuestions.length}, need ${numberOfQuestions}.`,
       );
     }
 
     // Fetch relations in parallel
-    const questionIds = finalQuestions.map(q => q.id);
+    const questionIds = finalQuestions.map((q) => q.id);
 
     const [options, questionTopics] = await Promise.all([
-      this.dataSource.getRepository(QuestionOption).find({ where: { questionId: In(questionIds) } }),
-      this.dataSource.getRepository(QuestionTopic).find({ where: { questionId: In(questionIds) }, relations: ['topic'] }),
+      this.dataSource
+        .getRepository(QuestionOption)
+        .find({ where: { questionId: In(questionIds) } }),
+      this.dataSource
+        .getRepository(QuestionTopic)
+        .find({ where: { questionId: In(questionIds) }, relations: ['topic'] }),
     ]);
 
     const optionsMap = new Map<number, QuestionOption[]>();
@@ -675,26 +731,53 @@ export class QuestionService {
       //options: q.options,
       userCreatedBy: q?.userCreatedBy
         ? {
-          id: q.userCreatedBy.id,
-          firstName: q.userCreatedBy.firstName,
-          lastName: q.userCreatedBy.lastName,
-          email: q.userCreatedBy.email,
-        }
+            id: q.userCreatedBy.id,
+            firstName: q.userCreatedBy.firstName,
+            lastName: q.userCreatedBy.lastName,
+            email: q.userCreatedBy.email,
+          }
         : null,
     }));
   }
 
+  async whitelistQuestion(
+    questionId: number,
+    isWhitelisted: boolean,
+    user: any,
+  ): Promise<Question> {
+    const question = await this.questionRepo.findOne({
+      where: { id: questionId },
+    });
+
+    if (!question) {
+      throw new AppCustomException(
+        HttpStatus.NOT_FOUND,
+        `Question with ID ${questionId} not found.`,
+      );
+    }
+
+    question.isWhitelisted = isWhitelisted;
+    question.updatedBy = user.id;
+
+    return this.questionRepo.save(question);
+  }
+
   private shuffleArray<T>(array: T[]): T[] {
     return array
-      .map(item => ({ item, sort: Math.random() }))
+      .map((item) => ({ item, sort: Math.random() }))
       .sort((a, b) => a.sort - b.sort)
       .map(({ item }) => item);
   }
 
-  async getQuestionsFromQIds(dto: GetQuestionsByIdsDto): Promise<QuestionListResponseDto[]> {
+  async getQuestionsFromQIds(
+    dto: GetQuestionsByIdsDto,
+  ): Promise<QuestionListResponseDto[]> {
     const { questionIds } = dto;
     if (!questionIds || questionIds.length === 0) {
-      throw new AppCustomException(HttpStatus.BAD_REQUEST, 'No question IDs provided.');
+      throw new AppCustomException(
+        HttpStatus.BAD_REQUEST,
+        'No question IDs provided.',
+      );
     }
     // Fetch questions by ID
     const questions = await this.questionRepo.find({
@@ -737,5 +820,4 @@ export class QuestionService {
     // Use your existing mapper function
     return this.mappedQuestionList(questions, topicsMap, optionsMap);
   }
-
 }
