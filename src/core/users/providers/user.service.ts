@@ -208,6 +208,7 @@ export class UserService {
       .createQueryBuilder('user')
       .leftJoinAndSelect('user.userJobRole', 'userJobRole')
       .select([
+        'user.id',
         'user.firstName',
         'user.lastName',
         'user.username',
@@ -338,6 +339,16 @@ export class UserService {
         HttpStatus.BAD_REQUEST,
         'OTP mismatch. Please try again.',
       );
+    }
+  }
+
+  async updateUser(
+    userId: number,
+    updateUserDto: UpdateUserDto,
+  ): Promise<User> {
+    const user = await this.findOne(userId);
+    if (!user) {
+      throw new AppCustomException(HttpStatus.BAD_REQUEST, 'User not found');
     }
   }
 

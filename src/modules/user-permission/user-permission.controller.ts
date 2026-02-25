@@ -6,6 +6,7 @@ import {
   Post,
   Query,
   UseGuards,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { ApiResponse } from 'src/common/utils/api-response';
 import { UserPermissionService } from './providers/user-permission.service';
@@ -17,18 +18,29 @@ import { UserRoleEnum } from 'src/core/users/enums/user-roles.enum';
 
 @Controller('apis/permissions')
 export class UserPermissionController {
-  constructor(private readonly service: UserPermissionService) { }
+  constructor(private readonly service: UserPermissionService) {}
 
   @Post('grant')
-  @ApiOperation({ summary: 'Save user wise permission', description: 'Save per user wise find grand permission' })
-  async grantPermission(@Body() dto: GrantPermissionDto): Promise<ApiResponse<any>> {
+  @ApiOperation({
+    summary: 'Save user wise permission',
+    description: 'Save per user wise find grand permission',
+  })
+  async grantPermission(
+    @Body() dto: GrantPermissionDto,
+  ): Promise<ApiResponse<any>> {
     const result: any = await this.service.grantPermission(dto);
 
-    return new ApiResponse(`Successfully create fine granted for ${result.firstName} ${result.lastName}.`, result);
+    return new ApiResponse(
+      `Permission(s) granted successfully to the user.`,
+      result,
+    );
   }
 
   @Get('master-permissions')
-  @ApiOperation({ summary: 'Fetch Master permission', description: 'Get list of master permissions' })
+  @ApiOperation({
+    summary: 'Fetch Master permission',
+    description: 'Get all master permission list',
+  })
   async masterPermissionList(): Promise<ApiResponse<any>> {
     const result = await this.service.masterPermissions();
     if (result) {
@@ -38,21 +50,33 @@ export class UserPermissionController {
   }
 
   @Delete('revoke')
-  @ApiOperation({ summary: 'Revoke user wise permission', description: 'Revoke a user permission' })
+  @ApiOperation({
+    summary: 'Revoke user wise permission',
+    description: 'Revoke user wise find grand permission',
+  })
   async revokePermission(
-    @Query('id') id: number,
+    @Query('id', ParseIntPipe) id: number,
   ): Promise<ApiResponse<any>> {
     const result = await this.service.revokePermission(id);
     if (result) {
-      return new ApiResponse(`Successfully revoke the permission for id: ${id}.`, result);
+      return new ApiResponse(
+        `Successfully revoke the permission for id: ${id}.`,
+        result,
+      );
     }
-    return new ApiResponse(`Failed to revoke the permission with id: ${id}.`, result);
+    return new ApiResponse(
+      `Failed to revoke the permission with id: ${id}.`,
+      result,
+    );
   }
 
   @UseGuards(RolesGuard)
   @Roles(UserRoleEnum.ADMIN)
   @Get('user-permissions')
-  @ApiOperation({ summary: 'List all user permissions', description: 'Get list of all user permissions (admin only)' })
+  @ApiOperation({
+    summary: 'List all user permissions',
+    description: 'Get list of all user permissions (admin only)',
+  })
   async getUserPermissions(): Promise<ApiResponse<any>> {
     const result = await this.service.getAllUserPermissions();
     return new ApiResponse('User permissions fetched successfully.', result);

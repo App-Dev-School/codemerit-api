@@ -22,7 +22,7 @@ export class UserPermissionService {
     private topicRepo: Repository<Topic>,
     @InjectRepository(User)
     private userRepo: Repository<User>,
-  ) { }
+  ) {}
 
   async grantPermission(dto: GrantPermissionDto) {
     const { userId, resourceType, resourceId } = dto;
@@ -33,10 +33,13 @@ export class UserPermissionService {
       },
     });
 
-    if (!existingPermission || existingPermission.length !== permissionIds.length) {
+    if (
+      !existingPermission ||
+      existingPermission.length !== permissionIds.length
+    ) {
       throw new AppCustomException(
         HttpStatus.NOT_FOUND,
-        `Could not find the permission.`
+        `Could not find the Permission.`,
       );
     }
 
@@ -51,8 +54,8 @@ export class UserPermissionService {
 
     if (existing) {
       throw new AppCustomException(
-        HttpStatus.NOT_FOUND,
-        `Already exist this permission.`
+        HttpStatus.CONFLICT,
+        `Permission already granted to this user .`,
       );
     }
     let permission: any[] = [];
@@ -66,21 +69,22 @@ export class UserPermissionService {
       permission.push(newEntry);
     }
 
-    const result = await this.userPermissionRepo.save(permission);
+    const savedPermissions = await this.userPermissionRepo.save(permission);
+    const permissionIdsToLoad = savedPermissions.map((item) => item.id);
+    const permissionRows = await this.userPermissionRepo.find({
+      where: { id: In(permissionIdsToLoad) },
+      relations: ['user', 'permission'],
+    });
 
-    return result;
-
-
+    return this.buildPermissionResponse(permissionRows);
   }
 
-
   async revokePermission(id: number) {
-
     const perm = await this.userPermissionRepo.findOne({ where: { id } });
     if (!perm) {
       throw new AppCustomException(
         HttpStatus.NOT_FOUND,
-        `Could not deleted due to not find this permission with id ${id}.`
+        `Permission with ID ${id} not found. Cannot revoke non-existent permission.`,
       );
     }
 
@@ -125,7 +129,6 @@ export class UserPermissionService {
         'permission.permission AS permission',
         'userPermission.resourceType AS resourceType',
         'userPermission.resourceId AS resourceId',
-
       ])
       .getRawOne();
 
@@ -137,22 +140,27 @@ export class UserPermissionService {
       relations: ['user', 'permission'],
     });
 
-    // Fetch all subjects and topics
+    return this.buildPermissionResponse(userPermissions);
+  }
+
+  private async buildPermissionResponse(userPermissions: UserPermission[]) {
     const [subjects, topics] = await Promise.all([
       this.subjectRepo.find(),
       this.topicRepo.find(),
     ]);
 
-    // Map user permissions with additional details
-    const result = userPermissions.map((up) => {
-      let resourceName = "";
+    return userPermissions.map((up) => {
+      let resourceName = '';
+      const normalizedResourceType = String(
+        up.resourceType || '',
+      ).toLowerCase();
 
-      if (up.resourceType === 'Subject' && up.resourceId) {
+      if (normalizedResourceType === 'subject' && up.resourceId) {
         const subject = subjects.find((s) => s.id === up.resourceId);
-        resourceName = subject?.title || "";
-      } else if (up.resourceType === 'Topic' && up.resourceId) {
+        resourceName = subject?.title || '';
+      } else if (normalizedResourceType === 'topic' && up.resourceId) {
         const topic = topics.find((t) => t.id === up.resourceId);
-        resourceName = topic?.title || "";
+        resourceName = topic?.title || '';
       }
 
       return {
@@ -175,8 +183,5 @@ export class UserPermissionService {
           : null,
       };
     });
-
-    return result;
   }
-
 }

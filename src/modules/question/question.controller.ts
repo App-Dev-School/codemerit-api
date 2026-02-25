@@ -14,18 +14,28 @@ import { ApiResponse } from 'src/common/utils/api-response';
 import { CreateQuestionDto } from './dtos/create-question.dto';
 import { GetQuestionsByIdsDto } from './dtos/get-questions-by-ids.dto';
 import { UpdateQuestionDto } from './dtos/update-question.dto';
+import { WhitelistQuestionDto } from './dtos/whitelist-question.dto';
 import { QuestionService } from './providers/question.service';
 import { AuthGuard } from '@nestjs/passport';
 import { PermissionsGuard } from 'src/common/policies/permissions.guard';
 import { RequirePermission } from 'src/common/policies/require-permission.decorator';
-import { UserPermissionEnum, UserPermissionTitleEnum } from 'src/common/policies/user-permission.enum';
+import {
+  UserPermissionEnum,
+  UserPermissionTitleEnum,
+} from 'src/common/policies/user-permission.enum';
+import { RolesGuard } from 'src/core/auth/guards/roles.guard';
+import { Roles } from 'src/core/auth/decorators/roles.decorator';
+import { UserRoleEnum } from 'src/core/users/enums/user-roles.enum';
 
 @Controller('apis/question')
 export class QuestionController {
-  constructor(private readonly service: QuestionService) { }
+  constructor(private readonly service: QuestionService) {}
 
   @UseGuards(AuthGuard('jwt'), PermissionsGuard)
-  @RequirePermission(UserPermissionEnum.QuestionAuthorCreate, UserPermissionTitleEnum.Question)
+  @RequirePermission(
+    UserPermissionEnum.QuestionAuthorCreate,
+    UserPermissionTitleEnum.Question,
+  )
   @Post('create')
   async create(@Body() data: CreateQuestionDto): Promise<ApiResponse<any>> {
     console.log('called controller');
@@ -42,7 +52,6 @@ export class QuestionController {
     @Query('fetchAll') fetchAll?: string,
     @Query('limit') limit?: string,
   ): Promise<ApiResponse<any>> {
-
     const isFullData = fullData === 'true' || fullData === '1';
     const subjectIdNum = subjectId ? parseInt(subjectId, 10) : undefined;
     const topicIdNum = topicId ? parseInt(topicId, 10) : undefined;
@@ -62,9 +71,11 @@ export class QuestionController {
     return new ApiResponse(`${result.length} Question(s) fetched.`, result);
   }
 
-
   @UseGuards(AuthGuard('jwt'), PermissionsGuard)
-  @RequirePermission(UserPermissionEnum.QuestionAuthorUpdate, UserPermissionTitleEnum.Question)
+  @RequirePermission(
+    UserPermissionEnum.QuestionAuthorUpdate,
+    UserPermissionTitleEnum.Question,
+  )
   @Put('update')
   async update(
     @Query('id') id: number,
@@ -81,8 +92,29 @@ export class QuestionController {
     return new ApiResponse('Question Found.', result);
   }
 
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(UserRoleEnum.ADMIN)
+  @Put('approval')
+  async whitelistQuestion(
+    @Body() dto: WhitelistQuestionDto,
+    @Request() req: any,
+  ): Promise<ApiResponse<any>> {
+    const result = await this.service.whitelistQuestion(
+      dto.questionId,
+      dto.isWhitelisted,
+      req.user,
+    );
+    return new ApiResponse(
+      `Question ${dto.isWhitelisted ? 'whitelisted' : 'removed from whitelist'} successfully.`,
+      result,
+    );
+  }
+
   @UseGuards(AuthGuard('jwt'), PermissionsGuard)
-  @RequirePermission(UserPermissionEnum.QuestionAuthorDelete, UserPermissionTitleEnum.Question)
+  @RequirePermission(
+    UserPermissionEnum.QuestionAuthorDelete,
+    UserPermissionTitleEnum.Question,
+  )
   @Delete('delete')
   async remove(
     @Query('id') id: number,
