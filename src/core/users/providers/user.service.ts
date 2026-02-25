@@ -17,7 +17,7 @@ import {
 } from 'src/common/utils/slugify.util';
 import { AccountVerificationDto } from 'src/core/auth/dto/account-verification.dto';
 import { CreateUserDto } from 'src/core/auth/dto/create-user.dto';
-import { UserWithDesignation } from 'src/core/auth/dto/login-response.dto';
+
 import { DataSource, Repository } from 'typeorm';
 import { UpdateUserDto } from '../dtos/update-user.dto';
 import { UserProfileResponseDto } from '../dtos/user-profile-response.dto';
@@ -25,12 +25,15 @@ import { AccountStatusEnum } from '../enums/account-status.enum';
 import { UserOtpTagsEnum } from '../enums/user-otp-Tags.enum';
 import { UserOtpService } from './user-otp.service';
 import { UserProfileService } from './user-profile.service';
+import { UserJobRole } from 'src/common/typeorm/entities/user-job-role.entity';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private userRepo: Repository<User>,
+    @InjectRepository(UserJobRole)
+    private userJobRoleRepo: Repository<UserJobRole>,
     private readonly userOtpService: UserOtpService,
     private readonly userProfileService: UserProfileService,
     private readonly dataSource: DataSource,
@@ -127,26 +130,13 @@ export class UserService {
     }
   }
 
-  async findByEmail(email: string): Promise<UserWithDesignation | undefined> {
+  async findByEmail(email: string): Promise<User | undefined> {
     //Gives all fields
     const user = await this.userRepo.findOne({
       where: { email },
-      relations: ['userJobRole'],
     });
 
-    if (!user) return undefined;
-
-    // filter designation fields
-    return {
-      ...user,
-      userDesignation: user.userJobRole
-        ? {
-            id: user.userJobRole.id,
-            title: user.userJobRole.title,
-            slug: user.userJobRole.slug,
-          }
-        : null,
-    };
+    return user;
   }
 
   async findByEmailForLogin(email: string): Promise<User | undefined> {
@@ -360,8 +350,6 @@ export class UserService {
     if (!user) {
       throw new AppCustomException(HttpStatus.BAD_REQUEST, 'User not found');
     }
-    Object.assign(user, updateUserDto);
-    return this.userRepo.save(user);
   }
 
   async remove(id: number): Promise<void> {
@@ -375,5 +363,31 @@ export class UserService {
     } else {
       throw new AppCustomException(HttpStatus.BAD_REQUEST, 'User not found');
     }
+  }
+
+  async enrollJobRole(userId: number, jobRoleId: number): Promise<UserJobRole> {
+    const user = await this.findOne(userId);
+    if (!user) {
+      throw new AppCustomException(HttpStatus.NOT_FOUND, 'User not found.');
+    }
+
+    const existing = await this.userJobRoleRepo.findOne({
+      where: { userId, jobRoleId },
+    });
+
+    if (existing) {
+      throw new AppCustomException(
+        HttpStatus.CONFLICT,
+        `User is already enrolled in this job role.`,
+      );
+    }
+
+    const enrollment = this.userJobRoleRepo.create({
+      userId,
+      jobRoleId,
+      createdBy: userId,
+    });
+
+    return this.userJobRoleRepo.save(enrollment);
   }
 }

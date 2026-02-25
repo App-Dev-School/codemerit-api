@@ -5,6 +5,7 @@ import { UserPermission } from 'src/common/typeorm/entities/user-permission.enti
 import { User } from 'src/common/typeorm/entities/user.entity';
 import { AccountStatusEnum } from 'src/core/users/enums/account-status.enum';
 import { UserRoleEnum } from 'src/core/users/enums/user-roles.enum';
+import { UserJobRole } from 'src/common/typeorm/entities/user-job-role.entity';
 
 export class LoginResponseDto implements LoginUser {
   id: number;
@@ -13,12 +14,7 @@ export class LoginResponseDto implements LoginUser {
   email: string;
   username: string;
   role: UserRoleEnum;
-  designation: number;
-  userDesignation: {
-    id?: number;
-    title?: string;
-    slug?: string;
-  }
+
   city?: string | null;
   country: string | null;
   mobile?: string | null;
@@ -33,6 +29,12 @@ export class LoginResponseDto implements LoginUser {
   permissions?: UserPermission[];
   courseStats?: any;
   topicStats?: any;
+  userJobRoles?: Array<{
+    userId: number;
+    jobRoleId: number;
+    jobRoleTitle: string;
+    createdAt: Date;
+  }>;
   //fields for admin
   lmsMetrics: {
     numAllQuestions: number;
@@ -42,12 +44,12 @@ export class LoginResponseDto implements LoginUser {
     numAllSubjects: number;
     numAllInterviews: number;
     numAllQuiz: number;
-  }
+  };
   userMetrics: {
     totalUsers: number;
     pendingUsers: number;
     activeUsers: number;
-  }
+  };
 
   constructor(partial: Partial<LoginResponseDto>) {
     Object.assign(this, partial);
@@ -61,12 +63,7 @@ export interface LoginUser {
   email: string;
   username: string;
   role: UserRoleEnum;
-  designation: number;
-  userDesignation: {
-    id?: number;
-    title?: string;
-    slug?: string;
-  }
+
   city?: string | null;
   country: string | null;
   mobile?: string | null;
@@ -76,11 +73,3 @@ export interface LoginUser {
   accountStatus: AccountStatusEnum;
   token: string;
 }
-
-export type UserWithDesignation = User & {
-  userDesignation?: {
-    id: number;
-    title: string;
-    slug: string;
-  } | null;
-};

@@ -9,12 +9,22 @@ import { UserPerformanceService } from './providers/user-performance.service';
 import { UserProfileService } from './providers/user-profile.service';
 import { UserService } from './providers/user.service';
 import { UsersController } from './users.controller';
+import { UserJobRole } from 'src/common/typeorm/entities/user-job-role.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, Profile, UserOtp])],
-  providers: [UserService, UserOtpService, UserProfileService, 
-    UserPerformanceService],
+  imports: [TypeOrmModule.forFeature([User, Profile, UserOtp, UserJobRole])],
+  providers: [
+    UserService,
+    UserOtpService,
+    UserProfileService,
+    UserPerformanceService,
+  ],
   controllers: [UsersController],
-  exports: [UserService, UserOtpService, UserProfileService, UserPerformanceService],
+  exports: [
+    UserService,
+    UserOtpService,
+    UserProfileService,
+    UserPerformanceService,
+  ],
 })
 export class UsersModule {}
