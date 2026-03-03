@@ -98,9 +98,21 @@ export class QuizService {
         'Please specify at least one subject or topic to generate a quiz.',
       );
     }
+
+    if (
+      createQuizDto?.quizType === QuizTypeEnum.Standard &&
+      !createQuizDto?.questionIds?.length
+    ) {
+      throw new AppCustomException(
+        HttpStatus.BAD_REQUEST,
+        'questionIds is mandatory for Standard quiz type and must be a non-empty array of numbers.',
+      );
+    }
+
     console.log('QuizBuilder @createQuiz Start:', createQuizDto?.subjectIds);
     let topicIds: number[] = [];
     let subjectIds: number[] = [];
+    const questionIds: number[] = createQuizDto?.questionIds ?? [];
 
     if (createQuizDto?.topicIds) {
       const topicStr = String(createQuizDto.topicIds); // ensure it's a string
@@ -117,18 +129,41 @@ export class QuizService {
     const ids = new GetQuestionsByIdsDto();
     ids.subjectIds = subjectIds;
     ids.topicIds = topicIds;
-    if (createQuizDto?.numQuestions && createQuizDto?.numQuestions > 0) {
-      ids.numQuestions = createQuizDto?.numQuestions;
+    ids.questionIds = questionIds;
+    const requestedNumQuestions =
+      createQuizDto?.numQuestions ?? createQuizDto?.settings?.numQuestions;
+
+    if (createQuizDto?.quizType === QuizTypeEnum.Standard) {
+      ids.numQuestions = requestedNumQuestions
+        ? Math.min(requestedNumQuestions, questionIds.length)
+        : questionIds.length;
+    } else if (createQuizDto?.quizType === QuizTypeEnum.UserQuiz) {
+      if (requestedNumQuestions !== undefined && requestedNumQuestions <= 0) {
+        throw new AppCustomException(
+          HttpStatus.BAD_REQUEST,
+          'For UserQuiz, numQuestions must be a positive number.',
+        );
+      }
+      ids.numQuestions = requestedNumQuestions ?? 10;
+    } else if (requestedNumQuestions && requestedNumQuestions > 0) {
+      ids.numQuestions = requestedNumQuestions;
     } else {
       ids.numQuestions = 10;
     }
 
     console.log('QuizBuilder @Input:', ids);
-    //const questions = await this.questionService.getQuestionsByIds(ids);
+    let questionObj: any = null;
+    let questions: any[] = [];
 
-    const questionObj: any =
-      await this.userQuestionService.getUniqueQuizForQuestions(userId, ids);
-    const questions = questionObj?.questions;
+    if (createQuizDto?.quizType === QuizTypeEnum.Standard) {
+      questions = await this.questionService.getQuestionsFromQIds(ids);
+    } else {
+      questionObj = await this.userQuestionService.getUniqueQuizForQuestions(
+        userId,
+        ids,
+      );
+      questions = questionObj?.questions ?? [];
+    }
 
     /*
     if (!questions || questions.length === 0) {
@@ -143,11 +178,12 @@ export class QuizService {
     //Implement specification with an easy to debug flow and proper response
 
     // Save quiz in DB if at least 3 questions are available
-    if (!questions || questions.length == 0) {
-      console.log('QuizBuilder #4: @NotEnoughQuestions', questions.length);
+    if (!questions || questions.length === 0) {
+      const questionCount = questions?.length ?? 0;
+      console.log('QuizBuilder #4: @NotEnoughQuestions', questionCount);
       throw new AppCustomException(
         HttpStatus.NOT_FOUND,
-        `Not enough questions ${questions.length} found for the given ${quizCategory}`,
+        `Not enough questions ${questionCount} found for the given ${quizCategory}`,
       );
     }
     try {
