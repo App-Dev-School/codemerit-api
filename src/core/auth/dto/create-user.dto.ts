@@ -40,7 +40,7 @@ export class CreateUserDto {
 
   @ApiPropertyOptional()
   @IsOptional()
-  designation?: number;
+  designation?: string;
 
   @ApiPropertyOptional()
   @IsOptional()
@@ -49,7 +49,7 @@ export class CreateUserDto {
   @ApiPropertyOptional()
   @IsOptional()
   country: string;
-  
+
   @ApiPropertyOptional()
   @IsOptional()
   about: string;

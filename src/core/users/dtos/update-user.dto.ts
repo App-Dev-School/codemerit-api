@@ -47,8 +47,8 @@ export class UpdateUserDto {
 
   @ApiPropertyOptional()
   @IsOptional()
-  @IsNumber()
-  designation?: number;
+  @IsString()
+  designation?: string;
 
   @ApiPropertyOptional()
   @IsOptional()
@@ -88,4 +88,10 @@ export class UpdateUserDto {
   @IsOptional()
   @IsEnum(AccountStatusEnum)
   accountStatus?: AccountStatusEnum;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  @Length(1, 50)
+  linkedinUrl?: string;
 }
