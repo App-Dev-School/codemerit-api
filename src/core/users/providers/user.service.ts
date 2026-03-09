@@ -26,6 +26,8 @@ import { UserOtpTagsEnum } from '../enums/user-otp-Tags.enum';
 import { UserOtpService } from './user-otp.service';
 import { UserProfileService } from './user-profile.service';
 import { UserJobRole } from 'src/common/typeorm/entities/user-job-role.entity';
+import { NotificationService } from 'src/modules/notification/providers/notification.service';
+import { JobRole } from 'src/common/typeorm/entities/job-role.entity';
 
 @Injectable()
 export class UserService {
@@ -34,8 +36,11 @@ export class UserService {
     private userRepo: Repository<User>,
     @InjectRepository(UserJobRole)
     private userJobRoleRepo: Repository<UserJobRole>,
+    @InjectRepository(JobRole)
+    private jobRoleRepo: Repository<JobRole>,
     private readonly userOtpService: UserOtpService,
     private readonly userProfileService: UserProfileService,
+    private readonly notificationService: NotificationService,
     private readonly dataSource: DataSource,
   ) {}
 
@@ -317,6 +322,12 @@ export class UserService {
           AccountStatusEnum.ACTIVE,
         );
         msg = 'Your account is now verified.';
+        if (userRs) {
+          await this.notificationService.notifyAccountVerified(
+            user.id,
+            user.firstName,
+          );
+        }
       }
       if (accountVerificationDto.tag == UserOtpTagsEnum.PWD_RECOVER) {
         userRs = await this.updateUserPassword(
@@ -371,6 +382,13 @@ export class UserService {
       throw new AppCustomException(HttpStatus.NOT_FOUND, 'User not found.');
     }
 
+    const jobRole = await this.jobRoleRepo.findOne({
+      where: { id: jobRoleId },
+    });
+    if (!jobRole) {
+      throw new AppCustomException(HttpStatus.NOT_FOUND, 'Job role not found.');
+    }
+
     const existing = await this.userJobRoleRepo.findOne({
       where: { userId, jobRoleId },
     });
@@ -388,6 +406,15 @@ export class UserService {
       createdBy: userId,
     });
 
-    return this.userJobRoleRepo.save(enrollment);
+    const saved = await this.userJobRoleRepo.save(enrollment);
+
+    await this.notificationService.notifyRoleEnrolled(
+      userId,
+      user.firstName,
+      jobRole.title,
+      jobRole.id,
+    );
+
+    return saved;
   }
 }

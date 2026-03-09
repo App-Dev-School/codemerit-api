@@ -1,6 +1,6 @@
 import { User } from '../entities/user.entity';
 
-export interface IEmailNotification {
+export interface INotification {
   id: number;
   userId: number;
   title: string;
@@ -13,6 +13,5 @@ export interface IEmailNotification {
   createdAt: Date;
   createdBy: number;
   updatedAt: Date;
-  updatedBy: number;
   user?: User;
 }

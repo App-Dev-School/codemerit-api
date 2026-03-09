@@ -7,7 +7,7 @@ import {
   MaxLength,
 } from 'class-validator';
 
-export class CreateEmailNotificationDto {
+export class CreateNotificationDto {
   @ApiProperty()
   @IsInt()
   userId: number;

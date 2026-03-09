@@ -19,6 +19,7 @@ import {
   generateUniqueSlug,
 } from 'src/common/utils/slugify.util';
 import { MasterService } from 'src/modules/master/providers/master.service';
+import { NotificationService } from 'src/modules/notification/providers/notification.service';
 import { GetQuestionsByIdsDto } from 'src/modules/question/dtos/get-questions-by-ids.dto';
 import { QuestionService } from 'src/modules/question/providers/question.service';
 import { UserQuestionService } from 'src/modules/question/providers/user-question.service';
@@ -44,6 +45,7 @@ export class QuizService {
     private readonly userQuestionService: UserQuestionService,
     private readonly questionService: QuestionService,
     private readonly masterService: MasterService,
+    private readonly notificationService: NotificationService,
 
     private readonly dataSource: DataSource,
   ) {}
@@ -298,6 +300,19 @@ export class QuizService {
         });
 
         const questionResult = await manager.save(QuizResult, result);
+
+        const quiz = await manager.findOne(Quiz, {
+          where: { id: submitQuizDto?.quizId },
+          select: ['id', 'title'],
+        });
+
+        await this.notificationService.notifyQuizCompleted(
+          submitQuizDto?.userId,
+          quiz?.title ?? 'Quiz',
+          submitQuizDto?.score ?? 0,
+          submitQuizDto?.quizId,
+        );
+
         // 3. Save QuestionAttempts
         for (const attempt of submitQuizDto?.attempts) {
           const questionAttempt = manager.create(QuestionAttempt, {

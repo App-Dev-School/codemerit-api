@@ -7,27 +7,24 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { User } from './user.entity';
-import { IEmailNotification } from '../interface/email-notification.interface';
+import { INotification } from '../interface/notification.interface';
 import { AbstractEntity } from './abstract.entity';
 
-@Entity({ name: 'email_notification_entity' })
-export class EmailNotification
-  extends AbstractEntity
-  implements IEmailNotification
-{
+@Entity({ name: 'notifications' })
+export class Notification extends AbstractEntity implements INotification {
   @Column({ type: 'int', nullable: false })
   userId: number;
 
-  @Column({ type: 'varchar', length: 255, default: '' })
+  @Column({ type: 'varchar', length: 50, default: '' })
   title: string;
 
-  @Column({ type: 'text', default: '' })
+  @Column({ type: 'varchar', length: 255, default: '' })
   message: string;
 
   @Column({ type: 'int', default: 0 })
   dataId: number;
 
-  @Column({ type: 'varchar', length: 255, default: '' })
+  @Column({ type: 'varchar', length: 50, default: '' })
   dataTitle: string;
 
   @Column({ type: 'boolean', default: false })
@@ -47,9 +44,6 @@ export class EmailNotification
 
   @UpdateDateColumn({ name: 'updatedAt' })
   updatedAt: Date;
-
-  @Column({ name: 'updatedBy', default: null, select: false })
-  updatedBy: number;
 
   @ManyToOne(() => User, { onDelete: 'CASCADE', eager: false })
   @JoinColumn({ name: 'userId', referencedColumnName: 'id' })
