@@ -10,7 +10,7 @@ export interface IUser {
   mobile?: string;
   username: string;
   role: UserRoleEnum;
-  designation?: number;
+  designation?: string;
   city: string;
   country: string;
   password: string;

@@ -34,6 +34,8 @@ export class UserService {
     private userRepo: Repository<User>,
     @InjectRepository(UserJobRole)
     private userJobRoleRepo: Repository<UserJobRole>,
+    @InjectRepository(Profile)
+    private profileRepo: Repository<Profile>,
     private readonly userOtpService: UserOtpService,
     private readonly userProfileService: UserProfileService,
     private readonly dataSource: DataSource,
@@ -350,6 +352,28 @@ export class UserService {
     if (!user) {
       throw new AppCustomException(HttpStatus.BAD_REQUEST, 'User not found');
     }
+    const { linkedinUrl, ...userFields } = updateUserDto as UpdateUserDto & {
+      linkedinUrl?: string;
+    };
+
+    this.userRepo.merge(user, userFields);
+    const savedUser = await this.userRepo.save(user);
+
+    if (linkedinUrl !== undefined) {
+      let profile = await this.profileRepo.findOne({ where: { userId } });
+
+      if (!profile) {
+        profile = this.profileRepo.create({
+          userId,
+          auth_provider: 'Native',
+        });
+      }
+
+      profile.linkedinUrl = linkedinUrl;
+      await this.profileRepo.save(profile);
+    }
+
+    return savedUser;
   }
 
   async remove(id: number): Promise<void> {

@@ -9,7 +9,7 @@ import {
   JoinColumn,
   ManyToOne,
   OneToMany,
-  UpdateDateColumn
+  UpdateDateColumn,
 } from 'typeorm';
 import { IUser } from '../interface/user.interface';
 import { AbstractEntity } from './abstract.entity';
@@ -60,11 +60,12 @@ export class User extends AbstractEntity implements IUser {
   role: UserRoleEnum;
 
   @Column({
-    type: 'integer',
+    type: 'varchar',
+    length: 30,
     nullable: true,
-    default: null
+    default: null,
   })
-  designation?: number;
+  designation?: string;
 
   @Column({
     type: 'varchar',
@@ -158,14 +159,9 @@ export class User extends AbstractEntity implements IUser {
   @DeleteDateColumn({ name: 'deletedAt', default: null, select: false })
   deletedAt: Date;
 
-  @ManyToOne(() => JobRole, (jobRole) => jobRole.users, { eager: false })
-  @JoinColumn({ name: 'designation' })
-  userJobRole: JobRole;
-
   @OneToMany(() => QuizResult, (result) => result.user)
   quizResults: QuizResult[];
 
-  @OneToMany(() => UserPermission, p => p.user)
+  @OneToMany(() => UserPermission, (p) => p.user)
   permissions?: UserPermission[];
-
 }
