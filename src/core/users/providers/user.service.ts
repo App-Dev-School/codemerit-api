@@ -26,6 +26,7 @@ import { UserOtpTagsEnum } from '../enums/user-otp-Tags.enum';
 import { UserOtpService } from './user-otp.service';
 import { UserProfileService } from './user-profile.service';
 import { UserJobRole } from 'src/common/typeorm/entities/user-job-role.entity';
+import { ApiUsageService } from 'src/common/services/api-usage.service';
 
 @Injectable()
 export class UserService {
@@ -38,6 +39,7 @@ export class UserService {
     private profileRepo: Repository<Profile>,
     private readonly userOtpService: UserOtpService,
     private readonly userProfileService: UserProfileService,
+    private readonly apiUsageService: ApiUsageService,
     private readonly dataSource: DataSource,
   ) {}
 
@@ -206,7 +208,7 @@ export class UserService {
   }
 
   async findUserList(): Promise<any[]> {
-    return this.userRepo
+    const users = await this.userRepo
       .createQueryBuilder('user')
       .leftJoinAndSelect('user.userJobRole', 'userJobRole')
       .select([
@@ -227,6 +229,20 @@ export class UserService {
         'userJobRole.title',
       ])
       .getMany();
+
+    const userIds = users.map((user) => user.id);
+    const usageMap = await this.apiUsageService.findMapByUserIds(userIds);
+
+    return users.map((user) => {
+      const apiUsage = usageMap.get(user.id);
+      return {
+        ...user,
+        apiUsage: {
+          count: apiUsage?.count ?? 0,
+          lastHitAt: apiUsage?.lastHitAt ?? null,
+        },
+      };
+    });
   }
 
   async updateUserAccountStatus(

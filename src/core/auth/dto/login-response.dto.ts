@@ -35,6 +35,10 @@ export class LoginResponseDto implements LoginUser {
     jobRoleTitle: string;
     createdAt: Date;
   }>;
+  apiUsage?: {
+    count: number;
+    lastHitAt: Date | null;
+  };
   //fields for admin
   lmsMetrics: {
     numAllQuestions: number;
