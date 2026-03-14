@@ -16,6 +16,7 @@ import { LoginResponseDto } from '../dto/login-response.dto';
 import { UserPermissionService } from 'src/modules/user-permission/providers/user-permission.service';
 import { TopicAnalysisService } from 'src/modules/master/providers/topic-analysis.service';
 import { SubjectAnalysisService } from 'src/modules/master/providers/subject-analysis.service';
+import { ApiUsageService } from 'src/common/services/api-usage.service';
 
 @Injectable()
 export class AuthService {
@@ -26,6 +27,7 @@ export class AuthService {
     private readonly userPermissionService: UserPermissionService,
     private readonly subjectAnalyzer: SubjectAnalysisService,
     private readonly topicAnalysisProvider: TopicAnalysisService,
+    private readonly apiUsageService: ApiUsageService,
     @InjectRepository(UserJobRole)
     private userJobRoleRepo: Repository<UserJobRole>,
   ) {}
@@ -96,6 +98,7 @@ export class AuthService {
       user?.id,
       false,
     );
+    const apiUsage = await this.apiUsageService.findByUserId(user?.id);
 
     // Fetch user job role enrollments
     const enrollments = await this.userJobRoleRepo.find({
@@ -129,6 +132,10 @@ export class AuthService {
       permissions,
       courseStats,
       userJobRoles,
+      apiUsage: {
+        count: apiUsage?.count ?? 0,
+        lastHitAt: apiUsage?.lastHitAt ?? null,
+      },
       //topicStats
     });
 

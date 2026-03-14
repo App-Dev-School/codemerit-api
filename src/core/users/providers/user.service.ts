@@ -26,6 +26,7 @@ import { UserOtpTagsEnum } from '../enums/user-otp-Tags.enum';
 import { UserOtpService } from './user-otp.service';
 import { UserProfileService } from './user-profile.service';
 import { UserJobRole } from 'src/common/typeorm/entities/user-job-role.entity';
+import { ApiUsageService } from 'src/common/services/api-usage.service';
 import { NotificationService } from 'src/modules/notification/providers/notification.service';
 import { JobRole } from 'src/common/typeorm/entities/job-role.entity';
 
@@ -42,6 +43,7 @@ export class UserService {
     private profileRepo: Repository<Profile>,
     private readonly userOtpService: UserOtpService,
     private readonly userProfileService: UserProfileService,
+    private readonly apiUsageService: ApiUsageService,
     private readonly notificationService: NotificationService,
     private readonly dataSource: DataSource,
   ) {}
@@ -211,28 +213,71 @@ export class UserService {
   }
 
   async findUserList(): Promise<any[]> {
-    console.log('Finding user list with job roles...');
-    return this.userRepo
+    const rows = await this.userRepo
       .createQueryBuilder('user')
-      .leftJoinAndSelect('user.userJobRole', 'userJobRole')
+      .leftJoin('user_job_role', 'userJobRole', 'userJobRole.userId = user.id')
+      .leftJoin('job_role', 'jobRole', 'jobRole.id = userJobRole.jobRoleId')
       .select([
-        'user.id',
-        'user.firstName',
-        'user.lastName',
-        'user.username',
-        'user.role',
-        'user.designation',
-        'user.city',
-        'user.country',
-        'user.email',
-        'user.mobile',
-        'user.level',
-        'user.points',
-        'user.accountStatus',
-        'user.createdAt',
-        'userJobRole.title',
+        'user.id AS id',
+        'user.firstName AS firstName',
+        'user.lastName AS lastName',
+        'user.username AS username',
+        'user.role AS role',
+        'user.designation AS designation',
+        'user.city AS city',
+        'user.country AS country',
+        'user.email AS email',
+        'user.mobile AS mobile',
+        'user.level AS level',
+        'user.points AS points',
+        'user.accountStatus AS accountStatus',
+        'user.createdAt AS createdAt',
+        'jobRole.title AS jobRoleTitle',
       ])
-      .getMany();
+      .getRawMany();
+
+    const userIds = [...new Set(rows.map((row) => Number(row.id)))];
+    const usageMap = await this.apiUsageService.findMapByUserIds(userIds);
+
+    const userMap = new Map<number, any>();
+
+    for (const row of rows) {
+      const userId = Number(row.id);
+      const apiUsage = usageMap.get(userId);
+
+      if (!userMap.has(userId)) {
+        userMap.set(userId, {
+          id: userId,
+          firstName: row.firstName,
+          lastName: row.lastName,
+          username: row.username,
+          role: row.role,
+          designation: row.designation,
+          city: row.city,
+          country: row.country,
+          email: row.email,
+          mobile: row.mobile,
+          level: row.level,
+          points: row.points,
+          accountStatus: row.accountStatus,
+          createdAt: row.createdAt,
+          jobRoleTitles: [] as string[],
+          apiUsage: {
+            count: apiUsage?.count ?? 0,
+            lastHitAt: apiUsage?.lastHitAt ?? null,
+          },
+        });
+      }
+
+      if (row.jobRoleTitle) {
+        const user = userMap.get(userId);
+        if (!user.jobRoleTitles.includes(row.jobRoleTitle)) {
+          user.jobRoleTitles.push(row.jobRoleTitle);
+        }
+      }
+    }
+
+    return Array.from(userMap.values());
   }
 
   async updateUserAccountStatus(

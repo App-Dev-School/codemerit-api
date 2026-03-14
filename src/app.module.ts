@@ -12,6 +12,9 @@ import { JwtAuthGuard } from './core/auth/jwt/jwt-auth-guard';
 import { RolesGuard } from './core/auth/guards/roles.guard';
 import { MonitoringModule } from './modules/monitoring/monitoring.module';
 import { MasterModule } from './modules/master/master.module';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { ApiUsageInterceptor } from './common/interceptors/api-usage.interceptor';
+import { ApiUsageModule } from './common/services/api-usage.module';
 
 @Module({
   imports: [
@@ -23,8 +26,9 @@ import { MasterModule } from './modules/master/master.module';
     }),
     LoggerModule,
     DatabaseModule,
+    ApiUsageModule,
     DomainModule,
-    MonitoringModule
+    MonitoringModule,
   ],
   providers: [
     {
@@ -35,11 +39,15 @@ import { MasterModule } from './modules/master/master.module';
       provide: APP_GUARD,
       useClass: RolesGuard,
     },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ApiUsageInterceptor,
+    },
   ],
 })
 export class AppModule {
   constructor() {
     console.log('AppModule initialized');
-    console.log('##### Env.DB_HOST:', process.env.DB_HOST)
+    console.log('##### Env.DB_HOST:', process.env.DB_HOST);
   }
 }
