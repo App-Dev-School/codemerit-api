@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -9,16 +8,16 @@ import {
   Put,
   Query,
   Request,
-  UseGuards,
+  UseGuards
 } from '@nestjs/common';
-import { Roles } from '../auth/decorators/roles.decorator';
-import { UserService } from './providers/user.service';
-import { UserRoleEnum } from './enums/user-roles.enum';
-import { UpdateUserDto } from './dtos/update-user.dto';
-import { RolesGuard } from '../auth/guards/roles.guard';
 import { ApiResponse } from 'src/common/utils/api-response';
-import { UserProfileService } from './providers/user-profile.service';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { RolesGuard } from '../auth/guards/roles.guard';
 import { UpdateUserProfileDto } from './dtos/update-user-profile.dto';
+import { UpdateUserDto } from './dtos/update-user.dto';
+import { UserRoleEnum } from './enums/user-roles.enum';
+import { UserProfileService } from './providers/user-profile.service';
+import { UserService } from './providers/user.service';
 
 @Controller('apis/users')
 export class UsersController {
@@ -52,7 +51,7 @@ export class UsersController {
     if (result && result.length > 0) {
       return new ApiResponse('Users listed successfully.', result);
     }
-    return new ApiResponse('User lit not found.', null);
+    return new ApiResponse('User not found.', null);
   }
 
   // @UseGuards(RolesGuard)

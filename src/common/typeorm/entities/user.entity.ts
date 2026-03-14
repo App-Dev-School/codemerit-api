@@ -6,15 +6,13 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
-  JoinColumn,
-  ManyToOne,
   OneToMany,
   UpdateDateColumn,
 } from 'typeorm';
 import { IUser } from '../interface/user.interface';
 import { AbstractEntity } from './abstract.entity';
-import { JobRole } from './job-role.entity';
 import { QuizResult } from './quiz-result.entity';
+import { UserJobRole } from './user-job-role.entity';
 import { UserPermission } from './user-permission.entity';
 
 @Entity()
@@ -61,7 +59,7 @@ export class User extends AbstractEntity implements IUser {
 
   @Column({
     type: 'varchar',
-    length: 30,
+    length: 50,
     nullable: true,
     default: null,
   })
@@ -159,9 +157,18 @@ export class User extends AbstractEntity implements IUser {
   @DeleteDateColumn({ name: 'deletedAt', default: null, select: false })
   deletedAt: Date;
 
+  @OneToMany(() => UserJobRole, (userJobRole) => userJobRole.user)
+  userJobRoles: UserJobRole[];
+
   @OneToMany(() => QuizResult, (result) => result.user)
   quizResults: QuizResult[];
 
   @OneToMany(() => UserPermission, (p) => p.user)
   permissions?: UserPermission[];
+
+  // @OneToMany(() => Certificate, cert => cert.user)
+  // certificates: Certificate[];
+
+  // @OneToMany(() => AssessmentAttempt, a => a.user)
+  // attempts: AssessmentAttempt[];
 }

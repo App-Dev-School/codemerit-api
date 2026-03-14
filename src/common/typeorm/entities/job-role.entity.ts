@@ -81,7 +81,4 @@ export class JobRole extends AbstractEntity implements IJobRole {
 
   @OneToMany(() => JobRoleSubject, (jrs) => jrs.jobRole)
   jobRoleSubjects: JobRoleSubject[];
-
-  @OneToMany(() => User, (user) => user.designation)
-  users: User[];
 }

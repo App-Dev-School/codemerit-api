@@ -10,9 +10,14 @@ import { UserProfileService } from './providers/user-profile.service';
 import { UserService } from './providers/user.service';
 import { UsersController } from './users.controller';
 import { UserJobRole } from 'src/common/typeorm/entities/user-job-role.entity';
+import { JobRole } from 'src/common/typeorm/entities/job-role.entity';
+import { NotificationModule } from 'src/modules/notification/notification.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, Profile, UserOtp, UserJobRole])],
+  imports: [
+    TypeOrmModule.forFeature([User, Profile, UserOtp, UserJobRole, JobRole]),
+    NotificationModule,
+  ],
   providers: [
     UserService,
     UserOtpService,

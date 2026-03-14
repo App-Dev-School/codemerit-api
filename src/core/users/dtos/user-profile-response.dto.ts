@@ -10,7 +10,6 @@ export interface UserProfileResponseDto {
   username?: string;
   role?: UserRoleEnum;
   designation?: string;
-
   city?: string;
   country?: string;
   mobile?: string;
