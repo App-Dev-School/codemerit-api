@@ -206,6 +206,7 @@ export class UserService {
   }
 
   async findUserList(): Promise<any[]> {
+    console.log('Finding user list with job roles...');
     return this.userRepo
       .createQueryBuilder('user')
       .leftJoinAndSelect('user.userJobRole', 'userJobRole')

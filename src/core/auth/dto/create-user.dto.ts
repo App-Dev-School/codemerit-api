@@ -44,12 +44,12 @@ export class CreateUserDto {
 
   @ApiPropertyOptional()
   @IsOptional()
-  city: string;
+  city?: string;
 
   @ApiPropertyOptional()
   @IsOptional()
-  country: string;
-
+  country?: string;
+  
   @ApiPropertyOptional()
   @IsOptional()
   about: string;
