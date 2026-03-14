@@ -72,4 +72,5 @@ export class AssessmentSession
   @ManyToOne(() => User, { eager: true })
   @JoinColumn({ name: 'ratedBy', referencedColumnName: 'id' })
   rater: User;
+  //score should be able to calculated from the skill ratings, so we can remove it from here to avoid redundancy and inconsistency
 }

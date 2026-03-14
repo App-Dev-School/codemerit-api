@@ -1,0 +1,8 @@
+export enum CertificationTier {
+  EXPLORER = 'EXPLORER',
+  PRACTITIONER = 'PRACTITIONER',
+  ADEPT = 'ADEPT',
+  SPECIALIST = 'SPECIALIST',
+  MASTER = 'MASTER',
+  EXPERT = 'EXPERT',
+}

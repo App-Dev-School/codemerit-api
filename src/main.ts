@@ -14,8 +14,6 @@ configDotenv({
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  // const loggerService = app.get<LoggerService>(LoggerService);
-
   const config: IAppConfig = app.get<IAppConfig>(appConfig.KEY);
 
   // Enable CORS for localhost dev
@@ -68,12 +66,9 @@ async function bootstrap() {
       stopAtFirstError: true,
     }),
   );
-
-  // Set global API prefix
   // app.setGlobalPrefix('api');
   await app.listen(config.port, () => {
-    console.log(`Server is listening on port ${config.port}`);
-    // console.log('##### DATABASE_URL:', process.env.DATABASE_URL);
+    console.log(`Server is listening on port : ${config.port}`);
   });
 }
 bootstrap();
