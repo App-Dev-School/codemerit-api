@@ -8,6 +8,7 @@ import { QuizTopic } from 'src/common/typeorm/entities/quiz-topic.entity';
 import { Quiz } from 'src/common/typeorm/entities/quiz.entity';
 import { QuizSettings } from 'src/common/typeorm/entities/quiz-settings.entity';
 import { MasterModule } from '../master/master.module';
+import { NotificationModule } from '../notification/notification.module';
 import { UserQuestionService } from '../question/providers/user-question.service';
 import { QuestionModule } from '../question/question.module';
 import { QuestionAttemptService } from './providers/question-attempt.service';
@@ -28,6 +29,7 @@ import { QuizController } from './quiz.controller';
     ]),
     QuestionModule,
     MasterModule,
+    NotificationModule,
   ],
   providers: [QuizService, QuestionAttemptService, QuizResultService],
   controllers: [QuizController],
