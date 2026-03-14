@@ -1,9 +1,13 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
+  ArrayNotEmpty,
+  IsArray,
   IsString,
   IsOptional,
   IsBoolean,
+  IsDefined,
   IsEnum,
+  IsInt,
   IsNumber,
   IsNotEmpty,
   ValidateIf,
@@ -66,7 +70,7 @@ export class CreateQuizDto {
   @IsEnum(QuizTypeEnum)
   quizType: QuizTypeEnum; // user will create as UserQuiz
 
-  @ApiPropertyOptional({ example: '5, 10' })
+  @ApiPropertyOptional({ example: 10 })
   @IsOptional()
   @IsNumber()
   numQuestions?: number;
@@ -79,11 +83,23 @@ export class CreateQuizDto {
   @IsEnum(TopicLabelEnum)
   label?: TopicLabelEnum;
 
-  @ApiPropertyOptional({ example: '5, 6, 7' })
+  @ApiPropertyOptional({
+    type: [Number],
+    example: [2, 4, 5, 6, 7, 8],
+    description: 'Mandatory only for Standard quiz type',
+  })
   @ValidateIf((o) => o.quizType === QuizTypeEnum.Standard)
-  @IsString()
-  @IsNotEmpty({ message: 'questionIds is required ' })
-  questionIds?: string; // admin will provide
+  @IsDefined({ message: 'questionIds is required' })
+  @IsArray({ message: 'questionIds must be an array of numbers' })
+  @ArrayNotEmpty({
+    message: 'questionIds must be a non-empty array',
+  })
+  @Type(() => Number)
+  @IsInt({
+    each: true,
+    message: 'questionIds must contain only integer numbers',
+  })
+  questionIds?: number[];
 
   @ApiPropertyOptional({ example: true })
   @IsOptional()
