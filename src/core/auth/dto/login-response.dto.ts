@@ -29,7 +29,16 @@ export class LoginResponseDto implements LoginUser {
   permissions?: UserPermission[];
   courseStats?: any;
   topicStats?: any;
-  userJobRoles?: Array<any>;
+  userJobRoles?: Array<{
+    userId: number;
+    jobRoleId: number;
+    jobRoleTitle: string;
+    createdAt: Date;
+  }>;
+  apiUsage?: {
+    count: number;
+    lastHitAt: Date | null;
+  };
   //fields for admin
   lmsMetrics: {
     numAllQuestions: number;
