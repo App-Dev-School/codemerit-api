@@ -13,9 +13,60 @@ import { DataSource, In, Repository } from 'typeorm';
 import { TopicAnalysisService } from './topic-analysis.service';
 import { generateScore } from 'src/common/utils/common-functions';
 import { SubjectAnalysisService } from './subject-analysis.service';
+import { readFile } from 'fs/promises';
+import { join } from 'path';
 
 @Injectable()
 export class MasterService {
+  private normalizeRole(role?: string): string {
+    return (role || '').trim();
+  }
+
+  private isRouteAllowed(
+    routeRoles: string[] | undefined,
+    userRole?: string,
+  ): boolean {
+    const normalizedUserRole = this.normalizeRole(userRole);
+    const normalizedRoles = (routeRoles || []).map((role) =>
+      this.normalizeRole(role),
+    );
+
+    if (normalizedRoles.includes('All')) {
+      return true;
+    }
+
+    if (!normalizedUserRole) {
+      return false;
+    }
+
+    return normalizedRoles.includes(normalizedUserRole);
+  }
+
+  private filterRoutesByRole(routes: any[], userRole?: string): any[] {
+    return (routes || [])
+      .map((route) => {
+        const filteredSubmenu = this.filterRoutesByRole(
+          route?.submenu || [],
+          userRole,
+        );
+        const isCurrentRouteAllowed = this.isRouteAllowed(
+          route?.role,
+          userRole,
+        );
+
+        // Keep a parent route if itself is allowed or any child remains allowed.
+        if (!isCurrentRouteAllowed && filteredSubmenu.length === 0) {
+          return null;
+        }
+
+        return {
+          ...route,
+          submenu: filteredSubmenu,
+        };
+      })
+      .filter(Boolean);
+  }
+
   constructor(
     @InjectRepository(Subject)
     private subjectRepo: Repository<Subject>,
@@ -31,8 +82,31 @@ export class MasterService {
 
     private readonly dataSource: DataSource,
     private subjectAnalyzer: SubjectAnalysisService,
-    private topicAnalyzer: TopicAnalysisService
-  ) { }
+    private topicAnalyzer: TopicAnalysisService,
+  ) {}
+
+  async getRoutesConfig(userRole?: string) {
+    const candidatePaths = [
+      join(process.cwd(), 'src/assets/data/routes.json'),
+      join(process.cwd(), 'dist/assets/data/routes.json'),
+    ];
+
+    for (const filePath of candidatePaths) {
+      try {
+        const raw = await readFile(filePath, 'utf-8');
+        const parsed = JSON.parse(raw);
+        const routes = parsed?.routes ?? [];
+        return this.filterRoutesByRole(routes, userRole);
+      } catch (error) {
+        // try next candidate path
+      }
+    }
+
+    throw new AppCustomException(
+      HttpStatus.NOT_FOUND,
+      'routes.json not found or invalid',
+    );
+  }
 
   async getMasterData(userId: number) {
     const subjects = await this.subjectAnalyzer.getAllSubjects(userId);
@@ -43,7 +117,7 @@ export class MasterService {
     return {
       subjects: subjects,
       jobRoles: jobRoles,
-      topics: topics
+      topics: topics,
     };
   }
 
@@ -66,9 +140,9 @@ export class MasterService {
         if (existingIds.has(subjectId)) {
           results.push({
             subjectId,
-            status: `Subject already added: ${existing.find(
-              (e) => e.subjectId === subjectId,
-            )?.subject.title}`,
+            status: `Subject already added: ${
+              existing.find((e) => e.subjectId === subjectId)?.subject.title
+            }`,
           });
           continue;
         }
@@ -104,7 +178,6 @@ export class MasterService {
     }
   }
 
-
   async getTopicStatsForUser(userId?: number) {
     const qb = this.dataSource
       .createQueryBuilder()
@@ -119,7 +192,7 @@ export class MasterService {
       .addSelect('COUNT(DISTINCT q.id)', 'numQuestions') // total questions in topic
       .addSelect(
         'COUNT(DISTINCT IF(q.questionType = :questionType, q.id, NULL))',
-        'numTrivia'
+        'numTrivia',
       )
       .from('topic', 't')
       .leftJoin('subject', 's', 's.id = t.subjectId')
@@ -131,9 +204,18 @@ export class MasterService {
 
     if (userId) {
       qb.addSelect('COUNT(DISTINCT qa.id)', 'attempted')
-        .addSelect('SUM(CASE WHEN qa.isCorrect = true THEN 1 ELSE 0 END)', 'correct')
-        .addSelect('SUM(CASE WHEN qa.isCorrect = false THEN 1 ELSE 0 END)', 'wrong')
-        .addSelect('SUM(CASE WHEN qa.isSkipped = true THEN 1 ELSE 0 END)', 'skipped')
+        .addSelect(
+          'SUM(CASE WHEN qa.isCorrect = true THEN 1 ELSE 0 END)',
+          'correct',
+        )
+        .addSelect(
+          'SUM(CASE WHEN qa.isCorrect = false THEN 1 ELSE 0 END)',
+          'wrong',
+        )
+        .addSelect(
+          'SUM(CASE WHEN qa.isSkipped = true THEN 1 ELSE 0 END)',
+          'skipped',
+        )
         .leftJoin(
           'question_attempt',
           'qa',
@@ -213,10 +295,10 @@ export class MasterService {
         'subject.id',
         'subject.title',
         'subject.description',
-        'subject.image'
+        'subject.image',
       ])
       .getMany();
-    const result = jobRoles.map(jr => ({
+    const result = jobRoles.map((jr) => ({
       id: jr.id,
       title: jr.title,
       description: jr.description,
@@ -229,12 +311,12 @@ export class MasterService {
       isSubscribed: true,
       coverage: 0,
       score: 0,
-      subjects: jr.jobRoleSubjects.map(jrs => ({
+      subjects: jr.jobRoleSubjects.map((jrs) => ({
         id: jrs.subject.id,
         title: jrs.subject.title,
         image: jrs.subject.image,
-        description: jrs.subject.description
-      }))
+        description: jrs.subject.description,
+      })),
     }));
     return result;
   }
@@ -256,7 +338,7 @@ export class MasterService {
         'subject.id',
         'subject.title',
         'subject.slug',
-        'subject.image'
+        'subject.image',
       ])
       .where('jobRole.isPublished = :isPublished', { isPublished: 1 })
       .orderBy('jobRole.orderId', 'ASC');
@@ -264,7 +346,7 @@ export class MasterService {
     if (userId) {
       qb.addSelect(
         `CASE WHEN user.designation = jobRole.id THEN 1 ELSE 0 END`,
-        'isSubscribed'
+        'isSubscribed',
       ).leftJoin(User, 'user', 'user.id = :userId', { userId });
     } else {
       qb.addSelect('FALSE', 'isSubscribed');
@@ -289,12 +371,12 @@ export class MasterService {
         coverage: 0,
         score: 0,
         userId,
-        subjects: jr.jobRoleSubjects.map(jrs => ({
+        subjects: jr.jobRoleSubjects.map((jrs) => ({
           id: jrs.subject.id,
           title: jrs.subject.title,
           slug: jrs.subject.slug,
-          image: jrs.subject.image
-        }))
+          image: jrs.subject.image,
+        })),
       };
     });
   }
