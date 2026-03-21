@@ -1,0 +1,25 @@
+export const uiRoutes = [
+  {
+    path: '',
+    title: 'UI Screens',
+    iconType: 'material-icons-outlined',
+    icon: 'dvr',
+    class: 'menu-toggle',
+    groupTitle: false,
+    badge: 'Dev',
+    badgeClass: 'badge bg-blue sidebar-badge float-end',
+    role: ['Admin'],
+    submenu: [
+      { path: '/quiz/take/javascript', title: 'Take Quiz', iconType: '', icon: '', class: 'ml-menu', groupTitle: false, badge: '', badgeClass: '', role: [''], submenu: [] },
+      { path: '/authentication/signin', title: 'Sign In', iconType: '', icon: '', class: 'ml-menu', groupTitle: false, badge: '', badgeClass: '', role: [''], submenu: [] },
+      { path: '/authentication/signup', title: 'Sign Up', iconType: '', icon: '', class: 'ml-menu', groupTitle: false, badge: '', badgeClass: '', role: [''], submenu: [] },
+      { path: '/authentication/forgot-password', title: 'Forgot Password', iconType: '', icon: '', class: 'ml-menu', groupTitle: false, badge: '', badgeClass: '', role: [''], submenu: [] },
+      { path: '/authentication/locked', title: 'Locked', iconType: '', icon: '', class: 'ml-menu', groupTitle: false, badge: '', badgeClass: '', role: [''], submenu: [] },
+      { path: '/authentication/page404', title: '404 - Not Found', iconType: '', icon: '', class: 'ml-menu', groupTitle: false, badge: '', badgeClass: '', role: [''], submenu: [] },
+      { path: '/authentication/page500', title: '500 - Server Error', iconType: '', icon: '', class: 'ml-menu', groupTitle: false, badge: '', badgeClass: '', role: [''], submenu: [] },
+      { path: '/app/faqs', title: 'App FAQs', iconType: '', icon: '', class: 'ml-menu', groupTitle: false, badge: '', badgeClass: '', role: [''], submenu: [] },
+      { path: '/app/subscription', title: 'App Subscription', iconType: '', icon: '', class: 'ml-menu', groupTitle: false, badge: '', badgeClass: '', role: [''], submenu: [] },
+      { path: '/app/invoice', title: 'App invoice', iconType: '', icon: '', class: 'ml-menu', groupTitle: false, badge: '', badgeClass: '', role: [''], submenu: [] },
+    ],
+  },
+];

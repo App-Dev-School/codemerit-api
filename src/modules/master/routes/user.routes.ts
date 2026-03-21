@@ -1,0 +1,26 @@
+export const userRoutes = [
+  {
+    path: '/dashboard/start',
+    title: 'My Dashboard',
+    iconType: 'material-icons-outlined',
+    icon: 'space_dashboard',
+    class: '',
+    groupTitle: false,
+    badge: '',
+    badgeClass: '',
+    role: ['User', 'All'],
+    submenu: [],
+  },
+  {
+    path: '/users/profile',
+    title: 'My Profile',
+    iconType: 'material-icons-outlined',
+    icon: 'person',
+    class: '',
+    groupTitle: false,
+    badge: '',
+    badgeClass: '',
+    role: ['User', 'Admin', 'Manager', 'All'],
+    submenu: [],
+  },
+];

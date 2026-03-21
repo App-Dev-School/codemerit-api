@@ -1,71 +1,21 @@
-import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { IUserPermissionDto } from 'src/common/dto/user-permission.dto';
 import { QuestionTypeEnum } from 'src/common/enum/question-type.enum';
 import { AppCustomException } from 'src/common/exceptions/app-custom-exception.filter';
 import { JobRole } from 'src/common/typeorm/entities/job-role.entity';
-import { QuestionAttempt } from 'src/common/typeorm/entities/question-attempt.entity';
 import { Subject } from 'src/common/typeorm/entities/subject.entity';
 import { Topic } from 'src/common/typeorm/entities/topic.entity';
 import { UserSubject } from 'src/common/typeorm/entities/user-subject.entity';
 import { User } from 'src/common/typeorm/entities/user.entity';
 import { AddUserSubjectsDto } from 'src/core/users/dtos/user-subject.dto';
 import { DataSource, In, Repository } from 'typeorm';
-import { TopicAnalysisService } from './topic-analysis.service';
-import { generateScore } from 'src/common/utils/common-functions';
+import { RouteService } from './route.service';
 import { SubjectAnalysisService } from './subject-analysis.service';
-import { readFile } from 'fs/promises';
-import { join } from 'path';
+import { TopicAnalysisService } from './topic-analysis.service';
 
 @Injectable()
 export class MasterService {
-  private normalizeRole(role?: string): string {
-    return (role || '').trim();
-  }
-
-  private isRouteAllowed(
-    routeRoles: string[] | undefined,
-    userRole?: string,
-  ): boolean {
-    const normalizedUserRole = this.normalizeRole(userRole);
-    const normalizedRoles = (routeRoles || []).map((role) =>
-      this.normalizeRole(role),
-    );
-
-    if (normalizedRoles.includes('All')) {
-      return true;
-    }
-
-    if (!normalizedUserRole) {
-      return false;
-    }
-
-    return normalizedRoles.includes(normalizedUserRole);
-  }
-
-  private filterRoutesByRole(routes: any[], userRole?: string): any[] {
-    return (routes || [])
-      .map((route) => {
-        const filteredSubmenu = this.filterRoutesByRole(
-          route?.submenu || [],
-          userRole,
-        );
-        const isCurrentRouteAllowed = this.isRouteAllowed(
-          route?.role,
-          userRole,
-        );
-
-        // Keep a parent route if itself is allowed or any child remains allowed.
-        if (!isCurrentRouteAllowed && filteredSubmenu.length === 0) {
-          return null;
-        }
-
-        return {
-          ...route,
-          submenu: filteredSubmenu,
-        };
-      })
-      .filter(Boolean);
-  }
 
   constructor(
     @InjectRepository(Subject)
@@ -83,29 +33,14 @@ export class MasterService {
     private readonly dataSource: DataSource,
     private subjectAnalyzer: SubjectAnalysisService,
     private topicAnalyzer: TopicAnalysisService,
+    private readonly routeService: RouteService,
   ) {}
 
-  async getRoutesConfig(userRole?: string) {
-    const candidatePaths = [
-      join(process.cwd(), 'src/assets/data/routes.json'),
-      join(process.cwd(), 'dist/assets/data/routes.json'),
-    ];
-
-    for (const filePath of candidatePaths) {
-      try {
-        const raw = await readFile(filePath, 'utf-8');
-        const parsed = JSON.parse(raw);
-        const routes = parsed?.routes ?? [];
-        return this.filterRoutesByRole(routes, userRole);
-      } catch (error) {
-        // try next candidate path
-      }
-    }
-
-    throw new AppCustomException(
-      HttpStatus.NOT_FOUND,
-      'routes.json not found or invalid',
-    );
+  /**
+   * Delegates to RouteService for all route logic.
+   */
+  async getRoutesConfig(userRole?: string, userPermissions: IUserPermissionDto[] = []) {
+    return this.routeService.getRoutesConfig(userRole, userPermissions);
   }
 
   async getMasterData(userId: number) {

@@ -5,6 +5,7 @@ import { Subject } from 'src/common/typeorm/entities/subject.entity';
 import { Topic } from 'src/common/typeorm/entities/topic.entity';
 import { MasterController } from './master.controller';
 import { MasterService } from './providers/master.service';
+import { RouteService } from './providers/route.service';
 import { JobRoleSubject } from 'src/common/typeorm/entities/job-role-subject.entity';
 import { UserSubject } from 'src/common/typeorm/entities/user-subject.entity';
 import { TopicAnalysisService } from './providers/topic-analysis.service';
@@ -14,7 +15,7 @@ import { User } from 'src/common/typeorm/entities/user.entity';
 @Module({
   imports: [TypeOrmModule.forFeature([User, JobRole, Subject, JobRoleSubject, Topic, UserSubject])],
   controllers: [MasterController],
-  providers: [MasterService, SubjectAnalysisService, TopicAnalysisService],
-  exports: [MasterService, SubjectAnalysisService, TopicAnalysisService]
+  providers: [MasterService, SubjectAnalysisService, TopicAnalysisService, RouteService],
+  exports: [MasterService, SubjectAnalysisService, TopicAnalysisService, RouteService]
 })
 export class MasterModule {}
