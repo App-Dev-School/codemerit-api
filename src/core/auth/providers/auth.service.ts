@@ -151,7 +151,19 @@ export class AuthService {
     const token = this.jwtService.sign(payload);
     //do not attach profile level details
     const response = new LoginResponseDto({
-      ...user,
+      id: user.id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      username: user.username,
+      role: user.role,
+      city: user.city,
+      country: user.country,
+      mobile: user.mobile,
+      image: user.image,
+      level: user.level,
+      points: user.points,
+      accountStatus: user.accountStatus,
       token,
       //profile,
     });
