@@ -10,17 +10,5 @@ export const quizRoutes = [
     badgeClass: '',
     role: ['All'],
     submenu: [],
-  },
-  {
-    path: '/quiz/builder',
-    title: 'Quiz Builder',
-    iconType: 'material-icons-outlined',
-    icon: 'extension',
-    class: 'menu-toggle',
-    groupTitle: false,
-    badge: 'New',
-    badgeClass: 'badge bg-blue sidebar-badge float-end',
-    role: ['All'],
-    submenu: [],
-  },
+  }
 ];

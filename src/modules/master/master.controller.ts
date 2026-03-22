@@ -14,12 +14,14 @@ import { MasterService } from './providers/master.service';
 import { TopicAnalysisService } from './providers/topic-analysis.service';
 import { SubjectAnalysisService } from './providers/subject-analysis.service';
 import { ApiResponse } from 'src/common/utils/api-response';
+import { UserPermissionService } from '../user-permission/providers/user-permission.service';
 @Controller('apis/master')
 export class MasterController {
   constructor(
     private readonly masterService: MasterService,
     private subjectAnalyzer: SubjectAnalysisService,
     private readonly topicAnalysisProvider: TopicAnalysisService,
+    private readonly userPermissionService: UserPermissionService,
   ) {}
 
   @Public()
@@ -93,7 +95,9 @@ export class MasterController {
   @UseGuards(OptionalJwtAuthGuard)
   @Get('routes')
   async getRoutes(@Request() req: any) {
-    const result = await this.masterService.getRoutesConfig(req.user?.role);
+    const permissions = await this.userPermissionService.findUserPermissionList(req.user?.id);
+    const result = await this.masterService.getRoutesConfig(req.user?.role, permissions);
+    console.log("Routes for user", req.user);
     return new ApiResponse('Routes fetched successfully.', result);
   }
 }

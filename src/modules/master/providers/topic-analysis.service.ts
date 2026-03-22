@@ -129,7 +129,6 @@ private mapTopicRow(raw: any) {
     meritList: null,
     coverage: Number((myDistinctQuestions/numTrivia)*100).toFixed(0)
   };
-  console.log("@@@1Topic Formatted", topicsList);
   return topicsList;
 }
 
