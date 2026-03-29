@@ -159,7 +159,7 @@
       "submenu": []
     },
     {
-      "path": "/admin/topics/list",
+      "path": "/lms/topics/list",
       "title": "Topic Manager",
       "iconType": "material-icons-outlined",
       "icon": "grain",

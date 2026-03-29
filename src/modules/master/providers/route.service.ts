@@ -7,6 +7,7 @@ import { adminRoutes } from '../routes/admin.routes';
 import { uiRoutes } from '../routes/ui.routes';
 import { userRoutes } from '../routes/user.routes';
 import { smeRoutes } from '../routes/sme.routes';
+import { footerRoutes } from '../routes/footer.routes';
 
 @Injectable()
 export class RouteService {
@@ -60,7 +61,8 @@ export class RouteService {
       ...adminRoutes,
       ...uiRoutes,
       ...userRoutes,
-      ...welcomeRoutes
+      ...welcomeRoutes,
+      ...footerRoutes
     ];
     // Add more modular route groups here as needed, based on permissions
     return this.filterRoutesByRole(routes, userRole);

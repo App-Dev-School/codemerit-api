@@ -1,14 +1,14 @@
 export const footerRoutes = [
   {
-    path: '/footer',
-    title: 'Footer',
-    iconType: '',
-    icon: '',
+    path: '/assessment/skill-rating',
+    title: 'Skill Rating wizard',
+    iconType: 'material-icons-outlined',
+    icon: 'stars',
     class: '',
-    groupTitle: true,
+    groupTitle: false,
     badge: '',
     badgeClass: '',
-    role: ['All'],
+    role: ['User'],
     submenu: [],
-  },
+  }
 ];

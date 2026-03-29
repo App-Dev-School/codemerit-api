@@ -47,18 +47,6 @@ export const lmsRoutes = [
         submenu: [],
       },
       {
-        path: '/lms/questions',
-        title: 'My Questions',
-        iconType: '',
-        icon: '',
-        class: 'ml-menu',
-        groupTitle: false,
-        badge: '',
-        badgeClass: '',
-        role: ['User'],
-        submenu: [],
-      },
-      {
         path: '/lms/topics',
         title: 'My Topics',
         iconType: '',

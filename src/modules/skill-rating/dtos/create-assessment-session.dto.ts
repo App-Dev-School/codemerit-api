@@ -35,22 +35,19 @@ export class CreateAssessmentSessionDto {
     default: RatingTypeEnum.SELF,
     description: 'Type of rating (SELF or QUIZ)',
   })
-  @IsEnum(RatingTypeEnum, {
+    @IsEnum(RatingTypeEnum, {
     message: `ratingType must be one of: ${Object.values(RatingTypeEnum).join(', ')}`,
   })
-  ratingType: RatingTypeEnum;
+  ratingType?: RatingTypeEnum;
 
   @ApiPropertyOptional({ example: 99 })
   @IsOptional()
   @IsInt()
   ratedBy?: number;
-  // @IsArray()
-  // @ValidateNested({ each: true })
-  // @Type(() => CreateSkillRatingDto)
-  // skillRatings: CreateSkillRatingDto[];
 
   @ApiProperty({ type: [CreateSkillRatingDto] })
   @IsArray()
+  //@IsOptional()
   @Type(() => CreateSkillRatingDto)
-  skillRatings: CreateSkillRatingDto[];
+  skillRatings?: CreateSkillRatingDto[];
 }

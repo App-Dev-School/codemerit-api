@@ -6,6 +6,7 @@ import {
   JoinColumn,
   ManyToOne,
   OneToMany,
+  PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm';
 import { IAssessmentSession } from '../interface/assessment-session.interface';
@@ -19,6 +20,9 @@ export class AssessmentSession
   extends AbstractEntity
   implements IAssessmentSession
 {
+  @PrimaryGeneratedColumn({ type: 'int' })
+  id: number;
+    
   @Type(() => Number)
   @Column({
     type: 'integer',

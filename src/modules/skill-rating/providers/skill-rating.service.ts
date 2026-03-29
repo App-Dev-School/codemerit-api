@@ -60,11 +60,13 @@ export class SkillRatingService {
 
       // Create and validate SkillRatings
       const skillRatings: SkillRating[] = [];
+      console.log("CreateSkillRating skillRatings", dto.skillRatings);
       for (const ratingDto of dto.skillRatings) {
         const skillRating = this.skillRepo.create({
           skillId: ratingDto.skillId,
           skillType: ratingDto.skillType,
           rating: ratingDto.rating,
+          ratingType: ratingDto.ratingType,
           assessmentSessionId: savedSession.id
         });
 

@@ -1,15 +1,15 @@
+import { SkillTypeEnum } from 'src/common/enum/skill-type.enum';
 import {
-  Entity,
   Column,
+  CreateDateColumn,
+  Entity,
   JoinColumn,
   ManyToOne,
-  CreateDateColumn,
 } from 'typeorm';
 import { ISkillRating } from '../interface/skill-rating.interface';
 import { AbstractEntity } from './abstract.entity';
-import { SkillTypeEnum } from 'src/common/enum/skill-type.enum';
-import { AuditEntity } from './audit.entity';
 import { AssessmentSession } from './assessment-session.entity';
+import { RatingTypeEnum } from 'src/common/enum/rating-type.enum';
 
 @Entity()
 export class SkillRating extends AbstractEntity implements ISkillRating {
@@ -30,9 +30,16 @@ export class SkillRating extends AbstractEntity implements ISkillRating {
   @Column({
     type: 'integer',
     nullable: false,
-    default: null,
+    default: 0,
   })
   rating: number;
+
+  @Column({
+    type: 'enum',
+    enum: RatingTypeEnum,
+    default: RatingTypeEnum.SELF,
+  })
+  ratingType: RatingTypeEnum;
 
   @Column({
     type: 'integer',

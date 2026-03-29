@@ -49,7 +49,7 @@ export const adminRoutes = [
     submenu: [],
   },
   {
-    path: '/admin/questions/list',
+    path: '/lms/questions/list',
     title: 'Question Bank',
     iconType: 'material-icons-outlined',
     icon: 'question_answer',
@@ -61,7 +61,7 @@ export const adminRoutes = [
     submenu: [],
   },
   {
-    path: '/admin/topics/list',
+    path: '/lms/topics/list',
     title: 'Topic Manager',
     iconType: 'material-icons-outlined',
     icon: 'grain',
