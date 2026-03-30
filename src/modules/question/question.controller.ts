@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpStatus,
   Param,
   Post,
   Put,
@@ -23,13 +24,18 @@ import {
   UserPermissionEnum,
   UserPermissionTitleEnum,
 } from 'src/common/policies/user-permission.enum';
+import { AppCustomException } from 'src/common/exceptions/app-custom-exception.filter';
 import { RolesGuard } from 'src/core/auth/guards/roles.guard';
 import { Roles } from 'src/core/auth/decorators/roles.decorator';
 import { UserRoleEnum } from 'src/core/users/enums/user-roles.enum';
+import { UserPermissionService } from '../user-permission/providers/user-permission.service';
 
 @Controller('apis/question')
 export class QuestionController {
-  constructor(private readonly service: QuestionService) {}
+  constructor(
+    private readonly service: QuestionService,
+    private readonly userPermissionService: UserPermissionService,
+  ) {}
 
   @UseGuards(AuthGuard('jwt'), PermissionsGuard)
   @RequirePermission(
@@ -44,6 +50,7 @@ export class QuestionController {
     return new ApiResponse('Question created successfully', result);
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Get()
   async findQuestionList(
     @Query('fullData') fullData?: string,
@@ -51,7 +58,26 @@ export class QuestionController {
     @Query('topicId') topicId?: string,
     @Query('fetchAll') fetchAll?: string,
     @Query('limit') limit?: string,
+    @Request() req?: any,
   ): Promise<ApiResponse<any>> {
+    if (req?.user?.role !== UserRoleEnum.ADMIN) {
+      const permissions =
+        await this.userPermissionService.findUserPermissionList(req?.user?.id);
+
+      const isLmsManager = permissions.some(
+        (p: any) =>
+          Number(p.permissionId) === 4 ||
+          p.permissionName === UserPermissionEnum.LmsManager,
+      );
+
+      if (!isLmsManager) {
+        throw new AppCustomException(
+          HttpStatus.FORBIDDEN,
+          'Only ADMIN or LMS Manager can access question list.',
+        );
+      }
+    }
+
     const isFullData = fullData === 'true' || fullData === '1';
     const subjectIdNum = subjectId ? parseInt(subjectId, 10) : undefined;
     const topicIdNum = topicId ? parseInt(topicId, 10) : undefined;
@@ -64,6 +90,7 @@ export class QuestionController {
       topicIdNum,
       fetchAllFlag,
       limitNum,
+      req.user,
     );
     //?subjectId=5&fetchAll=true - Fetch all questions for a subject
     //?fullData=true&limit=5 - Fetch first 5 questions with full options and topics

@@ -357,6 +357,7 @@ export class QuestionService {
     topicId?: number,
     fetchAll = false,
     limit = 100,
+    user?: GetUserRequestDto,
   ): Promise<AdminQuestionResponseDto[]> {
     const questionList = await this.fetchAllLatestQuestions(
       fullData,
@@ -364,6 +365,7 @@ export class QuestionService {
       topicId,
       fetchAll,
       limit,
+      user,
     );
 
     if (!questionList || questionList.length === 0) {
@@ -382,12 +384,19 @@ export class QuestionService {
     topicId?: number,
     fetchAll = false,
     limit = 100,
+    user?: GetUserRequestDto,
   ): Promise<any[] | undefined> {
     // Step 1: fetch limited question IDs
     const idQb = this.questionRepo
       .createQueryBuilder('q')
       .select('q.id', 'id')
       .orderBy('q.id', 'DESC');
+
+    if (!user || user.role !== UserRoleEnum.ADMIN) {
+      idQb.andWhere('q.createdBy = :createdBy', {
+        createdBy: user?.id ?? 0,
+      });
+    }
 
     if (subjectId) {
       idQb.andWhere('q.subjectId = :subjectId', { subjectId });
@@ -426,6 +435,7 @@ export class QuestionService {
       .addSelect('question.marks', 'marks')
       .addSelect('question.hint', 'hint')
       .addSelect('question.answer', 'answer')
+      .addSelect('question.isWhitelisted', 'isWhitelisted')
       .addSelect('question.createdAt', 'question_createdAt')
       // subject
       .leftJoin('question.subject', 'subject')
@@ -475,6 +485,7 @@ export class QuestionService {
           orderId: row['orderId'] ?? null,
           hint: row['hint'] ?? null,
           answer: row['answer'] ?? null,
+          isWhitelisted: row['isWhitelisted'] ?? false,
           //map other fields
           createdAt: row['question_createdAt'] ?? null,
           subject: row['subject_id']
