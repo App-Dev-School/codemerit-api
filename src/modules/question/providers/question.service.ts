@@ -355,6 +355,8 @@ export class QuestionService {
     fullData = false,
     subjectId?: number,
     topicId?: number,
+    level?: number,
+    authorId?: number,
     fetchAll = false,
     limit = 100,
     user?: GetUserRequestDto,
@@ -363,6 +365,8 @@ export class QuestionService {
       fullData,
       subjectId,
       topicId,
+      level,
+      authorId,
       fetchAll,
       limit,
       user,
@@ -382,6 +386,8 @@ export class QuestionService {
     fullData = false,
     subjectId?: number,
     topicId?: number,
+    level?: number,
+    authorId?: number,
     fetchAll = false,
     limit = 100,
     user?: GetUserRequestDto,
@@ -406,6 +412,14 @@ export class QuestionService {
       idQb
         .innerJoin('q.questionTopics', 'qt')
         .andWhere('qt.topicId = :topicId', { topicId });
+    }
+
+    if (level) {
+      idQb.andWhere('q.level = :level', { level });
+    }
+
+    if (authorId) {
+      idQb.andWhere('q.createdBy = :authorId', { authorId });
     }
 
     if (!fetchAll) {
@@ -526,6 +540,28 @@ export class QuestionService {
     }
 
     return Array.from(map.values());
+  }
+
+  async getQuestionAuthors(): Promise<Array<{ id: number; name: string }>> {
+    const rows = await this.questionRepo
+      .createQueryBuilder('q')
+      .innerJoin('q.userCreatedBy', 'u')
+      .select('u.id', 'id')
+      .addSelect(
+        "CONCAT(COALESCE(u.firstName, ''), ' ', COALESCE(u.lastName, ''))",
+        'name',
+      )
+      .groupBy('u.id')
+      .addGroupBy('u.firstName')
+      .addGroupBy('u.lastName')
+      .orderBy('u.firstName', 'ASC')
+      .addOrderBy('u.lastName', 'ASC')
+      .getRawMany();
+
+    return rows.map((row) => ({
+      id: Number(row.id),
+      name: String(row.name || '').trim(),
+    }));
   }
 
   private async saveOption(

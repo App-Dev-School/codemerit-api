@@ -56,6 +56,8 @@ export class QuestionController {
     @Query('fullData') fullData?: string,
     @Query('subjectId') subjectId?: string,
     @Query('topicId') topicId?: string,
+    @Query('level') level?: string,
+    @Query('authorId') authorId?: string,
     @Query('fetchAll') fetchAll?: string,
     @Query('limit') limit?: string,
     @Request() req?: any,
@@ -81,6 +83,8 @@ export class QuestionController {
     const isFullData = fullData === 'true' || fullData === '1';
     const subjectIdNum = subjectId ? parseInt(subjectId, 10) : undefined;
     const topicIdNum = topicId ? parseInt(topicId, 10) : undefined;
+    const levelNum = level ? parseInt(level, 10) : undefined;
+    const authorIdNum = authorId ? parseInt(authorId, 10) : undefined;
     const fetchAllFlag = fetchAll === 'true' || fetchAll === '1';
     const limitNum = limit ? parseInt(limit, 10) : 100; // default 100
 
@@ -88,6 +92,8 @@ export class QuestionController {
       isFullData,
       subjectIdNum,
       topicIdNum,
+      levelNum,
+      authorIdNum,
       fetchAllFlag,
       limitNum,
       req.user,
@@ -111,6 +117,13 @@ export class QuestionController {
   ): Promise<ApiResponse<any>> {
     const result = await this.service.updateQuestion(id, dto, req.user);
     return new ApiResponse('Question updated successfully.', result);
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Get('authors')
+  async findQuestionAuthors(): Promise<ApiResponse<any>> {
+    const result = await this.service.getQuestionAuthors();
+    return new ApiResponse('Question authors fetched successfully.', result);
   }
 
   @Get(':slug')
