@@ -7,6 +7,7 @@ import {
   Request,
   UseGuards,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { Public } from 'src/core/auth/decorators/public.decorator';
 import { OptionalJwtAuthGuard } from 'src/core/auth/jwt/optional-jwt-auth-guard';
 import { AddUserSubjectsDto } from 'src/core/users/dtos/user-subject.dto';
@@ -44,20 +45,21 @@ export class MasterController {
     return this.subjectAnalyzer.getSubjectDashboardBySlug(slug, userId, true);
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Get('subjectTopicsDashboard')
   async subjectTopicsDashboard(
-    @Query('subjectId') subjectId: number,
-    @Request() req,
+    @Query('subjectId') subjectId?: string,
+    @Request() req?: any,
   ) {
-    const userId = req.user?.id;
-    if (subjectId > 0) {
+    const subjectIdNum = subjectId ? parseInt(subjectId, 10) : undefined;
+    if (subjectIdNum && subjectIdNum > 0) {
       return this.topicAnalysisProvider.getTopicStatsBySubject(
-        subjectId,
-        userId,
+        subjectIdNum,
+        req.user,
         false,
       );
     } else {
-      return await this.topicAnalysisProvider.getAllTopicStats(userId, false);
+      return await this.topicAnalysisProvider.getAllTopicStats(req.user, false);
     }
     // Single topic (fast)
     //const t1 = await topicAnalysisProvider.getTopicStatsById(42, userId, true);
@@ -95,9 +97,14 @@ export class MasterController {
   @UseGuards(OptionalJwtAuthGuard)
   @Get('routes')
   async getRoutes(@Request() req: any) {
-    const permissions = await this.userPermissionService.findUserPermissionList(req.user?.id);
-    const result = await this.masterService.getRoutesConfig(req.user?.role, permissions);
-    console.log("Routes for user", req.user);
+    const permissions = await this.userPermissionService.findUserPermissionList(
+      req.user?.id,
+    );
+    const result = await this.masterService.getRoutesConfig(
+      req.user?.role,
+      permissions,
+    );
+    console.log('Routes for user', req.user);
     return new ApiResponse('Routes fetched successfully.', result);
   }
 }

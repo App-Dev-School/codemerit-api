@@ -16,7 +16,6 @@ import { TopicAnalysisService } from './topic-analysis.service';
 
 @Injectable()
 export class MasterService {
-
   constructor(
     @InjectRepository(Subject)
     private subjectRepo: Repository<Subject>,
@@ -39,7 +38,10 @@ export class MasterService {
   /**
    * Delegates to RouteService for all route logic.
    */
-  async getRoutesConfig(userRole?: string, userPermissions: IUserPermissionDto[] = []) {
+  async getRoutesConfig(
+    userRole?: string,
+    userPermissions: IUserPermissionDto[] = [],
+  ) {
     return this.routeService.getRoutesConfig(userRole, userPermissions);
   }
 

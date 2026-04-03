@@ -69,7 +69,7 @@ export class Quiz extends AbstractEntity implements IQuiz {
 
   @Column({
     type: 'boolean',
-    default: true,
+    default: false,
   })
   isPublished: boolean;
 

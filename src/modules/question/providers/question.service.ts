@@ -355,15 +355,21 @@ export class QuestionService {
     fullData = false,
     subjectId?: number,
     topicId?: number,
+    level?: number,
+    authorId?: number,
     fetchAll = false,
     limit = 100,
+    user?: GetUserRequestDto,
   ): Promise<AdminQuestionResponseDto[]> {
     const questionList = await this.fetchAllLatestQuestions(
       fullData,
       subjectId,
       topicId,
+      level,
+      authorId,
       fetchAll,
       limit,
+      user,
     );
 
     if (!questionList || questionList.length === 0) {
@@ -380,14 +386,23 @@ export class QuestionService {
     fullData = false,
     subjectId?: number,
     topicId?: number,
+    level?: number,
+    authorId?: number,
     fetchAll = false,
     limit = 100,
+    user?: GetUserRequestDto,
   ): Promise<any[] | undefined> {
     // Step 1: fetch limited question IDs
     const idQb = this.questionRepo
       .createQueryBuilder('q')
       .select('q.id', 'id')
       .orderBy('q.id', 'DESC');
+
+    if (!user || user.role !== UserRoleEnum.ADMIN) {
+      idQb.andWhere('q.createdBy = :createdBy', {
+        createdBy: user?.id ?? 0,
+      });
+    }
 
     if (subjectId) {
       idQb.andWhere('q.subjectId = :subjectId', { subjectId });
@@ -397,6 +412,14 @@ export class QuestionService {
       idQb
         .innerJoin('q.questionTopics', 'qt')
         .andWhere('qt.topicId = :topicId', { topicId });
+    }
+
+    if (level) {
+      idQb.andWhere('q.level = :level', { level });
+    }
+
+    if (authorId) {
+      idQb.andWhere('q.createdBy = :authorId', { authorId });
     }
 
     if (!fetchAll) {
@@ -426,6 +449,7 @@ export class QuestionService {
       .addSelect('question.marks', 'marks')
       .addSelect('question.hint', 'hint')
       .addSelect('question.answer', 'answer')
+      .addSelect('question.isWhitelisted', 'isWhitelisted')
       .addSelect('question.createdAt', 'question_createdAt')
       // subject
       .leftJoin('question.subject', 'subject')
@@ -475,6 +499,7 @@ export class QuestionService {
           orderId: row['orderId'] ?? null,
           hint: row['hint'] ?? null,
           answer: row['answer'] ?? null,
+          isWhitelisted: row['isWhitelisted'] ?? false,
           //map other fields
           createdAt: row['question_createdAt'] ?? null,
           subject: row['subject_id']
@@ -515,6 +540,28 @@ export class QuestionService {
     }
 
     return Array.from(map.values());
+  }
+
+  async getQuestionAuthors(): Promise<Array<{ id: number; name: string }>> {
+    const rows = await this.questionRepo
+      .createQueryBuilder('q')
+      .innerJoin('q.userCreatedBy', 'u')
+      .select('u.id', 'id')
+      .addSelect(
+        "CONCAT(COALESCE(u.firstName, ''), ' ', COALESCE(u.lastName, ''))",
+        'name',
+      )
+      .groupBy('u.id')
+      .addGroupBy('u.firstName')
+      .addGroupBy('u.lastName')
+      .orderBy('u.firstName', 'ASC')
+      .addOrderBy('u.lastName', 'ASC')
+      .getRawMany();
+
+    return rows.map((row) => ({
+      id: Number(row.id),
+      name: String(row.name || '').trim(),
+    }));
   }
 
   private async saveOption(

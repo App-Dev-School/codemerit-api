@@ -7,11 +7,13 @@ import { PermissionsModule } from './shared-module/permissions.module';
 import { UserPermissionModule } from './user-permission/user-permission.module';
 import { QuizModule } from './quiz/quiz.module';
 import { AdminModule } from './admin/admin.module';
+import { LmsModule } from './lms/lms.module';
 import { NotificationModule } from './notification/notification.module';
 
 @Module({
   imports: [
     AdminModule,
+    LmsModule,
     PermissionsModule,
     SubjectsModule,
     QuestionModule,
