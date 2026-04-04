@@ -13,6 +13,7 @@ import { DataSource, Repository } from 'typeorm';
 import { TopicAnalysisService } from './topic-analysis.service';
 import { QuestionStatusEnum } from 'src/common/enum/question-status.enum';
 import { DifficultyLevelEnum } from 'src/common/enum/difficulty-lavel.enum';
+import { UserJobRole } from 'src/common/typeorm/entities/user-job-role.entity';
 
 @Injectable()
 export class SubjectAnalysisService {
@@ -25,6 +26,9 @@ export class SubjectAnalysisService {
 
     @InjectRepository(JobRole)
     private jobRoleRepo: Repository<JobRole>,
+
+    @InjectRepository(UserJobRole)
+    private userJobRoleRepo: Repository<UserJobRole>,
 
     @InjectRepository(UserSubject)
     private readonly userSubjectRepo: Repository<UserSubject>,
@@ -247,6 +251,35 @@ export class SubjectAnalysisService {
   }
 
   async getJobSubjectDashboards(userId: number, fullData = false) {
+  // Step 1: Get all job roles for the user
+  const userJobRoles = await this.userJobRoleRepo
+    .createQueryBuilder('ujr')
+    .select('ujr.jobRoleId', 'jobRoleId')
+    .where('ujr.userId = :userId', { userId })
+    .getRawMany();
+
+  if (!userJobRoles.length) return [];
+
+  const jobRoleIds = userJobRoles.map((r) => r.jobRoleId);
+
+  // Step 2: Get subjects mapped to these job roles
+  const roleSubjects = await this.jobRoleSubjectRepo
+    .createQueryBuilder('jrs')
+    .select('DISTINCT jrs.subjectId', 'subjectId')
+    .where('jrs.jobRoleId IN (:...jobRoleIds)', { jobRoleIds })
+    .getRawMany();
+
+  if (!roleSubjects.length) return [];
+
+  // Step 3: Fetch dashboards for unique subjects
+  return Promise.all(
+    roleSubjects.map((s) =>
+      this.getSubjectDashboard(+s.subjectId, userId, fullData),
+    ),
+  );
+}
+
+  async getJobSubjectDashboardsOLD(userId: number, fullData = false) {
     // Step 1: Get the user with designation (job role id)
     const user = await this.userRepo
       .createQueryBuilder('u')
@@ -254,7 +287,7 @@ export class SubjectAnalysisService {
       .where('u.id = :userId', { userId })
       .getOne();
 
-    if (!user?.designation) return [];
+    //if (!user?.designation) return [];
 
     // Step 2: Get subjects mapped to that job role
     const roleSubjects = await this.jobRoleSubjectRepo

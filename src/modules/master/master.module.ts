@@ -13,9 +13,10 @@ import { SubjectAnalysisService } from './providers/subject-analysis.service';
 import { User } from 'src/common/typeorm/entities/user.entity';
 import { UserPermission } from 'src/common/typeorm/entities/user-permission.entity';
 import { UserPermissionModule } from '../user-permission/user-permission.module';
+import { UserJobRole } from 'src/common/typeorm/entities/user-job-role.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, JobRole, Subject, JobRoleSubject, Topic, UserSubject, UserPermission]), UserPermissionModule],
+  imports: [TypeOrmModule.forFeature([User, JobRole, UserJobRole, Subject, JobRoleSubject, Topic, UserSubject, UserPermission]), UserPermissionModule],
   controllers: [MasterController],
   providers: [MasterService, SubjectAnalysisService, TopicAnalysisService, RouteService],
   exports: [MasterService, SubjectAnalysisService, TopicAnalysisService, RouteService]

@@ -138,8 +138,8 @@ export class UserPermissionService {
   async getAllUserPermissions() {
     const userPermissions = await this.userPermissionRepo.find({
       relations: ['user', 'permission'],
+      order: { id: 'DESC' },
     });
-
     return this.buildPermissionResponse(userPermissions);
   }
 

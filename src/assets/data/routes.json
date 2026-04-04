@@ -101,7 +101,7 @@
       ]
     },
     {
-      "path": "/dashboard/start",
+      "path": "/dashboard",
       "title": "My Dashboard",
       "iconType": "material-icons-outlined",
       "icon": "space_dashboard",
@@ -134,35 +134,6 @@
       "title": "Manage Users",
       "iconType": "material-icons-outlined",
       "icon": "supervised_user_circle",
-      "class": "",
-      "groupTitle": false,
-      "badge": "",
-      "badgeClass": "",
-      "role": [
-        "Admin"
-      ],
-      "submenu": []
-    },
-    {
-      "path": "/admin/questions/list",
-      "title": "Question Bank",
-      "iconType": "material-icons-outlined",
-      "icon": "question_answer",
-      "class": "",
-      "groupTitle": false,
-      "badge": "",
-      "badgeClass": "",
-      "role": [
-        "Admin",
-        "Manager"
-      ],
-      "submenu": []
-    },
-    {
-      "path": "/lms/topics/list",
-      "title": "Topic Manager",
-      "iconType": "material-icons-outlined",
-      "icon": "grain",
       "class": "",
       "groupTitle": false,
       "badge": "",

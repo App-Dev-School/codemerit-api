@@ -1,6 +1,6 @@
 export const userRoutes = [
   {
-    path: '/dashboard/start',
+    path: '/dashboard',
     title: 'My Dashboard',
     iconType: 'material-icons-outlined',
     icon: 'space_dashboard',

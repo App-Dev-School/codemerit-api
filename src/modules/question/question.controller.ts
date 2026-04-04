@@ -75,7 +75,7 @@ export class QuestionController {
       if (!isLmsManager) {
         throw new AppCustomException(
           HttpStatus.FORBIDDEN,
-          'Only ADMIN or LMS Manager can access question list.',
+          'You are not authorized to make this request.',
         );
       }
     }
@@ -101,6 +101,9 @@ export class QuestionController {
     //?subjectId=5&fetchAll=true - Fetch all questions for a subject
     //?fullData=true&limit=5 - Fetch first 5 questions with full options and topics
     //?fullData=true&topicId=11
+    if (!result || result.length === 0) {
+      return new ApiResponse('You have not created a question yet.', null);
+    }
     return new ApiResponse(`${result.length} Question(s) fetched.`, result);
   }
 

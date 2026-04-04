@@ -17,12 +17,14 @@ import { UserPermissionService } from 'src/modules/user-permission/providers/use
 import { TopicAnalysisService } from 'src/modules/master/providers/topic-analysis.service';
 import { SubjectAnalysisService } from 'src/modules/master/providers/subject-analysis.service';
 import { ApiUsageService } from 'src/common/services/api-usage.service';
+import { MasterService } from 'src/modules/master/providers/master.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly usersService: UserService,
     private readonly jwtService: JwtService,
+    private readonly masterService: MasterService,
     private readonly userProfileService: UserProfileService,
     private readonly userPermissionService: UserPermissionService,
     private readonly subjectAnalyzer: SubjectAnalysisService,
@@ -94,10 +96,10 @@ export class AuthService {
       user?.id,
       false,
     );
-    const topicStats = await this.topicAnalysisProvider.getAllTopicStats(
-      user?.id,
-      false,
-    );
+    // const topicStats = await this.topicAnalysisProvider.getAllTopicStats(
+    //   user?.id,
+    //   false,
+    // );
     const apiUsage = await this.apiUsageService.findByUserId(user?.id);
 
     // Fetch user job role enrollments
@@ -112,6 +114,8 @@ export class AuthService {
       jobRoleTitle: enrollment.jobRole?.title || null,
       createdAt: enrollment.createdAt,
     }));
+
+    const quizStats = await this.masterService.getUserQuizStats(userData.id);
 
     const response = new LoginResponseDto({
       id: userData.id,
@@ -130,8 +134,9 @@ export class AuthService {
       token,
       profile,
       permissions,
-      courseStats,
       userJobRoles,
+      courseStats,
+      quizStats,
       apiUsage: {
         count: apiUsage?.count ?? 0,
         lastHitAt: apiUsage?.lastHitAt ?? null,
