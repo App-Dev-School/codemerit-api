@@ -418,7 +418,7 @@ export class QuestionService {
       idQb.andWhere('q.level = :level', { level });
     }
 
-    if (authorId) {
+    if (authorId > 0) {
       idQb.andWhere('q.createdBy = :authorId', { authorId });
     }
 

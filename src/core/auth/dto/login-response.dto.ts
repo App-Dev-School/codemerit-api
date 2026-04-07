@@ -28,6 +28,7 @@ export class LoginResponseDto implements LoginUser {
   mySubjects: Subject[];
   permissions?: UserPermission[];
   courseStats?: any;
+  quizStats?: any;
   topicStats?: any;
   userJobRoles?: Array<{
     userId: number;
