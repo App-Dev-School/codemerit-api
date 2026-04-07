@@ -20,6 +20,7 @@ import { QuestionService } from './providers/question.service';
 import { AuthGuard } from '@nestjs/passport';
 import { PermissionsGuard } from 'src/common/policies/permissions.guard';
 import { RequirePermission } from 'src/common/policies/require-permission.decorator';
+import { DifficultyLevelEnum } from 'src/common/enum/difficulty-lavel.enum';
 import {
   UserPermissionEnum,
   UserPermissionTitleEnum,
@@ -83,7 +84,16 @@ export class QuestionController {
     const isFullData = fullData === 'true' || fullData === '1';
     const subjectIdNum = subjectId ? parseInt(subjectId, 10) : undefined;
     const topicIdNum = topicId ? parseInt(topicId, 10) : undefined;
-    const levelNum = level ? parseInt(level, 10) : undefined;
+    const levelMap: Record<string, number> = {
+      Easy: DifficultyLevelEnum.Easy,
+      Intermediate: DifficultyLevelEnum.Intermediate,
+      Advanced: DifficultyLevelEnum.Advanced,
+    };
+    const normalizedLevel = level?.trim();
+    const levelNum =
+      normalizedLevel && normalizedLevel !== ''
+        ? levelMap[normalizedLevel]
+        : undefined;
     const authorIdNum = authorId ? parseInt(authorId, 10) : undefined;
     const fetchAllFlag = fetchAll === 'true' || fetchAll === '1';
     const limitNum = limit ? parseInt(limit, 10) : 100; // default 100
