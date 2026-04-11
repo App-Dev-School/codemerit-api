@@ -45,6 +45,7 @@ export class LmsService {
         `SUM(CASE WHEN q.questionType = :general THEN 1 ELSE 0 END) as totalGeneral`,
         `SUM(CASE WHEN q.status = :approved THEN 1 ELSE 0 END) as totalApproved`,
         `SUM(CASE WHEN q.status = :pending THEN 1 ELSE 0 END) as totalPending`,
+        `SUM(CASE WHEN q.isWhitelisted = true THEN 1 ELSE 0 END) as totalWhitelisted`,
       ])
       .setParameters({
         trivia: QuestionTypeEnum.Trivia,
@@ -68,6 +69,7 @@ export class LmsService {
       totalGeneral: +questionStats.totalGeneral || 0,
       totalApproved,
       totalPending,
+      totalWhitelisted: +questionStats.totalWhitelisted || 0,
       chart: {
         labels: ['Approved', 'Pending'],
         values: [totalApproved, totalPending],
