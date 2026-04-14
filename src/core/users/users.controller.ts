@@ -8,7 +8,7 @@ import {
   Put,
   Query,
   Request,
-  UseGuards
+  UseGuards,
 } from '@nestjs/common';
 import { ApiResponse } from 'src/common/utils/api-response';
 import { Roles } from '../auth/decorators/roles.decorator';
@@ -18,12 +18,14 @@ import { UpdateUserDto } from './dtos/update-user.dto';
 import { UserRoleEnum } from './enums/user-roles.enum';
 import { UserProfileService } from './providers/user-profile.service';
 import { UserService } from './providers/user.service';
+import { SubjectAnalysisService } from 'src/modules/master/providers/subject-analysis.service';
 
 @Controller('apis/users')
 export class UsersController {
   constructor(
     private readonly usersService: UserService,
     private readonly userProfileService: UserProfileService,
+    private readonly subjectAnalysisService: SubjectAnalysisService,
   ) {}
   @Get('me')
   async getProfile(@Request() req): Promise<ApiResponse<any>> {
@@ -62,7 +64,15 @@ export class UsersController {
   ): Promise<ApiResponse<any>> {
     const result = await this.usersService.findByUsername(username);
     if (result) {
-      return new ApiResponse('User found.', result);
+      const courseStats =
+        await this.subjectAnalysisService.getJobSubjectDashboards(
+          result.id,
+          false,
+        );
+      return new ApiResponse('User found.', {
+        ...result,
+        courseStats,
+      });
     }
     return new ApiResponse('User not found.', result);
   }
