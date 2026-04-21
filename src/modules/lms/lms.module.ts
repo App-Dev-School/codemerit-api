@@ -10,9 +10,21 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Subject } from 'src/common/typeorm/entities/subject.entity';
 import { Quiz } from 'src/common/typeorm/entities/quiz.entity';
 import { QuizResult } from 'src/common/typeorm/entities/quiz-result.entity';
+import { UserPermissionModule } from '../user-permission/user-permission.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, Subject, Topic, Question, QuestionAttempt, Quiz, QuizResult])],
+  imports: [
+    TypeOrmModule.forFeature([
+      User,
+      Subject,
+      Topic,
+      Question,
+      QuestionAttempt,
+      Quiz,
+      QuizResult,
+    ]),
+    UserPermissionModule,
+  ],
   providers: [LmsService],
   controllers: [LmsController],
   exports: [LmsService],

@@ -36,6 +36,31 @@ export class LmsService {
     };
   }
 
+  async getUserStandardQuizzes(userId: number) {
+    const rows = await this.quizRepo
+      .createQueryBuilder('quiz')
+      .leftJoin(QuizResult, 'quizResult', 'quizResult.quizId = quiz.id')
+      .select('quiz.id', 'id')
+      .addSelect('quiz.title', 'title')
+      .addSelect('COUNT(quizResult.id)', 'totalAttempts')
+      .addSelect('COALESCE(ROUND(AVG(quizResult.score), 2), 0)', 'averageScore')
+      .where('quiz.createdBy = :userId', { userId })
+      .andWhere('quiz.quizType = :quizType', {
+        quizType: QuizTypeEnum.Standard,
+      })
+      .groupBy('quiz.id')
+      .addGroupBy('quiz.title')
+      .orderBy('quiz.createdAt', 'DESC')
+      .getRawMany();
+
+    return rows.map((row) => ({
+      id: Number(row.id),
+      title: row.title,
+      totalAttempts: Number(row.totalAttempts) || 0,
+      averageScore: Number(row.averageScore) || 0,
+    }));
+  }
+
   private async getQuestionStats(userId?: number) {
     const qb = this.questionRepo
       .createQueryBuilder('q')
