@@ -117,14 +117,24 @@ export class QuizService {
     const questionIds: number[] = createQuizDto?.questionIds ?? [];
 
     if (createQuizDto?.topicIds) {
-      const topicStr = String(createQuizDto.topicIds); // ensure it's a string
-      topicIds = topicStr.split(',').map((id) => parseInt(id.trim(), 10));
+      const topicStr = String(createQuizDto.topicIds);
+      topicIds = topicStr
+        .split(',')
+        .map((id) => parseInt(id.trim(), 10))
+        .filter((id) => Number.isInteger(id) && id > 0);
+    }
+    if (topicIds.length > 0) {
       quizCategory = 'Topic';
     }
 
     if (createQuizDto?.subjectIds) {
-      const subjectStr = String(createQuizDto.subjectIds); // ensure it's a string
-      subjectIds = subjectStr.split(',').map((id) => parseInt(id.trim(), 10));
+      const subjectStr = String(createQuizDto.subjectIds);
+      subjectIds = subjectStr
+        .split(',')
+        .map((id) => parseInt(id.trim(), 10))
+        .filter((id) => Number.isInteger(id) && id > 0);
+    }
+    if (subjectIds.length > 0) {
       quizCategory = 'Subject';
     }
 
@@ -275,9 +285,11 @@ export class QuizService {
       });
     } catch (error) {
       console.log('QuizBuilder #6: ERROR', error);
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error';
       throw new AppCustomException(
         HttpStatus.INTERNAL_SERVER_ERROR,
-        'Failed to save quiz and questions: ' + error.message,
+        'Failed to save quiz and questions: ' + errorMessage,
       );
     }
   }
@@ -340,8 +352,9 @@ export class QuizService {
 
   async getAllStandardQuizzes(): Promise<any[]> {
     const quizzes = await this.quizRepository.find({
-      where: { quizType: QuizTypeEnum.Standard, isPublished: true },
+      where: { quizType: QuizTypeEnum.Standard },
       order: { createdAt: 'DESC' },
+      relations: ['userCreatedBy'],
     });
 
     if (!quizzes.length) {
@@ -389,28 +402,70 @@ export class QuizService {
       settingsMap.set(settings.quizId, settings);
     }
 
-    return quizzes.map((quiz) => ({
-      ...quiz,
-      subjects: subjectMap.get(quiz.id) || [],
-      topics: topicMap.get(quiz.id) || [],
-      settings: settingsMap.get(quiz.id) || null,
-    }));
+    return quizzes.map((quiz: any) => {
+      const { userCreatedBy, ...quizData } = quiz;
+      const createdByName = `${userCreatedBy?.firstName || ''} ${
+        userCreatedBy?.lastName || ''
+      }`.trim();
+
+      return {
+        ...quizData,
+        createdBy: userCreatedBy
+          ? {
+              id: userCreatedBy.id,
+              name: createdByName || userCreatedBy.username || null,
+            }
+          : null,
+        status: quiz.isPublished ? 'Published' : 'Draft',
+        subjects: subjectMap.get(quiz.id) || [],
+        topics: topicMap.get(quiz.id) || [],
+        settings: settingsMap.get(quiz.id) || null,
+      };
+    });
   }
 
   async getUserQuizzes(userId: number): Promise<any> {
-    const quizzesByTitle = await this.quizRepository
+    const quizzes = await this.quizRepository
       .createQueryBuilder('quiz')
       .leftJoin(QuizResult, 'qr', 'qr.quizId = quiz.id')
-      .select('quiz.title', 'title')
-      .addSelect('COUNT(qr.id)', 'total_attempts')
+      .leftJoin(QuizQuestion, 'qq', 'qq.quizId = quiz.id')
+      .select('quiz.id', 'id')
+      .addSelect('quiz.title', 'title')
+      .addSelect('quiz.slug', 'slug')
+      .addSelect('quiz.quizType', 'quizType')
+      .addSelect('quiz.isPublished', 'isPublished')
+      .addSelect('quiz.label', 'label')
+      .addSelect('quiz.description', 'description')
+      .addSelect('quiz.createdAt', 'createdAt')
+      .addSelect('COUNT(DISTINCT qr.id)', 'totalAttempts')
+      .addSelect('COUNT(DISTINCT qq.id)', 'totalQuestions')
       .where('quiz.createdBy = :userId', { userId })
-      .groupBy('quiz.title')
-      .orderBy('quiz.title', 'ASC')
+      .andWhere('quiz.quizType = :quizType', {
+        quizType: QuizTypeEnum.Standard,
+      })
+      .groupBy('quiz.id')
+      .addGroupBy('quiz.title')
+      .addGroupBy('quiz.slug')
+      .addGroupBy('quiz.quizType')
+      .addGroupBy('quiz.isPublished')
+      .addGroupBy('quiz.label')
+      .addGroupBy('quiz.description')
+      .addGroupBy('quiz.createdAt')
+      .orderBy('quiz.createdAt', 'DESC')
       .getRawMany();
 
-    return quizzesByTitle.map((item) => ({
+    return quizzes.map((item) => ({
+      id: parseInt(item.id, 10),
       title: item.title,
-      total_attempts: parseInt(item.total_attempts, 10) || 0,
+      slug: item.slug,
+      quizType: item.quizType,
+      isPublished: Boolean(item.isPublished),
+      status: Boolean(item.isPublished) ? 'Published' : 'Draft',
+      label: item.label,
+      description: item.description,
+      createdAt: item.createdAt,
+      totalQuestions: parseInt(item.totalQuestions, 10) || 0,
+      totalAttempts: parseInt(item.totalAttempts, 10) || 0,
     }));
   }
 }

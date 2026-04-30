@@ -564,6 +564,63 @@ export class QuestionService {
     }));
   }
 
+  async getQuizBuilderQuestions(
+    subjectId?: number,
+    topicId?: number,
+    level?: number,
+  ): Promise<
+    Array<{
+      questionid: number;
+      question: string;
+      subjectid: number;
+      subject: string;
+      topicid: number;
+      topic: string;
+      level: number;
+    }>
+  > {
+    const qb = this.questionRepo
+      .createQueryBuilder('question')
+      .innerJoin('question.subject', 'subject')
+      .innerJoin('question.questionTopics', 'questionTopic')
+      .innerJoin('questionTopic.topic', 'topic')
+      .select('question.id', 'questionid')
+      .addSelect('question.question', 'question')
+      .addSelect('subject.id', 'subjectid')
+      .addSelect('subject.title', 'subject')
+      .addSelect('topic.id', 'topicid')
+      .addSelect('topic.title', 'topic')
+      .addSelect('question.level', 'level')
+      .where('question.status = :status', {
+        status: QuestionStatusEnum.Active,
+      })
+      .orderBy('question.id', 'DESC');
+
+    if (subjectId) {
+      qb.andWhere('question.subjectId = :subjectId', { subjectId });
+    }
+
+    if (topicId) {
+      qb.andWhere('questionTopic.topicId = :topicId', { topicId });
+    }
+
+    if (level) {
+      qb.andWhere('question.level = :level', { level });
+    }
+
+    const rows = await qb.getRawMany();
+
+    return rows.map((row) => ({
+      questionid: Number(row.questionid),
+      question: row.question,
+      subjectid: Number(row.subjectid),
+      subject: row.subject,
+      topicid: Number(row.topicid),
+      topic: row.topic,
+      level: Number(row.level),
+    }));
+  }
+
   private async saveOption(
     manager: EntityManager,
     optionsDtoList: CreateOptionDto[],
