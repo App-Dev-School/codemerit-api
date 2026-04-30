@@ -88,7 +88,7 @@ export class QuizController {
   @ApiOperation({
     summary: 'Get user created quizzes with attempt count',
   })
-  @Get('user-quiz/:userId')
+  @Get('standard/user/:userId')
   async getUserQuizzes(
     @Param('userId', ParseIntPipe) userId: number,
   ): Promise<ApiResponse<any>> {

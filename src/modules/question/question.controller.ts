@@ -117,6 +117,67 @@ export class QuestionController {
     return new ApiResponse(`${result.length} Question(s) fetched.`, result);
   }
 
+  private async ensureLmsAccess(userId: number) {
+    const permissions =
+      await this.userPermissionService.findUserPermissionList(userId);
+
+    const isLmsManager = permissions.some(
+      (permission: any) =>
+        Number(permission.permissionId) === 4 ||
+        permission.permissionName === UserPermissionEnum.LmsManager,
+    );
+
+    if (!isLmsManager) {
+      throw new AppCustomException(
+        HttpStatus.FORBIDDEN,
+        'You are not authorized to make this request.',
+      );
+    }
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Get('quizBuilder')
+  async findQuizBuilderQuestions(
+    @Query('subjectId') subjectId?: string,
+    @Query('subjectIds') subjectIds?: string,
+    @Query('topicId') topicId?: string,
+    @Query('topicIds') topicIds?: string,
+    @Query('level') level?: string,
+    @Request() req?: any,
+  ): Promise<ApiResponse<any>> {
+    await this.ensureLmsAccess(req?.user?.id);
+
+    const subjectIdValue = subjectId ?? subjectIds;
+    const topicIdValue = topicId ?? topicIds;
+
+    const subjectIdNum = subjectIdValue
+      ? parseInt(subjectIdValue, 10)
+      : undefined;
+    const topicIdNum = topicIdValue ? parseInt(topicIdValue, 10) : undefined;
+
+    const levelMap: Record<string, number> = {
+      Easy: DifficultyLevelEnum.Easy,
+      Intermediate: DifficultyLevelEnum.Intermediate,
+      Advanced: DifficultyLevelEnum.Advanced,
+    };
+    const normalizedLevel = level?.trim();
+    const numericLevel = normalizedLevel ? Number(normalizedLevel) : NaN;
+    const levelNum =
+      normalizedLevel && normalizedLevel !== ''
+        ? Number.isNaN(numericLevel)
+          ? levelMap[normalizedLevel]
+          : numericLevel
+        : undefined;
+
+    const result = await this.service.getQuizBuilderQuestions(
+      subjectIdNum,
+      topicIdNum,
+      levelNum,
+    );
+
+    return new ApiResponse('Questions fetched successfully.', result);
+  }
+
   @UseGuards(AuthGuard('jwt'), PermissionsGuard)
   @RequirePermission(
     UserPermissionEnum.QuestionAuthorUpdate,
