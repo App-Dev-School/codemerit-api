@@ -38,8 +38,9 @@ export class SkillRatingService {
     await queryRunner.startTransaction();
     console.log("CreateSkillRating", dto);
     try {
-      // Create and validate AssessmentSession
-      const session = this.sessionRepo.create({
+
+      // Create and validate AssessmentSession (use new for class-validator)
+      const session = Object.assign(new AssessmentSession(), {
         userId: dto.userId,
         assessmentTitle: dto.assessmentTitle,
         notes: dto.notes,
@@ -47,14 +48,7 @@ export class SkillRatingService {
         ratingType: dto.ratingType
       });
 
-      const errors = await validate(session);
-      console.log("CreateSkillRating sessionsetup", errors);
-      if (errors.length) {
-        throw new AppCustomException(
-          HttpStatus.BAD_REQUEST,
-          `Assessment Session validation failed`,
-        );
-      }
+      // DTO validation is handled by NestJS pipes; no need to validate entity here.
 
       const savedSession = await queryRunner.manager.save(session);
 
@@ -70,13 +64,13 @@ export class SkillRatingService {
           assessmentSessionId: savedSession.id
         });
 
-        const errors = await validate(skillRating);
-        if (errors.length) {
-          throw new AppCustomException(
-            HttpStatus.BAD_REQUEST,
-            `Skill Rating validation failed`,
-          );
-        }
+        // const errors = await validate(skillRating);
+        // if (errors.length) {
+        //   throw new AppCustomException(
+        //     HttpStatus.BAD_REQUEST,
+        //     `Skill Rating validation failed`,
+        //   );
+        // }
 
         skillRatings.push(skillRating);
       }

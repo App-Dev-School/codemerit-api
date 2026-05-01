@@ -67,7 +67,7 @@ export class AssessmentSession
     cascade: true,
     eager: true,
   })
-  skillRatings: SkillRating[];
+  skillRatings?: SkillRating[];
 
   @ManyToOne(() => User, { eager: true })
   @JoinColumn({ name: 'userId', referencedColumnName: 'id' })
