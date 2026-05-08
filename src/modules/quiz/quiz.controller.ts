@@ -5,14 +5,21 @@ import {
   Param,
   ParseIntPipe,
   Post,
+  Put,
+  Request,
+  UseGuards,
+  HttpStatus,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { ApiResponse } from 'src/common/utils/api-response';
 import { Public } from 'src/core/auth/decorators/public.decorator';
 import { CreateQuizDto } from './dtos/create-quiz.dto';
+import { UpdateQuizDto } from './dtos/update-quiz.dto';
 import { SubmitQuizDto } from './dtos/submit-quiz.dto';
 import { QuizService } from './providers/quiz.service';
 import { QuizResultService } from './providers/quiz-result.service';
 import { ApiOperation } from '@nestjs/swagger';
+import { AppCustomException } from 'src/common/exceptions/app-custom-exception.filter';
 
 @Controller('apis/quiz')
 export class QuizController {
@@ -83,6 +90,33 @@ export class QuizController {
   async getAllStandardQuizzes(): Promise<ApiResponse<any>> {
     const result = await this.quizService.getAllStandardQuizzes();
     return new ApiResponse('Standard quizzes fetched', result);
+  }
+
+  @ApiOperation({
+    summary: 'Update a Standard Quiz',
+    description:
+      'Updates an existing Standard quiz with new questions, subjects, topics, and settings.',
+  })
+  @UseGuards(AuthGuard('jwt'))
+  @Put('standard/:quizId')
+  async updateQuiz(
+    @Param('quizId', ParseIntPipe) quizId: number,
+    @Body() updateQuizDto: UpdateQuizDto,
+    @Request() req: any,
+  ): Promise<ApiResponse<any>> {
+    if (!req?.user?.id) {
+      throw new AppCustomException(
+        HttpStatus.UNAUTHORIZED,
+        'User not authenticated.',
+      );
+    }
+    
+    const result = await this.quizService.updateQuiz(
+      quizId,
+      updateQuizDto,
+      req.user.id,
+    );
+    return new ApiResponse('Quiz updated successfully', result);
   }
 
   @ApiOperation({
