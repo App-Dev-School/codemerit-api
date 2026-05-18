@@ -138,22 +138,29 @@ export class QuestionController {
   @UseGuards(AuthGuard('jwt'))
   @Get('quizBuilder')
   async findQuizBuilderQuestions(
-    @Query('subjectId') subjectId?: string,
     @Query('subjectIds') subjectIds?: string,
-    @Query('topicId') topicId?: string,
     @Query('topicIds') topicIds?: string,
     @Query('level') level?: string,
     @Request() req?: any,
   ): Promise<ApiResponse<any>> {
     await this.ensureLmsAccess(req?.user?.id);
 
-    const subjectIdValue = subjectId ?? subjectIds;
-    const topicIdValue = topicId ?? topicIds;
+    const parseIds = (value?: string): number[] => {
+      if (!value) {
+        return [];
+      }
+      return Array.from(
+        new Set(
+          String(value)
+            .split(',')
+            .map((item) => parseInt(item.trim(), 10))
+            .filter((id) => Number.isInteger(id) && id > 0),
+        ),
+      );
+    };
 
-    const subjectIdNum = subjectIdValue
-      ? parseInt(subjectIdValue, 10)
-      : undefined;
-    const topicIdNum = topicIdValue ? parseInt(topicIdValue, 10) : undefined;
+    const subjectIdsFinal = parseIds(subjectIds);
+    const topicIdsFinal = parseIds(topicIds);
 
     const levelMap: Record<string, number> = {
       Easy: DifficultyLevelEnum.Easy,
@@ -170,8 +177,8 @@ export class QuestionController {
         : undefined;
 
     const result = await this.service.getQuizBuilderQuestions(
-      subjectIdNum,
-      topicIdNum,
+      subjectIdsFinal.length > 0 ? subjectIdsFinal : undefined,
+      topicIdsFinal.length > 0 ? topicIdsFinal : undefined,
       levelNum,
     );
 

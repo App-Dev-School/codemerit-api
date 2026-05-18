@@ -565,8 +565,8 @@ export class QuestionService {
   }
 
   async getQuizBuilderQuestions(
-    subjectId?: number,
-    topicId?: number,
+    subjectIds?: number[],
+    topicIds?: number[],
     level?: number,
   ): Promise<
     Array<{
@@ -596,12 +596,16 @@ export class QuestionService {
       })
       .orderBy('question.id', 'DESC');
 
-    if (subjectId) {
-      qb.andWhere('question.subjectId = :subjectId', { subjectId });
+    if (subjectIds && subjectIds.length > 0) {
+      qb.andWhere('question.subjectId IN (:...subjectIds)', {
+        subjectIds,
+      });
     }
 
-    if (topicId) {
-      qb.andWhere('questionTopic.topicId = :topicId', { topicId });
+    if (topicIds && topicIds.length > 0) {
+      qb.andWhere('questionTopic.topicId IN (:...topicIds)', {
+        topicIds,
+      });
     }
 
     if (level) {
