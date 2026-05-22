@@ -27,6 +27,8 @@ import { DataSource, In, Repository } from 'typeorm';
 import { CreateQuizDto } from '../dtos/create-quiz.dto';
 import { UpdateQuizDto } from '../dtos/update-quiz.dto';
 import { SubmitQuizDto } from '../dtos/submit-quiz.dto';
+import { Question } from 'src/common/typeorm/entities/question.entity';
+import { PublishedQuizFilterDto } from '../dtos/published-quiz.dto';
 
 @Injectable()
 export class QuizService {
@@ -470,6 +472,239 @@ export class QuizService {
       totalAttempts: parseInt(item.totalAttempts, 10) || 0,
     }));
   }
+
+
+  async getPublishedQuizzes(
+  filters: PublishedQuizFilterDto,
+): Promise<any[]> {
+
+  const query = this.quizRepository
+    .createQueryBuilder('quiz')
+    .distinct(true)
+
+    .leftJoinAndSelect(
+      'quiz.settings',
+      'settings',
+    )
+
+    .leftJoinAndSelect(
+      'quiz.userCreatedBy',
+      'userCreatedBy',
+    )
+
+    // Subject Mapping
+    .leftJoin(
+      QuizSubject,
+      'quizSubjects',
+      'quizSubjects.quizId = quiz.id',
+    )
+
+    // Topic Mapping
+    .leftJoin(
+      QuizTopic,
+      'quizTopics',
+      'quizTopics.quizId = quiz.id',
+    )
+
+    .where(
+      'quiz.isPublished = :isPublished',
+      {
+        isPublished: true,
+      },
+    )
+
+    .andWhere(
+      'quiz.quizType = :quizType',
+      {
+        quizType:
+          QuizTypeEnum.Standard,
+      },
+    );
+
+  /*
+    SUBJECT FILTER
+    subjectId = 0 => ignore filter
+  */
+  if (
+    filters.subjectId &&
+    Number(filters.subjectId) !== 0
+  ) {
+
+    query.andWhere(
+      'quizSubjects.subjectId = :subjectId',
+      {
+        subjectId:
+          filters.subjectId,
+      },
+    );
+  }
+
+  /*
+    TOPIC FILTER
+    topicId = 0 => ignore filter
+  */
+  if (
+    filters.topicId &&
+    Number(filters.topicId) !== 0
+  ) {
+
+    query.andWhere(
+      'quizTopics.topicId = :topicId',
+      {
+        topicId:
+          filters.topicId,
+      },
+    );
+  }
+
+  /*
+    If filters are empty/0
+    => no extra filters
+    => fetch all quizzes
+  */
+
+  query.orderBy(
+    'quiz.createdAt',
+    'DESC',
+  );
+
+  const quizzes =
+    await query.getMany();
+
+  if (!quizzes.length) {
+    return [];
+  }
+
+  const quizIds = quizzes.map(
+    (quiz) => quiz.id,
+  );
+
+  /*
+    TOTAL ATTEMPTS
+  */
+  const attempts =
+    await this.quizResultRepository
+      .createQueryBuilder('qr')
+      .select(
+        'qr.quizId',
+        'quizId',
+      )
+      .addSelect(
+        'COUNT(qr.id)',
+        'totalAttempts',
+      )
+      .where(
+        'qr.quizId IN (:...quizIds)',
+        {
+          quizIds,
+        },
+      )
+      .groupBy('qr.quizId')
+      .getRawMany();
+
+  const attemptMap = new Map<
+    number,
+    number
+  >();
+
+  for (const item of attempts) {
+
+    attemptMap.set(
+      Number(item.quizId),
+      Number(item.totalAttempts),
+    );
+  }
+
+  /*
+    TOTAL QUESTIONS
+  */
+  const questionCounts =
+    await this.quizQuestionRepo
+      .createQueryBuilder('qq')
+      .select(
+        'qq.quizId',
+        'quizId',
+      )
+      .addSelect(
+        'COUNT(qq.id)',
+        'totalQuestions',
+      )
+      .where(
+        'qq.quizId IN (:...quizIds)',
+        {
+          quizIds,
+        },
+      )
+      .groupBy('qq.quizId')
+      .getRawMany();
+
+  const questionCountMap =
+    new Map<number, number>();
+
+  for (const item of questionCounts) {
+
+    questionCountMap.set(
+      Number(item.quizId),
+      Number(item.totalQuestions),
+    );
+  }
+
+  /*
+    FINAL RESPONSE
+  */
+  return quizzes.map(
+    (quiz: any) => {
+
+      const {
+        userCreatedBy,
+        ...quizData
+      } = quiz;
+
+      const createdByName = `${
+        userCreatedBy?.firstName || ''
+      } ${
+        userCreatedBy?.lastName || ''
+      }`.trim();
+
+      return {
+
+        ...quizData,
+
+        createdBy:
+          userCreatedBy
+            ? {
+                id:
+                  userCreatedBy.id,
+
+                name:
+                  createdByName ||
+                  userCreatedBy.username ||
+                  null,
+              }
+            : null,
+
+        status:
+          quiz.isPublished
+            ? 'Published'
+            : 'Draft',
+
+        totalQuestions:
+          questionCountMap.get(
+            quiz.id,
+          ) || 0,
+
+        totalAttempts:
+          attemptMap.get(
+            quiz.id,
+          ) || 0,
+
+        settings:
+          quiz.settings || null,
+      };
+    },
+  );
+}
+  
 
   async updateQuiz(
     quizId: number,
