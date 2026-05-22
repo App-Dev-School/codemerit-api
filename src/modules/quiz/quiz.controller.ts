@@ -5,14 +5,23 @@ import {
   Param,
   ParseIntPipe,
   Post,
+  Put,
+  Request,
+  UseGuards,
+  HttpStatus,
+  Query,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { ApiResponse } from 'src/common/utils/api-response';
 import { Public } from 'src/core/auth/decorators/public.decorator';
 import { CreateQuizDto } from './dtos/create-quiz.dto';
+import { UpdateQuizDto } from './dtos/update-quiz.dto';
 import { SubmitQuizDto } from './dtos/submit-quiz.dto';
 import { QuizService } from './providers/quiz.service';
 import { QuizResultService } from './providers/quiz-result.service';
 import { ApiOperation } from '@nestjs/swagger';
+import { AppCustomException } from 'src/common/exceptions/app-custom-exception.filter';
+import { PublishedQuizFilterDto } from './dtos/published-quiz.dto';
 
 @Controller('apis/quiz')
 export class QuizController {
@@ -86,6 +95,33 @@ export class QuizController {
   }
 
   @ApiOperation({
+    summary: 'Update a Standard Quiz',
+    description:
+      'Updates an existing Standard quiz with new questions, subjects, topics, and settings.',
+  })
+  @UseGuards(AuthGuard('jwt'))
+  @Put('standard/:quizId')
+  async updateQuiz(
+    @Param('quizId', ParseIntPipe) quizId: number,
+    @Body() updateQuizDto: UpdateQuizDto,
+    @Request() req: any,
+  ): Promise<ApiResponse<any>> {
+    if (!req?.user?.id) {
+      throw new AppCustomException(
+        HttpStatus.UNAUTHORIZED,
+        'User not authenticated.',
+      );
+    }
+    
+    const result = await this.quizService.updateQuiz(
+      quizId,
+      updateQuizDto,
+      req.user.id,
+    );
+    return new ApiResponse('Quiz updated successfully', result);
+  }
+
+  @ApiOperation({
     summary: 'Get user created quizzes with attempt count',
   })
   @Get('standard/user/:userId')
@@ -95,4 +131,18 @@ export class QuizController {
     const result = await this.quizService.getUserQuizzes(Number(userId));
     return new ApiResponse('User quizzes fetched successfully', result);
   }
+
+  @Public()
+  @ApiOperation({
+  summary: 'Get all published quizzes with questions and settings',
+})
+
+@Get('standard/published')
+async getPublishedQuizzes( @Query() filters: PublishedQuizFilterDto): Promise<ApiResponse<any>> {
+  const result = await this.quizService.getPublishedQuizzes(filters);
+  return new ApiResponse(
+    'Published quizzes fetched successfully',
+    result,
+  );
+}
 }

@@ -23,6 +23,8 @@ export class QuizSubject extends AbstractEntity implements IQuizSubject {
   })
   quizId: number;
 
+  
+
   @ManyToOne(() => Quiz)
   @JoinColumn({ name: 'quizId', referencedColumnName: 'id' })
   quiz: Quiz;

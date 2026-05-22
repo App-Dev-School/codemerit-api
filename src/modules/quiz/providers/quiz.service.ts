@@ -25,7 +25,10 @@ import { QuestionService } from 'src/modules/question/providers/question.service
 import { UserQuestionService } from 'src/modules/question/providers/user-question.service';
 import { DataSource, In, Repository } from 'typeorm';
 import { CreateQuizDto } from '../dtos/create-quiz.dto';
+import { UpdateQuizDto } from '../dtos/update-quiz.dto';
 import { SubmitQuizDto } from '../dtos/submit-quiz.dto';
+import { Question } from 'src/common/typeorm/entities/question.entity';
+import { PublishedQuizFilterDto } from '../dtos/published-quiz.dto';
 
 @Injectable()
 export class QuizService {
@@ -52,10 +55,11 @@ export class QuizService {
 
   async fetchQuizBySlug(slug: string): Promise<any> {
     const quiz = await this.quizRepository
-      .createQueryBuilder('quiz')
-      .leftJoinAndSelect('quiz.quizQuestions', 'quizQuestion')
-      .where('quiz.slug = :slug', { slug })
-      .getOne();
+  .createQueryBuilder('quiz')
+  .leftJoinAndSelect('quiz.quizQuestions', 'quizQuestion')
+  .leftJoinAndSelect('quiz.settings', 'settings')
+  .where('quiz.slug = :slug', { slug })
+  .getOne();
 
     if (!quiz) {
       throw new AppCustomException(HttpStatus.NOT_FOUND, `Quiz not found.`);
@@ -467,5 +471,409 @@ export class QuizService {
       totalQuestions: parseInt(item.totalQuestions, 10) || 0,
       totalAttempts: parseInt(item.totalAttempts, 10) || 0,
     }));
+  }
+
+
+  async getPublishedQuizzes(
+  filters: PublishedQuizFilterDto,
+): Promise<any[]> {
+
+  const query = this.quizRepository
+    .createQueryBuilder('quiz')
+    .distinct(true)
+
+    .leftJoinAndSelect(
+      'quiz.settings',
+      'settings',
+    )
+
+    .leftJoinAndSelect(
+      'quiz.userCreatedBy',
+      'userCreatedBy',
+    )
+
+    // Subject Mapping
+    .leftJoin(
+      QuizSubject,
+      'quizSubjects',
+      'quizSubjects.quizId = quiz.id',
+    )
+
+    // Topic Mapping
+    .leftJoin(
+      QuizTopic,
+      'quizTopics',
+      'quizTopics.quizId = quiz.id',
+    )
+
+    .where(
+      'quiz.isPublished = :isPublished',
+      {
+        isPublished: true,
+      },
+    )
+
+    .andWhere(
+      'quiz.quizType = :quizType',
+      {
+        quizType:
+          QuizTypeEnum.Standard,
+      },
+    );
+
+  /*
+    SUBJECT FILTER
+    subjectId = 0 => ignore filter
+  */
+  if (
+    filters.subjectId &&
+    Number(filters.subjectId) !== 0
+  ) {
+
+    query.andWhere(
+      'quizSubjects.subjectId = :subjectId',
+      {
+        subjectId:
+          filters.subjectId,
+      },
+    );
+  }
+
+  /*
+    TOPIC FILTER
+    topicId = 0 => ignore filter
+  */
+  if (
+    filters.topicId &&
+    Number(filters.topicId) !== 0
+  ) {
+
+    query.andWhere(
+      'quizTopics.topicId = :topicId',
+      {
+        topicId:
+          filters.topicId,
+      },
+    );
+  }
+
+  /*
+    If filters are empty/0
+    => no extra filters
+    => fetch all quizzes
+  */
+
+  query.orderBy(
+    'quiz.createdAt',
+    'DESC',
+  );
+
+  const quizzes =
+    await query.getMany();
+
+  if (!quizzes.length) {
+    return [];
+  }
+
+  const quizIds = quizzes.map(
+    (quiz) => quiz.id,
+  );
+
+  /*
+    TOTAL ATTEMPTS
+  */
+  const attempts =
+    await this.quizResultRepository
+      .createQueryBuilder('qr')
+      .select(
+        'qr.quizId',
+        'quizId',
+      )
+      .addSelect(
+        'COUNT(qr.id)',
+        'totalAttempts',
+      )
+      .where(
+        'qr.quizId IN (:...quizIds)',
+        {
+          quizIds,
+        },
+      )
+      .groupBy('qr.quizId')
+      .getRawMany();
+
+  const attemptMap = new Map<
+    number,
+    number
+  >();
+
+  for (const item of attempts) {
+
+    attemptMap.set(
+      Number(item.quizId),
+      Number(item.totalAttempts),
+    );
+  }
+
+  /*
+    TOTAL QUESTIONS
+  */
+  const questionCounts =
+    await this.quizQuestionRepo
+      .createQueryBuilder('qq')
+      .select(
+        'qq.quizId',
+        'quizId',
+      )
+      .addSelect(
+        'COUNT(qq.id)',
+        'totalQuestions',
+      )
+      .where(
+        'qq.quizId IN (:...quizIds)',
+        {
+          quizIds,
+        },
+      )
+      .groupBy('qq.quizId')
+      .getRawMany();
+
+  const questionCountMap =
+    new Map<number, number>();
+
+  for (const item of questionCounts) {
+
+    questionCountMap.set(
+      Number(item.quizId),
+      Number(item.totalQuestions),
+    );
+  }
+
+  /*
+    FINAL RESPONSE
+  */
+  return quizzes.map(
+    (quiz: any) => {
+
+      const {
+        userCreatedBy,
+        ...quizData
+      } = quiz;
+
+      const createdByName = `${
+        userCreatedBy?.firstName || ''
+      } ${
+        userCreatedBy?.lastName || ''
+      }`.trim();
+
+      return {
+
+        ...quizData,
+
+        createdBy:
+          userCreatedBy
+            ? {
+                id:
+                  userCreatedBy.id,
+
+                name:
+                  createdByName ||
+                  userCreatedBy.username ||
+                  null,
+              }
+            : null,
+
+        status:
+          quiz.isPublished
+            ? 'Published'
+            : 'Draft',
+
+        totalQuestions:
+          questionCountMap.get(
+            quiz.id,
+          ) || 0,
+
+        totalAttempts:
+          attemptMap.get(
+            quiz.id,
+          ) || 0,
+
+        settings:
+          quiz.settings || null,
+      };
+    },
+  );
+}
+  
+
+  async updateQuiz(
+    quizId: number,
+    updateQuizDto: UpdateQuizDto,
+    userId: number,
+  ): Promise<Quiz> {
+    // Fetch the quiz with createdBy field selected (it has select: false in entity)
+    const quiz = await this.quizRepository
+      .createQueryBuilder('quiz')
+      .addSelect('quiz.createdBy')
+      .where('quiz.id = :id', { id: quizId })
+      .getOne();
+
+    if (!quiz) {
+      throw new AppCustomException(
+        HttpStatus.NOT_FOUND,
+        `Quiz with ID ${quizId} not found.`,
+      );
+    }
+
+    if (quiz.createdBy !== userId) {
+      throw new AppCustomException(
+        HttpStatus.FORBIDDEN,
+        'You are not authorized to update this quiz.',
+      );
+    }
+
+    if (quiz.quizType !== QuizTypeEnum.Standard) {
+      throw new AppCustomException(
+        HttpStatus.BAD_REQUEST,
+        'Only Standard quizzes can be updated.',
+      );
+    }
+
+    // Parse IDs from strings if provided
+    let subjectIds: number[] = [];
+    let topicIds: number[] = [];
+    let questionIds: number[] = updateQuizDto?.questionIds ?? [];
+
+    if (updateQuizDto?.subjectIds) {
+      const subjectStr = String(updateQuizDto.subjectIds);
+      subjectIds = subjectStr
+        .split(',')
+        .map((id) => parseInt(id.trim(), 10))
+        .filter((id) => Number.isInteger(id) && id > 0);
+    }
+
+    if (updateQuizDto?.topicIds) {
+      const topicStr = String(updateQuizDto.topicIds);
+      topicIds = topicStr
+        .split(',')
+        .map((id) => parseInt(id.trim(), 10))
+        .filter((id) => Number.isInteger(id) && id > 0);
+    }
+
+    // Update quiz properties
+    if (updateQuizDto.title) {
+      quiz.title = updateQuizDto.title;
+      // Generate new slug if title changed
+      let slug = generateSlug(updateQuizDto.title);
+      let existingSlug = await this.quizRepository.findOne({
+        where: { slug },
+      });
+      while (existingSlug && existingSlug.id !== quizId) {
+        slug = generateUniqueSlug(updateQuizDto.title);
+        existingSlug = await this.quizRepository.findOne({
+          where: { slug },
+        });
+      }
+      quiz.slug = slug;
+    }
+
+    if (updateQuizDto.shortDesc !== undefined) {
+      quiz.shortDesc = updateQuizDto.shortDesc;
+    }
+
+    if (updateQuizDto.description !== undefined) {
+      quiz.description = updateQuizDto.description;
+    }
+
+    if (updateQuizDto.label !== undefined) {
+      quiz.label = updateQuizDto.label;
+    }
+
+    if (updateQuizDto.isPublished !== undefined) {
+      quiz.isPublished = updateQuizDto.isPublished;
+    }
+
+    if (updateQuizDto.goal !== undefined) {
+      quiz.goal = updateQuizDto.goal;
+    }
+
+    return this.dataSource.transaction(async (manager) => {
+      // Save updated quiz
+      const updatedQuiz = await manager.save(Quiz, quiz);
+
+      // Update questions if provided
+      if (questionIds.length > 0) {
+        // Delete existing quiz questions
+        await manager.delete(QuizQuestion, { quizId: updatedQuiz.id });
+
+        // Create new quiz questions
+        const quizQuestions: QuizQuestion[] = [];
+        for (const qId of questionIds) {
+          const quizQuestion = new QuizQuestion();
+          quizQuestion.quizId = updatedQuiz.id;
+          quizQuestion.questionId = qId;
+          quizQuestions.push(quizQuestion);
+        }
+        await manager.save(QuizQuestion, quizQuestions);
+      }
+
+      // Update subjects if provided
+      if (subjectIds.length > 0 || updateQuizDto.subjectIds !== undefined) {
+        // Delete existing quiz subjects
+        await manager.delete(QuizSubject, { quizId: updatedQuiz.id });
+
+        // Create new quiz subjects
+        if (subjectIds.length > 0) {
+          const quizSubjects: QuizSubject[] = [];
+          for (const sId of subjectIds) {
+            const quizSubject = new QuizSubject();
+            quizSubject.quizId = updatedQuiz.id;
+            quizSubject.subjectId = sId;
+            quizSubjects.push(quizSubject);
+          }
+          await manager.save(QuizSubject, quizSubjects);
+        }
+      }
+
+      // Update topics if provided
+      if (topicIds.length > 0 || updateQuizDto.topicIds !== undefined) {
+        // Delete existing quiz topics
+        await manager.delete(QuizTopic, { quizId: updatedQuiz.id });
+
+        // Create new quiz topics
+        if (topicIds.length > 0) {
+          const quizTopics: QuizTopic[] = [];
+          for (const tId of topicIds) {
+            const quizTopic = new QuizTopic();
+            quizTopic.quizId = updatedQuiz.id;
+            quizTopic.topicId = tId;
+            quizTopics.push(quizTopic);
+          }
+          await manager.save(QuizTopic, quizTopics);
+        }
+      }
+
+      // Update settings if provided
+      if (updateQuizDto.settings) {
+        const existingSettings = await manager.findOne(QuizSettings, {
+          where: { quizId: updatedQuiz.id },
+        });
+
+        if (existingSettings) {
+          // Update existing settings
+          Object.assign(existingSettings, updateQuizDto.settings);
+          await manager.save(QuizSettings, existingSettings);
+        } else {
+          // Create new settings
+          const quizSettings = manager.create(QuizSettings, {
+            ...updateQuizDto.settings,
+            quizId: updatedQuiz.id,
+          });
+          await manager.save(QuizSettings, quizSettings);
+        }
+      }
+
+      return updatedQuiz;
+    });
   }
 }
