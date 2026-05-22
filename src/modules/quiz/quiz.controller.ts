@@ -9,6 +9,7 @@ import {
   Request,
   UseGuards,
   HttpStatus,
+  Query,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiResponse } from 'src/common/utils/api-response';
@@ -20,6 +21,7 @@ import { QuizService } from './providers/quiz.service';
 import { QuizResultService } from './providers/quiz-result.service';
 import { ApiOperation } from '@nestjs/swagger';
 import { AppCustomException } from 'src/common/exceptions/app-custom-exception.filter';
+import { PublishedQuizFilterDto } from './dtos/published-quiz.dto';
 
 @Controller('apis/quiz')
 export class QuizController {
@@ -129,4 +131,18 @@ export class QuizController {
     const result = await this.quizService.getUserQuizzes(Number(userId));
     return new ApiResponse('User quizzes fetched successfully', result);
   }
+
+  @Public()
+  @ApiOperation({
+  summary: 'Get all published quizzes with questions and settings',
+})
+
+@Get('standard/published')
+async getPublishedQuizzes( @Query() filters: PublishedQuizFilterDto): Promise<ApiResponse<any>> {
+  const result = await this.quizService.getPublishedQuizzes(filters);
+  return new ApiResponse(
+    'Published quizzes fetched successfully',
+    result,
+  );
+}
 }
