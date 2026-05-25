@@ -84,15 +84,6 @@ export class QuizController {
     return new ApiResponse('Quiz Result Found', result);
   }
 
-  @ApiOperation({
-    summary: 'Get all published Standard quizzes with related data',
-  })
-  @Public()
-  @Get('standard')
-  async getAllStandardQuizzes(): Promise<ApiResponse<any>> {
-    const result = await this.quizService.getAllStandardQuizzes();
-    return new ApiResponse('Standard quizzes fetched', result);
-  }
 
   @ApiOperation({
     summary: 'Update a Standard Quiz',
@@ -100,7 +91,7 @@ export class QuizController {
       'Updates an existing Standard quiz with new questions, subjects, topics, and settings.',
   })
   @UseGuards(AuthGuard('jwt'))
-  @Put('standard/:quizId')
+  @Put('update/:quizId')
   async updateQuiz(
     @Param('quizId', ParseIntPipe) quizId: number,
     @Body() updateQuizDto: UpdateQuizDto,
@@ -124,20 +115,23 @@ export class QuizController {
   @ApiOperation({
     summary: 'Get user created quizzes with attempt count',
   })
-  @Get('standard/user/:userId')
+  @Get('/:userId')
   async getUserQuizzes(
     @Param('userId', ParseIntPipe) userId: number,
+     @Request() req: any,
   ): Promise<ApiResponse<any>> {
-    const result = await this.quizService.getUserQuizzes(Number(userId));
+     const isAdmin =
+    req.user?.role === 'Admin';
+    const result = await this.quizService.getUserQuizzes(Number(userId),isAdmin);
     return new ApiResponse('User quizzes fetched successfully', result);
   }
 
   @Public()
   @ApiOperation({
-  summary: 'Get all published quizzes with questions and settings',
+  summary: 'Get all Standard published quizzes with questions and settings',
 })
 
-@Get('standard/published')
+@Get('quizzes')
 async getPublishedQuizzes( @Query() filters: PublishedQuizFilterDto): Promise<ApiResponse<any>> {
   const result = await this.quizService.getPublishedQuizzes(filters);
   return new ApiResponse(
