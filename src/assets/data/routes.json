@@ -1,10 +1,40 @@
 {
   "routes": [
     {
+      "path": "/dashboard",
+      "title": "My Dashboard",
+      "iconType": "material-icons-outlined",
+      "icon": "space_dashboard",
+      "class": "",
+      "groupTitle": false,
+      "badge": "",
+      "badgeClass": "",
+      "role": [
+        "User",
+        "Admin",
+        "All"
+      ],
+      "submenu": []
+    },
+    {
       "path": "/app/welcome",
       "title": "Welcome",
       "iconType": "material-icons-outlined",
       "icon": "insights",
+      "class": "",
+      "groupTitle": false,
+      "badge": "",
+      "badgeClass": "",
+      "role": [
+        "All"
+      ],
+      "submenu": []
+    },
+        {
+      "path": "/app/standard-quiz",
+      "title": "Browse Quizzes",
+      "iconType": "material-icons-outlined",
+      "icon": "school",
       "class": "",
       "groupTitle": false,
       "badge": "",
@@ -143,7 +173,7 @@
       ],
       "submenu": []
     },
-     {
+    {
       "path": "/admin/permissions/list",
       "title": "User Permissions",
       "iconType": "material-icons-outlined",
