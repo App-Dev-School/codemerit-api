@@ -28,7 +28,7 @@ export class QuizController {
   constructor(
     private readonly quizService: QuizService,
     private readonly quizResultService: QuizResultService,
-  ) {}
+  ) { }
 
   @Public()
   @ApiOperation({
@@ -103,7 +103,7 @@ export class QuizController {
         'User not authenticated.',
       );
     }
-    
+
     const result = await this.quizService.updateQuiz(
       quizId,
       updateQuizDto,
@@ -112,31 +112,48 @@ export class QuizController {
     return new ApiResponse('Quiz updated successfully', result);
   }
 
+  @Public()
+  @ApiOperation({
+    summary: 'Get all Standard published quizzes with questions and settings',
+  })
+  @Get('quizzes')
+  async getPublishedQuizzes(
+    @Query() filters: PublishedQuizFilterDto,
+    @Request() req: any,
+  ): Promise<ApiResponse<any>> {
+    const result = await this.quizService.getPublishedQuizzes(filters);
+    let quizzesWithTaken;
+    if (req.user && req.user.id) {
+      const userId = req.user.id;
+      const takenQuizIds = await this.quizResultService.findQuizIdsTakenByUser(userId);
+      const takenSet = new Set(takenQuizIds);
+      quizzesWithTaken = result.map((quiz: any) => ({
+        ...quiz,
+        isQuizTaken: takenSet.has(quiz.id),
+      }));
+    } else {
+      quizzesWithTaken = result.map((quiz: any) => ({
+        ...quiz,
+        isQuizTaken: false,
+      }));
+    }
+    return new ApiResponse(
+      'Published quizzes fetched successfully',
+      quizzesWithTaken,
+    );
+  }
+
   @ApiOperation({
     summary: 'Get user created quizzes with attempt count',
   })
   @Get('/:userId')
   async getUserQuizzes(
     @Param('userId', ParseIntPipe) userId: number,
-     @Request() req: any,
+    @Request() req: any,
   ): Promise<ApiResponse<any>> {
-     const isAdmin =
-    req.user?.role === 'Admin';
-    const result = await this.quizService.getUserQuizzes(Number(userId),isAdmin);
+    const isAdmin = req.user?.role === 'Admin';
+    const result = await this.quizService.getUserQuizzes(Number(userId), isAdmin);
     return new ApiResponse('User quizzes fetched successfully', result);
   }
 
-  @Public()
-  @ApiOperation({
-  summary: 'Get all Standard published quizzes with questions and settings',
-})
-
-@Get('quizzes')
-async getPublishedQuizzes( @Query() filters: PublishedQuizFilterDto): Promise<ApiResponse<any>> {
-  const result = await this.quizService.getPublishedQuizzes(filters);
-  return new ApiResponse(
-    'Published quizzes fetched successfully',
-    result,
-  );
-}
 }

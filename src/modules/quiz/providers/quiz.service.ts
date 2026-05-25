@@ -30,6 +30,7 @@ import { SubmitQuizDto } from '../dtos/submit-quiz.dto';
 import { Question } from 'src/common/typeorm/entities/question.entity';
 import { PublishedQuizFilterDto } from '../dtos/published-quiz.dto';
 import { User } from 'src/common/typeorm/entities/user.entity';
+import { DifficultyLevelEnum } from 'src/common/enum/difficulty-lavel.enum';
 
 @Injectable()
 export class QuizService {
@@ -232,8 +233,8 @@ export class QuizService {
         existingSlug = await this.quizRepository.findOne({ where: { slug } });
       }
       quiz.slug = slug;
-      //quiz.userId = userId;
       quiz.createdBy = userId;
+      quiz.difficulty = createQuizDto.difficulty ?? DifficultyLevelEnum.Easy;
       console.log('QuizBuilder #4: QuizToSave', quiz);
       return this.dataSource.transaction(async (manager) => {
         const savedQuizzes = await manager.save(Quiz, quiz);

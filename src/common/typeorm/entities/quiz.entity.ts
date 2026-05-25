@@ -1,5 +1,6 @@
 import { QuizTypeEnum } from 'src/common/enum/quiz-type.enum';
 import { TopicLabelEnum } from 'src/common/enum/topic-label.enum';
+import { DifficultyLevelEnum } from 'src/common/enum/difficulty-lavel.enum';
 import {
   Column,
   CreateDateColumn,
@@ -97,6 +98,14 @@ export class Quiz extends AbstractEntity implements IQuiz {
     default: null,
   })
   tag: string;
+
+  @Column({
+    type: 'enum',
+    enum: DifficultyLevelEnum,
+    nullable: false,
+    default: DifficultyLevelEnum.Easy,
+  })
+  difficulty: DifficultyLevelEnum;
 
   @Column({ name: 'createdBy', default: null, select: false })
   createdBy: number;

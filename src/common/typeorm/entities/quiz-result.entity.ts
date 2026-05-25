@@ -9,6 +9,7 @@ import { IQuizResult } from '../interface/quiz-result.interface';
 import { AbstractEntity } from './abstract.entity';
 import { Quiz } from './quiz.entity';
 import { User } from './user.entity';
+import { QuizStatusEnum } from 'src/common/enum/quiz-status.enum';
 
 @Entity()
 export class QuizResult extends AbstractEntity implements IQuizResult {
@@ -86,6 +87,13 @@ export class QuizResult extends AbstractEntity implements IQuizResult {
 
     @CreateDateColumn()
     createdAt: Date;
+
+    @Column({
+        type: 'enum',
+        enum: QuizStatusEnum,
+        default: QuizStatusEnum.InProgress,
+    })
+    status: QuizStatusEnum;
 
      @ManyToOne(() => Quiz, (quiz) => quiz.results, { eager: true })
   @JoinColumn({ name: 'quizId', referencedColumnName: 'id' })

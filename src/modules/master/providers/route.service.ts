@@ -50,6 +50,8 @@ export class RouteService {
     // ];
 
     let routes: any[] = [
+      ...welcomeRoutes,
+      ...adminRoutes,
     ];
 
     console.log("userPermissions", userPermissions);
@@ -58,10 +60,8 @@ export class RouteService {
       routes = [...routes, ...lmsRoutes, ...quizRoutes, ...smeRoutes];
     }
     routes = [...routes,
-      ...adminRoutes,
       ...uiRoutes,
       ...userRoutes,
-      ...welcomeRoutes,
       ...footerRoutes
     ];
     // Add more modular route groups here as needed, based on permissions

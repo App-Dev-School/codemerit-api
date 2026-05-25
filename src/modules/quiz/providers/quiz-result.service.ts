@@ -199,4 +199,16 @@ export class QuizResultService {
       questions,
     };
   }
+
+  /**
+   * Returns an array of quiz IDs that the user has taken.
+   */
+  async findQuizIdsTakenByUser(userId: number): Promise<number[]> {
+    const rows = await this.dataSource
+      .createQueryBuilder(QuizResult, 'qr')
+      .select('qr.quizId', 'quizId')
+      .where('qr.userId = :userId', { userId })
+      .getRawMany();
+    return rows.map((row) => row.quizId);
+  }
 }

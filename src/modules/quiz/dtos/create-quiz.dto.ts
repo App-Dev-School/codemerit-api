@@ -17,6 +17,7 @@ import { Type } from 'class-transformer';
 import { QuizTypeEnum } from 'src/common/enum/quiz-type.enum';
 import { TopicLabelEnum } from 'src/common/enum/topic-label.enum';
 import { QuizSettingsDto } from './quiz-settings.dto';
+import { DifficultyLevelEnum } from 'src/common/enum/difficulty-lavel.enum';
 
 export class CreateQuizDto {
   @ApiProperty()
@@ -115,6 +116,15 @@ export class CreateQuizDto {
   @IsOptional()
   @IsString()
   tag?: string;
+
+  @ApiPropertyOptional({
+    enum: DifficultyLevelEnum,
+    example: DifficultyLevelEnum.Easy,
+    description: 'Difficulty level of the quiz',
+  })
+  @IsOptional()
+  @IsEnum(DifficultyLevelEnum)
+  difficulty?: DifficultyLevelEnum;
 
   @ApiPropertyOptional({
     description: 'Quiz settings (only for Standard quiz)',

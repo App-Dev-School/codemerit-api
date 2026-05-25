@@ -14,6 +14,8 @@ import { TopicAnalysisService } from './topic-analysis.service';
 import { QuestionStatusEnum } from 'src/common/enum/question-status.enum';
 import { DifficultyLevelEnum } from 'src/common/enum/difficulty-lavel.enum';
 import { UserJobRole } from 'src/common/typeorm/entities/user-job-role.entity';
+import { SkillRating } from 'src/common/typeorm/entities/skill-rating.entity';
+import { AssessmentSession } from 'src/common/typeorm/entities/assessment-session.entity';
 
 @Injectable()
 export class SubjectAnalysisService {
@@ -203,15 +205,17 @@ export class SubjectAnalysisService {
       score,
       syllabus: [],
       meritList: [],
-      popularTopics: []
+      popularTopics: [],
+      subjectRatings: []
     };
 
     if (fullData) {
       // Pass subjectId to both calls; getMeritList computes its own numTrivia.
-      [dashboard.meritList, dashboard.syllabus, dashboard.popularTopics] = await Promise.all([
+      [dashboard.meritList, dashboard.syllabus, dashboard.popularTopics, dashboard.subjectRatings] = await Promise.all([
         this.getMeritList(subjectId),
         this.topicAnalyzer.getTopicStatsBySubject(subjectId, userId),
-        this.getPopularTopics(subjectId)
+        this.getPopularTopics(subjectId),
+        this.getSubjectRatings(subjectId, userId)
       ]);
     }
 
@@ -451,6 +455,63 @@ export class SubjectAnalysisService {
       slug: t.slug,
       shortDesc: t.shortDesc,
       popularity: +t.popularity,
+    }));
+  }
+
+
+  private async getSubjectRatings(subjectId: number, userId: number) {
+  const sessions = await this.dataSource
+    .getRepository(AssessmentSession)
+    .createQueryBuilder('session')
+    .leftJoinAndSelect('session.skillRatings', 'rating')
+    .leftJoinAndSelect('session.rater', 'rater')
+    .where('session.userId = :userId', { userId })
+    // Optional filters
+    // .andWhere('rating.skillId = :subjectId', { subjectId })
+    .orderBy('session.id', 'DESC')
+    .addOrderBy('rating.id', 'DESC')
+    .getMany();
+
+  return sessions.map((session) => ({
+    id: session.id,
+    assessmentTitle: session.assessmentTitle,
+    createdAt: session.createdAt,
+    ratingType: session.ratingType,
+    ratedByName: session.rater
+      ? `${session.rater.firstName ?? ''} ${session.rater.lastName ?? ''}`.trim()
+      : null,
+    skillRatings: session.skillRatings?.map((r) => ({
+      id: r.id,
+      skillId: r.skillId,
+      skillType: r.skillType,
+      rating: r.rating,
+      createdAt: r.createdAt,
+    })),
+  }));
+}
+
+  //returns individual skill ratings
+    private async getSubjectSkillRatings(subjectId: number, userId: number) {
+    const skillRatings = await this.dataSource
+      .createQueryBuilder()
+      .select('t.id', 'id')
+      .addSelect('t.skillId', 'skillId')
+      .addSelect('t.skillType', 'skillType')
+      .addSelect('t.rating', 'rating')
+      .addSelect('t.createdAt', 'createdAt')
+      .from(SkillRating, 't')
+      //.where('t.skillId = :subjectId', { subjectId })
+      //.where('t.userId = :userId', { userId })
+      .orderBy('t.id', 'DESC')
+      .limit(100)
+      .getRawMany();
+
+    return skillRatings.map((t) => ({
+      id: t.id,
+      skillId: t.skillId,
+      skillType: t.skillType,
+      rating: t.rating,
+      createdAt: t.createdAt,
     }));
   }
 }

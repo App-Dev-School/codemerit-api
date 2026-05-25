@@ -83,15 +83,14 @@ export class AuthService {
       sub: user.id,
       role: user.role,
     };
-    console.log('JWT Sign Payload =>', payload);
+    //console.log('JWT Sign Payload =>', payload);
     const token = this.jwtService.sign(payload);
     const profile = await this.userProfileService.findOneByUserId(user?.id);
     const permissions = await this.userPermissionService.findUserPermissionList(
       user?.id,
     );
-    console.log('User Login user', user);
+    //console.log('User Login user', user);
     const userData = await this.usersService.findByEmail(user?.email);
-    console.log('LoginProcessor userData', userData);
     const courseStats = await this.subjectAnalyzer.getJobSubjectDashboards(
       user?.id,
       false,

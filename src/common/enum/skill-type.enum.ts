@@ -1,5 +1,5 @@
 export enum SkillTypeEnum {
-  JOBROLE = 'JOBROLE',
-  SUBJECT = 'SUBJECT',
-  TOPIC = 'TOPIC',
+  JOBROLE = 'JobRole',
+  SUBJECT = 'Subject',
+  TOPIC = 'Topic',
 }
