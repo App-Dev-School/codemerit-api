@@ -29,6 +29,7 @@ import { UpdateQuizDto } from '../dtos/update-quiz.dto';
 import { SubmitQuizDto } from '../dtos/submit-quiz.dto';
 import { Question } from 'src/common/typeorm/entities/question.entity';
 import { PublishedQuizFilterDto } from '../dtos/published-quiz.dto';
+import { User } from 'src/common/typeorm/entities/user.entity';
 
 @Injectable()
 export class QuizService {
@@ -354,85 +355,14 @@ export class QuizService {
     }
   }
 
-  async getAllStandardQuizzes(): Promise<any[]> {
-    const quizzes = await this.quizRepository.find({
-      where: { quizType: QuizTypeEnum.Standard },
-      order: { createdAt: 'DESC' },
-      relations: ['userCreatedBy'],
-    });
 
-    if (!quizzes.length) {
-      return [];
-    }
-
-    const quizIds = quizzes.map((quiz) => quiz.id);
-
-    const [quizSubjects, quizTopics, quizSettings] = await Promise.all([
-      this.quizSubjectRepo.find({
-        where: { quizId: In(quizIds) },
-        relations: ['subject'],
-      }),
-      this.quizTopicRepo.find({
-        where: { quizId: In(quizIds) },
-        relations: ['topic'],
-      }),
-      this.quizSettingsRepository.find({
-        where: { quizId: In(quizIds) },
-      }),
-    ]);
-
-    const subjectMap = new Map<number, any[]>();
-    for (const quizSubject of quizSubjects) {
-      const existing = subjectMap.get(quizSubject.quizId) || [];
-      if (quizSubject.subject) {
-        const { id, title, description, createdAt } = quizSubject.subject;
-        existing.push({ id, title, description, createdAt });
-      }
-      subjectMap.set(quizSubject.quizId, existing);
-    }
-
-    const topicMap = new Map<number, any[]>();
-    for (const quizTopic of quizTopics) {
-      const existing = topicMap.get(quizTopic.quizId) || [];
-      if (quizTopic.topic) {
-        const { id, title, description, createdAt } = quizTopic.topic;
-        existing.push({ id, title, description, createdAt });
-      }
-      topicMap.set(quizTopic.quizId, existing);
-    }
-
-    const settingsMap = new Map<number, QuizSettings>();
-    for (const settings of quizSettings) {
-      settingsMap.set(settings.quizId, settings);
-    }
-
-    return quizzes.map((quiz: any) => {
-      const { userCreatedBy, ...quizData } = quiz;
-      const createdByName = `${userCreatedBy?.firstName || ''} ${
-        userCreatedBy?.lastName || ''
-      }`.trim();
-
-      return {
-        ...quizData,
-        createdBy: userCreatedBy
-          ? {
-              id: userCreatedBy.id,
-              name: createdByName || userCreatedBy.username || null,
-            }
-          : null,
-        status: quiz.isPublished ? 'Published' : 'Draft',
-        subjects: subjectMap.get(quiz.id) || [],
-        topics: topicMap.get(quiz.id) || [],
-        settings: settingsMap.get(quiz.id) || null,
-      };
-    });
-  }
-
-  async getUserQuizzes(userId: number): Promise<any> {
-    const quizzes = await this.quizRepository
+  async getUserQuizzes(userId: number,isAdmin: boolean,): Promise<any> {
+    const query = await this.quizRepository
       .createQueryBuilder('quiz')
       .leftJoin(QuizResult, 'qr', 'qr.quizId = quiz.id')
       .leftJoin(QuizQuestion, 'qq', 'qq.quizId = quiz.id')
+      .leftJoin(User, 'user', 'user.id = quiz.createdBy')
+
       .select('quiz.id', 'id')
       .addSelect('quiz.title', 'title')
       .addSelect('quiz.slug', 'slug')
@@ -441,12 +371,20 @@ export class QuizService {
       .addSelect('quiz.label', 'label')
       .addSelect('quiz.description', 'description')
       .addSelect('quiz.createdAt', 'createdAt')
+      .addSelect('user.firstName', 'createdBy')
       .addSelect('COUNT(DISTINCT qr.id)', 'totalAttempts')
       .addSelect('COUNT(DISTINCT qq.id)', 'totalQuestions')
-      .where('quiz.createdBy = :userId', { userId })
       .andWhere('quiz.quizType = :quizType', {
         quizType: QuizTypeEnum.Standard,
       })
+
+      if (!isAdmin) {
+    query.andWhere(
+      'quiz.createdBy = :userId',
+      { userId },
+    );
+  }
+      const quizzes = await query
       .groupBy('quiz.id')
       .addGroupBy('quiz.title')
       .addGroupBy('quiz.slug')
@@ -455,6 +393,7 @@ export class QuizService {
       .addGroupBy('quiz.label')
       .addGroupBy('quiz.description')
       .addGroupBy('quiz.createdAt')
+      .addGroupBy('user.firstName')
       .orderBy('quiz.createdAt', 'DESC')
       .getRawMany();
 
@@ -468,6 +407,7 @@ export class QuizService {
       label: item.label,
       description: item.description,
       createdAt: item.createdAt,
+      author: item.createdBy,
       totalQuestions: parseInt(item.totalQuestions, 10) || 0,
       totalAttempts: parseInt(item.totalAttempts, 10) || 0,
     }));
