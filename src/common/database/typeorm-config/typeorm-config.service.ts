@@ -36,6 +36,8 @@ export class TypeormConfigService implements TypeOrmOptionsFactory {
       'database',
     ) as IDatabaseConfig;
 
+    // Import the custom logger
+    const { MetricsTypeOrmLogger } = require('../../metrics/metrics-typeorm-logger');
     return {
       type: databaseConfig.type,
       host: databaseConfig.host,
@@ -43,12 +45,6 @@ export class TypeormConfigService implements TypeOrmOptionsFactory {
       username: databaseConfig.username,
       password: databaseConfig.password,
       database: databaseConfig.database,
-      // type: 'mysql',
-      // host: '127.0.0.1',
-      // port: 3306,
-      // username: 'codemerituser',
-      // password: 'GwjU067FL8hcmjQkXjaM',
-      // database: 'codemeritdb',
       entities: [
         User,
         Profile,
@@ -76,11 +72,8 @@ export class TypeormConfigService implements TypeOrmOptionsFactory {
         ApiUsage,
         Notification,
       ],
-      // entities: [__dirname + '/../**/*.entity.{ts,js}'],
-      // entities: ['src/**/*.entity.ts'],
       synchronize: true,
-      // logging: true,
-      // logger: 'advanced-console',
+      logger: new MetricsTypeOrmLogger(),
     } as TypeOrmModuleOptions;
   }
 }

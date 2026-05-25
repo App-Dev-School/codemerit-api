@@ -15,7 +15,6 @@ configDotenv({
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const config: IAppConfig = app.get<IAppConfig>(appConfig.KEY);
-
   // Enable CORS for localhost dev
   app.enableCors({
     origin: (origin, callback) => {
@@ -37,7 +36,9 @@ async function bootstrap() {
     credentials: true,
   });
 
-  app.useGlobalInterceptors(new ResponseInterceptor(), new AuditInterceptor());
+  // Register ApiMetricsInterceptor globally for API performance measurement
+  const { ApiMetricsInterceptor } = await import('./common/interceptors/api-metrics.interceptor');
+  app.useGlobalInterceptors(new ApiMetricsInterceptor(), new ResponseInterceptor(), new AuditInterceptor());
   app.useGlobalFilters(new GlobalExceptionsFilter());
   /* Add Swagger  */
   const options = new DocumentBuilder()

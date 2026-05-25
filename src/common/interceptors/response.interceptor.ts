@@ -28,12 +28,17 @@ export class ResponseInterceptor<T> implements NestInterceptor<T, any> {
       map((response) => {
         const message = response?.message || 'Success';
         const data = response?.data !== undefined ? response.data : response;
-        return {
+        const metrics = response?.metrics;
+        const resp: any = {
           error: false,
           result_code: 200,
           message,
           data,
         };
+        if (metrics) {
+          resp.metrics = metrics;
+        }
+        return resp;
       }),
     );
   }

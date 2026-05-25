@@ -1,3 +1,42 @@
+## API Performance Measurement & Query Logging
+
+This project includes a robust API performance measurement system using a global NestJS interceptor and a custom TypeORM logger.
+
+### Features
+- **Execution time**: Each API call is measured for total execution time (ms).
+- **DB query count**: Each API call counts the number of TypeORM queries executed.
+- **Metrics in response**: When `METRICS_ENABLED=true` is set in your environment, each API response includes a `metrics` object:
+  ```json
+  {
+    ...,
+    "metrics": {
+      "durationMs": 123,
+      "queryCount": 7
+    }
+  }
+  ```
+- **Performance logs**: Every API call logs its method, URL, duration, and query count to the console.
+
+### How it works
+- Uses AsyncLocalStorage to track query count per request.
+- Custom TypeORM logger increments the count for every query.
+- Global interceptor attaches metrics to the response and logs them.
+
+### Enabling/Disabling
+- Set `METRICS_ENABLED=true` in your `.env` to enable metrics in API responses.
+- In production, set `METRICS_ENABLED=false` to disable metrics in responses (logging still occurs).
+
+### Setup
+1. The interceptor is registered globally in `main.ts`.
+2. The custom TypeORM logger is set in the TypeORM config (`typeorm-config.service.ts`).
+3. No code changes are needed to use these features in your APIs.
+
+### Example log
+```
+[API METRICS] GET /apis/quiz/quizzes - 45ms, queries: 3
+```
+
+---
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
 </p>
