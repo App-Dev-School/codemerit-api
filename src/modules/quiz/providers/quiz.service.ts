@@ -9,6 +9,7 @@ import { QuizTopic } from 'src/common/typeorm/entities/quiz-topic.entity';
 import { Quiz } from 'src/common/typeorm/entities/quiz.entity';
 import { QuizSettings } from 'src/common/typeorm/entities/quiz-settings.entity';
 import { QuizTypeEnum } from 'src/common/enum/quiz-type.enum';
+import { Subject } from 'src/common/typeorm/entities/subject.entity';
 import {
   generate6DigitNumber,
   getTitleBySubjectIds,
@@ -31,6 +32,7 @@ import { Question } from 'src/common/typeorm/entities/question.entity';
 import { PublishedQuizFilterDto } from '../dtos/published-quiz.dto';
 import { User } from 'src/common/typeorm/entities/user.entity';
 import { DifficultyLevelEnum } from 'src/common/enum/difficulty-lavel.enum';
+import { JobRoleSubject } from 'src/common/typeorm/entities/job-role-subject.entity';
 
 @Injectable()
 export class QuizService {
@@ -439,6 +441,12 @@ export class QuizService {
       'quizSubjects',
       'quizSubjects.quizId = quiz.id',
     )
+    .leftJoinAndMapMany(
+    'quiz.subjects',
+    Subject,
+    'subject',
+    'subject.id = quizSubjects.subjectId',
+  )
 
     // Topic Mapping
     .leftJoin(
@@ -446,6 +454,15 @@ export class QuizService {
       'quizTopics',
       'quizTopics.quizId = quiz.id',
     )
+
+    .leftJoin(
+  JobRoleSubject,
+  'jobRoleSubjects',
+  `
+  jobRoleSubjects.subjectId =
+  quizSubjects.subjectId
+  `,
+)
 
     .where(
       'quiz.isPublished = :isPublished',
@@ -461,6 +478,22 @@ export class QuizService {
           QuizTypeEnum.Standard,
       },
     );
+
+  /*
+  JOB ROLE FILTER
+*/
+if (
+  filters.jobRoleId &&
+  Number(filters.jobRoleId) !== 0
+) {
+  query.andWhere(
+    'jobRoleSubjects.jobRoleId = :jobRoleId',
+    {
+      jobRoleId:
+        filters.jobRoleId,
+    },
+  );
+}  
 
   /*
     SUBJECT FILTER
@@ -490,7 +523,12 @@ export class QuizService {
   ) {
 
     query.andWhere(
-      'quizTopics.topicId = :topicId',
+       `
+  quizTopics.topicId = :topicId
+  AND
+  jobRoleSubjects.topicId =
+  quizTopics.topicId
+  `,
       {
         topicId:
           filters.topicId,
@@ -641,6 +679,16 @@ export class QuizService {
 
         settings:
           quiz.settings || null,
+
+        subjects:
+      quiz?.subjects?.map(
+        (subject: any) => ({
+          id: subject.id,
+          title: subject.title,
+          colour: subject.color,
+          image: subject.image,
+        }),
+      ) || [],
       };
     },
   );

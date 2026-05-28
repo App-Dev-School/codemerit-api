@@ -58,6 +58,7 @@ export class QuizResultService {
       .createQueryBuilder(QuestionAttempt, 'qa')
       .select([
         'qa.id AS attemptId',
+        'qa.selectedOption AS selectedOptionId',
         'q.id AS questionId',
         'q.question AS text',
         'q.subjectId AS subjectId',
@@ -82,14 +83,24 @@ export class QuizResultService {
       questionRows.map(async (r) => {
         const options = await this.dataSource
           .createQueryBuilder(QuestionOption, 'qo')
-          .select(['qo.id', 'qo.option AS text', 'qo.correct AS correct'])
+          .select(['qo.id AS id', 'qo.option AS text', 'qo.correct AS correct'])
           .where('qo.questionId = :questionId', { questionId: r.questionId })
           .getRawMany();
+
+
+          const formattedOptions = options.map((o) => ({
+  id: Number(o.id),
+  text: o.text,
+  correct: Boolean(o.correct),
+  selected:
+    Number(o.id) === Number(r.selectedOptionId),
+}));
 
         return {
           id: r.questionId,
           text: r.text,
-          options,
+          options: formattedOptions,
+          selectedOptionId: Number(r.selectedOptionId) ?? null,
           isSkipped: r.isSkipped ?? false,
           isCorrect: r.isCorrect ?? false,
           subjectId: r.subjectId,
