@@ -14,15 +14,15 @@ import { AbstractEntity } from './abstract.entity';
 import { SkillRating } from './skill-rating.entity';
 import { User } from './user.entity';
 import { Type } from 'class-transformer';
+import { Interview } from './interview.entity';
 
 @Entity()
 export class AssessmentSession
   extends AbstractEntity
-  implements IAssessmentSession
-{
+  implements IAssessmentSession {
   @PrimaryGeneratedColumn({ type: 'int' })
   id: number;
-    
+
   @Type(() => Number)
   @Column({
     type: 'integer',
@@ -69,6 +69,11 @@ export class AssessmentSession
   })
   skillRatings?: SkillRating[];
 
+  @Column({
+    nullable: true,
+  })
+  interviewId?: number;
+
   @ManyToOne(() => User, { eager: true })
   @JoinColumn({ name: 'userId', referencedColumnName: 'id' })
   user: User;
@@ -77,4 +82,14 @@ export class AssessmentSession
   @JoinColumn({ name: 'ratedBy', referencedColumnName: 'id' })
   rater: User;
   //score should be able to calculated from the skill ratings, so we can remove it from here to avoid redundancy and inconsistency
+
+  @ManyToOne(
+    () => Interview,
+    (interview) => interview.assessmentSessions,
+  )
+  
+  @JoinColumn({
+    name: 'interviewId',
+  })
+  interview: Interview;
 }

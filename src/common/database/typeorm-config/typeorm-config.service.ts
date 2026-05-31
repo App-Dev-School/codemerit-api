@@ -27,6 +27,9 @@ import { QuizSettings } from 'src/common/typeorm/entities/quiz-settings.entity';
 import { UserJobRole } from 'src/common/typeorm/entities/user-job-role.entity';
 import { ApiUsage } from 'src/common/typeorm/entities/api-usage.entity';
 import { Notification } from 'src/common/typeorm/entities/notification.entity';
+import { SkillMetric } from 'src/common/typeorm/entities/skill-metric.entity';
+import { InterviewStatusHistory } from 'src/common/typeorm/entities/interview-status-history.entity';
+import { Interview } from 'src/common/typeorm/entities/interview.entity';
 @Injectable()
 export class TypeormConfigService implements TypeOrmOptionsFactory {
   constructor(private configService: ConfigService) {}
@@ -43,18 +46,13 @@ export class TypeormConfigService implements TypeOrmOptionsFactory {
       username: databaseConfig.username,
       password: databaseConfig.password,
       database: databaseConfig.database,
-      // type: 'mysql',
-      // host: '127.0.0.1',
-      // port: 3306,
-      // username: 'codemerituser',
-      // password: 'GwjU067FL8hcmjQkXjaM',
-      // database: 'codemeritdb',
       entities: [
         User,
         Profile,
         Subject,
         JobRole,
         JobRoleSubject,
+        UserJobRole,
         UserSubject,
         Topic,
         UserOtp,
@@ -72,9 +70,11 @@ export class TypeormConfigService implements TypeOrmOptionsFactory {
         QuizSettings,
         Permission,
         UserPermission,
-        UserJobRole,
         ApiUsage,
         Notification,
+        SkillMetric,
+        Interview,
+        InterviewStatusHistory,
       ],
       // entities: [__dirname + '/../**/*.entity.{ts,js}'],
       // entities: ['src/**/*.entity.ts'],
