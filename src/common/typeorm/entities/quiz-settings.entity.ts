@@ -49,6 +49,15 @@ export class QuizSettings implements IQuizSettings {
   @Column({ type: 'boolean', default: false })
   enableCertificate: boolean;
 
+  @Column({ type: 'int', default: 60 })
+  passMarks: number;
+
+  @Column({ type: 'int', default: 1 })
+  maxAttempts: number;
+
+  @Column({ type: 'boolean', default: false })
+  enableReview: boolean;
+
   @Column({ type: 'int' })
   quizId: number;
 

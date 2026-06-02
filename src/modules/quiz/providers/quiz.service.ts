@@ -221,12 +221,13 @@ export class QuizService {
       }
       const quiz = new Quiz();
       quiz.title = title;
-      quiz.tag = quizCategory;
+      quiz.tag = createQuizDto.tag ;
       quiz.quizType = createQuizDto.quizType;
       quiz.shortDesc = createQuizDto.shortDesc;
       quiz.description = createQuizDto.description;
       quiz.goal = createQuizDto.goal ?? null;
       quiz.label = createQuizDto.label;
+      quiz.category = createQuizDto.category ?? 'Default';
       quiz.isPublished = createQuizDto.isPublished ?? false;
       let slug = generateSlug(title);
       let existingSlug = await this.quizRepository.findOne({ where: { slug } });
@@ -236,7 +237,7 @@ export class QuizService {
       }
       quiz.slug = slug;
       quiz.createdBy = userId;
-      quiz.difficulty = createQuizDto.difficulty ?? DifficultyLevelEnum.Easy;
+      quiz.level = createQuizDto.level ?? DifficultyLevelEnum.Easy;
       console.log('QuizBuilder #4: QuizToSave', quiz);
       return this.dataSource.transaction(async (manager) => {
         const savedQuizzes = await manager.save(Quiz, quiz);

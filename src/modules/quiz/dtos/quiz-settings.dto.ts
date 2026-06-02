@@ -49,4 +49,21 @@ export class QuizSettingsDto {
   @IsOptional()
   @IsBoolean()
   enableCertificate?: boolean = false;
+
+  @ApiPropertyOptional({ description: 'Pass marks', default: 0 })
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  passMarks?: number = 60;
+
+  @ApiPropertyOptional({ description: 'Maximum attempts', default: 1 })
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  maxAttempts?: number = 1;
+
+  @ApiPropertyOptional({ description: 'Enable review', default: false })
+  @IsOptional()
+  @IsBoolean()
+  enableReview?: boolean = false;
 }
