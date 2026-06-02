@@ -495,6 +495,18 @@ if (
   );
 }  
 
+/*
+  QUIZ SETTINGS MODE FILTER
+*/
+if (filters.mode) {
+  query.andWhere(
+    'settings.mode = :mode',
+    {
+      mode: filters.mode,
+    },
+  );
+}
+
   /*
     SUBJECT FILTER
     subjectId = 0 => ignore filter
