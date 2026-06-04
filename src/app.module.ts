@@ -15,9 +15,20 @@ import { MasterModule } from './modules/master/master.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { ApiUsageInterceptor } from './common/interceptors/api-usage.interceptor';
 import { ApiUsageModule } from './common/services/api-usage.module';
+import { ThrottlerGuard } from '@nestjs/throttler';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
   imports: [
+    ThrottlerModule.forRoot({
+      throttlers: [
+        {
+          name: 'default',
+          ttl: 60000,
+          limit: 3,
+        },
+      ],
+    }),
     MasterModule,
     CoreModule,
     ConfigModule.forRoot({
@@ -31,6 +42,10 @@ import { ApiUsageModule } from './common/services/api-usage.module';
     MonitoringModule,
   ],
   providers: [
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
     {
       provide: APP_GUARD,
       useClass: JwtAuthGuard,

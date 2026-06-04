@@ -110,30 +110,42 @@ export class MasterController {
     console.log('Routes for user', req.user);
     return new ApiResponse('Routes fetched successfully.', result);
   }
-  
+
   @Public()
   @UseGuards(OptionalJwtAuthGuard)
   @Get('programDetails/:programSlug')
-  async getProgramDetails(@Param('programSlug') programSlug: string, @Request() req) {
+  async getProgramDetails(
+    @Param('programSlug') programSlug: string,
+    @Request() req,
+  ) {
     if (!programSlug) {
       throw new Error('Missing programSlug route parameter');
     }
 
     // Find job role by slug
-    const jobRole = await this.subjectAnalyzer["jobRoleRepo"].findOne({ where: { slug: programSlug }, select: ['id'] });
+    const jobRole = await this.subjectAnalyzer['jobRoleRepo'].findOne({
+      where: { slug: programSlug },
+      select: ['id'],
+    });
     if (!jobRole) {
       throw new Error('Program (job role) not found');
     }
 
     // Get all subjects mapped to this job role
-    const roleSubjects = await this.subjectAnalyzer["jobRoleSubjectRepo"].find({ where: { jobRoleId: jobRole.id } });
+    const roleSubjects = await this.subjectAnalyzer['jobRoleSubjectRepo'].find({
+      where: { jobRoleId: jobRole.id },
+    });
     if (!roleSubjects.length) return [];
 
     const userId = req.user?.id;
     // Fetch dashboards for each subject
     const dashboards = await Promise.all(
       roleSubjects.map(async (rs) => {
-        const dash = await this.subjectAnalyzer.getSubjectDashboard(rs.subjectId, userId, false);
+        const dash = await this.subjectAnalyzer.getSubjectDashboard(
+          rs.subjectId,
+          userId,
+          false,
+        );
         // Remove user-specific fields if not authenticated
         if (!userId && dash) {
           const {
@@ -154,7 +166,7 @@ export class MasterController {
           return publicFields;
         }
         return dash;
-      })
+      }),
     );
     return dashboards.filter(Boolean);
   }
