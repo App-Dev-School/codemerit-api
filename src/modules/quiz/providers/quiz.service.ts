@@ -799,6 +799,15 @@ if (filters.mode) {
       quiz.goal = updateQuizDto.goal;
     }
 
+     if (updateQuizDto.category !== undefined) {
+      quiz.category = updateQuizDto.category;
+    }
+
+    if (updateQuizDto.level !== undefined) {
+      quiz.level = updateQuizDto.level;
+    }
+
+
     return this.dataSource.transaction(async (manager) => {
       // Save updated quiz
       const updatedQuiz = await manager.save(Quiz, quiz);
