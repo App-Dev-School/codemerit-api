@@ -117,14 +117,19 @@ export class CreateQuizDto {
   @IsString()
   tag?: string;
 
+  @ApiPropertyOptional({ example: 'Default', default: 'Default' })
+  @IsOptional()
+  @IsString()
+  category?: string = 'Default';
+
   @ApiPropertyOptional({
     enum: DifficultyLevelEnum,
     example: DifficultyLevelEnum.Easy,
-    description: 'Difficulty level of the quiz',
+    description: 'Level of the quiz',
   })
   @IsOptional()
   @IsEnum(DifficultyLevelEnum)
-  difficulty?: DifficultyLevelEnum;
+  level?: DifficultyLevelEnum;
 
   @ApiPropertyOptional({
     description: 'Quiz settings (only for Standard quiz)',

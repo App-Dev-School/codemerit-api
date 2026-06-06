@@ -11,5 +11,8 @@ export interface IQuizSettings {
   enableAudio: boolean;
   enableTimer: boolean;
   enableCertificate: boolean;
+  passMarks: number;
+  maxAttempts: number;
+  enableReview: boolean;
   quizId: number;
 }

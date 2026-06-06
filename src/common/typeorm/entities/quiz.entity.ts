@@ -100,12 +100,20 @@ export class Quiz extends AbstractEntity implements IQuiz {
   tag: string;
 
   @Column({
+    type: 'varchar',
+    length: 100,
+    nullable: false,
+    default: 'Default',
+  })
+  category: string;
+
+  @Column({
     type: 'enum',
     enum: DifficultyLevelEnum,
     nullable: false,
     default: DifficultyLevelEnum.Easy,
   })
-  difficulty: DifficultyLevelEnum;
+  level: DifficultyLevelEnum;
 
   @Column({ name: 'createdBy', default: null, select: false })
   createdBy: number;

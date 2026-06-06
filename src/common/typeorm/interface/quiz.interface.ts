@@ -1,5 +1,6 @@
 import { QuizTypeEnum } from 'src/common/enum/quiz-type.enum';
 import { TopicLabelEnum } from 'src/common/enum/topic-label.enum';
+import { DifficultyLevelEnum } from 'src/common/enum/difficulty-lavel.enum';
 
 export interface IQuiz {
   id: number;
@@ -13,6 +14,8 @@ export interface IQuiz {
   isPublished: boolean;
   goal: string;
   tag: string;
+  category: string;
+  level: DifficultyLevelEnum;
   createdBy: number;
   updatedBy: number;
   createdAt: Date;

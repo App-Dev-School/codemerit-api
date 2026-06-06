@@ -99,12 +99,17 @@ export class UpdateQuizDto {
   @Type(() => QuizSettingsDto)
   settings?: QuizSettingsDto;
 
+  @ApiPropertyOptional({ example: 'Default', default: 'Default' })
+  @IsOptional()
+  @IsString()
+  category?: string;
+
   @ApiPropertyOptional({
     enum: DifficultyLevelEnum,
     example: DifficultyLevelEnum.Easy,
-    description: 'Difficulty level of the quiz',
+    description: 'Level of the quiz',
   })
   @IsOptional()
   @IsEnum(DifficultyLevelEnum)
-  difficulty?: DifficultyLevelEnum;
+  level?: DifficultyLevelEnum;
 }
