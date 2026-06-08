@@ -31,6 +31,13 @@ export class AssessmentSession
   })
   userId: number;
 
+  @Column({
+    type: 'integer',
+    nullable: true,
+    default: null,
+  })
+  candidateId?: number;
+
   @Column({ type: 'text', nullable: true, default: null })
   assessmentTitle: string;
 
@@ -74,9 +81,20 @@ export class AssessmentSession
   })
   interviewId?: number;
 
+  @Column({
+    type: 'integer',
+    nullable: true,
+    default: null,
+  })
+  interviewerId?: number;
+
   @ManyToOne(() => User, { eager: true })
   @JoinColumn({ name: 'userId', referencedColumnName: 'id' })
   user: User;
+
+  @ManyToOne(() => User, { eager: true })
+  @JoinColumn({ name: 'candidateId', referencedColumnName: 'id' })
+  candidate?: User;
 
   @ManyToOne(() => User, { eager: true })
   @JoinColumn({ name: 'ratedBy', referencedColumnName: 'id' })
@@ -92,4 +110,8 @@ export class AssessmentSession
     name: 'interviewId',
   })
   interview: Interview;
+
+  @ManyToOne(() => User, { eager: true })
+  @JoinColumn({ name: 'interviewerId', referencedColumnName: 'id' })
+  interviewer?: User;
 }

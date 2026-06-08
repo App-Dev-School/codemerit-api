@@ -13,18 +13,20 @@ import { UserJobRole } from 'src/common/typeorm/entities/user-job-role.entity';
 import { JobRole } from 'src/common/typeorm/entities/job-role.entity';
 import { NotificationModule } from 'src/modules/notification/notification.module';
 import { MasterModule } from 'src/modules/master/master.module';
+import { MailModule } from 'src/common/mail/mail.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([User, Profile, UserOtp, UserJobRole, JobRole]),
     NotificationModule,
     MasterModule,
+    MailModule
   ],
   providers: [
     UserService,
     UserOtpService,
     UserProfileService,
-    UserPerformanceService,
+    UserPerformanceService
   ],
   controllers: [UsersController],
   exports: [

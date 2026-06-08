@@ -16,4 +16,13 @@ export class SkillMetric extends AbstractEntity {
     default: true,
   })
   isActive: boolean;
+
+  @Column({ type: 'text', nullable: true })
+  description?: string;
+
+  @Column({ type: 'varchar', length: 100, nullable: true })
+  category?: string;
+
+  @Column({ default: false })
+  isRequired?: boolean;
 }

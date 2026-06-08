@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { UserOtp } from 'src/common/typeorm/entities/user-otp.entity';
+import { Repository } from 'typeorm';
 import { UserOtpTagsEnum } from '../enums/user-otp-Tags.enum';
 
 @Injectable()
 export class UserOtpService {
   constructor(
     @InjectRepository(UserOtp)
-    private userOtpRepo: Repository<UserOtp>,
+    private userOtpRepo: Repository<UserOtp>
   ) {}
 
   async create(data: Partial<UserOtp>): Promise<UserOtp | null> {

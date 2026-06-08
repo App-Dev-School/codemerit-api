@@ -42,6 +42,8 @@ export class SkillRatingService {
       // Create and validate AssessmentSession (use new for class-validator)
       const session = Object.assign(new AssessmentSession(), {
         userId: dto.userId,
+        candidateId: dto.userId,
+        interviewerId: dto.ratedBy || null,
         assessmentTitle: dto.assessmentTitle,
         notes: dto.notes,
         ratedBy: dto.ratedBy,

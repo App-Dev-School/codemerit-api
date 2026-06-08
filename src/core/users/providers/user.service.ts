@@ -29,6 +29,7 @@ import { UserJobRole } from 'src/common/typeorm/entities/user-job-role.entity';
 import { ApiUsageService } from 'src/common/services/api-usage.service';
 import { NotificationService } from 'src/modules/notification/providers/notification.service';
 import { JobRole } from 'src/common/typeorm/entities/job-role.entity';
+import { MailService } from 'src/common/mail/providers/mail.service';
 
 @Injectable()
 export class UserService {
@@ -41,6 +42,7 @@ export class UserService {
     private jobRoleRepo: Repository<JobRole>,
     @InjectRepository(Profile)
     private profileRepo: Repository<Profile>,
+    private mailService: MailService,
     private readonly userOtpService: UserOtpService,
     private readonly userProfileService: UserProfileService,
     private readonly apiUsageService: ApiUsageService,
@@ -94,11 +96,11 @@ export class UserService {
       }
       const savedUser = await queryRunner.manager.save(user);
       //Send e-mail
-      // try {
-      //   this.mailService.sendMail(savedUser?.email, "You are registered successfully with CodeMerit. Use "+pass+" as the OTP to activate your account.");
-      // } catch (error) {
-      //   console.log('CMRegistration Error sending e-mail => ', error);
-      // }
+      try {
+        this.mailService.sendMail(savedUser?.email, "CodeMerit Registration Successful", "You are registered successfully with CodeMerit. Use "+pass+" as the OTP to activate your account.");
+      } catch (error) {
+        console.log('CMRegistration Error sending e-mail => ', error);
+      }
       const profile = new Profile();
       profile.userId = savedUser.id;
       //validate on client
@@ -332,9 +334,15 @@ export class UserService {
     userOtp.userId = user?.id;
     userOtp.tag = tag;
     const result = await this.userOtpService.create(userOtp);
+    //check if limit not exceeded for sending OTP. If exceeded, do not send e-mail and return error message
+    try {
+        this.mailService.sendMail(email, "OTP received from CodeMerit", "Use "+pass+" as the OTP from CodeMerit.");
+      } catch (error) {
+        console.log('CMRegistration Error sending e-mail => ', error);
+      }
 
     if (result) {
-      return 'Successfully send OTP';
+      return 'OTP sent Successfully.';
     }
     return null;
   }

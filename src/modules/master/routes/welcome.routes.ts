@@ -36,7 +36,7 @@ export const welcomeRoutes = [
     submenu: [],
   },
   {
-    path: '/app/select-job-role',
+    path: '/select-job-role',
     title: 'Browse Tech Roles',
     iconType: 'material-icons-outlined',
     icon: 'school',
@@ -48,7 +48,7 @@ export const welcomeRoutes = [
     submenu: [],
   },
   {
-    path: '/app/select-subject',
+    path: '/select-subject',
     title: 'Subject Explorer',
     iconType: 'material-icons-outlined',
     icon: 'library_books',
