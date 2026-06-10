@@ -79,8 +79,15 @@ export class QuizResultService {
       .getRawMany();
 
     // 3. Build questions array with options
+    const uniqueQuestionRows = new Map<number, any>();
+    questionRows.forEach((r) => {
+      if (!uniqueQuestionRows.has(r.questionId)) {
+        uniqueQuestionRows.set(r.questionId, r);
+      }
+    });
+
     const questions = await Promise.all(
-      questionRows.map(async (r) => {
+      Array.from(uniqueQuestionRows.values()).map(async (r) => {
         const options = await this.dataSource
           .createQueryBuilder(QuestionOption, 'qo')
           .select(['qo.id AS id', 'qo.option AS text', 'qo.correct AS correct'])
