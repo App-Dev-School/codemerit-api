@@ -222,4 +222,30 @@ export class QuizResultService {
       .getRawMany();
     return rows.map((row) => row.quizId);
   }
+
+  async findAllResultCodesByUserAndQuizIds(
+    userId: number,
+    quizIds: number[],
+  ): Promise<Record<number, string[]>> {
+    if (!quizIds || quizIds.length === 0) {
+      return {};
+    }
+
+    const rows = await this.dataSource
+      .createQueryBuilder(QuizResult, 'qr')
+      .select(['qr.quizId AS quizId', 'qr.resultCode AS resultCode'])
+      .where('qr.userId = :userId', { userId })
+      .andWhere('qr.quizId IN (:...quizIds)', { quizIds })
+      .orderBy('qr.createdAt', 'DESC')
+      .getRawMany();
+
+    return rows.reduce((map, row) => {
+      const quizId = Number(row.quizId);
+      if (!map[quizId]) {
+        map[quizId] = [];
+      }
+      map[quizId].push(row.resultCode);
+      return map;
+    }, {} as Record<number, string[]>);
+  }
 }
