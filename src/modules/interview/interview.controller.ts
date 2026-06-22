@@ -1,8 +1,8 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post, Req } from '@nestjs/common';
 import { ApiResponse } from 'src/common/utils/api-response';
 import { CreateInterviewDto } from './dtos/create-interview.dto';
 import { InterviewService } from './providers/interview.service';
-import { Public } from 'src/core/auth/decorators/public.decorator';
+//import { Public } from 'src/core/auth/decorators/public.decorator';
 import {
   Put,
   Get,
@@ -18,7 +18,7 @@ import { SubmitInterviewDto } from './dtos/submit-interview.dto';
 @Controller('apis/interviews')
 export class InterviewController {
   constructor(private readonly interviewService: InterviewService) {}
-  @Public()
+  //@Public()
   @Post()
   async createInterview(
     @Body() dto: CreateInterviewDto,
@@ -28,27 +28,34 @@ export class InterviewController {
     return new ApiResponse('Interview created successfully', result);
   }
 
-  @Public()
+  //@Public()
   @Put(':id')
   async updateInterview(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id', ParseIntPipe) interviewId: number, // Explicit variable name
     @Body() dto: UpdateInterviewDto,
   ): Promise<ApiResponse<any>> {
-    const result = await this.interviewService.updateInterview(id, dto);
-
+    const result = await this.interviewService.updateInterview(
+      interviewId,
+      dto,
+    );
     return new ApiResponse('Interview updated successfully', result);
   }
 
-  @Public()
+  //@Public()
   @Post('submit')
   async submitInterview(
     @Body() dto: SubmitInterviewDto,
+    @Req() req: any,
   ): Promise<ApiResponse<any>> {
-    const result = await this.interviewService.submitInterview(dto);
+    const currentUserId = req.user?.id || 1;
+    const result = await this.interviewService.submitInterview(
+      dto,
+      currentUserId,
+    );
     return new ApiResponse('Interview submitted successfully', result);
   }
 
-  @Public()
+  //@Public()
   @Get(':interviewCode')
   async getInterviewDetails(
     @Param('interviewCode') interviewCode: string,
@@ -59,7 +66,7 @@ export class InterviewController {
     return new ApiResponse('Interview details fetched successfully', result);
   }
 
-  @Public()
+  //@Public()
   @Get()
   async getInterviews(
     @Query('userId', new DefaultValuePipe(0), ParseIntPipe)

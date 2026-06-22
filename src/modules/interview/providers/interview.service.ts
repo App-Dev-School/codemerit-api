@@ -38,13 +38,30 @@ export class InterviewService {
       throw new NotFoundException('Invalid Job Role');
     }
 
-    // Prevent scheduling interviews in the past
     const scheduledAt = new Date(dto.scheduledAt);
-
     if (scheduledAt <= new Date()) {
       throw new BadRequestException(
         'Interview must be scheduled for a future date and time',
       );
+    }
+
+    let interviewCode = '';
+    let attempts = 0;
+    while (attempts < 5) {
+      const generatedCode = crypto.randomBytes(5).toString('hex').toUpperCase();
+      const existingInterview = await this.interviewRepo.findOne({
+        where: { interviewCode: generatedCode },
+      });
+
+      if (!existingInterview) {
+        interviewCode = generatedCode;
+        break;
+      }
+      attempts++;
+    }
+
+    if (!interviewCode) {
+      throw new ConflictException('Failed to generate a unique interview code');
     }
 
     return await this.dataSource.transaction(async (manager) => {
@@ -52,11 +69,9 @@ export class InterviewService {
 
       if (dto.userId) {
         const user = await this.userService.findOne(dto.userId);
-
         if (!user) {
           throw new NotFoundException('User not found');
         }
-
         userId = user.id;
       } else {
         if (!dto.email || !dto.firstName) {
@@ -73,35 +88,6 @@ export class InterviewService {
         });
 
         userId = newUser.id;
-      }
-
-      let interviewCode = '';
-      let attempts = 0;
-
-      while (attempts < 5) {
-        const generatedCode = crypto
-          .randomBytes(5)
-          .toString('hex')
-          .toUpperCase();
-
-        const existingInterview = await manager.findOne(Interview, {
-          where: {
-            interviewCode: generatedCode,
-          },
-        });
-
-        if (!existingInterview) {
-          interviewCode = generatedCode;
-          break;
-        }
-
-        attempts++;
-      }
-
-      if (!interviewCode) {
-        throw new ConflictException(
-          'Failed to generate a unique interview code',
-        );
       }
 
       const interview = manager.create(Interview, {
@@ -128,48 +114,78 @@ export class InterviewService {
       return savedInterview;
     });
   }
-  async updateInterview(id: number, dto: UpdateInterviewDto) {
-    return await this.dataSource.transaction(async (manager) => {
-      const interview = await manager.findOne(Interview, {
-        where: { id },
+
+  async updateInterview(interviewId: number, dto: UpdateInterviewDto) {
+    const interview = await this.interviewRepo.findOne({
+      where: { id: interviewId },
+    });
+
+    if (!interview) {
+      throw new NotFoundException(`Interview with ID ${interviewId} not found`);
+    }
+
+    const currentStatus = interview.status.toString().toUpperCase();
+    if (currentStatus === 'COMPLETED' || currentStatus === 'DECLINED') {
+      throw new BadRequestException(
+        `Cannot modify interview details because it is already ${interview.status.toLowerCase()}.`,
+      );
+    }
+
+    if (dto.title !== undefined) {
+      interview.title = dto.title;
+    }
+
+    if (dto.jobRoleId !== undefined) {
+      const jobRole = await this.jobRoleRepo.findOne({
+        where: { id: dto.jobRoleId },
       });
 
-      if (!interview) {
-        throw new NotFoundException('Interview not found');
+      if (!jobRole) {
+        throw new NotFoundException('Invalid Job Role');
       }
 
-      if (dto.jobRoleId !== undefined) {
-        const jobRole = await this.jobRoleRepo.findOne({
-          where: { id: dto.jobRoleId },
-        });
+      interview.jobRoleId = dto.jobRoleId;
+    }
 
-        if (!jobRole) {
-          throw new NotFoundException('Invalid Job Role');
-        }
+    if (dto.scheduledAt !== undefined) {
+      const scheduledAt = new Date(dto.scheduledAt);
 
-        interview.jobRoleId = dto.jobRoleId;
+      if (scheduledAt <= new Date()) {
+        throw new BadRequestException(
+          'Interview must be scheduled for a future date and time',
+        );
       }
 
-      if (dto.scheduledAt !== undefined) {
-        const scheduledAt = new Date(dto.scheduledAt);
+      interview.scheduledAt = scheduledAt;
+    }
 
-        if (scheduledAt <= new Date()) {
-          throw new BadRequestException(
-            'Interview must be scheduled for a future date and time',
-          );
-        }
+    if (dto.externalId !== undefined) {
+      interview.externalId = dto.externalId;
+    }
 
-        interview.scheduledAt = scheduledAt;
-      }
-
-      if (dto.externalId !== undefined) {
-        interview.externalId = dto.externalId;
-      }
-
-      return await manager.save(Interview, interview);
-    });
+    return await this.interviewRepo.save(interview);
   }
-  async submitInterview(dto: SubmitInterviewDto) {
+
+  async submitInterview(dto: SubmitInterviewDto, currentUserId: number) {
+    if (
+      !dto.skillRatings ||
+      !Array.isArray(dto.skillRatings) ||
+      dto.skillRatings.length === 0
+    ) {
+      throw new BadRequestException(
+        'Interview submission must contain at least one skill rating.',
+      );
+    }
+
+    if (
+      dto.status === InterviewStatusEnum.DECLINED &&
+      !dto.declineReason?.trim()
+    ) {
+      throw new BadRequestException(
+        'A clear decline reason must be specified when rejecting an interview.',
+      );
+    }
+
     const interview = await this.interviewRepo.findOne({
       where: { id: dto.interviewId },
     });
@@ -181,16 +197,16 @@ export class InterviewService {
     }
 
     return await this.dataSource.transaction(async (manager) => {
-      // Session creation
       const assessmentSession = new AssessmentSession();
       assessmentSession.userId = interview.userId;
       assessmentSession.interviewId = interview.id;
+      assessmentSession.ratedBy = currentUserId;
+
       const savedAssessment = await manager.save(
         AssessmentSession,
         assessmentSession,
       );
 
-      // Ratings mapping
       const skillRatingsData = dto.skillRatings.map((item) => {
         const rating = new SkillRating();
         rating.skillId = item.skillId;
@@ -202,25 +218,26 @@ export class InterviewService {
       await manager.save(SkillRating, skillRatingsData);
 
       const previousStatus = interview.status;
-      // Interview update
       interview.status = dto.status;
-      interview.feedback = dto.feedback;
 
       if (dto.status === InterviewStatusEnum.COMPLETED) {
+        interview.feedback = dto.feedback ?? null;
         interview.completedAt = new Date();
+        interview.declineReason = null;
       }
       if (dto.status === InterviewStatusEnum.DECLINED) {
+        interview.feedback = dto.feedback ?? null;
         interview.declineReason = dto.declineReason;
+        interview.completedAt = null;
       }
 
       const updatedInterview = await manager.save(Interview, interview);
 
-      // Status log creation
       const historyLog = new InterviewStatusHistory();
       historyLog.interviewId = interview.id;
       historyLog.oldStatus = previousStatus;
       historyLog.newStatus = dto.status;
-      historyLog.changedBy = interview.userId;
+      historyLog.changedBy = currentUserId;
       historyLog.remarks = 'Interview submitted successfully.';
       await manager.save(InterviewStatusHistory, historyLog);
 
@@ -230,6 +247,7 @@ export class InterviewService {
       };
     });
   }
+
   async getInterviewDetails(interviewCode: string) {
     const interview = await this.interviewRepo
       .createQueryBuilder('interview')
@@ -255,14 +273,11 @@ export class InterviewService {
   async getInterviews(userId?: number, fetchAll?: boolean) {
     const query = this.interviewRepo
       .createQueryBuilder('interview')
-      .leftJoinAndSelect('interview.jobRole', 'jobRole')
-      .leftJoinAndSelect('interview.assessmentSessions', 'assessmentSessions')
-      .orderBy('interview.createdAt', 'DESC');
+      .leftJoinAndSelect('interview.user', 'user')
+      .leftJoinAndSelect('interview.jobRole', 'jobRole');
 
     if (!fetchAll && userId) {
-      query.where('interview.userId = :userId', {
-        userId,
-      });
+      query.where('interview.userId = :userId', { userId });
     }
 
     return await query.getMany();

@@ -25,9 +25,11 @@ import { ThrottlerModule } from '@nestjs/throttler';
         {
           name: 'default',
           ttl: 60000,
-          limit: 3,
+          limit: 100,
         },
       ],
+      errorMessage:
+        'You are making too many requests. Please wait a moment before trying again.',
     }),
     MasterModule,
     CoreModule,
