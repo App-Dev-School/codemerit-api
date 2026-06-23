@@ -14,6 +14,7 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { ApiResponse } from 'src/common/utils/api-response';
 import { Public } from 'src/core/auth/decorators/public.decorator';
+import { OptionalJwtAuthGuard } from 'src/core/auth/jwt/optional-jwt-auth-guard';
 import { CreateQuizDto } from './dtos/create-quiz.dto';
 import { UpdateQuizDto } from './dtos/update-quiz.dto';
 import { SubmitQuizDto } from './dtos/submit-quiz.dto';
@@ -112,10 +113,11 @@ export class QuizController {
     return new ApiResponse('Quiz updated successfully', result);
   }
 
-  @Public()
   @ApiOperation({
     summary: 'Get all Standard published quizzes with questions and settings',
   })
+  @Public()
+  @UseGuards(OptionalJwtAuthGuard)
   @Get('quizzes')
   async getPublishedQuizzes(
     @Query() filters: PublishedQuizFilterDto,
@@ -125,16 +127,27 @@ export class QuizController {
     let quizzesWithTaken;
     if (req.user && req.user.id) {
       const userId = req.user.id;
-      const takenQuizIds = await this.quizResultService.findQuizIdsTakenByUser(userId);
-      const takenSet = new Set(takenQuizIds);
-      quizzesWithTaken = result.map((quiz: any) => ({
-        ...quiz,
-        isQuizTaken: takenSet.has(quiz.id),
-      }));
+      const quizIds = result.map((quiz: any) => quiz.id);
+      const resultCodeMap = await this.quizResultService.findAllResultCodesByUserAndQuizIds(
+        userId,
+        quizIds,
+      );
+
+      quizzesWithTaken = result.map((quiz: any) => {
+        const resultCodes = resultCodeMap[quiz.id] ?? [];
+        return {
+          ...quiz,
+          isQuizTaken: Boolean(resultCodes.length),
+          resultCodes,
+          latestResultCode: resultCodes[0] ?? null,
+        };
+      });
     } else {
       quizzesWithTaken = result.map((quiz: any) => ({
         ...quiz,
         isQuizTaken: false,
+        resultCodes: [],
+        latestResultCode: null,
       }));
     }
     return new ApiResponse(

@@ -76,11 +76,19 @@ export class QuizResultService {
       .leftJoin('qt.topic', 't')
       .innerJoin(QuizQuestion, 'qq', 'qq.questionId = q.id AND qq.quizId = :quizId', { quizId })
       .where('qa.userId = :userId', { userId })
+      .andWhere('qa.quizId = :quizId', { quizId })
       .getRawMany();
 
     // 3. Build questions array with options
+    const uniqueQuestionRows = new Map<number, any>();
+    questionRows.forEach((r) => {
+      if (!uniqueQuestionRows.has(r.questionId)) {
+        uniqueQuestionRows.set(r.questionId, r);
+      }
+    });
+
     const questions = await Promise.all(
-      questionRows.map(async (r) => {
+      Array.from(uniqueQuestionRows.values()).map(async (r) => {
         const options = await this.dataSource
           .createQueryBuilder(QuestionOption, 'qo')
           .select(['qo.id AS id', 'qo.option AS text', 'qo.correct AS correct'])
@@ -221,5 +229,31 @@ export class QuizResultService {
       .where('qr.userId = :userId', { userId })
       .getRawMany();
     return rows.map((row) => row.quizId);
+  }
+
+  async findAllResultCodesByUserAndQuizIds(
+    userId: number,
+    quizIds: number[],
+  ): Promise<Record<number, string[]>> {
+    if (!quizIds || quizIds.length === 0) {
+      return {};
+    }
+
+    const rows = await this.dataSource
+      .createQueryBuilder(QuizResult, 'qr')
+      .select(['qr.quizId AS quizId', 'qr.resultCode AS resultCode'])
+      .where('qr.userId = :userId', { userId })
+      .andWhere('qr.quizId IN (:...quizIds)', { quizIds })
+      .orderBy('qr.createdAt', 'DESC')
+      .getRawMany();
+
+    return rows.reduce((map, row) => {
+      const quizId = Number(row.quizId);
+      if (!map[quizId]) {
+        map[quizId] = [];
+      }
+      map[quizId].push(row.resultCode);
+      return map;
+    }, {} as Record<number, string[]>);
   }
 }
