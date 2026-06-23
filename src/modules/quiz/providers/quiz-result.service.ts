@@ -76,6 +76,7 @@ export class QuizResultService {
       .leftJoin('qt.topic', 't')
       .innerJoin(QuizQuestion, 'qq', 'qq.questionId = q.id AND qq.quizId = :quizId', { quizId })
       .where('qa.userId = :userId', { userId })
+      .andWhere('qa.quizId = :quizId', { quizId })
       .getRawMany();
 
     // 3. Build questions array with options

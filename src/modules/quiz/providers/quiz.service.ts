@@ -338,6 +338,7 @@ export class QuizService {
         for (const attempt of submitQuizDto?.attempts) {
           const questionAttempt = manager.create(QuestionAttempt, {
             userId: submitQuizDto?.userId,
+            quizId: submitQuizDto?.quizId,
             questionId: attempt.questionId,
             selectedOption: attempt?.selectedOption,
             timeTaken: attempt?.timeTaken,
@@ -439,6 +440,11 @@ export class QuizService {
     // Subject Mapping
     .leftJoin(
       QuizSubject,
+      'filterQuizSubjects',
+      'filterQuizSubjects.quizId = quiz.id',
+    )
+    .leftJoin(
+      QuizSubject,
       'quizSubjects',
       'quizSubjects.quizId = quiz.id',
     )
@@ -461,7 +467,7 @@ export class QuizService {
   'jobRoleSubjects',
   `
   jobRoleSubjects.subjectId =
-  quizSubjects.subjectId
+  filterQuizSubjects.subjectId
   `,
 )
 
@@ -518,7 +524,7 @@ if (filters.mode) {
   ) {
 
     query.andWhere(
-      'quizSubjects.subjectId = :subjectId',
+      'filterQuizSubjects.subjectId = :subjectId',
       {
         subjectId:
           filters.subjectId,
