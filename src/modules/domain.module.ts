@@ -9,6 +9,7 @@ import { QuizModule } from './quiz/quiz.module';
 import { AdminModule } from './admin/admin.module';
 import { LmsModule } from './lms/lms.module';
 import { NotificationModule } from './notification/notification.module';
+import { InterviewModule } from './interview/interview.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { NotificationModule } from './notification/notification.module';
     UserPermissionModule,
     SkillRatingModule,
     NotificationModule,
+    InterviewModule,
   ],
 })
 export class DomainModule {}
