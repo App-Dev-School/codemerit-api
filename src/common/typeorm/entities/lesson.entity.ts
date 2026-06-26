@@ -13,6 +13,7 @@ import { LessonSection } from './lesson-section.entity';
 import { Subject } from './subject.entity';
 import { Topic } from './topic.entity';
 import { User } from './user.entity';
+import { UserLessonTracker } from './user-lesson-tracker.entity';
 
 @Entity()
 export class Lesson extends AbstractEntity {
@@ -74,4 +75,7 @@ export class Lesson extends AbstractEntity {
     cascade: true,
   })
   sections: LessonSection[];
+
+  @OneToMany(() => UserLessonTracker, (tracker) => tracker.lesson)
+  userTrackers: UserLessonTracker[];
 }

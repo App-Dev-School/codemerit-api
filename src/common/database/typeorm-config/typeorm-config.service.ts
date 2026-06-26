@@ -27,6 +27,7 @@ import { SkillRating } from 'src/common/typeorm/entities/skill-rating.entity';
 import { Subject } from 'src/common/typeorm/entities/subject.entity';
 import { Topic } from 'src/common/typeorm/entities/topic.entity';
 import { UserJobRole } from 'src/common/typeorm/entities/user-job-role.entity';
+import { UserLessonTracker } from 'src/common/typeorm/entities/user-lesson-tracker.entity';
 import { UserOtp } from 'src/common/typeorm/entities/user-otp.entity';
 import { UserPermission } from 'src/common/typeorm/entities/user-permission.entity';
 import { UserSubject } from 'src/common/typeorm/entities/user-subject.entity';
@@ -72,6 +73,7 @@ export class TypeormConfigService implements TypeOrmOptionsFactory {
         QuizSettings,
         Lesson,
         LessonSection,
+        UserLessonTracker,
         Permission,
         UserPermission,
         ApiUsage,
