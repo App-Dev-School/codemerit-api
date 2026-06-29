@@ -214,6 +214,47 @@ export class LessonService {
     });
   }
 
+  async findBySlug(slug: string): Promise<any> {
+    const lesson = await this.lessonRepository
+      .createQueryBuilder('lesson')
+      .leftJoinAndSelect('lesson.subject', 'subject')
+      .leftJoinAndSelect('lesson.topic', 'topic')
+      .leftJoinAndSelect('lesson.user', 'user')
+      .leftJoinAndSelect('lesson.sections', 'sections')
+      .where('lesson.slug = :slug', { slug })
+      .getOne();
+
+    if (!lesson) {
+      throw new AppCustomException(HttpStatus.NOT_FOUND, 'Lesson not found.');
+    }
+
+    return {
+      ...lesson,
+      subject: lesson.subject
+        ? {
+            id: lesson.subject.id,
+            title: lesson.subject.title,
+            image: lesson.subject.image,
+          }
+        : null,
+      topic: lesson.topic
+        ? {
+            id: lesson.topic.id,
+            title: lesson.topic.title,
+            image: lesson.topic.image,
+          }
+        : null,
+      user: lesson.user
+        ? {
+            id: lesson.user.id,
+            firstName: lesson.user.firstName,
+            lastName: lesson.user.lastName,
+          }
+        : null,
+      sections: lesson.sections || [],
+    };
+  }
+
   private async getUserSubjectIds(userId: number): Promise<number[]> {
     const userSubjects = await this.dataSource
       .getRepository(UserSubject)

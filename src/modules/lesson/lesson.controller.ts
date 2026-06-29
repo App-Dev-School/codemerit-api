@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   HttpStatus,
+  Param,
   Post,
   Query,
   Request,
@@ -64,6 +65,13 @@ export class LessonController {
   ): Promise<ApiResponse<any>> {
     const result = await this.service.findLessons(query, req.user?.id);
     return new ApiResponse('Lessons fetched successfully', result);
+  }
+
+  @Public()
+  @Get(':slug')
+  async findBySlug(@Param('slug') slug: string): Promise<ApiResponse<any>> {
+    const result = await this.service.findBySlug(slug);
+    return new ApiResponse('Lesson fetched successfully', result);
   }
 
 }
