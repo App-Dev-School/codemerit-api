@@ -3,8 +3,8 @@ import {
   Controller,
   Get,
   HttpStatus,
-  Param,
   Post,
+  Query,
   Request,
   UseGuards,
 } from '@nestjs/common';
@@ -13,8 +13,10 @@ import { AppCustomException } from 'src/common/exceptions/app-custom-exception.f
 import { UserPermissionEnum } from 'src/common/policies/user-permission.enum';
 import { ApiResponse } from 'src/common/utils/api-response';
 import { Public } from 'src/core/auth/decorators/public.decorator';
+import { OptionalJwtAuthGuard } from 'src/core/auth/jwt/optional-jwt-auth-guard';
 import { UserPermissionService } from '../user-permission/providers/user-permission.service';
 import { CreateLessonDto } from './dtos/create-lesson.dto';
+import { GetLessonsDto } from './dtos/get-lessons.dto';
 import { LessonService } from './providers/lesson.service';
 
 @Controller('apis/lesson')
@@ -52,4 +54,16 @@ export class LessonController {
     const result = await this.service.createLesson(data, req.user.id);
     return new ApiResponse('Lesson created successfully', result);
   }
+
+  @Public()
+  @UseGuards(OptionalJwtAuthGuard)
+  @Get()
+  async findAll(
+    @Query() query: GetLessonsDto,
+    @Request() req: any,
+  ): Promise<ApiResponse<any>> {
+    const result = await this.service.findLessons(query, req.user?.id);
+    return new ApiResponse('Lessons fetched successfully', result);
+  }
+
 }
