@@ -11,6 +11,8 @@ import { Subject } from 'src/common/typeorm/entities/subject.entity';
 import { Quiz } from 'src/common/typeorm/entities/quiz.entity';
 import { QuizResult } from 'src/common/typeorm/entities/quiz-result.entity';
 import { UserPermissionModule } from '../user-permission/user-permission.module';
+import { Lesson } from 'src/common/typeorm/entities/lesson.entity';
+import { UserLessonTracker } from 'src/common/typeorm/entities/user-lesson-tracker.entity';
 
 @Module({
   imports: [
@@ -22,6 +24,8 @@ import { UserPermissionModule } from '../user-permission/user-permission.module'
       QuestionAttempt,
       Quiz,
       QuizResult,
+      Lesson,
+      UserLessonTracker,
     ]),
     UserPermissionModule,
   ],

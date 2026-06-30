@@ -13,6 +13,9 @@ import { UserRoleEnum } from 'src/core/users/enums/user-roles.enum';
 import { Subject } from 'src/common/typeorm/entities/subject.entity';
 import { Quiz } from 'src/common/typeorm/entities/quiz.entity';
 import { QuizResult } from 'src/common/typeorm/entities/quiz-result.entity';
+import { Lesson } from 'src/common/typeorm/entities/lesson.entity';
+import { UserLessonTracker } from 'src/common/typeorm/entities/user-lesson-tracker.entity';
+import { UserLessonTrackerStatusEnum } from 'src/common/enum/user-lesson-tracker-status.enum';
 
 @Injectable()
 export class AdminService {
@@ -37,16 +40,23 @@ export class AdminService {
 
         @InjectRepository(QuizResult)
         private readonly quizResultRepo: Repository<QuizResult>,
+
+        @InjectRepository(Lesson)
+        private readonly lessonRepo: Repository<Lesson>,
+
+        @InjectRepository(UserLessonTracker)
+        private readonly userLessonTrackerRepo: Repository<UserLessonTracker>,
     ) { }
 
     async getDashboardSummary() {
-        const [attempts, questions, users, topics, subjects, quizzes, timeSeries] = await Promise.all([
+        const [attempts, questions, users, topics, subjects, quizzes, lessons, timeSeries] = await Promise.all([
             this.getAttemptStats(),
             this.getQuestionStats(),
             this.getUserStats(),
             this.getTopicStats(),
             this.getSubjectStats(),
             this.getQuizStats(),
+            this.getLessonStats(),
             this.getTimeSeriesStats(),
         ]);
 
@@ -57,6 +67,7 @@ export class AdminService {
                 topics,
                 subjects,
                 quizzes,
+                lessons,
                 timeSeries,
         };
     }
@@ -231,6 +242,34 @@ export class AdminService {
             totalPlays,
             avgPlaysPerQuiz,
             avgScore,
+        };
+    }
+
+    // ------------------- LESSON METRICS -------------------
+    private async getLessonStats() {
+        const lessonStats = await this.lessonRepo
+            .createQueryBuilder('lesson')
+            .select('COUNT(lesson.id)', 'total')
+            .getRawOne();
+
+        const trackerStats = await this.userLessonTrackerRepo
+            .createQueryBuilder('tracker')
+            .select([
+                'COALESCE(SUM(tracker.views), 0) as totalViews',
+                `SUM(CASE WHEN tracker.status = :pending THEN 1 ELSE 0 END) as totalPending`,
+                `SUM(CASE WHEN tracker.status = :completed THEN 1 ELSE 0 END) as totalCompleted`,
+            ])
+            .setParameters({
+                pending: UserLessonTrackerStatusEnum.Pending,
+                completed: UserLessonTrackerStatusEnum.Completed,
+            })
+            .getRawOne();
+
+        return {
+            totalLessons: +lessonStats.total || 0,
+            totalViews: +trackerStats.totalViews || 0,
+            totalPending: +trackerStats.totalPending || 0,
+            totalCompleted: +trackerStats.totalCompleted || 0,
         };
     }
 

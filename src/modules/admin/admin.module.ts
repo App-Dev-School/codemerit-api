@@ -10,9 +10,23 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Subject } from 'src/common/typeorm/entities/subject.entity';
 import { Quiz } from 'src/common/typeorm/entities/quiz.entity';
 import { QuizResult } from 'src/common/typeorm/entities/quiz-result.entity';
+import { Lesson } from 'src/common/typeorm/entities/lesson.entity';
+import { UserLessonTracker } from 'src/common/typeorm/entities/user-lesson-tracker.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, Subject, Topic, Question, QuestionAttempt, Quiz, QuizResult])],
+  imports: [
+    TypeOrmModule.forFeature([
+      User,
+      Subject,
+      Topic,
+      Question,
+      QuestionAttempt,
+      Quiz,
+      QuizResult,
+      Lesson,
+      UserLessonTracker,
+    ]),
+  ],
   providers: [AdminService],
   controllers: [AdminController],
   exports: [AdminService],

@@ -8,6 +8,9 @@ import { QuestionTypeEnum } from 'src/common/enum/question-type.enum';
 import { QuizTypeEnum } from 'src/common/enum/quiz-type.enum';
 import { Quiz } from 'src/common/typeorm/entities/quiz.entity';
 import { QuizResult } from 'src/common/typeorm/entities/quiz-result.entity';
+import { Lesson } from 'src/common/typeorm/entities/lesson.entity';
+import { UserLessonTracker } from 'src/common/typeorm/entities/user-lesson-tracker.entity';
+import { UserLessonTrackerStatusEnum } from 'src/common/enum/user-lesson-tracker-status.enum';
 
 @Injectable()
 export class LmsService {
@@ -20,18 +23,26 @@ export class LmsService {
 
     @InjectRepository(QuizResult)
     private readonly quizResultRepo: Repository<QuizResult>,
+
+    @InjectRepository(Lesson)
+    private readonly lessonRepo: Repository<Lesson>,
+
+    @InjectRepository(UserLessonTracker)
+    private readonly userLessonTrackerRepo: Repository<UserLessonTracker>,
   ) {}
 
   async getDashboardSummary(userId?: number) {
-    const [questions, quizzes, timeSeries] = await Promise.all([
+    const [questions, quizzes, lessons, timeSeries] = await Promise.all([
       this.getQuestionStats(userId),
       this.getQuizStats(userId),
+      this.getLessonStats(userId),
       this.getTimeSeriesStats(userId),
     ]);
 
     return {
       questions,
       quizzes,
+      lessons,
       timeSeries,
     };
   }
@@ -118,6 +129,45 @@ export class LmsService {
 
     return {
       totalQuizCreated: +quizStats.total || 0,
+    };
+  }
+
+  private async getLessonStats(userId?: number) {
+    if (!userId) {
+      return {
+        totalLessonsCreated: 0,
+        totalViews: 0,
+        totalPending: 0,
+        totalCompleted: 0,
+      };
+    }
+
+    const lessonStats = await this.lessonRepo
+      .createQueryBuilder('lesson')
+      .select('COUNT(lesson.id)', 'total')
+      .where('lesson.userId = :userId', { userId })
+      .getRawOne();
+
+    const trackerStats = await this.userLessonTrackerRepo
+      .createQueryBuilder('tracker')
+      .innerJoin('tracker.lesson', 'lesson')
+      .select([
+        'COALESCE(SUM(tracker.views), 0) as totalViews',
+        `SUM(CASE WHEN tracker.status = :pending THEN 1 ELSE 0 END) as totalPending`,
+        `SUM(CASE WHEN tracker.status = :completed THEN 1 ELSE 0 END) as totalCompleted`,
+      ])
+      .where('lesson.userId = :userId', { userId })
+      .setParameters({
+        pending: UserLessonTrackerStatusEnum.Pending,
+        completed: UserLessonTrackerStatusEnum.Completed,
+      })
+      .getRawOne();
+
+    return {
+      totalLessonsCreated: +lessonStats.total || 0,
+      totalViews: +trackerStats.totalViews || 0,
+      totalPending: +trackerStats.totalPending || 0,
+      totalCompleted: +trackerStats.totalCompleted || 0,
     };
   }
 
