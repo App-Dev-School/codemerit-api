@@ -7,6 +7,8 @@ import { InterviewStatusHistory } from 'src/common/typeorm/entities/interview-st
 import { Interview } from 'src/common/typeorm/entities/interview.entity';
 import { JobRoleSubject } from 'src/common/typeorm/entities/job-role-subject.entity';
 import { JobRole } from 'src/common/typeorm/entities/job-role.entity';
+import { LessonSection } from 'src/common/typeorm/entities/lesson-section.entity';
+import { Lesson } from 'src/common/typeorm/entities/lesson.entity';
 import { Notification } from 'src/common/typeorm/entities/notification.entity';
 import { Permission } from 'src/common/typeorm/entities/permission.entity';
 import { Profile } from 'src/common/typeorm/entities/profile.entity';
@@ -25,6 +27,7 @@ import { SkillRating } from 'src/common/typeorm/entities/skill-rating.entity';
 import { Subject } from 'src/common/typeorm/entities/subject.entity';
 import { Topic } from 'src/common/typeorm/entities/topic.entity';
 import { UserJobRole } from 'src/common/typeorm/entities/user-job-role.entity';
+import { UserLessonTracker } from 'src/common/typeorm/entities/user-lesson-tracker.entity';
 import { UserOtp } from 'src/common/typeorm/entities/user-otp.entity';
 import { UserPermission } from 'src/common/typeorm/entities/user-permission.entity';
 import { UserSubject } from 'src/common/typeorm/entities/user-subject.entity';
@@ -68,6 +71,9 @@ export class TypeormConfigService implements TypeOrmOptionsFactory {
         QuizSubject,
         QuizTopic,
         QuizSettings,
+        Lesson,
+        LessonSection,
+        UserLessonTracker,
         Permission,
         UserPermission,
         ApiUsage,

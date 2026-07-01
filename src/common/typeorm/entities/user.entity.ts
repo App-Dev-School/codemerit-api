@@ -12,6 +12,7 @@ import {
 import { IUser } from '../interface/user.interface';
 import { AbstractEntity } from './abstract.entity';
 import { QuizResult } from './quiz-result.entity';
+import { UserLessonTracker } from './user-lesson-tracker.entity';
 import { UserJobRole } from './user-job-role.entity';
 import { UserPermission } from './user-permission.entity';
 
@@ -165,6 +166,9 @@ export class User extends AbstractEntity implements IUser {
 
   @OneToMany(() => UserPermission, (p) => p.user)
   permissions?: UserPermission[];
+
+  @OneToMany(() => UserLessonTracker, (tracker) => tracker.user)
+  lessonTrackers: UserLessonTracker[];
 
   // @OneToMany(() => Certificate, cert => cert.user)
   // certificates: Certificate[];
