@@ -197,11 +197,11 @@ export class LessonService {
 
       const savedLesson = await manager.save(Lesson, lesson);
 
-      const sections = dto.descriptions.map((description, index) =>
+      const sections = dto.descriptions.map((description) =>
         manager.create(LessonSection, {
           lessonId: savedLesson.id,
-          title: `Description ${index + 1}`,
-          description,
+          title: description.title,
+          description: description.content,
         }),
       );
 

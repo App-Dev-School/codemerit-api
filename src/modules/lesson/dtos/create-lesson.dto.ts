@@ -8,8 +8,21 @@ import {
   IsNumber,
   IsOptional,
   IsString,
+  ValidateNested,
 } from 'class-validator';
 import { DifficultyLevelEnum } from 'src/common/enum/difficulty-lavel.enum';
+
+export class LessonDescriptionDto {
+  @ApiProperty({ example: 'What is NX?' })
+  @IsString()
+  @IsNotEmpty()
+  title: string;
+
+  @ApiProperty({ example: '<p>Description content</p>' })
+  @IsString()
+  @IsNotEmpty()
+  content: string;
+}
 
 export class CreateLessonDto {
   @ApiProperty({ example: 'JavaScript Hicks' })
@@ -49,11 +62,12 @@ export class CreateLessonDto {
   level: DifficultyLevelEnum;
 
   @ApiProperty({
-    type: [String],
-    example: ['<p>Description 1</p>', '<p>Description 2</p>'],
+    type: [LessonDescriptionDto],
+    example: [{ title: 'What is NX?', content: '<p>Description 1</p>' }],
   })
   @IsArray()
   @ArrayNotEmpty()
-  @IsString({ each: true })
-  descriptions: string[];
+  @ValidateNested({ each: true })
+  @Type(() => LessonDescriptionDto)
+  descriptions: LessonDescriptionDto[];
 }
