@@ -6,12 +6,14 @@ import {
   OneToMany,
   CreateDateColumn,
   UpdateDateColumn,
+  Unique,
 } from 'typeorm';
 import { AbstractEntity } from './abstract.entity';
 import { ITopic } from '../interface/topic.interface';
 import { Subject } from './subject.entity';
 import { TopicLabelEnum } from 'src/common/enum/topic-label.enum';
 
+@Unique(['subjectId', 'title'])
 @Entity()
 export class Topic extends AbstractEntity implements ITopic {
   @Column({
@@ -63,12 +65,14 @@ export class Topic extends AbstractEntity implements ITopic {
   @Column({
     type: 'int',
     nullable: false,
+    default: 1,
   })
   order: number;
 
   @Column({
     type: 'int',
     nullable: false,
+    default: 1,
   })
   weight: number;
 
