@@ -34,6 +34,9 @@ export class PermissionsService {
         return false;
     }
 
+    //add utility
+    //private async ensureLmsAccess(userId: number, permissionId) {
+
     async findByUserTopics(userId: number, permission: string, resourceType: UserPermissionTitleEnum,
         resourceId: number | number[]) {
         const whereCondition: any = {
@@ -50,7 +53,7 @@ export class PermissionsService {
             where: whereCondition,
             relations: ['permission'],
         });
-        console.log(`length ${query.length} == ${resourceId.toString()}`);
+        //console.log(`length ${query.length} == ${resourceId.toString()}`);
 
         if (Array.isArray(resourceId) && resourceId.length > 0 && query.length == resourceId.length) {
             flag = true;

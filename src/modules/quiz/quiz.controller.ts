@@ -14,7 +14,6 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { ApiResponse } from 'src/common/utils/api-response';
 import { Public } from 'src/core/auth/decorators/public.decorator';
-import { OptionalJwtAuthGuard } from 'src/core/auth/jwt/optional-jwt-auth-guard';
 import { CreateQuizDto } from './dtos/create-quiz.dto';
 import { UpdateQuizDto } from './dtos/update-quiz.dto';
 import { SubmitQuizDto } from './dtos/submit-quiz.dto';
@@ -23,6 +22,7 @@ import { QuizResultService } from './providers/quiz-result.service';
 import { ApiOperation } from '@nestjs/swagger';
 import { AppCustomException } from 'src/common/exceptions/app-custom-exception.filter';
 import { PublishedQuizFilterDto } from './dtos/published-quiz.dto';
+import { OptionalJwtAuthGuard } from 'src/core/auth/jwt/optional-jwt-auth-guard';
 
 @Controller('apis/quiz')
 export class QuizController {

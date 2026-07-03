@@ -1,0 +1,5 @@
+export enum SubjectTagEnum {
+  MANDATORY = 'MANDATORY',
+  OPTIONAL = 'OPTIONAL',
+  RECOMMENDED = 'RECOMMENDED',
+}

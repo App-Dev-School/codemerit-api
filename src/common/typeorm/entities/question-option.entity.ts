@@ -4,12 +4,10 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
-  OneToOne,
   UpdateDateColumn,
 } from 'typeorm';
 import { AbstractEntity } from './abstract.entity';
 import { IQuestionOption } from '../interface/question-option.interface';
-import { AuditEntity } from './audit.entity';
 import { Question } from './question.entity';
 
 @Entity()

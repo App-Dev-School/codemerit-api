@@ -1,47 +1,59 @@
 import {
-    Column,
-    Entity,
-    ManyToOne,
-    PrimaryGeneratedColumn
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  Unique,
+  UpdateDateColumn,
 } from 'typeorm';
-import { User } from './user.entity';
+import { CertificateStatusEnum } from 'src/common/enum/certificate-status.enum';
+import { AbstractEntity } from './abstract.entity';
 import { CertificationTrack } from './certification-track.entity';
-@Entity('certificates')
-export class Certificate {
-    @PrimaryGeneratedColumn('uuid')
-    id: string;
+import { User } from './user.entity';
 
-    @Column({ unique: true })
-    certificateNumber: string;
+@Unique(['userId', 'certificationTrackId'])
+@Entity()
+export class Certificate extends AbstractEntity {
+  @Column({ type: 'varchar', length: 100, unique: true, nullable: false })
+  certificateNumber: string;
 
-    //keep as userId
-    @ManyToOne(() => User)
-    user: User;
+  @Column({ type: 'integer', nullable: false })
+  userId: number;
 
-    @ManyToOne(() => CertificationTrack)
-    track: CertificationTrack;
+  @Column({ type: 'integer', nullable: false })
+  certificationTrackId: number;
 
-    @Column()
-    status: string;
-    // ISSUED | REVOKED | EXPIRED
+  @Column({
+    type: 'enum',
+    enum: CertificateStatusEnum,
+    default: CertificateStatusEnum.ISSUED,
+  })
+  status: CertificateStatusEnum;
 
-    //add audit fields
-    //   @Column({ nullable: true })
-    //   issuedAt: Date;
+  @Column({ type: 'datetime', nullable: false, default: () => 'CURRENT_TIMESTAMP' })
+  issuedAt: Date;
 
-    //   @Column({ nullable: true })
-    //   expiresAt: Date;
+  @Column({ type: 'datetime', nullable: true, default: null })
+  expiresAt: Date;
 
-    @Column({ nullable: true })
-    pdfUrl: string;
+  @Column({ type: 'varchar', length: 255, nullable: true, default: null })
+  pdfUrl: string;
 
-    /* Template stored directly */
-    //   @Column({ type: 'text', nullable: true })
-    //   htmlTemplate: string;
+  @Column({ type: 'varchar', length: 100, nullable: true, default: null })
+  verificationCode: string;
 
-    //   @Column({ type: 'jsonb', nullable: true })
-    //   styleConfig: Record<string, any>;
+  @CreateDateColumn({ name: 'createdAt' })
+  createdAt: Date;
 
-    @Column({ nullable: true })
-    verificationCode: string;
+  @UpdateDateColumn({ name: 'updatedAt', select: false })
+  updatedAt: Date;
+
+  @ManyToOne(() => User, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'userId' })
+  user: User;
+
+  @ManyToOne(() => CertificationTrack, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'certificationTrackId' })
+  certificationTrack: CertificationTrack;
 }

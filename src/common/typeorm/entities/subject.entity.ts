@@ -2,6 +2,7 @@ import { Column, CreateDateColumn, Entity, OneToMany, UpdateDateColumn } from 't
 import { ISubject } from '../interface/subject.interface';
 import { AbstractEntity } from './abstract.entity';
 import { JobRoleSubject } from './job-role-subject.entity';
+import { SubjectTrack } from './subject-track.entity';
 
 @Entity()
 export class Subject extends AbstractEntity implements ISubject {
@@ -73,4 +74,7 @@ export class Subject extends AbstractEntity implements ISubject {
 
   @OneToMany(() => JobRoleSubject, (jrs) => jrs.subject)
   jobRoleSubjects: JobRoleSubject[];
+
+  @OneToMany(() => SubjectTrack, (st) => st.subject)
+  subjectTracks: SubjectTrack[];
 }

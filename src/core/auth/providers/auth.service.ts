@@ -73,10 +73,6 @@ export class AuthService {
         user?.id,
         AccountStatusEnum.ACTIVE,
       );
-      console.log(
-        'LoginAPID AuthService :: Account Activated =>',
-        updateStatus,
-      );
     }
     const payload: any = {
       username: user.username,
