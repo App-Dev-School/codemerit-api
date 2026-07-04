@@ -23,7 +23,8 @@
     "import:questions": "ts-node -r tsconfig-paths/register src/database/scripts/import-questions.ts",
     "export:questions": "ts-node -r tsconfig-paths/register src/database/scripts/export-questions.ts",
     "migrate:css-curriculum": "ts-node -r tsconfig-paths/register src/database/scripts/migrate-css-curriculum.ts",
-    "clean:js-questions": "ts-node -r tsconfig-paths/register src/database/scripts/clean-javascript-questions.ts"
+    "clean:js-questions": "ts-node -r tsconfig-paths/register src/database/scripts/clean-javascript-questions.ts",
+    "migrate:typescript-curriculum": "ts-node -r tsconfig-paths/register src/database/scripts/migrate-typescript-curriculum.ts"
   },
   "dependencies": {
     "@nestjs-modules/mailer": "^2.0.2",
