@@ -17,15 +17,15 @@ import { UpdateUserProfileDto } from './dtos/update-user-profile.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { UserRoleEnum } from './enums/user-roles.enum';
 import { UserProfileService } from './providers/user-profile.service';
+import { UserProfileAggregatorService } from './providers/user-profile-aggregator.service';
 import { UserService } from './providers/user.service';
-import { SubjectAnalysisService } from 'src/modules/master/providers/subject-analysis.service';
 
 @Controller('apis/users')
 export class UsersController {
   constructor(
     private readonly usersService: UserService,
     private readonly userProfileService: UserProfileService,
-    private readonly subjectAnalysisService: SubjectAnalysisService,
+    private readonly userProfileAggregatorService: UserProfileAggregatorService,
   ) {}
   @Get('me')
   async getProfile(@Request() req): Promise<ApiResponse<any>> {
@@ -62,19 +62,8 @@ export class UsersController {
   async getUserByUsername(
     @Param('username') username: string,
   ): Promise<ApiResponse<any>> {
-    const result = await this.usersService.findByUsername(username);
-    if (result) {
-      const courseStats =
-        await this.subjectAnalysisService.getJobSubjectDashboards(
-          result.id,
-          false,
-        );
-      return new ApiResponse('User found.', {
-        ...result,
-        courseStats,
-      });
-    }
-    return new ApiResponse('User not found.', result);
+    const result = await this.userProfileAggregatorService.getFullProfile(username);
+    return new ApiResponse('User found.', result);
   }
   @Put('update')
   async updateUser(

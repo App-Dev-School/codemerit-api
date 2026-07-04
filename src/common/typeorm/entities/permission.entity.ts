@@ -20,6 +20,9 @@ export class Permission implements IPermission {
   @Column({ type: 'varchar', length: 100, nullable: true, default: null })
   group: string;
 
+  @Column({ type: 'boolean', default: true })
+  isVisible: boolean;
+
   @Column({ name: 'createdBy', default: null, select: false })
   createdBy: number;
 

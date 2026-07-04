@@ -73,15 +73,33 @@ export class MasterService {
   }
 
   async getMasterData(userId: number) {
-    const [subjects, jobRoles, popularTopics, subjectTracks, certificationTracks] = await Promise.all([
+    const [subjects, jobRoles, popularTopics, subjectTracks, certificationTracks, topics] = await Promise.all([
       this.subjectAnalyzer.getAllSubjects(userId),
       this.getJobRolesWithSubjects(userId),
       this.getPopularTopics(),
       this.getMasterSubjectTracks(),
       this.getMasterCertificationTracks(),
+      this.getTopicsForDropdown(),
     ]);
 
-    return { subjects, jobRoles, popularTopics, subjectTracks, certificationTracks };
+    return { subjects, jobRoles, popularTopics, subjectTracks, certificationTracks, topics };
+  }
+
+  private async getTopicsForDropdown() {
+    const rows = await this.topicRepo
+      .createQueryBuilder('t')
+      .select(['t.id AS id', 't.title AS title', 't.slug AS slug', 't.subjectId AS subjectId'])
+      .where('t.isPublished = :isPublished', { isPublished: 1 })
+      .orderBy('t.subjectId', 'ASC')
+      .addOrderBy('t.title', 'ASC')
+      .getRawMany();
+
+    return rows.map((r) => ({
+      id: +r.id,
+      title: r.title,
+      slug: r.slug,
+      subjectId: +r.subjectId,
+    }));
   }
 
   private async getMasterSubjectTracks() {

@@ -1,5 +1,6 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
@@ -25,6 +26,9 @@ export class UserPermission implements IUserPermission {
 
   @Column()
   userId: number;
+
+  @CreateDateColumn({ name: 'createdAt' })
+  createdAt: Date;
 
   @ManyToOne(() => User, user => user.permissions)
   @JoinColumn({ name: 'userId', referencedColumnName: 'id' })

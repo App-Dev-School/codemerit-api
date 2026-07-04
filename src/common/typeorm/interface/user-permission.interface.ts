@@ -5,4 +5,5 @@ export interface IUserPermission {
   resourceType?: string;
   resourceId?: number;
   userId: number;
+  createdAt: Date;
 }
