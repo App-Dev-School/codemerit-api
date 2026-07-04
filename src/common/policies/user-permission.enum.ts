@@ -2,6 +2,8 @@ export enum UserPermissionTitleEnum {
   Subject = 'subject',
   Topic = 'topic',
   Question = 'question',
+  SubjectTrack = 'subject-track',
+  CertificationTrack = 'certification-track',
 }
 export enum UserPermissionEnum {
   TopicGet = 'Topic:Get',
@@ -10,4 +12,12 @@ export enum UserPermissionEnum {
   QuestionAuthorUpdate = 'QuestionAuthor:Update',
   QuestionAuthorDelete = 'QuestionAuthor:Delete',
   LmsManager = 'LmsManager',
+  SubjectTrackGet = 'SubjectTrack:Get',
+  SubjectTrackCreate = 'SubjectTrack:Create',
+  SubjectTrackUpdate = 'SubjectTrack:Update',
+  SubjectTrackDelete = 'SubjectTrack:Delete',
+  CertificationTrackGet = 'CertificationTrack:Get',
+  CertificationTrackCreate = 'CertificationTrack:Create',
+  CertificationTrackUpdate = 'CertificationTrack:Update',
+  CertificationTrackDelete = 'CertificationTrack:Delete',
 }
