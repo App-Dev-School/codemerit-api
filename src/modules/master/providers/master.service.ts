@@ -3,8 +3,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { IUserPermissionDto } from 'src/common/dto/user-permission.dto';
 import { QuestionTypeEnum } from 'src/common/enum/question-type.enum';
 import { AppCustomException } from 'src/common/exceptions/app-custom-exception.filter';
+import { CertificationTrack } from 'src/common/typeorm/entities/certification-track.entity';
 import { JobRole } from 'src/common/typeorm/entities/job-role.entity';
 import { Subject } from 'src/common/typeorm/entities/subject.entity';
+import { SubjectTrack } from 'src/common/typeorm/entities/subject-track.entity';
 import { Topic } from 'src/common/typeorm/entities/topic.entity';
 import { UserSubject } from 'src/common/typeorm/entities/user-subject.entity';
 import { User } from 'src/common/typeorm/entities/user.entity';
@@ -29,11 +31,37 @@ export class MasterService {
     @InjectRepository(UserSubject)
     private readonly userSubjectRepo: Repository<UserSubject>,
 
+    @InjectRepository(SubjectTrack)
+    private readonly subjectTrackRepo: Repository<SubjectTrack>,
+
+    @InjectRepository(CertificationTrack)
+    private readonly certificationTrackRepo: Repository<CertificationTrack>,
+
     private readonly dataSource: DataSource,
     private subjectAnalyzer: SubjectAnalysisService,
     private topicAnalyzer: TopicAnalysisService,
     private readonly routeService: RouteService,
   ) {}
+
+  private async getSubjectTrackCounts(): Promise<Map<number, number>> {
+    const rows = await this.subjectTrackRepo
+      .createQueryBuilder('st')
+      .select('st.subjectId', 'subjectId')
+      .addSelect('COUNT(st.id)', 'count')
+      .groupBy('st.subjectId')
+      .getRawMany();
+    return new Map(rows.map((r) => [+r.subjectId, +r.count]));
+  }
+
+  private async getCertificationTrackCounts(): Promise<Map<number, number>> {
+    const rows = await this.certificationTrackRepo
+      .createQueryBuilder('ct')
+      .select('ct.jobRoleId', 'jobRoleId')
+      .addSelect('COUNT(ct.id)', 'count')
+      .groupBy('ct.jobRoleId')
+      .getRawMany();
+    return new Map(rows.map((r) => [+r.jobRoleId, +r.count]));
+  }
 
   /**
    * Delegates to RouteService for all route logic.
@@ -216,26 +244,31 @@ export class MasterService {
   }
 
   async getJobRolesWithSubjectsWithoutUser(userId?: number) {
-    const jobRoles = await this.jobRoleRepo
-      .createQueryBuilder('jobRole')
-      .leftJoinAndSelect('jobRole.jobRoleSubjects', 'jrs')
-      .leftJoinAndSelect('jrs.subject', 'subject')
-      .select([
-        'jobRole.id',
-        'jobRole.title',
-        'jobRole.slug',
-        'jobRole.description',
-        'jobRole.image',
-        'jobRole.isPublished',
-        'jobRole.color',
-        'jrs.id', // Optional: if you want the join ID
-        'subject.id',
-        'subject.title',
-        'subject.description',
-        'subject.image',
-      ])
-      .getMany();
-    const result = jobRoles.map((jr) => ({
+    const [jobRoles, certCounts, subjectTrackCounts] = await Promise.all([
+      this.jobRoleRepo
+        .createQueryBuilder('jobRole')
+        .leftJoinAndSelect('jobRole.jobRoleSubjects', 'jrs')
+        .leftJoinAndSelect('jrs.subject', 'subject')
+        .select([
+          'jobRole.id',
+          'jobRole.title',
+          'jobRole.slug',
+          'jobRole.description',
+          'jobRole.image',
+          'jobRole.isPublished',
+          'jobRole.color',
+          'jrs.id',
+          'subject.id',
+          'subject.title',
+          'subject.description',
+          'subject.image',
+        ])
+        .getMany(),
+      this.getCertificationTrackCounts(),
+      this.getSubjectTrackCounts(),
+    ]);
+
+    return jobRoles.map((jr) => ({
       id: jr.id,
       title: jr.title,
       description: jr.description,
@@ -248,14 +281,15 @@ export class MasterService {
       isSubscribed: true,
       coverage: 0,
       score: 0,
+      certificationTrackCount: certCounts.get(jr.id) ?? 0,
       subjects: jr.jobRoleSubjects.map((jrs) => ({
         id: jrs.subject.id,
         title: jrs.subject.title,
         image: jrs.subject.image,
         description: jrs.subject.description,
+        subjectTrackCount: subjectTrackCounts.get(jrs.subject.id) ?? 0,
       })),
     }));
-    return result;
   }
 
   async getJobRolesWithSubjects(userId?: number) {
@@ -289,11 +323,22 @@ export class MasterService {
       qb.addSelect('FALSE', 'isSubscribed');
     }
 
-    const jobRoles = await qb.getRawAndEntities();
+    const [jobRoles, certCounts, subjectTrackCounts] = await Promise.all([
+      qb.getRawAndEntities(),
+      this.getCertificationTrackCounts(),
+      this.getSubjectTrackCounts(),
+    ]);
 
-    // Map results
-    return jobRoles.entities.map((jr, index) => {
-      const raw = jobRoles.raw[index];
+    // Build a map from jobRole.id → first raw row (for isSubscribed)
+    const rawByJobRoleId = new Map<number, any>();
+    for (const raw of jobRoles.raw) {
+      if (!rawByJobRoleId.has(+raw.jobRole_id)) {
+        rawByJobRoleId.set(+raw.jobRole_id, raw);
+      }
+    }
+
+    return jobRoles.entities.map((jr) => {
+      const raw = rawByJobRoleId.get(jr.id);
       return {
         id: jr.id,
         title: jr.title,
@@ -304,15 +349,17 @@ export class MasterService {
         isPublished: jr.isPublished,
         numQuestions: 0,
         numusers: 0,
-        isSubscribed: Boolean(Number(raw.isSubscribed)),
+        isSubscribed: Boolean(Number(raw?.isSubscribed)),
         coverage: 0,
         score: 0,
         userId,
+        certificationTrackCount: certCounts.get(jr.id) ?? 0,
         subjects: jr.jobRoleSubjects.map((jrs) => ({
           id: jrs.subject.id,
           title: jrs.subject.title,
           slug: jrs.subject.slug,
           image: jrs.subject.image,
+          subjectTrackCount: subjectTrackCounts.get(jrs.subject.id) ?? 0,
         })),
       };
     });

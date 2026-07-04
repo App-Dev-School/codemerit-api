@@ -5,6 +5,7 @@ import { JobRoleSubject } from 'src/common/typeorm/entities/job-role-subject.ent
 import { JobRole } from 'src/common/typeorm/entities/job-role.entity';
 import { QuestionAttempt } from 'src/common/typeorm/entities/question-attempt.entity';
 import { Subject } from 'src/common/typeorm/entities/subject.entity';
+import { SubjectTrack } from 'src/common/typeorm/entities/subject-track.entity';
 import { Topic } from 'src/common/typeorm/entities/topic.entity';
 import { UserSubject } from 'src/common/typeorm/entities/user-subject.entity';
 import { User } from 'src/common/typeorm/entities/user.entity';
@@ -35,9 +36,22 @@ export class SubjectAnalysisService {
     @InjectRepository(UserSubject)
     private readonly userSubjectRepo: Repository<UserSubject>,
 
+    @InjectRepository(SubjectTrack)
+    private readonly subjectTrackRepo: Repository<SubjectTrack>,
+
     private readonly dataSource: DataSource,
     private topicAnalyzer: TopicAnalysisService
   ) { }
+
+  private async getSubjectTrackCounts(): Promise<Map<number, number>> {
+    const rows = await this.subjectTrackRepo
+      .createQueryBuilder('st')
+      .select('st.subjectId', 'subjectId')
+      .addSelect('COUNT(st.id)', 'count')
+      .groupBy('st.subjectId')
+      .getRawMany();
+    return new Map(rows.map((r) => [+r.subjectId, +r.count]));
+  }
 
   /**
    * Core query for subject stats.
@@ -224,7 +238,10 @@ export class SubjectAnalysisService {
 
   /** all subjects (master) — minimal fields */
   async getAllSubjects(userId?: number) {
-    const rows = await this.getSubjectStats(undefined, userId);
+    const [rows, subjectTrackCounts] = await Promise.all([
+      this.getSubjectStats(undefined, userId),
+      this.getSubjectTrackCounts(),
+    ]);
     return rows.map((r) => ({
       id: +r.subjectId,
       title: r.title,
@@ -235,7 +252,8 @@ export class SubjectAnalysisService {
       color: r.color,
       numQuestions: +r.numQuestions || 0,
       numTrivia: +r.numTrivia || 0,
-      isSubscribed: r.isSubscribed === 1 || r.isSubscribed === '1'
+      isSubscribed: r.isSubscribed === 1 || r.isSubscribed === '1',
+      subjectTrackCount: subjectTrackCounts.get(+r.subjectId) ?? 0,
     }));
   }
 

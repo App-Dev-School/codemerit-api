@@ -1,0 +1,1877 @@
+{
+  "subjectSlug": "computer-fundamentals",
+  "questions": [
+    {
+      "slug": "cf-which-component-acts-as-the-brain",
+      "topicTitle": "What is a Computer?",
+      "question": "Which component acts as the brain of a computer, executing instructions?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "CPU (Central Processing Unit)",
+          "correct": true,
+          "comment": "The CPU fetches, decodes, and executes instructions — it is the core of all processing."
+        },
+        {
+          "option": "RAM (Random Access Memory)",
+          "correct": false
+        },
+        {
+          "option": "Hard Drive (HDD)",
+          "correct": false
+        },
+        {
+          "option": "GPU (Graphics Processing Unit)",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cf-what-is-the-difference-between-hardware",
+      "topicTitle": "What is a Computer?",
+      "question": "What is the difference between hardware and software?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Hardware is physical; software is the programs that run on it",
+          "correct": true,
+          "comment": "Hardware = tangible components (monitor, keyboard). Software = instructions (OS, apps)."
+        },
+        {
+          "option": "Hardware is temporary; software is permanently stored",
+          "correct": false
+        },
+        {
+          "option": "Hardware handles output; software handles input only",
+          "correct": false
+        },
+        {
+          "option": "Hardware is newer technology; software is older",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cf-which-of-the-following-is-an",
+      "topicTitle": "What is a Computer?",
+      "question": "Which of the following is an example of system software?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "The Windows Operating System",
+          "correct": true,
+          "comment": "System software manages hardware and provides a platform for application software to run."
+        },
+        {
+          "option": "Microsoft Word",
+          "correct": false
+        },
+        {
+          "option": "Google Chrome",
+          "correct": false
+        },
+        {
+          "option": "Adobe Photoshop",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cf-a-laptop-is-an-example-of",
+      "topicTitle": "What is a Computer?",
+      "question": "A laptop is an example of which type of computer?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Personal computer (portable)",
+          "correct": true,
+          "comment": "Laptops are portable personal computers designed for individual use."
+        },
+        {
+          "option": "Mainframe computer",
+          "correct": false
+        },
+        {
+          "option": "Supercomputer",
+          "correct": false
+        },
+        {
+          "option": "Embedded computer",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cf-what-does-the-term-input-mean",
+      "topicTitle": "What is a Computer?",
+      "question": "What does the term 'input' mean in computing?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Data or instructions given to a computer by a user or device",
+          "correct": true,
+          "comment": "Input devices (keyboard, mouse, microphone) send data into the computer for processing."
+        },
+        {
+          "option": "The result produced by a computer after processing",
+          "correct": false
+        },
+        {
+          "option": "The storage of data on a hard drive",
+          "correct": false
+        },
+        {
+          "option": "The speed at which a processor runs",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cf-which-is-not-a-type-of",
+      "topicTitle": "What is a Computer?",
+      "question": "Which is NOT a type of computer?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Router (it is a network device, not a computer type)",
+          "correct": true,
+          "comment": "Routers are networking devices. Computer types include desktops, laptops, tablets, and servers."
+        },
+        {
+          "option": "Desktop computer",
+          "correct": false
+        },
+        {
+          "option": "Tablet computer",
+          "correct": false
+        },
+        {
+          "option": "Server",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cf-what-does-ram-stand-for",
+      "topicTitle": "Hardware Components",
+      "question": "What does RAM stand for?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Random Access Memory",
+          "correct": true,
+          "comment": "RAM is temporary, fast memory used to store data the CPU is actively using."
+        },
+        {
+          "option": "Read and Modify storage",
+          "correct": false
+        },
+        {
+          "option": "Rapid Access Module",
+          "correct": false
+        },
+        {
+          "option": "Remote Application Memory",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cf-what-is-the-main-purpose-of",
+      "topicTitle": "Hardware Components",
+      "question": "What is the main purpose of RAM in a computer?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "To temporarily store data the CPU is currently working with",
+          "correct": true,
+          "comment": "RAM is fast but volatile — data is lost when the computer is turned off."
+        },
+        {
+          "option": "To permanently store the operating system and files",
+          "correct": false
+        },
+        {
+          "option": "To display graphics on the monitor",
+          "correct": false
+        },
+        {
+          "option": "To connect the computer to the internet",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cf-which-component-is-responsible-for-rendering",
+      "topicTitle": "Hardware Components",
+      "question": "Which component is responsible for rendering images on screen?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "GPU (Graphics Processing Unit)",
+          "correct": true,
+          "comment": "The GPU processes and renders visual data to display on the monitor."
+        },
+        {
+          "option": "CPU (Central Processing Unit)",
+          "correct": false
+        },
+        {
+          "option": "RAM (Random Access Memory)",
+          "correct": false
+        },
+        {
+          "option": "PSU (Power Supply Unit)",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cf-a-keyboard-is-an-example-of",
+      "topicTitle": "Hardware Components",
+      "question": "A keyboard is an example of which type of device?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Input device",
+          "correct": true,
+          "comment": "Input devices send data into the computer. Output devices (monitors, printers) receive data from it."
+        },
+        {
+          "option": "Output device",
+          "correct": false
+        },
+        {
+          "option": "Storage device",
+          "correct": false
+        },
+        {
+          "option": "Processing device",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cf-what-does-the-motherboard-do",
+      "topicTitle": "Hardware Components",
+      "question": "What does the motherboard do?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Connects and allows communication between all hardware components",
+          "correct": true,
+          "comment": "The motherboard is the main circuit board — CPU, RAM, and all peripherals connect to it."
+        },
+        {
+          "option": "Stores the operating system permanently",
+          "correct": false
+        },
+        {
+          "option": "Provides power to external USB devices only",
+          "correct": false
+        },
+        {
+          "option": "Controls the speed of the internet connection",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cf-which-storage-type-is-faster-and",
+      "topicTitle": "Hardware Components",
+      "question": "Which storage type is faster and has no moving parts?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "SSD (Solid State Drive)",
+          "correct": true,
+          "comment": "SSDs use flash memory chips. HDDs use spinning magnetic disks, which are slower."
+        },
+        {
+          "option": "HDD (Hard Disk Drive)",
+          "correct": false
+        },
+        {
+          "option": "DVD-ROM",
+          "correct": false
+        },
+        {
+          "option": "USB Flash Drive",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cf-which-keyboard-shortcut-copies-selected-text",
+      "topicTitle": "Keyboard & Mouse Skills",
+      "question": "Which keyboard shortcut copies selected text?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Ctrl + C",
+          "correct": true,
+          "comment": "Ctrl+C copies the selection to the clipboard without removing it."
+        },
+        {
+          "option": "Ctrl + X",
+          "correct": false
+        },
+        {
+          "option": "Ctrl + V",
+          "correct": false
+        },
+        {
+          "option": "Ctrl + Z",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cf-what-does-the-keyboard-shortcut-ctrl",
+      "topicTitle": "Keyboard & Mouse Skills",
+      "question": "What does the keyboard shortcut Ctrl + Z do?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Undoes the last action",
+          "correct": true,
+          "comment": "Ctrl+Z is the universal undo shortcut in most Windows applications."
+        },
+        {
+          "option": "Saves the current document",
+          "correct": false
+        },
+        {
+          "option": "Closes the active window",
+          "correct": false
+        },
+        {
+          "option": "Opens the Zoom application",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cf-what-does-pressing-alt-tab-do",
+      "topicTitle": "Keyboard & Mouse Skills",
+      "question": "What does pressing Alt + Tab do in Windows?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Switches between open application windows",
+          "correct": true,
+          "comment": "Alt+Tab shows a thumbnail of open windows so you can quickly switch between them."
+        },
+        {
+          "option": "Opens the Task Manager",
+          "correct": false
+        },
+        {
+          "option": "Creates a new tab in the browser",
+          "correct": false
+        },
+        {
+          "option": "Logs out of the current user account",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cf-what-does-a-doubleclick-typically-do",
+      "topicTitle": "Keyboard & Mouse Skills",
+      "question": "What does a double-click typically do?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Opens a file, folder, or application",
+          "correct": true,
+          "comment": "Double-clicking opens items. A single click selects; a right-click shows a context menu."
+        },
+        {
+          "option": "Deletes the selected item",
+          "correct": false
+        },
+        {
+          "option": "Shows the right-click context menu",
+          "correct": false
+        },
+        {
+          "option": "Copies the selected item",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cf-which-key-deletes-the-character-to",
+      "topicTitle": "Keyboard & Mouse Skills",
+      "question": "Which key deletes the character to the LEFT of the cursor?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Backspace",
+          "correct": true,
+          "comment": "Backspace deletes backwards (left). The Delete key deletes the character to the right."
+        },
+        {
+          "option": "Delete",
+          "correct": false
+        },
+        {
+          "option": "Escape",
+          "correct": false
+        },
+        {
+          "option": "End",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cf-what-does-ctrl-s-do-in",
+      "topicTitle": "Keyboard & Mouse Skills",
+      "question": "What does Ctrl + S do in most applications?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Saves the current file or document",
+          "correct": true,
+          "comment": "Ctrl+S is the universal save shortcut — use it frequently to avoid losing work."
+        },
+        {
+          "option": "Opens a new file",
+          "correct": false
+        },
+        {
+          "option": "Performs a search within the document",
+          "correct": false
+        },
+        {
+          "option": "Shuts down the computer",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cf-what-is-the-primary-role-of",
+      "topicTitle": "Operating System Basics",
+      "question": "What is the primary role of an operating system?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "To manage hardware resources and provide a platform for applications",
+          "correct": true,
+          "comment": "The OS acts as intermediary between hardware and user-facing applications."
+        },
+        {
+          "option": "To browse the internet and display web pages",
+          "correct": false
+        },
+        {
+          "option": "To store user documents and photos",
+          "correct": false
+        },
+        {
+          "option": "To protect the computer from viruses only",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cf-which-part-of-the-windows-interface",
+      "topicTitle": "Operating System Basics",
+      "question": "Which part of the Windows interface shows the Start button and running apps?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "The Taskbar",
+          "correct": true,
+          "comment": "The Taskbar runs along the bottom of the screen and shows pinned apps, open windows, and system icons."
+        },
+        {
+          "option": "The Desktop",
+          "correct": false
+        },
+        {
+          "option": "The System Tray",
+          "correct": false
+        },
+        {
+          "option": "The Quick Access Toolbar",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cf-what-is-the-windows-desktop",
+      "topicTitle": "Operating System Basics",
+      "question": "What is the Windows Desktop?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "The main working area that appears after logging in",
+          "correct": true,
+          "comment": "The desktop is the background area where shortcuts, files, and the recycle bin are displayed."
+        },
+        {
+          "option": "A physical desk surface with a built-in screen",
+          "correct": false
+        },
+        {
+          "option": "The folder where all user documents are stored",
+          "correct": false
+        },
+        {
+          "option": "The Windows antivirus scanning area",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cf-which-windows-feature-lets-you-quickly",
+      "topicTitle": "Operating System Basics",
+      "question": "Which Windows feature lets you quickly find apps and files by typing their name?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Windows Search (the search bar on the taskbar)",
+          "correct": true,
+          "comment": "Click the search icon or press the Windows key and type to find apps, files, or settings."
+        },
+        {
+          "option": "Windows Defender",
+          "correct": false
+        },
+        {
+          "option": "Task Manager",
+          "correct": false
+        },
+        {
+          "option": "Control Panel",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cf-to-resize-a-window-to-fill",
+      "topicTitle": "Operating System Basics",
+      "question": "To resize a window to fill the entire screen, you should:",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Click the Maximise button (square icon in top-right corner)",
+          "correct": true,
+          "comment": "The three window control buttons are: Minimise (-), Maximise (square), and Close (X)."
+        },
+        {
+          "option": "Press Ctrl + M",
+          "correct": false
+        },
+        {
+          "option": "Right-click the taskbar and select Expand",
+          "correct": false
+        },
+        {
+          "option": "Double-click the desktop background",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cf-which-windows-utility-shows-all-running",
+      "topicTitle": "Operating System Basics",
+      "question": "Which Windows utility shows all running processes and lets you end a frozen app?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Task Manager (opened with Ctrl + Shift + Esc)",
+          "correct": true,
+          "comment": "Task Manager shows CPU, memory, and disk usage per process. Use End Task to close a frozen app."
+        },
+        {
+          "option": "File Explorer",
+          "correct": false
+        },
+        {
+          "option": "Device Manager",
+          "correct": false
+        },
+        {
+          "option": "Disk Management",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cf-what-is-the-windows-application-used",
+      "topicTitle": "File & Folder Management",
+      "question": "What is the Windows application used to browse files and folders?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "File Explorer",
+          "correct": true,
+          "comment": "File Explorer (formerly Windows Explorer) is the built-in file manager. Open it with Win + E."
+        },
+        {
+          "option": "Control Panel",
+          "correct": false
+        },
+        {
+          "option": "Task Manager",
+          "correct": false
+        },
+        {
+          "option": "Device Manager",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cf-when-you-delete-a-file-in",
+      "topicTitle": "File & Folder Management",
+      "question": "When you delete a file in Windows, where does it go first?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "The Recycle Bin",
+          "correct": true,
+          "comment": "Files go to the Recycle Bin first, allowing recovery. To permanently delete, empty the Recycle Bin."
+        },
+        {
+          "option": "It is permanently deleted immediately",
+          "correct": false
+        },
+        {
+          "option": "The Downloads folder",
+          "correct": false
+        },
+        {
+          "option": "A temporary hidden folder in C:\\Windows",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cf-what-is-the-keyboard-shortcut-to",
+      "topicTitle": "File & Folder Management",
+      "question": "What is the keyboard shortcut to paste copied or cut items?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Ctrl + V",
+          "correct": true,
+          "comment": "Ctrl+V pastes from the clipboard. Ctrl+C copies; Ctrl+X cuts (moves to clipboard)."
+        },
+        {
+          "option": "Ctrl + P",
+          "correct": false
+        },
+        {
+          "option": "Ctrl + B",
+          "correct": false
+        },
+        {
+          "option": "Ctrl + D",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cf-which-file-extension-indicates-a-microsoft",
+      "topicTitle": "File & Folder Management",
+      "question": "Which file extension indicates a Microsoft Word document?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": ".docx",
+          "correct": true,
+          "comment": ".docx is the default Word format. .xlsx = Excel, .pptx = PowerPoint, .pdf = PDF."
+        },
+        {
+          "option": ".xlsx",
+          "correct": false
+        },
+        {
+          "option": ".pptx",
+          "correct": false
+        },
+        {
+          "option": ".txt",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cf-to-rename-a-file-in-windows",
+      "topicTitle": "File & Folder Management",
+      "question": "To rename a file in Windows, you should:",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Click once to select it, then press F2",
+          "correct": true,
+          "comment": "F2 activates rename mode. You can also right-click and select Rename."
+        },
+        {
+          "option": "Double-click the file and type the new name",
+          "correct": false
+        },
+        {
+          "option": "Drag the file to the Desktop to rename it",
+          "correct": false
+        },
+        {
+          "option": "Open the file and use Save As with the new name",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cf-what-does-ctrl-x-do-to",
+      "topicTitle": "File & Folder Management",
+      "question": "What does Ctrl + X do to a selected file?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Cuts the file (ready to be moved via Ctrl+V)",
+          "correct": true,
+          "comment": "Cut moves the file when pasted. Copy (Ctrl+C) leaves the original in place."
+        },
+        {
+          "option": "Permanently deletes the file without the Recycle Bin",
+          "correct": false
+        },
+        {
+          "option": "Compresses the file into a ZIP archive",
+          "correct": false
+        },
+        {
+          "option": "Closes the current File Explorer window",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cf-what-does-1-gb-gigabyte-equal",
+      "topicTitle": "Storage & Memory",
+      "question": "What does 1 GB (Gigabyte) equal?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "1,024 Megabytes",
+          "correct": true,
+          "comment": "Size order: KB (Kilobyte) < MB (Megabyte) < GB (Gigabyte) < TB (Terabyte)."
+        },
+        {
+          "option": "1,000 Kilobytes",
+          "correct": false
+        },
+        {
+          "option": "1,024 Terabytes",
+          "correct": false
+        },
+        {
+          "option": "100 Megabytes",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cf-which-storage-type-holds-data-even",
+      "topicTitle": "Storage & Memory",
+      "question": "Which storage type holds data even when the computer is turned off?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Hard Drive (HDD or SSD)",
+          "correct": true,
+          "comment": "HDDs and SSDs are non-volatile — data persists without power. RAM is volatile and loses data."
+        },
+        {
+          "option": "RAM (Random Access Memory)",
+          "correct": false
+        },
+        {
+          "option": "CPU Cache",
+          "correct": false
+        },
+        {
+          "option": "Video Memory (VRAM)",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cf-before-unplugging-a-usb-flash-drive",
+      "topicTitle": "Storage & Memory",
+      "question": "Before unplugging a USB flash drive, you should:",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Use 'Safely Remove Hardware' to eject it first",
+          "correct": true,
+          "comment": "Ejecting ensures all write operations are complete and prevents data corruption."
+        },
+        {
+          "option": "Restart the computer and then remove it",
+          "correct": false
+        },
+        {
+          "option": "Just pull it out — modern USB is always safe to remove",
+          "correct": false
+        },
+        {
+          "option": "Delete all files on it before removing",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cf-which-of-these-is-an-example",
+      "topicTitle": "Storage & Memory",
+      "question": "Which of these is an example of cloud storage?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Google Drive",
+          "correct": true,
+          "comment": "Cloud storage keeps files on remote servers accessible via the internet. Examples: Google Drive, OneDrive, Dropbox."
+        },
+        {
+          "option": "USB flash drive",
+          "correct": false
+        },
+        {
+          "option": "DVD-ROM",
+          "correct": false
+        },
+        {
+          "option": "SSD inside the computer",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cf-a-typical-music-file-mp3-is",
+      "topicTitle": "Storage & Memory",
+      "question": "A typical music file (MP3) is around 4 MB. How many songs fit on a 1 GB USB drive?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "About 250 songs",
+          "correct": true,
+          "comment": "1 GB = 1,024 MB. 1,024 ÷ 4 MB ≈ 256 songs."
+        },
+        {
+          "option": "About 10 songs",
+          "correct": false
+        },
+        {
+          "option": "About 1,000 songs",
+          "correct": false
+        },
+        {
+          "option": "About 4 songs",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cf-what-is-the-advantage-of-an",
+      "topicTitle": "Storage & Memory",
+      "question": "What is the advantage of an SSD over an HDD?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Faster read/write speeds and no moving parts",
+          "correct": true,
+          "comment": "SSDs are significantly faster and more shock-resistant. HDDs are cheaper per GB but slower."
+        },
+        {
+          "option": "SSDs store more data for less cost",
+          "correct": false
+        },
+        {
+          "option": "SSDs can store data without electricity permanently",
+          "correct": false
+        },
+        {
+          "option": "SSDs produce more heat than HDDs",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cf-which-windows-menu-is-used-to",
+      "topicTitle": "Working with Applications",
+      "question": "Which Windows menu is used to install and uninstall programs?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Settings > Apps (or Control Panel > Programs)",
+          "correct": true,
+          "comment": "In modern Windows, go to Settings > Apps > Installed Apps to manage your software."
+        },
+        {
+          "option": "Task Manager > Processes",
+          "correct": false
+        },
+        {
+          "option": "File Explorer > This PC",
+          "correct": false
+        },
+        {
+          "option": "Device Manager > Software",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cf-what-does-it-mean-to-minimise",
+      "topicTitle": "Working with Applications",
+      "question": "What does it mean to 'minimise' a window?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Hide it from view but keep it running on the taskbar",
+          "correct": true,
+          "comment": "Minimising keeps the app active but removes it from the visible screen area."
+        },
+        {
+          "option": "Close the application and stop it running",
+          "correct": false
+        },
+        {
+          "option": "Make the window as small as possible on screen",
+          "correct": false
+        },
+        {
+          "option": "Save the current work and pause the application",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cf-which-keyboard-shortcut-opens-a-new",
+      "topicTitle": "Working with Applications",
+      "question": "Which keyboard shortcut opens a new window in File Explorer or a browser?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Ctrl + N",
+          "correct": true,
+          "comment": "Ctrl+N opens a New window (or new document in many apps). Ctrl+T opens a new tab in browsers."
+        },
+        {
+          "option": "Ctrl + W",
+          "correct": false
+        },
+        {
+          "option": "Ctrl + O",
+          "correct": false
+        },
+        {
+          "option": "Ctrl + E",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cf-what-is-the-function-of-the",
+      "topicTitle": "Working with Applications",
+      "question": "What is the function of the Windows Start Menu?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Access all installed apps, settings, search, and power options",
+          "correct": true,
+          "comment": "The Start Menu (Windows key) is the central launch point for all programs and system settings."
+        },
+        {
+          "option": "Show all currently open files and documents",
+          "correct": false
+        },
+        {
+          "option": "Display the computer's hardware specifications",
+          "correct": false
+        },
+        {
+          "option": "Connect to WiFi networks only",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cf-when-an-application-is-not-responding",
+      "topicTitle": "Working with Applications",
+      "question": "When an application is 'not responding', the best first step is:",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Open Task Manager and use 'End Task'",
+          "correct": true,
+          "comment": "Task Manager (Ctrl+Shift+Esc) lets you force-close frozen apps without restarting the computer."
+        },
+        {
+          "option": "Pull out the power cord immediately",
+          "correct": false
+        },
+        {
+          "option": "Click the application window repeatedly until it responds",
+          "correct": false
+        },
+        {
+          "option": "Restart the internet connection",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cf-what-does-pinning-an-app-to",
+      "topicTitle": "Working with Applications",
+      "question": "What does 'pinning' an app to the taskbar do?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Creates a permanent shortcut on the taskbar for quick access",
+          "correct": true,
+          "comment": "Pinned apps stay on the taskbar even when closed, giving you one-click access."
+        },
+        {
+          "option": "Prevents the app from being uninstalled",
+          "correct": false
+        },
+        {
+          "option": "Runs the app at startup automatically",
+          "correct": false
+        },
+        {
+          "option": "Locks the app so only the administrator can open it",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cf-to-print-a-document-which-keyboard",
+      "topicTitle": "Printing & Peripherals",
+      "question": "To print a document, which keyboard shortcut is used in most applications?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Ctrl + P",
+          "correct": true,
+          "comment": "Ctrl+P opens the Print dialog in virtually all Windows applications."
+        },
+        {
+          "option": "Ctrl + D",
+          "correct": false
+        },
+        {
+          "option": "Ctrl + R",
+          "correct": false
+        },
+        {
+          "option": "Ctrl + Shift + P",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cf-where-can-you-check-and-manage",
+      "topicTitle": "Printing & Peripherals",
+      "question": "Where can you check and manage documents waiting to be printed?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "The Print Queue (print spooler)",
+          "correct": true,
+          "comment": "Double-click the printer icon in the taskbar to view and manage the print queue."
+        },
+        {
+          "option": "The Recycle Bin",
+          "correct": false
+        },
+        {
+          "option": "File Explorer > Documents",
+          "correct": false
+        },
+        {
+          "option": "Task Manager > Services",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cf-what-should-you-do-before-physically",
+      "topicTitle": "Printing & Peripherals",
+      "question": "What should you do before physically connecting a new USB peripheral?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Nothing — modern USB is plug-and-play; just connect it",
+          "correct": true,
+          "comment": "USB is designed to be plug-and-play. Windows automatically detects and installs most devices."
+        },
+        {
+          "option": "Restart the computer in Safe Mode first",
+          "correct": false
+        },
+        {
+          "option": "Uninstall all other USB drivers before connecting",
+          "correct": false
+        },
+        {
+          "option": "Format the USB device before first use",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cf-a-scanner-is-used-primarily-to",
+      "topicTitle": "Printing & Peripherals",
+      "question": "A scanner is used primarily to:",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Convert physical paper documents into digital image files",
+          "correct": true,
+          "comment": "Scanners digitise paper documents so they can be saved, emailed, or edited on a computer."
+        },
+        {
+          "option": "Print digital documents onto paper",
+          "correct": false
+        },
+        {
+          "option": "Store files on a removable device",
+          "correct": false
+        },
+        {
+          "option": "Test the speed of the internet connection",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cf-which-port-is-most-commonly-used",
+      "topicTitle": "Printing & Peripherals",
+      "question": "Which port is most commonly used to connect modern peripheral devices?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "USB (Universal Serial Bus)",
+          "correct": true,
+          "comment": "USB is the standard for keyboards, mice, printers, flash drives, and most peripherals."
+        },
+        {
+          "option": "VGA (Video Graphics Array)",
+          "correct": false
+        },
+        {
+          "option": "PS/2 (legacy keyboard/mouse connector)",
+          "correct": false
+        },
+        {
+          "option": "Parallel port (LPT)",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cf-if-a-printer-shows-offline-status",
+      "topicTitle": "Printing & Peripherals",
+      "question": "If a printer shows 'Offline' status, the first step to fix it is:",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Check that the printer is powered on and connected",
+          "correct": true,
+          "comment": "'Offline' usually means the printer is off, out of paper, or disconnected from the network/USB."
+        },
+        {
+          "option": "Reinstall Windows to reset printer drivers",
+          "correct": false
+        },
+        {
+          "option": "Delete all pending print jobs and restart the router",
+          "correct": false
+        },
+        {
+          "option": "Replace the printer ink before doing anything else",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cf-what-is-the-most-effective-first",
+      "topicTitle": "Basic Troubleshooting",
+      "question": "What is the most effective first step when a computer behaves unexpectedly?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "Restart the computer",
+          "correct": true,
+          "comment": "Restarting clears RAM, stops stuck processes, and applies pending updates — it fixes most common issues."
+        },
+        {
+          "option": "Reinstall the operating system",
+          "correct": false
+        },
+        {
+          "option": "Open Device Manager and update all drivers",
+          "correct": false
+        },
+        {
+          "option": "Contact technical support immediately",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cf-how-do-you-open-task-manager",
+      "topicTitle": "Basic Troubleshooting",
+      "question": "How do you open Task Manager directly without the right-click menu?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "Press Ctrl + Shift + Esc",
+          "correct": true,
+          "comment": "Ctrl+Shift+Esc opens Task Manager directly. Ctrl+Alt+Del also provides access but shows a menu first."
+        },
+        {
+          "option": "Press Ctrl + Alt + F4",
+          "correct": false
+        },
+        {
+          "option": "Press Win + T",
+          "correct": false
+        },
+        {
+          "option": "Press Ctrl + Alt + Tab",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cf-why-is-it-important-to-install",
+      "topicTitle": "Basic Troubleshooting",
+      "question": "Why is it important to install Windows updates regularly?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "Updates patch security vulnerabilities and fix software bugs",
+          "correct": true,
+          "comment": "Unpatched systems are vulnerable to malware and exploits. Updates also improve performance."
+        },
+        {
+          "option": "Updates increase the computer's RAM automatically",
+          "correct": false
+        },
+        {
+          "option": "Updates are only for adding new features, not security",
+          "correct": false
+        },
+        {
+          "option": "Updates slow down older computers and should be avoided",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cf-a-program-shows-an-error-message",
+      "topicTitle": "Basic Troubleshooting",
+      "question": "A program shows an error message and closes. The BEST first response is:",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "Note the error message, restart the app, and try again",
+          "correct": true,
+          "comment": "Error messages contain useful diagnostic information. Try reproducing the issue after restarting."
+        },
+        {
+          "option": "Format the hard drive and reinstall Windows",
+          "correct": false
+        },
+        {
+          "option": "Buy a new computer",
+          "correct": false
+        },
+        {
+          "option": "Turn off the computer immediately by holding the power button",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cf-your-computer-is-running-slowly-which",
+      "topicTitle": "Basic Troubleshooting",
+      "question": "Your computer is running slowly. Which task is most likely to help?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "Close unnecessary background programs via Task Manager",
+          "correct": true,
+          "comment": "Too many running apps consume RAM and CPU. Closing unneeded ones frees up resources."
+        },
+        {
+          "option": "Increase monitor brightness to maximum",
+          "correct": false
+        },
+        {
+          "option": "Disconnect the keyboard and mouse",
+          "correct": false
+        },
+        {
+          "option": "Turn off the printer",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cf-what-does-an-error-code-in",
+      "topicTitle": "Basic Troubleshooting",
+      "question": "What does an 'error code' in a Windows error message help you do?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "Search for the specific problem and solution online",
+          "correct": true,
+          "comment": "Error codes like 0x80070005 are unique identifiers. Searching them reveals the exact cause."
+        },
+        {
+          "option": "Identify which hardware needs to be replaced",
+          "correct": false
+        },
+        {
+          "option": "Call the manufacturer for a free hardware replacement",
+          "correct": false
+        },
+        {
+          "option": "Determine when the computer was last turned on",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cf-what-does-wifi-stand-for",
+      "topicTitle": "Network & Internet Basics",
+      "question": "What does WiFi stand for?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "Wireless Fidelity (wireless networking standard)",
+          "correct": true,
+          "comment": "WiFi is the trademark name for IEEE 802.11 wireless networking standards."
+        },
+        {
+          "option": "Wired Fidelity",
+          "correct": false
+        },
+        {
+          "option": "Wide Frequency Internet",
+          "correct": false
+        },
+        {
+          "option": "Web Interface for Internet",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cf-what-device-connects-your-home-devices",
+      "topicTitle": "Network & Internet Basics",
+      "question": "What device connects your home devices to the internet?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "A Router",
+          "correct": true,
+          "comment": "A router directs traffic between your local network (LAN) and the internet (WAN)."
+        },
+        {
+          "option": "A Monitor",
+          "correct": false
+        },
+        {
+          "option": "A USB Hub",
+          "correct": false
+        },
+        {
+          "option": "A Graphics Card",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cf-what-is-a-wifi-password-used",
+      "topicTitle": "Network & Internet Basics",
+      "question": "What is a WiFi password used for?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "To prevent unauthorised devices from joining the network",
+          "correct": true,
+          "comment": "WiFi security (WPA2/WPA3) encrypts traffic and restricts access to authorised users."
+        },
+        {
+          "option": "To protect files on the hard drive from being read",
+          "correct": false
+        },
+        {
+          "option": "To limit how many websites you can visit per day",
+          "correct": false
+        },
+        {
+          "option": "To speed up the internet connection",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cf-what-does-an-ip-address-identify",
+      "topicTitle": "Network & Internet Basics",
+      "question": "What does an IP address identify?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "A device's unique address on a network",
+          "correct": true,
+          "comment": "Every device on a network has an IP address so data can be routed to the right destination."
+        },
+        {
+          "option": "The speed of the internet connection",
+          "correct": false
+        },
+        {
+          "option": "The brand and model of the router",
+          "correct": false
+        },
+        {
+          "option": "The number of devices connected to WiFi",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cf-if-your-wifi-shows-connected-but",
+      "topicTitle": "Network & Internet Basics",
+      "question": "If your WiFi shows 'Connected' but no internet access, the best first step is:",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "Restart the router by unplugging it for 10 seconds",
+          "correct": true,
+          "comment": "Most home internet issues are resolved by restarting the router, which refreshes the connection."
+        },
+        {
+          "option": "Buy a new laptop",
+          "correct": false
+        },
+        {
+          "option": "Reinstall Windows",
+          "correct": false
+        },
+        {
+          "option": "Disable the WiFi adapter permanently",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cf-what-is-the-difference-between-a",
+      "topicTitle": "Network & Internet Basics",
+      "question": "What is the difference between a LAN and the internet?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "LAN is a local private network; the internet is a global public network",
+          "correct": true,
+          "comment": "LAN (Local Area Network) connects devices in one location. The internet is the worldwide network."
+        },
+        {
+          "option": "LAN is wireless; the internet requires a cable",
+          "correct": false
+        },
+        {
+          "option": "LAN is faster than the internet in all cases",
+          "correct": false
+        },
+        {
+          "option": "The internet and LAN are the same thing",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cf-which-of-the-following-is-a",
+      "topicTitle": "Computer Security Basics",
+      "question": "Which of the following is a strong password?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "Tr0ub4dor&3#Mn!",
+          "correct": true,
+          "comment": "Strong passwords mix uppercase, lowercase, numbers, and symbols, and are at least 12 characters long."
+        },
+        {
+          "option": "password123",
+          "correct": false
+        },
+        {
+          "option": "your date of birth",
+          "correct": false
+        },
+        {
+          "option": "your name followed by 1",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cf-what-is-the-purpose-of-antivirus",
+      "topicTitle": "Computer Security Basics",
+      "question": "What is the purpose of antivirus software?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "To detect, block, and remove malicious software (malware)",
+          "correct": true,
+          "comment": "Antivirus scans for known threats, monitors suspicious behaviour, and removes infections."
+        },
+        {
+          "option": "To speed up the computer by removing old files",
+          "correct": false
+        },
+        {
+          "option": "To back up your files to an external drive",
+          "correct": false
+        },
+        {
+          "option": "To repair broken hardware components",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cf-what-is-malware",
+      "topicTitle": "Computer Security Basics",
+      "question": "What is malware?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "Software designed to harm, steal data, or gain unauthorised access",
+          "correct": true,
+          "comment": "Malware includes viruses, ransomware, spyware, and trojans — all designed with malicious intent."
+        },
+        {
+          "option": "Software that is poorly designed but not harmful",
+          "correct": false
+        },
+        {
+          "option": "A type of hardware failure caused by overheating",
+          "correct": false
+        },
+        {
+          "option": "An email attachment sent accidentally to the wrong person",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cf-which-habit-helps-most-to-keep",
+      "topicTitle": "Computer Security Basics",
+      "question": "Which habit helps most to keep your computer secure?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "Keeping your OS and applications updated",
+          "correct": true,
+          "comment": "Software updates patch security holes. Outdated software is the most common entry point for attacks."
+        },
+        {
+          "option": "Using the same password for all accounts for easy memory",
+          "correct": false
+        },
+        {
+          "option": "Downloading software from any website you find online",
+          "correct": false
+        },
+        {
+          "option": "Sharing your login details with trusted colleagues",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cf-what-should-you-do-if-you",
+      "topicTitle": "Computer Security Basics",
+      "question": "What should you do if you receive a suspicious email asking for your password?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "Delete it — legitimate organisations never ask for passwords via email",
+          "correct": true,
+          "comment": "This is a phishing attack. Banks and companies will never request your password by email."
+        },
+        {
+          "option": "Reply with your password but change it afterwards",
+          "correct": false
+        },
+        {
+          "option": "Forward it to all your contacts as a warning",
+          "correct": false
+        },
+        {
+          "option": "Click the link and enter fake details to test it",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cf-why-should-you-lock-your-computer",
+      "topicTitle": "Computer Security Basics",
+      "question": "Why should you lock your computer screen when stepping away?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "To prevent others from accessing your files and applications",
+          "correct": true,
+          "comment": "Press Win+L to lock instantly. Prevents unauthorised access in shared office environments."
+        },
+        {
+          "option": "To save electricity by turning off the monitor",
+          "correct": false
+        },
+        {
+          "option": "To stop Windows updates from installing while you are away",
+          "correct": false
+        },
+        {
+          "option": "Locking has no security benefit — it only saves the screensaver",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cf-where-in-windows-do-you-go",
+      "topicTitle": "Customising Your Computer",
+      "question": "Where in Windows do you go to change the screen resolution?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "Right-click the Desktop > Display Settings",
+          "correct": true,
+          "comment": "Display Settings lets you change resolution, brightness, orientation, and scale."
+        },
+        {
+          "option": "Task Manager > Performance",
+          "correct": false
+        },
+        {
+          "option": "File Explorer > This PC > Properties",
+          "correct": false
+        },
+        {
+          "option": "Device Manager > Monitors",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cf-what-is-a-startup-program-in",
+      "topicTitle": "Customising Your Computer",
+      "question": "What is a 'startup program' in Windows?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "An application that launches automatically when Windows starts",
+          "correct": true,
+          "comment": "Too many startup programs slow boot time. Manage them in Task Manager > Startup Apps."
+        },
+        {
+          "option": "The first program ever installed on the computer",
+          "correct": false
+        },
+        {
+          "option": "A program that runs only when the computer is first set up",
+          "correct": false
+        },
+        {
+          "option": "Windows Defender's boot scan program",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cf-windows-accessibility-features-can-help-users",
+      "topicTitle": "Customising Your Computer",
+      "question": "Windows accessibility features can help users who:",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "Have visual, hearing, or motor difficulties",
+          "correct": true,
+          "comment": "Accessibility options include Magnifier, Narrator (screen reader), high contrast, and sticky keys."
+        },
+        {
+          "option": "Want to make the computer run faster",
+          "correct": false
+        },
+        {
+          "option": "Want to connect to more WiFi networks simultaneously",
+          "correct": false
+        },
+        {
+          "option": "Want to install more applications without a password",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cf-how-do-you-create-a-shortcut",
+      "topicTitle": "Customising Your Computer",
+      "question": "How do you create a shortcut on the Windows Desktop for an application?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "Right-click the app in the Start Menu and select 'Send to > Desktop'",
+          "correct": true,
+          "comment": "You can also drag an app from the Start Menu to the desktop or right-click and create shortcut."
+        },
+        {
+          "option": "Copy the program's .exe file directly onto the desktop",
+          "correct": false
+        },
+        {
+          "option": "Click and drag the application's title bar to the desktop",
+          "correct": false
+        },
+        {
+          "option": "Open the app and press Ctrl+D to pin it to the desktop",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cf-what-does-increasing-the-text-size",
+      "topicTitle": "Customising Your Computer",
+      "question": "What does increasing the 'text size' in Display Settings do?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "Makes text larger across Windows and apps without changing resolution",
+          "correct": true,
+          "comment": "Scaling text size improves readability, especially on high-resolution (4K) displays."
+        },
+        {
+          "option": "Changes the font used in all documents to a larger typeface",
+          "correct": false
+        },
+        {
+          "option": "Increases the screen resolution to fit more content",
+          "correct": false
+        },
+        {
+          "option": "Changes the brightness of the screen backlight",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cf-to-stop-an-unwanted-program-from",
+      "topicTitle": "Customising Your Computer",
+      "question": "To stop an unwanted program from opening every time Windows starts, go to:",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "Task Manager > Startup Apps, then Disable it",
+          "correct": true,
+          "comment": "Task Manager's Startup tab shows all auto-starting apps. Disabling speeds up boot time."
+        },
+        {
+          "option": "Control Panel > Programs > Uninstall",
+          "correct": false
+        },
+        {
+          "option": "File Explorer > C:\\Windows\\System32 and delete the file",
+          "correct": false
+        },
+        {
+          "option": "Settings > Privacy > Background Apps",
+          "correct": false
+        }
+      ]
+    }
+  ]
+}

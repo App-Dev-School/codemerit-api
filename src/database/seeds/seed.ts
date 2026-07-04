@@ -2,6 +2,7 @@ import { Subject } from 'src/common/typeorm/entities/subject.entity';
 import { SubjectTrack } from 'src/common/typeorm/entities/subject-track.entity';
 import { Topic } from 'src/common/typeorm/entities/topic.entity';
 import { AppDataSource } from '../data-source';
+import { seedPermissions } from './seeders/00-permission.seeder';
 import { seedJobRoles } from './seeders/02-job-role.seeder';
 import { seedSubjectTracks } from './seeders/04-subject-track.seeder';
 import { seedSubjectTrackTopics } from './seeders/05-subject-track-topic.seeder';
@@ -20,6 +21,9 @@ async function main() {
   try {
     await AppDataSource.initialize();
     console.log('Database connected.\n');
+
+    console.log('Syncing permissions...');
+    await seedPermissions(AppDataSource);
 
     console.log('Fetching existing data from DB...');
     const subjects = await AppDataSource.getRepository(Subject).find();
