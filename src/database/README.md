@@ -73,6 +73,13 @@ See §3 for the JSON format. Curriculum files for the following subjects are alr
 | `internet-digital-curriculum.json` | Internet & Digital Skills | 10 | 2 |
 | `microsoft-office-curriculum.json` | Microsoft Office | 16 | 4 |
 | `data-entry-curriculum.json` | Data Entry & Productivity | 10 | 2 |
+| `cloud-basics-curriculum.json` | Cloud Basics | 8 | 2 |
+| `git-curriculum.json` | Git | 6 | 2 |
+| `docker-curriculum.json` | Docker | 6 | 2 |
+| `kubernetes-curriculum.json` | Kubernetes | 7 | 2 |
+| `ci-cd-curriculum.json` | CI/CD | 6 | 2 |
+| `devops-curriculum.json` | DevOps | 6 | 2 |
+| `relational-databases-curriculum.json` | Relational Databases | 6 | 2 |
 
 ### Step 3 — Import questions
 
@@ -304,6 +311,7 @@ src/database/
     ├── questions-internet-digital.json       60 trivia questions
     ├── questions-microsoft-office.json       96 trivia questions
     ├── questions-data-entry.json             60 trivia questions
+    ├── questions-cloud-basics.json           8 general questions for Cloud Engineer readiness
     └── seeders/
         ├── 01-subject.seeder.ts             Reference only — subjects managed via API
         ├── 02-job-role.seeder.ts            ✅ Run — upserts 27 canonical job roles

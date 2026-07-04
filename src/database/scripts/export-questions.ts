@@ -94,8 +94,11 @@ async function main() {
         slug:        q.slug,
         topicTitle:  topic.title,
         question:    q.question,
+        questionType: q.questionType,
         level:       q.level,
         timeAllowed: q.timeAllowed,
+        answer:      q.answer,
+        hint:        q.hint,
         options: options.map((o) => {
           const entry: Record<string, unknown> = {
             option:  o.option,
@@ -112,11 +115,14 @@ async function main() {
   for (const q of unknownTopicQuestions) {
     const options = optionsByQuestionId.get(q.id) ?? [];
     outputQuestions.push({
-      slug:        q.slug,
-      topicTitle:  '(unknown topic)',
-      question:    q.question,
-      level:       q.level,
-      timeAllowed: q.timeAllowed,
+      slug:         q.slug,
+      topicTitle:   '(unknown topic)',
+      question:     q.question,
+      questionType: q.questionType,
+      level:        q.level,
+      timeAllowed:  q.timeAllowed,
+      answer:       q.answer,
+      hint:         q.hint,
       options: options.map((o) => {
         const entry: Record<string, unknown> = {
           option:  o.option,

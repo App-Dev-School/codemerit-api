@@ -20,9 +20,12 @@ interface QuestionInput {
   slug?: string;         // present in exported files; used as update key when --update is passed
   topicTitle: string;
   question: string;
+  questionType?: QuestionTypeEnum;
   level: 1 | 2 | 3;
   timeAllowed: number;
-  options: OptionInput[];
+  answer?: string;
+  hint?: string;
+  options?: OptionInput[];
 }
 
 interface QuestionsFile {
@@ -107,15 +110,29 @@ async function main() {
 
   for (const data of input.questions) {
     // ── Validate ────────────────────────────────────────────────────────────
-    const correctCount = data.options.filter((o) => o.correct).length;
-    if (data.options.length !== 4 || correctCount !== 1) {
-      console.warn(`  ⚠  Skipping "${data.question.slice(0, 60)}..." — must have 4 options and exactly 1 correct`);
-      warned++; continue;
-    }
-    const tooLong = data.options.find((o) => o.option.length > 100);
-    if (tooLong) {
-      console.warn(`  ⚠  Option too long (>100 chars): "${tooLong.option.slice(0, 60)}..."`);
-      warned++; continue;
+    const questionType = data.questionType ?? QuestionTypeEnum.Trivia;
+
+    if (questionType === QuestionTypeEnum.General) {
+      if (data.options && data.options.length > 0) {
+        console.warn(`  ⚠  Skipping "${data.question.slice(0, 60)}..." — general questions must not include options`);
+        warned++; continue;
+      }
+      if (!data.answer?.trim()) {
+        console.warn(`  ⚠  Skipping "${data.question.slice(0, 60)}..." — general questions must include an answer`);
+        warned++; continue;
+      }
+    } else {
+      const options = data.options ?? [];
+      const correctCount = options.filter((o) => o.correct).length;
+      if (options.length !== 4 || correctCount !== 1) {
+        console.warn(`  ⚠  Skipping "${data.question.slice(0, 60)}..." — must have 4 options and exactly 1 correct`);
+        warned++; continue;
+      }
+      const tooLong = options.find((o) => o.option.length > 100);
+      if (tooLong) {
+        console.warn(`  ⚠  Option too long (>100 chars): "${tooLong.option.slice(0, 60)}..."`);
+        warned++; continue;
+      }
     }
 
     const topic = topicByTitle.get(data.topicTitle);
@@ -152,25 +169,31 @@ async function main() {
 
       // Update question fields in-place (slug is intentionally excluded)
       await questionRepo.update(existingQuestion.id, {
-        question:    data.question,
-        level:       data.level,
-        marks:       data.level,
-        timeAllowed: data.timeAllowed,
+        question:      data.question,
+        questionType,
+        level:         data.level,
+        marks:         data.level,
+        timeAllowed:   data.timeAllowed,
+        answer:        data.answer ?? null,
+        hint:          data.hint ?? null,
       });
 
-      // Update options in-place by position (ORDER BY id ASC = original insertion order)
-      const existingOptions = await optionRepo.find({
-        where: { questionId: existingQuestion.id },
-        order: { id: 'ASC' },
-      });
+      if (questionType !== QuestionTypeEnum.General) {
+        // Update options in-place by position (ORDER BY id ASC = original insertion order)
+        const existingOptions = await optionRepo.find({
+          where: { questionId: existingQuestion.id },
+          order: { id: 'ASC' },
+        });
 
-      for (let i = 0; i < data.options.length; i++) {
-        if (existingOptions[i]) {
-          await optionRepo.update(existingOptions[i].id, {
-            option:  data.options[i].option,
-            correct: data.options[i].correct,
-            comment: data.options[i].comment ?? null,
-          });
+        const options = data.options ?? [];
+        for (let i = 0; i < options.length; i++) {
+          if (existingOptions[i]) {
+            await optionRepo.update(existingOptions[i].id, {
+              option:  options[i].option,
+              correct: options[i].correct,
+              comment: options[i].comment ?? null,
+            });
+          }
         }
       }
 
@@ -193,24 +216,29 @@ async function main() {
         slug,
         question:      data.question,
         subjectId:     subject.id,
-        questionType:  QuestionTypeEnum.Trivia,
+        questionType,
         level:         data.level,
         marks:         data.level,
         timeAllowed:   data.timeAllowed,
+        answer:        data.answer ?? null,
+        hint:          data.hint ?? null,
         status:        QuestionStatusEnum.Active,
         isWhitelisted: false,
       }),
     );
 
-    for (const opt of data.options) {
-      await optionRepo.save(
-        optionRepo.create({
-          questionId: question.id,
-          option:     opt.option,
-          correct:    opt.correct,
-          comment:    opt.comment ?? null,
-        }),
-      );
+    if (questionType !== QuestionTypeEnum.General) {
+      const options = data.options ?? [];
+      for (const opt of options) {
+        await optionRepo.save(
+          optionRepo.create({
+            questionId: question.id,
+            option:     opt.option,
+            correct:    opt.correct,
+            comment:    opt.comment ?? null,
+          }),
+        );
+      }
     }
 
     await questionTopicRepo.save(

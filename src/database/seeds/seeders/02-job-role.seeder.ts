@@ -214,8 +214,8 @@ const JOB_ROLES = [
   {
     title: 'Cloud Engineer',
     slug: 'cloud-engineer',
-    description: 'Design and manage cloud infrastructure on AWS, Azure, or GCP for scalable, secure systems.',
-    body: 'Cloud engineers architect and operate cloud environments — provisioning compute, storage, and networking resources, designing for high availability, and optimising cost and security on major cloud platforms.',
+    description: 'Design and manage provider-agnostic cloud infrastructure for scalable, secure systems. Not aligned to AWS, Azure, or GCP.',
+    body: 'Cloud engineers architect and operate vendor-neutral cloud environments — provisioning compute, storage, and networking resources, designing for high availability, and optimising cost and security across major cloud platforms.',
     scope: 'Cloud & Infrastructure',
     color: '#FF9900',
     orderId: 19,

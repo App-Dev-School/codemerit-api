@@ -1,0 +1,89 @@
+{
+  "subjectSlug": "jenkins",
+  "topics": [
+    {
+      "title": "Jenkins Fundamentals",
+      "shortDesc": "CI automation with Jenkins",
+      "label": "Foundation",
+      "order": 1,
+      "weight": 1,
+      "description": "Introduction to Jenkins, its role in CI/CD, core components (master, agents), and common use cases for build and release automation.",
+      "goal": "Explain Jenkins architecture and create a basic job to automate a build.",
+      "isPublished": true
+    },
+    {
+      "title": "Pipeline as Code (Jenkinsfile)",
+      "shortDesc": "Declarative and scripted pipelines",
+      "label": "Intermediate",
+      "order": 2,
+      "weight": 2,
+      "description": "Author declarative and scripted Jenkins pipelines using Jenkinsfile, stages, steps, and environment handling to model end-to-end delivery flows.",
+      "goal": "Create and version a Jenkinsfile that builds, tests, and packages an application.",
+      "isPublished": true
+    },
+    {
+      "title": "Agents, Executors and Scaling",
+      "shortDesc": "Build agents and scaling strategies",
+      "label": "Intermediate",
+      "order": 3,
+      "weight": 2,
+      "description": "Understand how Jenkins agents and executors work, provisioning dynamic agents (Docker, Kubernetes), and strategies to scale builds safely.",
+      "goal": "Configure Jenkins agents and design a scalable build runner strategy.",
+      "isPublished": true
+    },
+    {
+      "title": "Integrating with SCM and Build Tools",
+      "shortDesc": "Webhooks, triggers, and toolchains",
+      "label": "Intermediate",
+      "order": 4,
+      "weight": 2,
+      "description": "Connect Jenkins to source control (Git), trigger builds via webhooks, and integrate with build tools and artifact repositories for end-to-end workflows.",
+      "goal": "Wire up SCM triggers and artifact publishing in a Jenkins pipeline.",
+      "isPublished": true
+    },
+    {
+      "title": "Security, Credentials and Secrets",
+      "shortDesc": "Protect pipelines and secrets",
+      "label": "Advanced",
+      "order": 5,
+      "weight": 3,
+      "description": "Manage credentials securely in Jenkins, apply least-privilege for build agents, secure pipeline inputs, and harden Jenkins infrastructure.",
+      "goal": "Implement secure credential management and access controls for Jenkins pipelines.",
+      "isPublished": true
+    },
+    {
+      "title": "Shared Libraries and Reusability",
+      "shortDesc": "Reuse pipeline code",
+      "label": "Advanced",
+      "order": 6,
+      "weight": 3,
+      "description": "Create and consume Jenkins Shared Libraries to centralize common pipeline logic, tests, and deployment routines for maintainable pipelines.",
+      "goal": "Author a reusable shared library and refactor pipelines to use it.",
+      "isPublished": true
+    }
+  ],
+  "subjectTracks": [
+    {
+      "title": "Jenkins Basics",
+      "description": "Get started with Jenkins for automating builds and simple pipelines.",
+      "sortOrder": 1,
+      "isPublished": true,
+      "topicTitles": [
+        "Jenkins Fundamentals",
+        "Pipeline as Code (Jenkinsfile)",
+        "Agents, Executors and Scaling"
+      ]
+    },
+    {
+      "title": "Jenkins Advanced Operations",
+      "description": "Operate and scale Jenkins for production pipelines with secure, reusable practices.",
+      "sortOrder": 2,
+      "isPublished": true,
+      "topicTitles": [
+        "Integrating with SCM and Build Tools",
+        "Security, Credentials and Secrets",
+        "Shared Libraries and Reusability"
+      ]
+    }
+  ]
+}

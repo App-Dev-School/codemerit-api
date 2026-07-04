@@ -514,6 +514,30 @@ const CERTIFICATION_TRACKS: CertTrackSeed[] = [
     description:
       'You understand the engineering side of operations. From version control workflows and branching strategies to CI/CD pipeline concepts and infrastructure automation — you know how reliable software gets shipped.',
   },
+  {
+    jobRoleSlug: 'cloud-engineer',
+    title: 'Cloud Foundations',
+    sortOrder: 4,
+    isPublished: true,
+    description:
+      'You understand cloud concepts without being tied to a single vendor. You can design provider-neutral infrastructure using service models, networking, storage, security, and operational best practices.',
+  },
+  {
+    jobRoleSlug: 'cloud-engineer',
+    title: 'Cloud Operations',
+    sortOrder: 5,
+    isPublished: true,
+    description:
+      'You can operate cloud systems reliably with CI/CD delivery, monitoring, cost control, and incident-aware practices that work across provider-agnostic environments.',
+  },
+  {
+    jobRoleSlug: 'cloud-engineer',
+    title: 'Cloud Infrastructure Specialist',
+    sortOrder: 6,
+    isPublished: true,
+    description:
+      'You design and manage production-grade cloud platforms, with container orchestration, infrastructure as code, and resilient operational workflows.',
+  },
 ];
 
 export async function seedCertificationTracks(

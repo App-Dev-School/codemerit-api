@@ -110,6 +110,11 @@ const CERT_TRACK_SUBJECT_TRACK_MAP: Record<string, string[]> = {
   'full-stack-developer|Certified Full Stack Developer':  ['js-foundations', 'js-advanced', 'ts-essentials', 'ts-deep-dive'],
   'full-stack-developer|Tailwind Aware':               ['tailwind-foundations'],
 
+  // ── Cloud Engineer ───────────────────────────────────────────────────────
+  'cloud-engineer|Cloud Foundations': ['cloud-foundations', 'git-foundations', 'relational-db-foundations'],
+  'cloud-engineer|Cloud Operations': ['cloud-operations', 'ci-cd-foundations', 'observability-reliability'],
+  'cloud-engineer|Cloud Infrastructure Specialist': ['docker-foundations', 'kubernetes-basics', 'infrastructure-as-code'],
+
   // NOTE: python-developer, data-engineer, ai-ml-engineer, ml-engineer,
   // full-stack-dev-ai, devops-engineer, java-springboot-developer,
   // android-developer, ios-developer, mobile-app-developer, cloud-engineer,

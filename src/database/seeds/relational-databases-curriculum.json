@@ -1,0 +1,89 @@
+{
+  "subjectSlug": "relational-databases",
+  "topics": [
+    {
+      "title": "Relational Data Model",
+      "shortDesc": "Tables and relations",
+      "label": "Foundation",
+      "order": 1,
+      "weight": 1,
+      "description": "Understand the relational data model, including tables, rows, columns, primary keys, and foreign keys.",
+      "goal": "Explain how relational data is structured and related.",
+      "isPublished": true
+    },
+    {
+      "title": "SQL SELECT & Filtering",
+      "shortDesc": "SELECT and WHERE",
+      "label": "Foundation",
+      "order": 2,
+      "weight": 1,
+      "description": "Learn how to retrieve data using SELECT statements, apply filters with WHERE, and sort results with ORDER BY.",
+      "goal": "Query relational data using basic SQL statements.",
+      "isPublished": true
+    },
+    {
+      "title": "JOINs & Aggregation",
+      "shortDesc": "JOINs and GROUP BY",
+      "label": "Intermediate",
+      "order": 3,
+      "weight": 2,
+      "description": "Use JOINs to combine multiple tables and aggregation functions with GROUP BY to summarise relational data.",
+      "goal": "Write SQL queries that join tables and produce summary results.",
+      "isPublished": true
+    },
+    {
+      "title": "Schema Design & Normalization",
+      "shortDesc": "Design and normalize",
+      "label": "Intermediate",
+      "order": 4,
+      "weight": 2,
+      "description": "Design relational schemas using normalization principles to reduce redundancy and improve data integrity.",
+      "goal": "Design a normalized relational schema for a simple application.",
+      "isPublished": true
+    },
+    {
+      "title": "Indexes & Performance",
+      "shortDesc": "Indexing and tuning",
+      "label": "Advanced",
+      "order": 5,
+      "weight": 3,
+      "description": "Learn how indexes improve query performance, how to choose the right index types, and what trade-offs to expect.",
+      "goal": "Use indexes to optimise common relational queries.",
+      "isPublished": true
+    },
+    {
+      "title": "Transactions & Concurrency",
+      "shortDesc": "ACID and isolation",
+      "label": "Advanced",
+      "order": 6,
+      "weight": 3,
+      "description": "Understand transactions, ACID properties, isolation levels, and how relational databases handle concurrent updates.",
+      "goal": "Explain the role of transactions in reliable relational systems.",
+      "isPublished": true
+    }
+  ],
+  "subjectTracks": [
+    {
+      "title": "Relational DB Foundations",
+      "description": "Core relational database concepts, SQL queries, and schema design.",
+      "sortOrder": 1,
+      "isPublished": true,
+      "topicTitles": [
+        "Relational Data Model",
+        "SQL SELECT & Filtering",
+        "JOINs & Aggregation"
+      ]
+    },
+    {
+      "title": "Relational DB Operations",
+      "description": "Performance and reliability practices for relational databases.",
+      "sortOrder": 2,
+      "isPublished": true,
+      "topicTitles": [
+        "Schema Design & Normalization",
+        "Indexes & Performance",
+        "Transactions & Concurrency"
+      ]
+    }
+  ]
+}
