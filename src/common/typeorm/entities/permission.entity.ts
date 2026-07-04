@@ -12,10 +12,13 @@ export class Permission implements IPermission {
   id: number;
 
   @Column()
-  permission: string; // e.g. 'CanAddQuestion'
+  permission: string;
 
   @Column()
   description: string;
+
+  @Column({ type: 'varchar', length: 100, nullable: true, default: null })
+  group: string;
 
   @Column({ name: 'createdBy', default: null, select: false })
   createdBy: number;

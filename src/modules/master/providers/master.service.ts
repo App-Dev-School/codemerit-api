@@ -1,7 +1,6 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IUserPermissionDto } from 'src/common/dto/user-permission.dto';
-import { QuestionTypeEnum } from 'src/common/enum/question-type.enum';
 import { AppCustomException } from 'src/common/exceptions/app-custom-exception.filter';
 import { CertificationTrack } from 'src/common/typeorm/entities/certification-track.entity';
 import { JobRole } from 'src/common/typeorm/entities/job-role.entity';
@@ -74,16 +73,105 @@ export class MasterService {
   }
 
   async getMasterData(userId: number) {
-    const subjects = await this.subjectAnalyzer.getAllSubjects(userId);
-    const topics = await this.getTopicStatsForUser(userId);
-    const jobRoles = await this.getJobRolesWithSubjects(userId);
-    //TopicListItemDto[] - Map to exact dtos
+    const [subjects, jobRoles, popularTopics, subjectTracks, certificationTracks] = await Promise.all([
+      this.subjectAnalyzer.getAllSubjects(userId),
+      this.getJobRolesWithSubjects(userId),
+      this.getPopularTopics(),
+      this.getMasterSubjectTracks(),
+      this.getMasterCertificationTracks(),
+    ]);
 
-    return {
-      subjects: subjects,
-      jobRoles: jobRoles,
-      topics: topics,
-    };
+    return { subjects, jobRoles, popularTopics, subjectTracks, certificationTracks };
+  }
+
+  private async getMasterSubjectTracks() {
+    const rows = await this.dataSource
+      .createQueryBuilder()
+      .select('st.id', 'id')
+      .addSelect('st.subjectId', 'subjectId')
+      .addSelect('st.title', 'title')
+      .addSelect('st.slug', 'slug')
+      .addSelect('st.sortOrder', 'sortOrder')
+      .addSelect('st.isPublished', 'isPublished')
+      .addSelect('s.title', 'subjectName')
+      .addSelect('COUNT(stt.id)', 'topicCount')
+      .from('subject_track', 'st')
+      .innerJoin('subject', 's', 's.id = st.subjectId')
+      .leftJoin('subject_track_topic', 'stt', 'stt.subjectTrackId = st.id')
+      .groupBy('st.id')
+      .orderBy('st.subjectId', 'ASC')
+      .addOrderBy('st.sortOrder', 'ASC')
+      .getRawMany();
+
+    return rows.map((r) => ({
+      id: +r.id,
+      subjectId: +r.subjectId,
+      subjectName: r.subjectName,
+      title: r.title,
+      slug: r.slug,
+      sortOrder: +r.sortOrder,
+      isPublished: Boolean(r.isPublished),
+      topicCount: +r.topicCount,
+    }));
+  }
+
+  private async getMasterCertificationTracks() {
+    const rows = await this.dataSource
+      .createQueryBuilder()
+      .select('ct.id', 'id')
+      .addSelect('ct.jobRoleId', 'jobRoleId')
+      .addSelect('ct.title', 'title')
+      .addSelect('ct.sortOrder', 'sortOrder')
+      .addSelect('ct.isPublished', 'isPublished')
+      .addSelect('jr.title', 'jobRoleTitle')
+      .addSelect('COUNT(ctst.id)', 'subjectTrackCount')
+      .from('certification_track', 'ct')
+      .innerJoin('job_role', 'jr', 'jr.id = ct.jobRoleId')
+      .leftJoin('certification_track_subject_track', 'ctst', 'ctst.certificationTrackId = ct.id')
+      .groupBy('ct.id')
+      .orderBy('ct.jobRoleId', 'ASC')
+      .addOrderBy('ct.sortOrder', 'ASC')
+      .getRawMany();
+
+    return rows.map((r) => ({
+      id: +r.id,
+      jobRoleId: +r.jobRoleId,
+      jobRoleTitle: r.jobRoleTitle,
+      title: r.title,
+      sortOrder: +r.sortOrder,
+      isPublished: Boolean(r.isPublished),
+      subjectTrackCount: +r.subjectTrackCount,
+    }));
+  }
+
+  async getPopularTopics(limit = 10) {
+    const rows = await this.dataSource
+      .createQueryBuilder()
+      .select('t.id', 'id')
+      .addSelect('t.title', 'title')
+      .addSelect('t.slug', 'slug')
+      .addSelect('t.subjectId', 'subjectId')
+      .addSelect('s.title', 'subjectName')
+      .addSelect('COUNT(qa.id)', 'totalAttempts')
+      .from('topic', 't')
+      .innerJoin('subject', 's', 's.id = t.subjectId')
+      .innerJoin('question_topic', 'qt', 'qt.topicId = t.id')
+      .innerJoin('question', 'q', 'q.id = qt.questionId')
+      .innerJoin('question_attempt', 'qa', 'qa.questionId = q.id')
+      .where('t.isPublished = :isPublished', { isPublished: 1 })
+      .groupBy('t.id')
+      .orderBy('COUNT(qa.id)', 'DESC')
+      .limit(limit)
+      .getRawMany();
+
+    return rows.map((r) => ({
+      id: +r.id,
+      title: r.title,
+      slug: r.slug,
+      subjectId: +r.subjectId,
+      subjectName: r.subjectName,
+      totalAttempts: +r.totalAttempts,
+    }));
   }
 
   async addUserSubjects(userId: number, dto: AddUserSubjectsDto) {
@@ -143,100 +231,19 @@ export class MasterService {
     }
   }
 
-  async getTopicStatsForUser(userId?: number) {
-    const qb = this.dataSource
-      .createQueryBuilder()
-      .select('t.id', 'topicId')
-      .addSelect('t.title', 'topicTitle')
-      .addSelect('t.subjectId', 'subjectId')
-      .addSelect('s.title', 'subjectName')
-      .addSelect('t.isPublished', 'isPublished')
-      .addSelect('t.label', 'label')
-      .addSelect('t.slug', 'slug')
-      .addSelect('t.description', 'description')
-      .addSelect('COUNT(DISTINCT q.id)', 'numQuestions') // total questions in topic
-      .addSelect(
-        'COUNT(DISTINCT IF(q.questionType = :questionType, q.id, NULL))',
-        'numTrivia',
-      )
-      .from('topic', 't')
-      .leftJoin('subject', 's', 's.id = t.subjectId')
-      .leftJoin('question_topic', 'qt', 'qt.topicId = t.id')
-      .leftJoin('question', 'q', 'q.id = qt.questionId')
-      .setParameter('questionType', QuestionTypeEnum.Trivia)
-      .groupBy('t.id')
-      .addGroupBy('t.subjectId');
-
-    if (userId) {
-      qb.addSelect('COUNT(DISTINCT qa.id)', 'attempted')
-        .addSelect(
-          'SUM(CASE WHEN qa.isCorrect = true THEN 1 ELSE 0 END)',
-          'correct',
-        )
-        .addSelect(
-          'SUM(CASE WHEN qa.isCorrect = false THEN 1 ELSE 0 END)',
-          'wrong',
-        )
-        .addSelect(
-          'SUM(CASE WHEN qa.isSkipped = true THEN 1 ELSE 0 END)',
-          'skipped',
-        )
-        .leftJoin(
-          'question_attempt',
-          'qa',
-          'qa.questionId = q.id AND qa.userId = :userId',
-          { userId },
-        );
-    } else {
-      // visitors → defaults
-      qb.addSelect('0', 'attempted')
-        .addSelect('0', 'correct')
-        .addSelect('0', 'wrong')
-        .addSelect('0', 'skipped');
-    }
-
-    const result = await qb.getRawMany();
-
-    return result.map((row) => ({
-      id: +row.topicId,
-      title: row.topicTitle,
-      subjectId: row.subjectId ? +row.subjectId : null,
-      subjectName: row.subjectName ? row.subjectName : null,
-      slug: row.slug,
-      description: row.description,
-      isPublished: row.isPublished || false,
-      label: row.label || '',
-      numQuestions: +row.numQuestions || 0,
-      numTrivia: +row.numTrivia || 0,
-      isSubscribed: row.isSubscribed || true,
-      coverage: row.coverage || 0,
-      attempted: +row.attempted || 0,
-      correct: +row.correct || 0,
-      wrong: +row.wrong || 0,
-      skipped: +row.skipped || 0,
-    }));
-  }
-
-  //  Combine Subject and Topic Stats
   async getUserQuizStats(userId: number) {
-    const subjects = await this.subjectAnalyzer.getAllSubjects(userId);
-    const topics = await this.getTopicStatsForUser(userId);
+    const [subjects, topics] = await Promise.all([
+      this.subjectAnalyzer.getAllSubjects(userId),
+      this.topicAnalyzer.getAllTopicStats(userId),
+    ]);
 
-    // Group topics under corresponding subject
     const subjectMap = new Map<number, any>();
-
     for (const subject of subjects) {
-      subjectMap.set(subject.id, {
-        ...subject,
-        topics: [],
-      });
+      subjectMap.set(subject.id, { ...subject, topics: [] });
     }
-
     for (const topic of topics) {
       if (topic.subjectId && subjectMap.has(topic.subjectId)) {
         subjectMap.get(topic.subjectId).topics.push(topic);
-      } else {
-        // Orphan topics (no subject found) — optional: push them separately
       }
     }
 

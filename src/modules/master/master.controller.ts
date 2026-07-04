@@ -87,15 +87,6 @@ export class MasterController {
     return await this.masterService.getUserQuizStats(userId);
   }
 
-  //Already fetched by master data
-  @Public()
-  @UseGuards(OptionalJwtAuthGuard)
-  @Get('jobRoles')
-  async getJobRoles(@Request() req: any) {
-    const userId = req.user?.id;
-    return this.masterService.getJobRolesWithSubjects(userId);
-  }
-
   @Public()
   @UseGuards(OptionalJwtAuthGuard)
   @Get('routes')

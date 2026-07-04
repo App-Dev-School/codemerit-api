@@ -96,7 +96,22 @@ export class UserPermissionService {
   }
 
   async masterPermissions() {
-    return this.permissionRepo.find();
+    const permissions = await this.permissionRepo.find({ order: { group: 'ASC', id: 'ASC' } });
+
+    const groupMap = new Map<string, { group: string; permissions: any[] }>();
+    for (const p of permissions) {
+      const groupKey = p.group ?? 'Ungrouped';
+      if (!groupMap.has(groupKey)) {
+        groupMap.set(groupKey, { group: groupKey, permissions: [] });
+      }
+      groupMap.get(groupKey).permissions.push({
+        id: p.id,
+        permission: p.permission,
+        description: p.description,
+      });
+    }
+
+    return Array.from(groupMap.values());
   }
 
   async findUserPermissionList(userId: number) {
