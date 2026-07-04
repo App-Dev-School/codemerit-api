@@ -1,4 +1,5 @@
 import { Subject } from 'src/common/typeorm/entities/subject.entity';
+import { SubjectTrack } from 'src/common/typeorm/entities/subject-track.entity';
 import { Topic } from 'src/common/typeorm/entities/topic.entity';
 import { AppDataSource } from '../data-source';
 import { seedJobRoles } from './seeders/02-job-role.seeder';
@@ -29,7 +30,9 @@ async function main() {
     console.log(`  ${subjects.length} subjects | ${jobRoles.length} job roles | ${topics.length} topics\n`);
 
     console.log('Seeding new entities...');
-    const subjectTracks = await seedSubjectTracks(AppDataSource, subjects);
+    await seedSubjectTracks(AppDataSource, subjects);
+    // Load ALL subject tracks from DB — includes tracks from import:curriculum (Tailwind, DCA, etc.)
+    const subjectTracks = await AppDataSource.getRepository(SubjectTrack).find();
     await seedSubjectTrackTopics(AppDataSource, subjectTracks, topics);
     await seedJobRoleSubjects(AppDataSource, jobRoles, subjects);
 
