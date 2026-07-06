@@ -12,16 +12,19 @@ import { AuthGuard } from '@nestjs/passport';
 import { Public } from 'src/core/auth/decorators/public.decorator';
 import { OptionalJwtAuthGuard } from 'src/core/auth/jwt/optional-jwt-auth-guard';
 import { AddUserSubjectsDto } from 'src/core/users/dtos/user-subject.dto';
-import { MasterService } from './providers/master.service';
-import { TopicAnalysisService } from './providers/topic-analysis.service';
-import { SubjectAnalysisService } from './providers/subject-analysis.service';
 import { ApiResponse } from 'src/common/utils/api-response';
 import { UserPermissionService } from '../user-permission/providers/user-permission.service';
+import { MasterService } from './providers/master.service';
+import { TopicAnalysisService } from './providers/topic-analysis.service';
+import { SubjectStatsService } from './providers/subject-stats.service';
+import { ProgramService } from './providers/program.service';
+
 @Controller('apis/master')
 export class MasterController {
   constructor(
     private readonly masterService: MasterService,
-    private subjectAnalyzer: SubjectAnalysisService,
+    private readonly subjectStats: SubjectStatsService,
+    private readonly programService: ProgramService,
     private readonly topicAnalysisProvider: TopicAnalysisService,
     private readonly userPermissionService: UserPermissionService,
   ) {}
@@ -40,10 +43,12 @@ export class MasterController {
     return this.masterService.addUserSubjects(userId, dto);
   }
 
+  @Public()
+  @UseGuards(OptionalJwtAuthGuard)
   @Get('subjectDashboard')
-  async getSubjectDashboard(@Query('slug') slug: string, @Request() req) {
+  async getSubjectDashboard(@Query('slug') slug: string, @Request() req: any) {
     const userId = req.user?.id;
-    return this.subjectAnalyzer.getSubjectDashboardBySlug(slug, userId, true);
+    return this.subjectStats.getSubjectPage(slug, userId);
   }
 
   @UseGuards(AuthGuard('jwt'))
@@ -54,111 +59,37 @@ export class MasterController {
   ) {
     const subjectIdNum = subjectId ? parseInt(subjectId, 10) : undefined;
     if (subjectIdNum && subjectIdNum > 0) {
-      return this.topicAnalysisProvider.getTopicStatsBySubject(
-        subjectIdNum,
-        req.user,
-        false,
-      );
-    } else {
-      return await this.topicAnalysisProvider.getAllTopicStats(req.user, false);
+      return this.topicAnalysisProvider.getTopicStatsBySubject(subjectIdNum, req.user, false);
     }
-    // Single topic (fast)
-    //const t1 = await topicAnalysisProvider.getTopicStatsById(42, userId, true);
-
-    // All topics in a subject (one grouped query + one batched leaderboard)
-    //const list = await this.topicAnalysisProvider.getTopicStatsBySubject(7, userId, true);
-
-    // All topics (paged)
-    //const allPaged = await this.topicAnalysisProvider.getAllTopicStats(userId, false, 0, 50);
+    return this.topicAnalysisProvider.getAllTopicStats(req.user, false);
   }
 
-  @Public()
-  @UseGuards(OptionalJwtAuthGuard)
-  @Get('myJobDashboard')
-  async getJobDashboard(@Request() req) {
-    const userId = req.user?.id;
-    return await this.subjectAnalyzer.getJobSubjectDashboards(userId, false);
-    //getSubscribedSubjectDashboards
+  @UseGuards(AuthGuard('jwt'))
+  @Get('myCareerDashboard')
+  async getCareerDashboard(@Request() req: any) {
+    return this.programService.getCareerDashboard(req.user.id);
   }
 
   @Get('userQuizStats')
   async getUserStats(@Request() req) {
     const userId = req.user?.id;
-    return await this.masterService.getUserQuizStats(userId);
+    return this.masterService.getUserQuizStats(userId);
   }
 
   @Public()
   @UseGuards(OptionalJwtAuthGuard)
   @Get('routes')
   async getRoutes(@Request() req: any) {
-    const permissions = await this.userPermissionService.findUserPermissionList(
-      req.user?.id,
-    );
-    const result = await this.masterService.getRoutesConfig(
-      req.user?.role,
-      permissions,
-    );
-    console.log('Routes for user', req.user);
+    const permissions = await this.userPermissionService.findUserPermissionList(req.user?.id);
+    const result = await this.masterService.getRoutesConfig(req.user?.role, permissions);
     return new ApiResponse('Routes fetched successfully.', result);
   }
 
   @Public()
   @UseGuards(OptionalJwtAuthGuard)
   @Get('programDetails/:programSlug')
-  async getProgramDetails(
-    @Param('programSlug') programSlug: string,
-    @Request() req,
-  ) {
-    if (!programSlug) {
-      throw new Error('Missing programSlug route parameter');
-    }
-
-    // Find job role by slug
-    const jobRole = await this.subjectAnalyzer['jobRoleRepo'].findOne({
-      where: { slug: programSlug },
-      select: ['id'],
-    });
-    if (!jobRole) {
-      throw new Error('Program (job role) not found');
-    }
-
-    // Get all subjects mapped to this job role
-    const roleSubjects = await this.subjectAnalyzer['jobRoleSubjectRepo'].find({
-      where: { jobRoleId: jobRole.id },
-    });
-    if (!roleSubjects.length) return [];
-
+  async getProgramDetails(@Param('programSlug') programSlug: string, @Request() req: any) {
     const userId = req.user?.id;
-    // Fetch dashboards for each subject
-    const dashboards = await Promise.all(
-      roleSubjects.map(async (rs) => {
-        const dash = await this.subjectAnalyzer.getSubjectDashboard(
-          rs.subjectId,
-          userId,
-          false,
-        );
-        // Remove user-specific fields if not authenticated
-        if (!userId && dash) {
-          const {
-            isSubscribed,
-            attempted,
-            attemptedEasy,
-            attemptedMedium,
-            attemptedHard,
-            correctMedium,
-            correctHard,
-            wrong,
-            skipped,
-            avgAccuracy,
-            coverage,
-            score,
-            ...publicFields
-          } = dash;
-          return publicFields;
-        }
-        return dash;
-      }),
-    );
-    return dashboards.filter(Boolean);
+    return this.programService.getProgramDetails(programSlug, userId);
   }
 }

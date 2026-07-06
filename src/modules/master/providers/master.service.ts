@@ -2,81 +2,46 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IUserPermissionDto } from 'src/common/dto/user-permission.dto';
 import { AppCustomException } from 'src/common/exceptions/app-custom-exception.filter';
-import { CertificationTrack } from 'src/common/typeorm/entities/certification-track.entity';
-import { JobRole } from 'src/common/typeorm/entities/job-role.entity';
 import { Subject } from 'src/common/typeorm/entities/subject.entity';
-import { SubjectTrack } from 'src/common/typeorm/entities/subject-track.entity';
 import { Topic } from 'src/common/typeorm/entities/topic.entity';
 import { UserSubject } from 'src/common/typeorm/entities/user-subject.entity';
-import { User } from 'src/common/typeorm/entities/user.entity';
 import { AddUserSubjectsDto } from 'src/core/users/dtos/user-subject.dto';
 import { DataSource, In, Repository } from 'typeorm';
+import { MeritService } from './merit.service';
+import { ProgramService } from './program.service';
 import { RouteService } from './route.service';
-import { SubjectAnalysisService } from './subject-analysis.service';
+import { SubjectStatsService } from './subject-stats.service';
 import { TopicAnalysisService } from './topic-analysis.service';
 
 @Injectable()
 export class MasterService {
   constructor(
     @InjectRepository(Subject)
-    private subjectRepo: Repository<Subject>,
+    private readonly subjectRepo: Repository<Subject>,
 
     @InjectRepository(Topic)
-    private topicRepo: Repository<Topic>,
-
-    @InjectRepository(JobRole)
-    private jobRoleRepo: Repository<JobRole>,
+    private readonly topicRepo: Repository<Topic>,
 
     @InjectRepository(UserSubject)
     private readonly userSubjectRepo: Repository<UserSubject>,
 
-    @InjectRepository(SubjectTrack)
-    private readonly subjectTrackRepo: Repository<SubjectTrack>,
-
-    @InjectRepository(CertificationTrack)
-    private readonly certificationTrackRepo: Repository<CertificationTrack>,
-
     private readonly dataSource: DataSource,
-    private subjectAnalyzer: SubjectAnalysisService,
-    private topicAnalyzer: TopicAnalysisService,
+    private readonly subjectStats: SubjectStatsService,
+    private readonly topicAnalyzer: TopicAnalysisService,
+    private readonly meritService: MeritService,
+    private readonly programService: ProgramService,
     private readonly routeService: RouteService,
   ) {}
 
-  private async getSubjectTrackCounts(): Promise<Map<number, number>> {
-    const rows = await this.subjectTrackRepo
-      .createQueryBuilder('st')
-      .select('st.subjectId', 'subjectId')
-      .addSelect('COUNT(st.id)', 'count')
-      .groupBy('st.subjectId')
-      .getRawMany();
-    return new Map(rows.map((r) => [+r.subjectId, +r.count]));
-  }
-
-  private async getCertificationTrackCounts(): Promise<Map<number, number>> {
-    const rows = await this.certificationTrackRepo
-      .createQueryBuilder('ct')
-      .select('ct.jobRoleId', 'jobRoleId')
-      .addSelect('COUNT(ct.id)', 'count')
-      .groupBy('ct.jobRoleId')
-      .getRawMany();
-    return new Map(rows.map((r) => [+r.jobRoleId, +r.count]));
-  }
-
-  /**
-   * Delegates to RouteService for all route logic.
-   */
-  async getRoutesConfig(
-    userRole?: string,
-    userPermissions: IUserPermissionDto[] = [],
-  ) {
+  async getRoutesConfig(userRole?: string, userPermissions: IUserPermissionDto[] = []) {
     return this.routeService.getRoutesConfig(userRole, userPermissions);
   }
 
-  async getMasterData(userId: number) {
+  async getMasterData(userId?: number) {
     const [subjects, jobRoles, popularTopics, subjectTracks, certificationTracks, topics] = await Promise.all([
-      this.subjectAnalyzer.getAllSubjects(userId),
-      this.getJobRolesWithSubjects(userId),
-      this.getPopularTopics(),
+      this.subjectStats.getAllSubjects(userId),
+      this.programService.getJobRolesWithSubjects(userId),
+      this.meritService.getGlobalPopularTopics(),
       this.getMasterSubjectTracks(),
       this.getMasterCertificationTracks(),
       this.getTopicsForDropdown(),
@@ -94,12 +59,7 @@ export class MasterService {
       .addOrderBy('t.title', 'ASC')
       .getRawMany();
 
-    return rows.map((r) => ({
-      id: +r.id,
-      title: r.title,
-      slug: r.slug,
-      subjectId: +r.subjectId,
-    }));
+    return rows.map((r) => ({ id: +r.id, title: r.title, slug: r.slug, subjectId: +r.subjectId }));
   }
 
   private async getMasterSubjectTracks() {
@@ -162,39 +122,8 @@ export class MasterService {
     }));
   }
 
-  async getPopularTopics(limit = 10) {
-    const rows = await this.dataSource
-      .createQueryBuilder()
-      .select('t.id', 'id')
-      .addSelect('t.title', 'title')
-      .addSelect('t.slug', 'slug')
-      .addSelect('t.subjectId', 'subjectId')
-      .addSelect('s.title', 'subjectName')
-      .addSelect('COUNT(qa.id)', 'totalAttempts')
-      .from('topic', 't')
-      .innerJoin('subject', 's', 's.id = t.subjectId')
-      .innerJoin('question_topic', 'qt', 'qt.topicId = t.id')
-      .innerJoin('question', 'q', 'q.id = qt.questionId')
-      .innerJoin('question_attempt', 'qa', 'qa.questionId = q.id')
-      .where('t.isPublished = :isPublished', { isPublished: 1 })
-      .groupBy('t.id')
-      .orderBy('COUNT(qa.id)', 'DESC')
-      .limit(limit)
-      .getRawMany();
-
-    return rows.map((r) => ({
-      id: +r.id,
-      title: r.title,
-      slug: r.slug,
-      subjectId: +r.subjectId,
-      subjectName: r.subjectName,
-      totalAttempts: +r.totalAttempts,
-    }));
-  }
-
   async addUserSubjects(userId: number, dto: AddUserSubjectsDto) {
     try {
-      // get all existing subjects for the user with subject info
       const existing = await this.userSubjectRepo.find({
         where: { userId },
         relations: ['subject'],
@@ -202,45 +131,23 @@ export class MasterService {
       });
 
       const existingIds = new Set(existing.map((us) => us.subjectId));
-      const existingNames = existing.map((us) => us.subject.title);
-
       const results: { subjectId: number; status: string }[] = [];
 
-      // prepare new subjects
       for (const subjectId of dto.subjectIds) {
         if (existingIds.has(subjectId)) {
           results.push({
             subjectId,
-            status: `Subject already added: ${
-              existing.find((e) => e.subjectId === subjectId)?.subject.title
-            }`,
+            status: `Subject already added: ${existing.find((e) => e.subjectId === subjectId)?.subject.title}`,
           });
           continue;
         }
-
-        const newUserSubject = this.userSubjectRepo.create({
-          userId,
-          subjectId,
-        });
-
+        const newUserSubject = this.userSubjectRepo.create({ userId, subjectId });
         await this.userSubjectRepo.save(newUserSubject);
-        results.push({
-          subjectId,
-          status: 'Added successfully',
-        });
+        results.push({ subjectId, status: 'Added successfully' });
       }
 
-      if (results.length === 0) {
-        return {
-          message: 'No new subjects added',
-          results,
-        };
-      }
-
-      return {
-        message: 'Subjects processed successfully',
-        results,
-      };
+      if (!results.length) return { message: 'No new subjects added', results };
+      return { message: 'Subjects processed successfully', results };
     } catch (err) {
       throw new AppCustomException(
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -251,7 +158,7 @@ export class MasterService {
 
   async getUserQuizStats(userId: number) {
     const [subjects, topics] = await Promise.all([
-      this.subjectAnalyzer.getAllSubjects(userId),
+      this.subjectStats.getAllSubjects(userId),
       this.topicAnalyzer.getAllTopicStats(userId),
     ]);
 
@@ -264,140 +171,14 @@ export class MasterService {
         subjectMap.get(topic.subjectId).topics.push(topic);
       }
     }
-
     return Array.from(subjectMap.values());
   }
 
-  async getJobRolesWithSubjectsWithoutUser(userId?: number) {
-    const [jobRoles, certCounts, subjectTrackCounts] = await Promise.all([
-      this.jobRoleRepo
-        .createQueryBuilder('jobRole')
-        .leftJoinAndSelect('jobRole.jobRoleSubjects', 'jrs')
-        .leftJoinAndSelect('jrs.subject', 'subject')
-        .select([
-          'jobRole.id',
-          'jobRole.title',
-          'jobRole.slug',
-          'jobRole.description',
-          'jobRole.image',
-          'jobRole.isPublished',
-          'jobRole.color',
-          'jrs.id',
-          'subject.id',
-          'subject.title',
-          'subject.description',
-          'subject.image',
-        ])
-        .getMany(),
-      this.getCertificationTrackCounts(),
-      this.getSubjectTrackCounts(),
-    ]);
-
-    return jobRoles.map((jr) => ({
-      id: jr.id,
-      title: jr.title,
-      description: jr.description,
-      slug: jr.slug,
-      image: jr.image,
-      color: jr.color,
-      isPublished: jr.isPublished,
-      numQuestions: 0,
-      numusers: 0,
-      isSubscribed: true,
-      coverage: 0,
-      score: 0,
-      certificationTrackCount: certCounts.get(jr.id) ?? 0,
-      subjects: jr.jobRoleSubjects.map((jrs) => ({
-        id: jrs.subject.id,
-        title: jrs.subject.title,
-        image: jrs.subject.image,
-        description: jrs.subject.description,
-        subjectTrackCount: subjectTrackCounts.get(jrs.subject.id) ?? 0,
-      })),
-    }));
-  }
-
-  async getJobRolesWithSubjects(userId?: number) {
-    const qb = this.jobRoleRepo
-      .createQueryBuilder('jobRole')
-      .leftJoinAndSelect('jobRole.jobRoleSubjects', 'jrs')
-      .leftJoinAndSelect('jrs.subject', 'subject')
-      .select([
-        'jobRole.id',
-        'jobRole.title',
-        'jobRole.slug',
-        'jobRole.description',
-        'jobRole.image',
-        'jobRole.isPublished',
-        'jobRole.color',
-        'jrs.id',
-        'subject.id',
-        'subject.title',
-        'subject.slug',
-        'subject.image',
-      ])
-      .where('jobRole.isPublished = :isPublished', { isPublished: 1 })
-      .orderBy('jobRole.orderId', 'ASC');
-
-    if (userId) {
-      qb.addSelect(
-        `CASE WHEN user.designation = jobRole.id THEN 1 ELSE 0 END`,
-        'isSubscribed',
-      ).leftJoin(User, 'user', 'user.id = :userId', { userId });
-    } else {
-      qb.addSelect('FALSE', 'isSubscribed');
-    }
-
-    const [jobRoles, certCounts, subjectTrackCounts] = await Promise.all([
-      qb.getRawAndEntities(),
-      this.getCertificationTrackCounts(),
-      this.getSubjectTrackCounts(),
-    ]);
-
-    // Build a map from jobRole.id → first raw row (for isSubscribed)
-    const rawByJobRoleId = new Map<number, any>();
-    for (const raw of jobRoles.raw) {
-      if (!rawByJobRoleId.has(+raw.jobRole_id)) {
-        rawByJobRoleId.set(+raw.jobRole_id, raw);
-      }
-    }
-
-    return jobRoles.entities.map((jr) => {
-      const raw = rawByJobRoleId.get(jr.id);
-      return {
-        id: jr.id,
-        title: jr.title,
-        description: jr.description,
-        slug: jr.slug,
-        image: jr.image,
-        color: jr.color,
-        isPublished: jr.isPublished,
-        numQuestions: 0,
-        numusers: 0,
-        isSubscribed: Boolean(Number(raw?.isSubscribed)),
-        coverage: 0,
-        score: 0,
-        userId,
-        certificationTrackCount: certCounts.get(jr.id) ?? 0,
-        subjects: jr.jobRoleSubjects.map((jrs) => ({
-          id: jrs.subject.id,
-          title: jrs.subject.title,
-          slug: jrs.subject.slug,
-          image: jrs.subject.image,
-          subjectTrackCount: subjectTrackCounts.get(jrs.subject.id) ?? 0,
-        })),
-      };
-    });
-  }
-
   async getTopicListByIds(topicIdsArray: number[]) {
-    return this.topicRepo.findBy({
-      id: In(topicIdsArray),
-    });
+    return this.topicRepo.findBy({ id: In(topicIdsArray) });
   }
+
   async getSubjectListByIds(subjectIdsArray: number[]) {
-    return this.subjectRepo.findBy({
-      id: In(subjectIdsArray),
-    });
+    return this.subjectRepo.findBy({ id: In(subjectIdsArray) });
   }
 }
