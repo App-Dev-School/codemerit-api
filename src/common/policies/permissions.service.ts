@@ -2,7 +2,7 @@ import {
     Injectable,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository } from 'typeorm';
+import { Equal, In, IsNull, Or, Repository } from 'typeorm';
 import { Permission } from '../typeorm/entities/permission.entity';
 import { UserPermission } from '../typeorm/entities/user-permission.entity';
 import { UserPermissionTitleEnum } from './user-permission.enum';
@@ -17,21 +17,17 @@ export class PermissionsService {
     ) { }
 
     async findOneByUser(userId: number, permission: string, resourceType: UserPermissionTitleEnum, resourceId: number) {
+        // Match exact resourceId OR a global grant (resourceId IS NULL) for the same permission+type
         const result = await this.userPermissionRepo.findOne({
             where: {
-                userId: userId,
-                permission: {
-                    permission: permission,
-                },
+                userId,
+                permission: { permission },
                 resourceType,
-                resourceId,
+                resourceId: resourceId !== null ? Or(Equal(resourceId), IsNull()) : IsNull(),
             },
             relations: ['permission'],
         });
-        if (result) {
-            return true;
-        }
-        return false;
+        return Boolean(result);
     }
 
     //add utility

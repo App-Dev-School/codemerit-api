@@ -96,7 +96,22 @@ export class UserPermissionService {
   }
 
   async masterPermissions() {
-    return this.permissionRepo.find();
+    const permissions = await this.permissionRepo.find({ order: { group: 'ASC', id: 'ASC' } });
+
+    const groupMap = new Map<string, { group: string; permissions: any[] }>();
+    for (const p of permissions) {
+      const groupKey = p.group ?? 'Ungrouped';
+      if (!groupMap.has(groupKey)) {
+        groupMap.set(groupKey, { group: groupKey, permissions: [] });
+      }
+      groupMap.get(groupKey).permissions.push({
+        id: p.id,
+        permission: p.permission,
+        description: p.description,
+      });
+    }
+
+    return Array.from(groupMap.values());
   }
 
   async findUserPermissionList(userId: number) {
@@ -141,6 +156,60 @@ export class UserPermissionService {
       order: { id: 'DESC' },
     });
     return this.buildPermissionResponse(userPermissions);
+  }
+
+  async getPermissionsForProfile(userId: number) {
+    const rows = await this.userPermissionRepo
+      .createQueryBuilder('up')
+      .leftJoin('up.permission', 'p')
+      .where('up.userId = :userId', { userId })
+      .select([
+        'up.id AS id',
+        'up.permissionId AS permissionId',
+        'up.resourceType AS resourceType',
+        'up.resourceId AS resourceId',
+        'up.createdAt AS grantedAt',
+        'p.permission AS permissionName',
+        'p.isVisible AS isVisible',
+      ])
+      .getRawMany();
+
+    if (!rows.length) return [];
+
+    const subjectIds = rows
+      .filter((r) => String(r.resourceType || '').toLowerCase() === 'subject' && r.resourceId)
+      .map((r) => Number(r.resourceId));
+    const topicIds = rows
+      .filter((r) => String(r.resourceType || '').toLowerCase() === 'topic' && r.resourceId)
+      .map((r) => Number(r.resourceId));
+
+    const [subjects, topics] = await Promise.all([
+      subjectIds.length
+        ? this.subjectRepo.find({ where: { id: In(subjectIds) }, select: ['id', 'title'] })
+        : Promise.resolve([]),
+      topicIds.length
+        ? this.topicRepo.find({ where: { id: In(topicIds) }, select: ['id', 'title'] })
+        : Promise.resolve([]),
+    ]);
+
+    const subjectMap = new Map(subjects.map((s) => [s.id, s.title]));
+    const topicMap = new Map(topics.map((t) => [t.id, t.title]));
+
+    return rows.map((r) => {
+      const type = String(r.resourceType || '').toLowerCase();
+      let resourceName = '';
+      if (type === 'subject' && r.resourceId) resourceName = subjectMap.get(Number(r.resourceId)) || '';
+      else if (type === 'topic' && r.resourceId) resourceName = topicMap.get(Number(r.resourceId)) || '';
+
+      return {
+        id: r.id,
+        permissionName: r.permissionName,
+        resourceType: r.resourceType,
+        resourceName,
+        grantedAt: r.grantedAt,
+        isVisible: r.isVisible === 1 || r.isVisible === true || r.isVisible === '1',
+      };
+    });
   }
 
   private async buildPermissionResponse(userPermissions: UserPermission[]) {

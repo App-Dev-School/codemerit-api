@@ -33,8 +33,8 @@ export class MailService {
       email: string,
       name: string,
     ) {
-      return this.resend.emails.send({
-        from: 'Skill Assessment <noreply@codemerit.in>',
+      const emailSent = this.resend.emails.send({
+        from: 'Skill Assessment <noreply@appdevops.in>',
         to: email,
         subject: 'Welcome',
         html: `
@@ -42,6 +42,7 @@ export class MailService {
           <p>Your account has been created.</p>
         `,
       });
+      return emailSent
     }
   
     /**************remove all below  */
@@ -50,7 +51,7 @@ export class MailService {
       console.log("##AuthStep6: SendEmail => " + JSON.stringify(to));
       try {
         return this.resend.emails.send({
-        from: ' <noreply@codemerit.in>',
+        from: ' <noreply@appdevops.in>',
         to: to,
         subject: subject,
         html: '${content}'

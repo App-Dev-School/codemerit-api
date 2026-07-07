@@ -33,6 +33,7 @@ import { PublishedQuizFilterDto } from '../dtos/published-quiz.dto';
 import { User } from 'src/common/typeorm/entities/user.entity';
 import { DifficultyLevelEnum } from 'src/common/enum/difficulty-lavel.enum';
 import { JobRoleSubject } from 'src/common/typeorm/entities/job-role-subject.entity';
+import { MailService } from 'src/common/mail/providers/mail.service';
 
 @Injectable()
 export class QuizService {
@@ -53,12 +54,12 @@ export class QuizService {
     private readonly questionService: QuestionService,
     private readonly masterService: MasterService,
     private readonly notificationService: NotificationService,
-
+    private readonly mailService: MailService,
     private readonly dataSource: DataSource,
   ) {}
 
   async fetchQuizBySlug(slug: string): Promise<any> {
-    const quiz = await this.quizRepository
+  const quiz = await this.quizRepository
   .createQueryBuilder('quiz')
   .leftJoinAndSelect('quiz.quizQuestions', 'quizQuestion')
   .leftJoinAndSelect('quiz.settings', 'settings')
@@ -349,6 +350,13 @@ export class QuizService {
           });
           await manager.save(QuestionAttempt, questionAttempt);
         }
+
+        //Send a temp mail
+        try {
+        this.mailService.sendMail('javacheartofmine@gmail.com', "Quiz Attempted from CodeMerit", "Quiz Attempted by userId: "+submitQuizDto?.userId+" with score: "+submitQuizDto?.score);
+      } catch (error) {
+        console.log('CMRegistration Error sending e-mail2 => ', error);
+      }
         return questionResult;
       });
     } catch (error) {

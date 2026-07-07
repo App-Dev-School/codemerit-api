@@ -1,0 +1,597 @@
+{
+  "subjectSlug": "microsoft-office",
+  "questions": [
+
+    { "topicTitle": "Introduction to Microsoft Word", "question": "What is the Ribbon in Microsoft Word?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "The toolbar at the top with tabs containing all formatting and editing commands", "correct": true, "comment": "The Ribbon replaced menus in Office 2007. Tabs (Home, Insert, Layout) group related commands." },
+      { "option": "The scrollbar on the right side of the document", "correct": false },
+      { "option": "The page margin visible around the document text area", "correct": false },
+      { "option": "The bottom status bar showing page count and word count", "correct": false }
+    ]},
+    { "topicTitle": "Introduction to Microsoft Word", "question": "What is the keyboard shortcut to create a new document in Word?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Ctrl + N", "correct": true, "comment": "Ctrl+N opens a new blank document. Ctrl+O opens an existing file. Ctrl+S saves the current file." },
+      { "option": "Ctrl + D", "correct": false },
+      { "option": "Ctrl + B", "correct": false },
+      { "option": "Ctrl + W", "correct": false }
+    ]},
+    { "topicTitle": "Introduction to Microsoft Word", "question": "What is the default file format when saving a Word document?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": ".docx", "correct": true, "comment": ".docx is the modern Word format. .doc is the legacy format. .pdf is a non-editable export format." },
+      { "option": ".doc", "correct": false },
+      { "option": ".pdf", "correct": false },
+      { "option": ".txt", "correct": false }
+    ]},
+    { "topicTitle": "Introduction to Microsoft Word", "question": "What does the 'Quick Access Toolbar' in Word allow you to do?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Access frequently used commands (Save, Undo, Redo) with one click", "correct": true, "comment": "The QAT sits above the Ribbon and can be customised to show your most-used commands." },
+      { "option": "Change the document theme and font instantly", "correct": false },
+      { "option": "Open a mini web browser within Word", "correct": false },
+      { "option": "Run a grammar check on the entire document", "correct": false }
+    ]},
+    { "topicTitle": "Introduction to Microsoft Word", "question": "The 'Word Count' feature in Word is found under which Ribbon tab?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Review tab", "correct": true, "comment": "Review > Word Count shows word, character, paragraph, and line statistics." },
+      { "option": "Home tab", "correct": false },
+      { "option": "Insert tab", "correct": false },
+      { "option": "View tab", "correct": false }
+    ]},
+    { "topicTitle": "Introduction to Microsoft Word", "question": "What does 'Print Layout' view in Word show you?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "How the document will look when printed, including margins and page breaks", "correct": true, "comment": "Print Layout is the default view. 'Read Mode' removes editing; 'Draft' hides headers/footers." },
+      { "option": "Only the text without any formatting or images", "correct": false },
+      { "option": "A zoomed-in view of selected text", "correct": false },
+      { "option": "The document as it would appear in a web browser", "correct": false }
+    ]},
+
+    { "topicTitle": "Text Formatting & Styles", "question": "What does the Bold formatting option do to text?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Makes the text heavier/darker for emphasis (shortcut: Ctrl+B)", "correct": true, "comment": "Bold = Ctrl+B. Italic = Ctrl+I. Underline = Ctrl+U." },
+      { "option": "Makes the text larger by one font size", "correct": false },
+      { "option": "Changes the text colour to black", "correct": false },
+      { "option": "Adds a border around the selected text", "correct": false }
+    ]},
+    { "topicTitle": "Text Formatting & Styles", "question": "What is 'justified' text alignment?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Text that stretches to align flush with both the left and right margins", "correct": true, "comment": "Justified alignment creates clean edges on both sides, common in newspapers and formal documents." },
+      { "option": "Text aligned to the left margin only", "correct": false },
+      { "option": "Text centred between the left and right margins", "correct": false },
+      { "option": "Text aligned to the right margin only", "correct": false }
+    ]},
+    { "topicTitle": "Text Formatting & Styles", "question": "What is the benefit of using 'Heading' styles (Heading 1, Heading 2) in Word?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "It creates a document structure used by the Navigation Pane and Table of Contents", "correct": true, "comment": "Styles apply consistent formatting AND enable navigation, TOC generation, and accessibility." },
+      { "option": "It increases the heading text size by exactly 10 points", "correct": false },
+      { "option": "It locks heading text so it cannot be accidentally edited", "correct": false },
+      { "option": "It automatically numbers all paragraphs in the document", "correct": false }
+    ]},
+    { "topicTitle": "Text Formatting & Styles", "question": "To change the font size of selected text, you should:", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Select the text, then type the size in the Font Size box on the Home tab", "correct": true, "comment": "You can also use the up/down arrows beside the Font Size box, or Ctrl+Shift+> / Ctrl+Shift+<." },
+      { "option": "Right-click and choose 'Resize Text'", "correct": false },
+      { "option": "Go to Page Layout and change the text scale", "correct": false },
+      { "option": "Press Ctrl+F and type the new font size", "correct": false }
+    ]},
+    { "topicTitle": "Text Formatting & Styles", "question": "What does 'line spacing' control in a Word document?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "The vertical space between lines of text in a paragraph", "correct": true, "comment": "Common line spacings: 1.0 (single), 1.5, 2.0 (double). Set via Home > Line and Paragraph Spacing." },
+      { "option": "The horizontal gap between individual characters", "correct": false },
+      { "option": "The margin size around the entire page", "correct": false },
+      { "option": "The number of characters that fit on one line", "correct": false }
+    ]},
+    { "topicTitle": "Text Formatting & Styles", "question": "To remove all manual formatting from selected text and revert to the default style:", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Press Ctrl + Space (or click 'Clear All Formatting' on the Home tab)", "correct": true, "comment": "Clear All Formatting removes bold, colour, font changes — anything applied on top of the base style." },
+      { "option": "Press Ctrl + Z until all formatting is undone", "correct": false },
+      { "option": "Select the text and press Delete, then retype it", "correct": false },
+      { "option": "Go to File > Reset Document", "correct": false }
+    ]},
+
+    { "topicTitle": "Paragraphs, Lists & Tables", "question": "What is the keyboard shortcut to create a bulleted list in Word?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "There is no shortcut — use the Bullets button on the Home tab", "correct": true, "comment": "The Bullets button is on the Home tab, Paragraph group. You can also type a hyphen then space for a quick list." },
+      { "option": "Ctrl + L", "correct": false },
+      { "option": "Ctrl + Shift + B", "correct": false },
+      { "option": "Alt + B", "correct": false }
+    ]},
+    { "topicTitle": "Paragraphs, Lists & Tables", "question": "To add a new row at the bottom of a Word table quickly, you should:", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Press the Tab key when the cursor is in the last cell of the table", "correct": true, "comment": "Tab in the last cell adds a new row automatically — the fastest way to extend a table." },
+      { "option": "Right-click the table and select 'Add Row Above'", "correct": false },
+      { "option": "Press Enter in the last cell", "correct": false },
+      { "option": "Go to Insert > Table and draw a new row", "correct": false }
+    ]},
+    { "topicTitle": "Paragraphs, Lists & Tables", "question": "What does 'merging cells' in a Word table do?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Combines two or more cells into a single larger cell", "correct": true, "comment": "Merge cells are used for headers that span multiple columns. Right-click > Merge Cells." },
+      { "option": "Copies the content of one cell into all adjacent cells", "correct": false },
+      { "option": "Converts the table into a plain bulleted list", "correct": false },
+      { "option": "Locks the selected cells so they cannot be edited", "correct": false }
+    ]},
+    { "topicTitle": "Paragraphs, Lists & Tables", "question": "How do you increase the indent level of a bulleted list item?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Press the Tab key while the cursor is in the list item", "correct": true, "comment": "Tab increases indent (creates sub-bullet). Shift+Tab decreases indent to go back up a level." },
+      { "option": "Press Ctrl + Right Arrow", "correct": false },
+      { "option": "Press the Spacebar five times before the bullet", "correct": false },
+      { "option": "Click the Increase Font Size button on the Home tab", "correct": false }
+    ]},
+    { "topicTitle": "Paragraphs, Lists & Tables", "question": "Which type of list is best for instructions that must be followed in a specific order?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Numbered list", "correct": true, "comment": "Numbered lists show sequence. Bulleted lists are for unordered items where order doesn't matter." },
+      { "option": "Bulleted list", "correct": false },
+      { "option": "Table with two columns", "correct": false },
+      { "option": "Indented paragraph without numbers or bullets", "correct": false }
+    ]},
+    { "topicTitle": "Paragraphs, Lists & Tables", "question": "What does 'Paragraph spacing' (Before/After) control in Word?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Extra space added above or below a paragraph, separate from line spacing", "correct": true, "comment": "Paragraph spacing is the gap between paragraphs. Line spacing is within a paragraph. Both are in the Paragraph settings." },
+      { "option": "The left and right indentation of the entire paragraph", "correct": false },
+      { "option": "The minimum number of lines a paragraph must have before a page break", "correct": false },
+      { "option": "Whether paragraph text is single-spaced or double-spaced", "correct": false }
+    ]},
+
+    { "topicTitle": "Page Layout & Headers/Footers", "question": "What is the default page size in Microsoft Word for most regions?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "A4 (210 x 297 mm)", "correct": true, "comment": "A4 is the standard in most of the world. US Letter (8.5 x 11 inches) is the US default." },
+      { "option": "A3 (297 x 420 mm)", "correct": false },
+      { "option": "Letter (8.5 x 11 inches)", "correct": false },
+      { "option": "Legal (8.5 x 14 inches)", "correct": false }
+    ]},
+    { "topicTitle": "Page Layout & Headers/Footers", "question": "What is a page break in Word used for?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "To force content to start on a new page regardless of how much text is above", "correct": true, "comment": "Insert > Page Break (Ctrl+Enter) is cleaner than pressing Enter repeatedly." },
+      { "option": "To add a horizontal line across the middle of the current page", "correct": false },
+      { "option": "To split the document into two separate files", "correct": false },
+      { "option": "To change the page orientation for that single page only", "correct": false }
+    ]},
+    { "topicTitle": "Page Layout & Headers/Footers", "question": "Where does a 'Header' appear in a Word document?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "At the top of every page, above the main body text", "correct": true, "comment": "Headers repeat on every page. They typically contain document title, date, or company name." },
+      { "option": "On the first page only, above the title", "correct": false },
+      { "option": "In the left margin alongside the document text", "correct": false },
+      { "option": "Below the last paragraph, before the footer", "correct": false }
+    ]},
+    { "topicTitle": "Page Layout & Headers/Footers", "question": "To insert automatic page numbers in a footer, you should:", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Go to Insert > Page Number and select a position", "correct": true, "comment": "Insert > Page Number inserts a field that updates automatically as the document grows." },
+      { "option": "Type the page number manually in each footer", "correct": false },
+      { "option": "Use Find & Replace to add numbers throughout the document", "correct": false },
+      { "option": "Click the page counter in the status bar and drag it to the footer", "correct": false }
+    ]},
+    { "topicTitle": "Page Layout & Headers/Footers", "question": "What does 'Landscape' orientation mean for a page?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "The page is wider than it is tall (horizontal layout)", "correct": true, "comment": "Landscape = wide. Portrait = tall. Useful for tables, charts, or wide spreadsheets in Word." },
+      { "option": "The page is taller than it is wide (vertical layout)", "correct": false },
+      { "option": "The page has no margins — content fills the entire area", "correct": false },
+      { "option": "The page has a background image or gradient", "correct": false }
+    ]},
+    { "topicTitle": "Page Layout & Headers/Footers", "question": "Where are Margin settings found in Microsoft Word?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Layout tab > Margins (or Page Setup dialog)", "correct": true, "comment": "Layout (or Page Layout) tab contains margins, orientation, size, and columns." },
+      { "option": "Home tab > Paragraph group > Indentation", "correct": false },
+      { "option": "View tab > Page Setup > Borders", "correct": false },
+      { "option": "Review tab > Restrict Editing > Margins", "correct": false }
+    ]},
+
+    { "topicTitle": "Saving, Printing & Sharing Word Documents", "question": "What is the difference between 'Save' and 'Save As' in Word?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Save updates the current file; Save As creates a new copy with a different name or format", "correct": true, "comment": "Use Save As to rename a file, change its format (e.g. to PDF), or save to a new location." },
+      { "option": "Save sends the file by email; Save As saves it to OneDrive", "correct": false },
+      { "option": "They are identical — both overwrite the current file", "correct": false },
+      { "option": "Save As is only available in the paid version of Office", "correct": false }
+    ]},
+    { "topicTitle": "Saving, Printing & Sharing Word Documents", "question": "To export a Word document as a PDF file, you should:", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "File > Save As > change file type to PDF", "correct": true, "comment": "Word can export directly to PDF. You can also use File > Export > Create PDF/XPS." },
+      { "option": "Copy all text and paste it into Adobe Acrobat", "correct": false },
+      { "option": "Print the document and scan it back as a PDF", "correct": false },
+      { "option": "Rename the file from .docx to .pdf in File Explorer", "correct": false }
+    ]},
+    { "topicTitle": "Saving, Printing & Sharing Word Documents", "question": "What does Print Preview show you?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "How the document will look on paper before you print it", "correct": true, "comment": "Print Preview (included in the Print dialog under File > Print) lets you check layout before wasting paper." },
+      { "option": "The print queue showing documents waiting to print", "correct": false },
+      { "option": "Printer settings such as ink level and paper size", "correct": false },
+      { "option": "A preview of how the document would look as a PDF", "correct": false }
+    ]},
+    { "topicTitle": "Saving, Printing & Sharing Word Documents", "question": "To send a Word document to someone so they can edit it, the best method is:", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Share via OneDrive and grant Editor permission", "correct": true, "comment": "OneDrive sharing allows real-time collaboration. Email attachments create separate copies that diverge." },
+      { "option": "Print the document and hand it to them", "correct": false },
+      { "option": "Export as PDF and send it by email", "correct": false },
+      { "option": "Convert to plain text (.txt) and email it", "correct": false }
+    ]},
+    { "topicTitle": "Saving, Printing & Sharing Word Documents", "question": "What is AutoSave in Microsoft Word?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "A feature that automatically saves your document to OneDrive as you type", "correct": true, "comment": "AutoSave is enabled for files stored on OneDrive/SharePoint and saves every few seconds." },
+      { "option": "A feature that saves the document to a USB drive automatically", "correct": false },
+      { "option": "A scheduled backup that runs once per hour", "correct": false },
+      { "option": "A Word setting that creates a copy every time you open the file", "correct": false }
+    ]},
+    { "topicTitle": "Saving, Printing & Sharing Word Documents", "question": "To print only pages 3 and 5 from a 10-page Word document, you enter in the Pages field:", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "3,5", "correct": true, "comment": "Comma separates individual pages. Use a hyphen for a range: 3-5 prints pages 3, 4, and 5." },
+      { "option": "3 & 5", "correct": false },
+      { "option": "3-5 (this prints 3, 4, and 5 only)", "correct": false },
+      { "option": "3/5 (page fraction notation)", "correct": false }
+    ]},
+
+    { "topicTitle": "Introduction to Microsoft Excel", "question": "What is a 'cell' in Microsoft Excel?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "The individual box at the intersection of a row and a column", "correct": true, "comment": "Each cell has a unique address — e.g. B3 means column B, row 3. Click a cell to select it." },
+      { "option": "A group of worksheets within a workbook", "correct": false },
+      { "option": "The entire row of data in a spreadsheet", "correct": false },
+      { "option": "The formula bar at the top of the spreadsheet", "correct": false }
+    ]},
+    { "topicTitle": "Introduction to Microsoft Excel", "question": "What is the name of a single Excel file?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "A Workbook", "correct": true, "comment": "An Excel Workbook (.xlsx) contains one or more Worksheets (tabs). Each tab is a separate grid." },
+      { "option": "A Worksheet", "correct": false },
+      { "option": "A Spreadsheet Document", "correct": false },
+      { "option": "A Cell Matrix", "correct": false }
+    ]},
+    { "topicTitle": "Introduction to Microsoft Excel", "question": "What is the cell reference for the cell in column C, row 7?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "C7", "correct": true, "comment": "Cell references use the column letter first, then the row number — always column then row." },
+      { "option": "7C", "correct": false },
+      { "option": "Row7Col3", "correct": false },
+      { "option": "C:7", "correct": false }
+    ]},
+    { "topicTitle": "Introduction to Microsoft Excel", "question": "To quickly navigate to cell A1 in a large Excel sheet, press:", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Ctrl + Home", "correct": true, "comment": "Ctrl+Home goes to A1. Ctrl+End jumps to the last used cell. Ctrl+Arrow keys jump to edges of data." },
+      { "option": "Ctrl + A", "correct": false },
+      { "option": "Ctrl + 1", "correct": false },
+      { "option": "Ctrl + Up Arrow", "correct": false }
+    ]},
+    { "topicTitle": "Introduction to Microsoft Excel", "question": "What does the Name Box (top-left of the spreadsheet) display?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "The cell reference or name of the currently selected cell", "correct": true, "comment": "The Name Box shows the active cell address (e.g. B5). You can type an address there to navigate to it." },
+      { "option": "The name of the current worksheet tab", "correct": false },
+      { "option": "The formula entered in the selected cell", "correct": false },
+      { "option": "The total number of cells in the current selection", "correct": false }
+    ]},
+    { "topicTitle": "Introduction to Microsoft Excel", "question": "What is the formula bar in Excel used for?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Displaying and editing the content or formula of the selected cell", "correct": true, "comment": "The formula bar sits above the grid and shows the full content of the active cell, including formulas." },
+      { "option": "Inserting pre-built chart templates", "correct": false },
+      { "option": "Calculating the sum of all selected cells automatically", "correct": false },
+      { "option": "Filtering data based on conditions you type", "correct": false }
+    ]},
+
+    { "topicTitle": "Data Entry & Cell Formatting", "question": "What happens when you type a number in a cell formatted as 'Text'?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "The number is stored as text and cannot be used in calculations", "correct": true, "comment": "Text-formatted numbers get a green warning triangle. Change format to General or Number to fix." },
+      { "option": "Excel automatically converts it to a date", "correct": false },
+      { "option": "The number is stored correctly and works in all formulas", "correct": false },
+      { "option": "Excel rejects the entry and shows an error immediately", "correct": false }
+    ]},
+    { "topicTitle": "Data Entry & Cell Formatting", "question": "To display a number as currency (e.g. $1,250.00), you should:", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Select the cells, then apply Currency format from the Number group on the Home tab", "correct": true, "comment": "Number formats change the display without altering the stored value." },
+      { "option": "Type a $ sign before each number manually", "correct": false },
+      { "option": "Apply the Accounting style from the Styles group", "correct": false },
+      { "option": "Right-click and choose 'Insert Currency'", "correct": false }
+    ]},
+    { "topicTitle": "Data Entry & Cell Formatting", "question": "How do you make a column wider in Excel?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Drag the column header border right, or double-click it to auto-fit", "correct": true, "comment": "Double-clicking the column header border auto-fits width to the longest entry in that column." },
+      { "option": "Select a cell in the column and press Ctrl+Right Arrow", "correct": false },
+      { "option": "Right-click a cell and choose 'Expand Column'", "correct": false },
+      { "option": "Type a wider number in a cell in that column", "correct": false }
+    ]},
+    { "topicTitle": "Data Entry & Cell Formatting", "question": "What does applying a 'Border' to a cell do in Excel?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Adds visible lines around the cell edges to make data easier to read", "correct": true, "comment": "Cell borders are cosmetic. They are found in the Font group (Home tab) or the Format Cells dialog." },
+      { "option": "Locks the cell so its content cannot be changed", "correct": false },
+      { "option": "Protects the cell formula from being deleted", "correct": false },
+      { "option": "Applies a thick outline to the entire worksheet", "correct": false }
+    ]},
+    { "topicTitle": "Data Entry & Cell Formatting", "question": "When you enter 15/07/2025 into a cell, Excel usually recognises it as:", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "A date value", "correct": true, "comment": "Excel stores dates as numbers internally (days since 01/01/1900), allowing date calculations." },
+      { "option": "A fraction (15 divided by 7 divided by 2025)", "correct": false },
+      { "option": "A text string with no special meaning", "correct": false },
+      { "option": "An error because dates must be written differently", "correct": false }
+    ]},
+    { "topicTitle": "Data Entry & Cell Formatting", "question": "What does 'Fill Colour' formatting do to a cell?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Colours the background of the cell", "correct": true, "comment": "Fill Colour is in the Font group (Home tab). Used to highlight rows, headers, or important values." },
+      { "option": "Changes the colour of the text inside the cell", "correct": false },
+      { "option": "Fills the cell with a repeating pattern or texture", "correct": false },
+      { "option": "Applies a gradient to the entire worksheet background", "correct": false }
+    ]},
+
+    { "topicTitle": "Basic Formulas & Functions", "question": "All Excel formulas must begin with which symbol?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "= (equals sign)", "correct": true, "comment": "Every formula starts with =. Without it, Excel treats the entry as text." },
+      { "option": "+ (plus sign)", "correct": false },
+      { "option": "# (hash symbol)", "correct": false },
+      { "option": "@ (at symbol)", "correct": false }
+    ]},
+    { "topicTitle": "Basic Formulas & Functions", "question": "What does the SUM function do in Excel?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Adds all the numbers in a specified range of cells", "correct": true, "comment": "=SUM(A1:A10) adds values in A1 through A10. Faster and more flexible than =A1+A2+A3..." },
+      { "option": "Counts the number of cells containing text", "correct": false },
+      { "option": "Calculates the average of a range", "correct": false },
+      { "option": "Finds the largest number in the range", "correct": false }
+    ]},
+    { "topicTitle": "Basic Formulas & Functions", "question": "What does the AVERAGE function calculate?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "The arithmetic mean (sum divided by count) of a range of numbers", "correct": true, "comment": "=AVERAGE(B1:B20) adds all values and divides by the number of cells containing numbers." },
+      { "option": "The middle value in a sorted list of numbers", "correct": false },
+      { "option": "The most frequently occurring value in a range", "correct": false },
+      { "option": "The difference between the highest and lowest values", "correct": false }
+    ]},
+    { "topicTitle": "Basic Formulas & Functions", "question": "What is AutoFill in Excel used for?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Automatically copying a formula or pattern down a column by dragging the fill handle", "correct": true, "comment": "The fill handle is the small square at the bottom-right of a selected cell. Drag it to fill a range." },
+      { "option": "Automatically inserting data from another spreadsheet", "correct": false },
+      { "option": "A tool that completes half-typed text in a cell", "correct": false },
+      { "option": "Filling all empty cells with a chosen value at once", "correct": false }
+    ]},
+    { "topicTitle": "Basic Formulas & Functions", "question": "Which formula calculates the total of cells B2 through B10?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "=SUM(B2:B10)", "correct": true, "comment": "The colon (:) defines a range from the start cell to the end cell." },
+      { "option": "=ADD(B2,B10)", "correct": false },
+      { "option": "=TOTAL(B2-B10)", "correct": false },
+      { "option": "=SUM[B2:B10]", "correct": false }
+    ]},
+    { "topicTitle": "Basic Formulas & Functions", "question": "What does the COUNT function do?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Counts the number of cells in a range that contain numbers", "correct": true, "comment": "COUNT counts numbers only. COUNTA counts non-empty cells (any type). COUNTBLANK counts empty cells." },
+      { "option": "Calculates the sum of all numbers in a range", "correct": false },
+      { "option": "Counts both numbers and text entries in a range", "correct": false },
+      { "option": "Returns how many characters are in a specific cell", "correct": false }
+    ]},
+
+    { "topicTitle": "Charts & Graphs", "question": "What is the best chart type to show how sales were distributed across five product categories?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Pie chart (shows proportions of a whole)", "correct": true, "comment": "Pie charts show parts of a whole as slices — ideal for up to 5-6 categories as a % of total." },
+      { "option": "Line chart (shows trends over time)", "correct": false },
+      { "option": "Scatter chart (shows correlation between two variables)", "correct": false },
+      { "option": "Histogram (shows frequency distribution)", "correct": false }
+    ]},
+    { "topicTitle": "Charts & Graphs", "question": "What is the best chart type to show a trend over 12 months?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Line chart", "correct": true, "comment": "Line charts connect data points over time — the ideal choice for showing trends and changes." },
+      { "option": "Pie chart", "correct": false },
+      { "option": "Doughnut chart", "correct": false },
+      { "option": "Bubble chart", "correct": false }
+    ]},
+    { "topicTitle": "Charts & Graphs", "question": "How do you insert a chart in Excel?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Select the data range, then go to Insert tab and choose a chart type", "correct": true, "comment": "Excel creates a chart from the selected data. The Insert tab > Charts group has all chart types." },
+      { "option": "Right-click any cell and choose 'Insert Chart from Selection'", "correct": false },
+      { "option": "Go to File > New > Chart and select data manually", "correct": false },
+      { "option": "Press Ctrl+G to open the chart generator", "correct": false }
+    ]},
+    { "topicTitle": "Charts & Graphs", "question": "A chart 'legend' in Excel identifies:", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Which colours or patterns correspond to which data series", "correct": true, "comment": "The legend is the key that explains what each colour/series represents in the chart." },
+      { "option": "The title of the chart displayed at the top", "correct": false },
+      { "option": "The maximum and minimum values shown on the axes", "correct": false },
+      { "option": "A note explaining the data source below the chart", "correct": false }
+    ]},
+    { "topicTitle": "Charts & Graphs", "question": "What does the 'Chart Title' in Excel represent?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "A label at the top of the chart describing what the data shows", "correct": true, "comment": "A clear chart title helps the reader understand the data without needing to read the full dataset." },
+      { "option": "The cell reference of the first data point in the chart", "correct": false },
+      { "option": "The name of the Excel worksheet containing the chart data", "correct": false },
+      { "option": "The legend text for the first data series", "correct": false }
+    ]},
+    { "topicTitle": "Charts & Graphs", "question": "What does a 'Column chart' typically show?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Comparison of values across different categories using vertical bars", "correct": true, "comment": "Column charts (vertical bars) compare items side by side. Bar charts use horizontal bars." },
+      { "option": "The percentage share each category contributes to the total", "correct": false },
+      { "option": "The relationship between two numeric variables", "correct": false },
+      { "option": "A single trend line across a time period", "correct": false }
+    ]},
+
+    { "topicTitle": "VLOOKUP & IF Functions", "question": "What does the VLOOKUP function do?", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "Searches for a value in the first column of a range and returns a value from another column", "correct": true, "comment": "=VLOOKUP(lookup_value, table_range, col_index, [exact_match]). V = Vertical." },
+      { "option": "Counts all cells that match a given value", "correct": false },
+      { "option": "Adds values in a column that meet a certain condition", "correct": false },
+      { "option": "Validates data entries against a lookup table", "correct": false }
+    ]},
+    { "topicTitle": "VLOOKUP & IF Functions", "question": "In =VLOOKUP(A2, B:D, 3, FALSE), what does the 3 refer to?", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "Return the value from the 3rd column of the lookup range (column D)", "correct": true, "comment": "The column index (3) tells VLOOKUP which column to pull the result from within the table range." },
+      { "option": "Find the 3rd row in the lookup range", "correct": false },
+      { "option": "Repeat the lookup 3 times to check for errors", "correct": false },
+      { "option": "Round the result to 3 decimal places", "correct": false }
+    ]},
+    { "topicTitle": "VLOOKUP & IF Functions", "question": "What does FALSE as the last argument in VLOOKUP mean?", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "An exact match is required (returns #N/A if not found)", "correct": true, "comment": "FALSE = exact match. TRUE = approximate match (requires data sorted ascending). Always use FALSE for IDs or codes." },
+      { "option": "The function will hide #N/A errors automatically", "correct": false },
+      { "option": "The lookup is case-sensitive", "correct": false },
+      { "option": "The search direction is reversed from bottom to top", "correct": false }
+    ]},
+    { "topicTitle": "VLOOKUP & IF Functions", "question": "The IF function =IF(C2>50, \"Pass\", \"Fail\") will return:", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "\"Pass\" if C2 is greater than 50, otherwise \"Fail\"", "correct": true, "comment": "IF syntax: =IF(condition, value_if_true, value_if_false). Classic pass/fail grading pattern." },
+      { "option": "\"Pass\" only if C2 equals exactly 50", "correct": false },
+      { "option": "\"Fail\" if C2 is greater than 50", "correct": false },
+      { "option": "An error because text values cannot follow a number comparison", "correct": false }
+    ]},
+    { "topicTitle": "VLOOKUP & IF Functions", "question": "What error does VLOOKUP return when it cannot find the lookup value?", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "#N/A", "correct": true, "comment": "#N/A means 'Not Available' — the value was not found. Wrap in IFERROR to display a custom message instead." },
+      { "option": "#VALUE!", "correct": false },
+      { "option": "#REF!", "correct": false },
+      { "option": "#DIV/0!", "correct": false }
+    ]},
+    { "topicTitle": "VLOOKUP & IF Functions", "question": "How do you handle a VLOOKUP that returns #N/A when a match is not found?", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "Wrap it in IFERROR: =IFERROR(VLOOKUP(...), \"Not found\")", "correct": true, "comment": "IFERROR catches any error and returns your custom fallback value instead of showing the error." },
+      { "option": "Add FALSE to the end of the formula to suppress errors", "correct": false },
+      { "option": "Change the column index to 0 to return a blank", "correct": false },
+      { "option": "Sort the lookup column in descending order before running VLOOKUP", "correct": false }
+    ]},
+
+    { "topicTitle": "Sorting, Filtering & Data Validation", "question": "What does 'AutoFilter' do in Excel?", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "Adds dropdown arrows to column headers so you can show/hide specific rows", "correct": true, "comment": "AutoFilter (Data > Filter) lets you quickly filter a table to show only rows matching criteria." },
+      { "option": "Automatically sorts data alphabetically when you type", "correct": false },
+      { "option": "Fills empty cells with data from adjacent rows automatically", "correct": false },
+      { "option": "Merges duplicate rows into a single entry", "correct": false }
+    ]},
+    { "topicTitle": "Sorting, Filtering & Data Validation", "question": "To sort a list of names from A to Z in Excel, you should:", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "Select the data, go to Data tab, and click Sort A to Z", "correct": true, "comment": "The Data tab has Sort A to Z (ascending) and Sort Z to A (descending) buttons." },
+      { "option": "Manually rearrange the rows by dragging them into position", "correct": false },
+      { "option": "Apply a text format to the column then press Enter", "correct": false },
+      { "option": "Go to Home > Find & Replace and use the Sort option", "correct": false }
+    ]},
+    { "topicTitle": "Sorting, Filtering & Data Validation", "question": "What is Data Validation in Excel used for?", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "Restricting what type of data can be entered into a cell", "correct": true, "comment": "Data Validation creates rules (e.g. whole numbers, date range, dropdown list) to reduce data entry errors." },
+      { "option": "Checking all formulas for errors before printing", "correct": false },
+      { "option": "Protecting a sheet so no cells can be edited", "correct": false },
+      { "option": "Validating that all rows have the same number of columns", "correct": false }
+    ]},
+    { "topicTitle": "Sorting, Filtering & Data Validation", "question": "When performing a multi-level sort in Excel (sort by Department, then by Name), which level comes first?", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "Department — the primary sort key determines the main grouping", "correct": true, "comment": "Primary key sorts first; secondary key sorts within the primary groups." },
+      { "option": "Name — alphabetical sorting always takes priority in Excel", "correct": false },
+      { "option": "The column furthest to the left always sorts first regardless", "correct": false },
+      { "option": "Both columns sort simultaneously with no hierarchy", "correct": false }
+    ]},
+    { "topicTitle": "Sorting, Filtering & Data Validation", "question": "How do you create a dropdown list in a cell using Data Validation?", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "Data tab > Data Validation > Allow: List > enter the list items", "correct": true, "comment": "Dropdown lists restrict input to predefined options — great for consistent data entry (e.g. department names)." },
+      { "option": "Right-click the cell > Insert > Dropdown > type the options", "correct": false },
+      { "option": "Home tab > Styles > Cell Styles > Dropdown", "correct": false },
+      { "option": "Format Cells dialog > Number tab > Category: List", "correct": false }
+    ]},
+    { "topicTitle": "Sorting, Filtering & Data Validation", "question": "After filtering a dataset in Excel, what happens to the hidden rows?", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "They are still in the spreadsheet but temporarily hidden from view", "correct": true, "comment": "Filtered rows are hidden, not deleted. Clear the filter to show all rows again." },
+      { "option": "They are deleted permanently", "correct": false },
+      { "option": "They are moved to a new sheet automatically", "correct": false },
+      { "option": "They are greyed out but remain visible", "correct": false }
+    ]},
+
+    { "topicTitle": "Pivot Tables", "question": "What is the main purpose of a Pivot Table?", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "To summarise, group, and analyse large datasets interactively", "correct": true, "comment": "Pivot Tables can instantly summarise thousands of rows by category, date, or any field." },
+      { "option": "To rotate (pivot) a table from rows to columns automatically", "correct": false },
+      { "option": "To link multiple worksheets together for consolidated reporting", "correct": false },
+      { "option": "To visualise data using charts without writing formulas", "correct": false }
+    ]},
+    { "topicTitle": "Pivot Tables", "question": "Which tab in Excel contains the option to insert a Pivot Table?", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "Insert tab", "correct": true, "comment": "Insert > PivotTable opens the dialog to create a pivot table from a selected data range." },
+      { "option": "Data tab", "correct": false },
+      { "option": "Home tab", "correct": false },
+      { "option": "View tab", "correct": false }
+    ]},
+    { "topicTitle": "Pivot Tables", "question": "In a Pivot Table, the 'Values' area contains:", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "The numeric data being summarised (e.g. sales totals, counts)", "correct": true, "comment": "Values = the numbers you want to aggregate. Rows/Columns = categories. Filters = report-level filters." },
+      { "option": "The row labels used to group data", "correct": false },
+      { "option": "The filter criteria applied to the pivot report", "correct": false },
+      { "option": "The column headers from the original data source", "correct": false }
+    ]},
+    { "topicTitle": "Pivot Tables", "question": "Why do you need to 'Refresh' a Pivot Table?", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "To update the pivot table when the underlying data source has changed", "correct": true, "comment": "Pivot Tables do not update automatically. Right-click > Refresh after adding/changing data." },
+      { "option": "To clear all current formatting and start from scratch", "correct": false },
+      { "option": "To recalculate all formulas in the worksheet", "correct": false },
+      { "option": "To reload the Excel file from OneDrive", "correct": false }
+    ]},
+    { "topicTitle": "Pivot Tables", "question": "What calculation does a Pivot Table perform by default when you add a numeric field to Values?", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "Sum", "correct": true, "comment": "SUM is the default for numeric fields. For text fields it defaults to COUNT. You can change it to Average, Max, etc." },
+      { "option": "Average", "correct": false },
+      { "option": "Count", "correct": false },
+      { "option": "Maximum", "correct": false }
+    ]},
+    { "topicTitle": "Pivot Tables", "question": "What is a Pivot Chart?", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "A chart that is linked to and updates with a Pivot Table", "correct": true, "comment": "Pivot Charts are interactive — filtering the Pivot Table also filters the chart automatically." },
+      { "option": "A chart that shows data rotated 90 degrees from the normal view", "correct": false },
+      { "option": "A chart created from a regular cell range without a Pivot Table", "correct": false },
+      { "option": "A chart template that can be saved and reused across workbooks", "correct": false }
+    ]},
+
+    { "topicTitle": "Introduction to Microsoft PowerPoint", "question": "What is a 'slide layout' in PowerPoint?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "A template that defines the arrangement of placeholders on a slide", "correct": true, "comment": "Layouts (Title Slide, Title & Content, Blank, etc.) control where placeholders appear on the slide." },
+      { "option": "The colour scheme applied to the entire presentation", "correct": false },
+      { "option": "The animation effect used when displaying the slide", "correct": false },
+      { "option": "The size of the slide (widescreen or standard)", "correct": false }
+    ]},
+    { "topicTitle": "Introduction to Microsoft PowerPoint", "question": "How do you add a new slide to a PowerPoint presentation?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Press Enter in the Slides panel, or click Home > New Slide", "correct": true, "comment": "Home > New Slide lets you choose the layout. Press Enter in the slide panel for a quick duplicate." },
+      { "option": "Go to File > New > Add Slide", "correct": false },
+      { "option": "Press Ctrl+N to insert a new slide after the current one", "correct": false },
+      { "option": "Drag a slide from File Explorer into the presentation", "correct": false }
+    ]},
+    { "topicTitle": "Introduction to Microsoft PowerPoint", "question": "What is a 'text placeholder' in PowerPoint?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "A dashed box on a slide where you click to add text content", "correct": true, "comment": "Placeholders are defined by the slide layout and hold text, images, or other content." },
+      { "option": "A text box you draw manually anywhere on the slide", "correct": false },
+      { "option": "Sample filler text displayed before you type real content", "correct": false },
+      { "option": "A reserved word that PowerPoint replaces with date or slide number", "correct": false }
+    ]},
+    { "topicTitle": "Introduction to Microsoft PowerPoint", "question": "To start a slideshow from the first slide, press:", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "F5", "correct": true, "comment": "F5 starts from slide 1. Shift+F5 starts from the current slide. Esc exits the slideshow." },
+      { "option": "F1", "correct": false },
+      { "option": "Ctrl+P", "correct": false },
+      { "option": "Ctrl+F5", "correct": false }
+    ]},
+    { "topicTitle": "Introduction to Microsoft PowerPoint", "question": "What is the Slide Sorter view in PowerPoint used for?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Viewing all slides as thumbnails to rearrange their order", "correct": true, "comment": "Slide Sorter (View menu) shows all slides at once — drag to reorder them quickly." },
+      { "option": "Editing the content of individual slides side by side", "correct": false },
+      { "option": "Viewing speaker notes alongside each slide", "correct": false },
+      { "option": "Running a spell check across all slide text", "correct": false }
+    ]},
+    { "topicTitle": "Introduction to Microsoft PowerPoint", "question": "Which file format is the default for saving a PowerPoint presentation?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": ".pptx", "correct": true, "comment": ".pptx is the modern PowerPoint format. .ppt is the legacy format. .ppsx is a slideshow file." },
+      { "option": ".ppt", "correct": false },
+      { "option": ".pdf", "correct": false },
+      { "option": ".key", "correct": false }
+    ]},
+
+    { "topicTitle": "Slide Design & Themes", "question": "What is a 'Theme' in PowerPoint?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "A coordinated set of fonts, colours, and background styles applied to all slides", "correct": true, "comment": "Applying a theme ensures visual consistency throughout the entire presentation." },
+      { "option": "A single background image used only on the title slide", "correct": false },
+      { "option": "A pre-built animation effect that plays between slides", "correct": false },
+      { "option": "A collection of clip-art images that match your topic", "correct": false }
+    ]},
+    { "topicTitle": "Slide Design & Themes", "question": "What is the Slide Master in PowerPoint?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "A master slide that controls default formatting for all slides using that layout", "correct": true, "comment": "Editing the Slide Master (View > Slide Master) changes fonts, logos, and colours on every slide at once." },
+      { "option": "The first slide, which automatically controls all subsequent slide styles", "correct": false },
+      { "option": "A locked slide that only administrators can edit", "correct": false },
+      { "option": "A slide that plays before your presentation as an introduction", "correct": false }
+    ]},
+    { "topicTitle": "Slide Design & Themes", "question": "Which design principle helps make presentation slides easy to read?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "High contrast between text and background (e.g. dark text on light background)", "correct": true, "comment": "Poor contrast is the most common readability failure in presentations." },
+      { "option": "Using at least five different font styles on each slide", "correct": false },
+      { "option": "Filling every slide with as much text as possible", "correct": false },
+      { "option": "Using a different background colour for every slide", "correct": false }
+    ]},
+    { "topicTitle": "Slide Design & Themes", "question": "What is SmartArt in PowerPoint?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Pre-built diagrams for visualising lists, processes, hierarchies, and relationships", "correct": true, "comment": "SmartArt (Insert > SmartArt) creates professional diagrams from simple text bullet points." },
+      { "option": "An AI tool that automatically designs your slides for you", "correct": false },
+      { "option": "A selection of stock photography included with Office", "correct": false },
+      { "option": "An advanced chart type used for scientific data visualisation", "correct": false }
+    ]},
+    { "topicTitle": "Slide Design & Themes", "question": "To align two objects on a slide so their top edges line up, use:", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Home or Shape Format tab > Arrange > Align > Align Top", "correct": true, "comment": "PowerPoint's Align tools align objects relative to each other or to the slide itself." },
+      { "option": "Drag both objects by hand until they look even", "correct": false },
+      { "option": "Right-click one object and choose 'Match to Above'", "correct": false },
+      { "option": "Use Tab to cycle through objects until they snap into position", "correct": false }
+    ]},
+    { "topicTitle": "Slide Design & Themes", "question": "What is the purpose of 'Slide Background' formatting in PowerPoint?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Sets the colour, gradient, texture, or image behind all slide content", "correct": true, "comment": "Right-click a slide > Format Background to customise it. Changes can apply to one or all slides." },
+      { "option": "Sets the border colour around the slide edges when printed", "correct": false },
+      { "option": "Controls the default font colour for all text boxes", "correct": false },
+      { "option": "Defines the animation that plays when the slide loads", "correct": false }
+    ]},
+
+    { "topicTitle": "Animations & Transitions", "question": "What is a slide 'Transition' in PowerPoint?", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "A visual effect that plays when moving from one slide to the next", "correct": true, "comment": "Transitions (Fade, Push, Wipe, etc.) are set per slide in the Transitions tab." },
+      { "option": "An animation that makes text fly onto the slide from the side", "correct": false },
+      { "option": "The time delay before a slideshow starts automatically", "correct": false },
+      { "option": "A hyperlink that jumps to another slide when clicked", "correct": false }
+    ]},
+    { "topicTitle": "Animations & Transitions", "question": "What is an 'Entrance' animation in PowerPoint?", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "An animation that controls how an object appears on the slide", "correct": true, "comment": "Animations: Entrance (how it appears), Emphasis (while visible), Exit (how it disappears)." },
+      { "option": "The transition effect when the presentation is first opened", "correct": false },
+      { "option": "A sound effect that plays when a slide is advanced", "correct": false },
+      { "option": "The motion path an object follows across the slide", "correct": false }
+    ]},
+    { "topicTitle": "Animations & Transitions", "question": "Where do you manage the order and timing of multiple animations on a slide?", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "The Animation Pane (Animations tab > Animation Pane)", "correct": true, "comment": "The Animation Pane lists all animations in order and lets you set timing, delays, and triggers." },
+      { "option": "The Slide Sorter view", "correct": false },
+      { "option": "The Slide Master", "correct": false },
+      { "option": "The Transitions dialog box", "correct": false }
+    ]},
+    { "topicTitle": "Animations & Transitions", "question": "To make an animation start automatically after the previous one ends, set it to:", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "After Previous", "correct": true, "comment": "Start options: On Click (manual), With Previous (simultaneous), After Previous (sequential)." },
+      { "option": "On Click", "correct": false },
+      { "option": "With Previous", "correct": false },
+      { "option": "Auto Start", "correct": false }
+    ]},
+    { "topicTitle": "Animations & Transitions", "question": "When should you use animations in a professional presentation?", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "Sparingly — only when they help explain or reveal information progressively", "correct": true, "comment": "Too many animations distract from the content. Simple reveals are professional; flashy effects are not." },
+      { "option": "On every single object on every slide to make it dynamic", "correct": false },
+      { "option": "Only on the title slide as a welcome effect", "correct": false },
+      { "option": "Never — professional presentations should never use animations", "correct": false }
+    ]},
+    { "topicTitle": "Animations & Transitions", "question": "How do you apply the same transition to all slides at once?", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "Select a transition in the Transitions tab, then click 'Apply to All'", "correct": true, "comment": "'Apply to All' saves time by setting a consistent transition throughout the entire presentation." },
+      { "option": "Select all slides in Slide Sorter, then double-click the transition", "correct": false },
+      { "option": "Set the transition on the Slide Master", "correct": false },
+      { "option": "Use Ctrl+A to select all slides, then press the transition key", "correct": false }
+    ]},
+
+    { "topicTitle": "Presenting & Sharing", "question": "What is 'Presenter View' in PowerPoint?", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "Shows your notes and next slide privately while the audience sees only the slideshow", "correct": true, "comment": "Presenter View requires two monitors (or a projector). Audience sees the slideshow; you see your notes." },
+      { "option": "A mode that locks the presentation so the audience cannot advance slides", "correct": false },
+      { "option": "A view that shows the presentation as a web page", "correct": false },
+      { "option": "A recording mode that captures audio and video of your presentation", "correct": false }
+    ]},
+    { "topicTitle": "Presenting & Sharing", "question": "What keyboard shortcut advances to the next slide during a slideshow?", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "Press the Right Arrow key, Space bar, or Enter", "correct": true, "comment": "Multiple keys advance slides. The Left Arrow or Backspace goes back to the previous slide." },
+      { "option": "Press Ctrl+N to go to the next slide", "correct": false },
+      { "option": "Press Tab to cycle through slides", "correct": false },
+      { "option": "Click anywhere on the screen always advances the slide", "correct": false }
+    ]},
+    { "topicTitle": "Presenting & Sharing", "question": "To export a PowerPoint presentation as a PDF, go to:", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "File > Export > Create PDF/XPS (or File > Save As > PDF)", "correct": true, "comment": "Exporting as PDF preserves fonts and layout and is ideal for sharing a non-editable version." },
+      { "option": "Print the slides and scan them back as a PDF", "correct": false },
+      { "option": "Copy all slides and paste them into Adobe Acrobat", "correct": false },
+      { "option": "Rename the .pptx file to .pdf in File Explorer", "correct": false }
+    ]},
+    { "topicTitle": "Presenting & Sharing", "question": "What is the purpose of 'Speaker Notes' in PowerPoint?", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "To write reminders and talking points visible only to the presenter during the show", "correct": true, "comment": "Speaker Notes appear in Presenter View and in the notes panel below the slide in Normal view." },
+      { "option": "To add captions that the audience sees at the bottom of each slide", "correct": false },
+      { "option": "To store the presentation script for automatic text-to-speech reading", "correct": false },
+      { "option": "To record audio commentary that plays during the slideshow", "correct": false }
+    ]},
+    { "topicTitle": "Presenting & Sharing", "question": "What does pressing the 'B' key during a slideshow do?", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "Displays a black screen (blanks the screen) to pause attention on you", "correct": true, "comment": "B = black screen. W = white screen. Useful when you need the audience to focus on you, not the slides." },
+      { "option": "Goes back to the previous slide", "correct": false },
+      { "option": "Opens the annotation toolbar for drawing on the slide", "correct": false },
+      { "option": "Starts broadcasting the presentation over the internet", "correct": false }
+    ]},
+    { "topicTitle": "Presenting & Sharing", "question": "To share a PowerPoint presentation so colleagues can view but not edit it:", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "Export as a PDF or share via OneDrive with View Only permission", "correct": true, "comment": "PDF removes editability completely. OneDrive View permission prevents edits while enabling online viewing." },
+      { "option": "Convert the file to a .docx format before sharing", "correct": false },
+      { "option": "Rename the file to .ppsx so it opens directly in slideshow mode", "correct": false },
+      { "option": "Password-protect the file with a 4-digit PIN", "correct": false }
+    ]}
+  ]
+}

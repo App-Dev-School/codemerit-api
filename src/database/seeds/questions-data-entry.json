@@ -1,0 +1,375 @@
+{
+  "subjectSlug": "data-entry",
+  "questions": [
+
+    { "topicTitle": "Keyboard Skills & Touch Typing", "question": "What are the 'home row' keys for the left hand in touch typing?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "A, S, D, F", "correct": true, "comment": "Left hand home row: A (pinky), S (ring), D (middle), F (index). Right hand: J, K, L, ; (semi-colon)." },
+      { "option": "Q, W, E, R", "correct": false },
+      { "option": "Z, X, C, V", "correct": false },
+      { "option": "1, 2, 3, 4", "correct": false }
+    ]},
+    { "topicTitle": "Keyboard Skills & Touch Typing", "question": "What is the purpose of the small raised bumps on the F and J keys?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "To help typists locate the home row position without looking at the keyboard", "correct": true, "comment": "Tactile bumps guide your index fingers to the home row keys F and J — foundation of touch typing." },
+      { "option": "To indicate that these keys have a different function than others", "correct": false },
+      { "option": "To separate the number row from the letter rows", "correct": false },
+      { "option": "They are a manufacturing defect with no intended purpose", "correct": false }
+    ]},
+    { "topicTitle": "Keyboard Skills & Touch Typing", "question": "Which metric best measures typing performance?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "WPM with accuracy — words per minute at a high accuracy rate", "correct": true, "comment": "WPM alone is misleading — 80 WPM at 70% accuracy produces more errors than 40 WPM at 99%." },
+      { "option": "Words per minute (WPM) only — the faster the better", "correct": false },
+      { "option": "How hard you press each key", "correct": false },
+      { "option": "The number of keys pressed per session regardless of errors", "correct": false }
+    ]},
+    { "topicTitle": "Keyboard Skills & Touch Typing", "question": "What is 'touch typing'?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Typing without looking at the keyboard, using muscle memory", "correct": true, "comment": "Touch typists keep their eyes on the screen and source document — dramatically improving speed and accuracy." },
+      { "option": "Typing on a touchscreen device with two fingers", "correct": false },
+      { "option": "Typing very lightly to avoid damaging keyboard keys", "correct": false },
+      { "option": "Using a stylus instead of fingers to type on a tablet", "correct": false }
+    ]},
+    { "topicTitle": "Keyboard Skills & Touch Typing", "question": "What is the correct posture for typing at a computer?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Feet flat on the floor, back straight, wrists level with the keyboard", "correct": true, "comment": "Good ergonomic posture prevents RSI and fatigue — essential for sustained data entry work." },
+      { "option": "Leaning forward with wrists resting on the keyboard constantly", "correct": false },
+      { "option": "Sitting as high as possible to see the keyboard better", "correct": false },
+      { "option": "Crossing your legs to raise your typing position", "correct": false }
+    ]},
+    { "topicTitle": "Keyboard Skills & Touch Typing", "question": "Which finger is used to press the spacebar in standard touch typing technique?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Either thumb", "correct": true, "comment": "The spacebar is pressed with either thumb — the most common technique is to use the right thumb." },
+      { "option": "The right index finger", "correct": false },
+      { "option": "The left pinky finger", "correct": false },
+      { "option": "The middle finger of whichever hand is free", "correct": false }
+    ]},
+
+    { "topicTitle": "Data Entry Best Practices", "question": "In professional data entry, what always takes priority over speed?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Accuracy — errors in data cause downstream problems in business systems", "correct": true, "comment": "A fast but inaccurate typist creates more work than a slow accurate one. Fix accuracy first, then speed." },
+      { "option": "Speed — faster entry means more productivity", "correct": false },
+      { "option": "Formatting — consistent fonts matter most", "correct": false },
+      { "option": "Volume — the total number of records entered per day", "correct": false }
+    ]},
+    { "topicTitle": "Data Entry Best Practices", "question": "What is a 'source document' in data entry?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "The original paper or file containing the information to be entered", "correct": true, "comment": "Always keep the source document available while entering data — it is the authority you verify against." },
+      { "option": "The spreadsheet template into which data is being entered", "correct": false },
+      { "option": "A government-issued form that must be submitted with every record", "correct": false },
+      { "option": "A style guide listing approved data entry formats", "correct": false }
+    ]},
+    { "topicTitle": "Data Entry Best Practices", "question": "How should dates be entered consistently in a dataset?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Using one agreed format throughout — e.g. DD/MM/YYYY or YYYY-MM-DD", "correct": true, "comment": "Mixing date formats (some 01/07/25, some July 1, 2025) corrupts sorting and filtering operations." },
+      { "option": "In whatever format is most natural to each individual data entry operator", "correct": false },
+      { "option": "Always writing the month as a word (e.g. January) to avoid confusion", "correct": false },
+      { "option": "Dates do not need a consistent format — systems detect them automatically", "correct": false }
+    ]},
+    { "topicTitle": "Data Entry Best Practices", "question": "What is the best way to verify an entry after you have typed it?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Compare it directly against the source document before moving on", "correct": true, "comment": "Verify as you go — catching an error immediately is faster than correcting a batch of errors later." },
+      { "option": "Print the entire dataset and check it at the end of the day", "correct": false },
+      { "option": "Ask a colleague to re-enter the same data and compare", "correct": false },
+      { "option": "Trust that spell check will catch any mistakes automatically", "correct": false }
+    ]},
+    { "topicTitle": "Data Entry Best Practices", "question": "Why is consistent capitalisation important in a database (e.g. always 'Mr' not 'mr' or 'MR')?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Inconsistent casing creates duplicate records and breaks searches and reports", "correct": true, "comment": "'smith' and 'Smith' are treated as different values in searches, causing missed records and errors." },
+      { "option": "It makes the database look more professional when printed", "correct": false },
+      { "option": "Database systems require all-caps to store records correctly", "correct": false },
+      { "option": "It only matters for names, not for other types of data", "correct": false }
+    ]},
+    { "topicTitle": "Data Entry Best Practices", "question": "What should you do if you notice an error in someone else's data entry while reviewing a dataset?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Flag it to the supervisor and document it before correcting", "correct": true, "comment": "Changing data without authorisation can cause compliance issues. Always follow the correction process." },
+      { "option": "Silently fix it yourself without telling anyone", "correct": false },
+      { "option": "Delete the entire row to prevent incorrect data from spreading", "correct": false },
+      { "option": "Leave it — it is not your responsibility", "correct": false }
+    ]},
+
+    { "topicTitle": "Working with Forms & Templates", "question": "What is a document template?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "A pre-designed file with placeholders for repeated use without modifying the original", "correct": true, "comment": "Templates (.dotx in Word) ensure consistent formatting every time a new document is created from them." },
+      { "option": "A blank document that has been saved for the first time", "correct": false },
+      { "option": "A completed form that is stored as a reference for new entries", "correct": false },
+      { "option": "A PDF file that cannot be edited or modified", "correct": false }
+    ]},
+    { "topicTitle": "Working with Forms & Templates", "question": "What does pressing Tab do when filling in a form with multiple fields?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Moves the cursor to the next field", "correct": true, "comment": "Tab navigates between form fields. Shift+Tab goes back. This is faster than reaching for the mouse." },
+      { "option": "Submits the form to the server", "correct": false },
+      { "option": "Indents the text within the current field", "correct": false },
+      { "option": "Duplicates the content of the current field into the next one", "correct": false }
+    ]},
+    { "topicTitle": "Working with Forms & Templates", "question": "When saving a completed form, what naming convention is most professional?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Include the date, client name, and document type — e.g. 2025-07-01_Smith_Invoice", "correct": true, "comment": "Date-first names sort chronologically. Including client and type makes files easy to find without opening them." },
+      { "option": "Save it as 'Document1' — the system assigns unique numbers", "correct": false },
+      { "option": "Use only the current date — e.g. 01072025", "correct": false },
+      { "option": "Use your own name as the filename for accountability", "correct": false }
+    ]},
+    { "topicTitle": "Working with Forms & Templates", "question": "What is an asterisk (*) beside a form field label typically used to indicate?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "The field is required and must be filled in before submission", "correct": true, "comment": "* = mandatory field. Leaving it blank will usually prevent the form from submitting." },
+      { "option": "The field accepts multiple entries", "correct": false },
+      { "option": "The field content will be kept confidential", "correct": false },
+      { "option": "The field has a character limit", "correct": false }
+    ]},
+    { "topicTitle": "Working with Forms & Templates", "question": "Why should you use an existing template rather than creating a new document from scratch each time?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Templates save time and ensure every document has consistent formatting and branding", "correct": true, "comment": "Using templates prevents formatting drift and ensures all documents produced by a team look the same." },
+      { "option": "Templates are required by law for all business documents", "correct": false },
+      { "option": "Creating from scratch uses more printer ink", "correct": false },
+      { "option": "Templates automatically fill in all the required data", "correct": false }
+    ]},
+    { "topicTitle": "Working with Forms & Templates", "question": "When filling in a Word form protected with form fields, you can:", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Type only in designated field areas — the rest of the document is locked", "correct": true, "comment": "Protected forms restrict editing to the form fields only, preventing accidental layout changes." },
+      { "option": "Edit any part of the document freely", "correct": false },
+      { "option": "Only use the keyboard, not the mouse, to fill the form", "correct": false },
+      { "option": "Right-click to unlock all fields before completing them", "correct": false }
+    ]},
+
+    { "topicTitle": "Keyboard Shortcuts Mastery", "question": "What does Win + D do in Windows?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Shows the Desktop by minimising all open windows", "correct": true, "comment": "Win+D is a fast way to clear the screen and access desktop shortcuts or files." },
+      { "option": "Opens the Documents folder in File Explorer", "correct": false },
+      { "option": "Duplicates the current window", "correct": false },
+      { "option": "Opens the Default Programs settings", "correct": false }
+    ]},
+    { "topicTitle": "Keyboard Shortcuts Mastery", "question": "What is the keyboard shortcut to 'Redo' a previously undone action?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Ctrl + Y", "correct": true, "comment": "Ctrl+Z = Undo. Ctrl+Y = Redo (reverses an undo). Some apps also use Ctrl+Shift+Z." },
+      { "option": "Ctrl + Z", "correct": false },
+      { "option": "Ctrl + R", "correct": false },
+      { "option": "Ctrl + Shift + Z (all apps)", "correct": false }
+    ]},
+    { "topicTitle": "Keyboard Shortcuts Mastery", "question": "What does Ctrl + Home do in Microsoft Excel?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Moves the cursor to cell A1 (beginning of the spreadsheet)", "correct": true, "comment": "Ctrl+Home = A1. Ctrl+End = last used cell. Essential for quick navigation in large spreadsheets." },
+      { "option": "Saves and closes the workbook", "correct": false },
+      { "option": "Selects the entire first row of the spreadsheet", "correct": false },
+      { "option": "Opens a new workbook", "correct": false }
+    ]},
+    { "topicTitle": "Keyboard Shortcuts Mastery", "question": "What does Ctrl + F do in most Windows applications?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Opens a Find dialog to search for text within the document", "correct": true, "comment": "Ctrl+F (Find) works in Word, Excel, browsers, File Explorer, and most other apps." },
+      { "option": "Opens the File menu", "correct": false },
+      { "option": "Formats the selected text as bold", "correct": false },
+      { "option": "Creates a new folder in File Explorer", "correct": false }
+    ]},
+    { "topicTitle": "Keyboard Shortcuts Mastery", "question": "What does pressing Ctrl + A do?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Selects all content in the current document, spreadsheet, or folder", "correct": true, "comment": "Ctrl+A selects everything — all text in Word, all cells in Excel, all files in a folder." },
+      { "option": "Opens a new application", "correct": false },
+      { "option": "Adds a new row below the current one", "correct": false },
+      { "option": "Aligns the selected text to the left", "correct": false }
+    ]},
+    { "topicTitle": "Keyboard Shortcuts Mastery", "question": "What does Alt + F4 do in Windows?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Closes the currently active window or application", "correct": true, "comment": "Alt+F4 closes the active app. If no apps are open, it shows the Windows shutdown dialog." },
+      { "option": "Opens the function key settings in Windows", "correct": false },
+      { "option": "Takes a screenshot of the active window", "correct": false },
+      { "option": "Switches the monitor to full-screen mode", "correct": false }
+    ]},
+
+    { "topicTitle": "Copy-Paste & Data Transfer", "question": "What is 'Paste Special' used for in Microsoft Office?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Pasting only specific parts of copied content (e.g. values only, formatting only)", "correct": true, "comment": "Paste Special (Ctrl+Alt+V) is essential in Excel — paste values removes formulas, preventing errors." },
+      { "option": "Pasting encrypted content that requires a password", "correct": false },
+      { "option": "Pasting content into a locked or protected cell", "correct": false },
+      { "option": "Pasting content at a specific font size defined in the clipboard", "correct": false }
+    ]},
+    { "topicTitle": "Copy-Paste & Data Transfer", "question": "When copying text from a website into Word, the text often brings unwanted formatting. The best way to paste it cleanly is:", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Use 'Keep Text Only' (or Ctrl+Shift+V) to paste without the website's formatting", "correct": true, "comment": "'Keep Text Only' removes fonts, colours, and hyperlinks — giving you plain text you can format yourself." },
+      { "option": "Always paste using Ctrl+V — it removes formatting automatically", "correct": false },
+      { "option": "Copy the text into Notepad first, then copy again and paste into Word", "correct": false },
+      { "option": "Manually delete formatting by pressing Backspace after pasting", "correct": false }
+    ]},
+    { "topicTitle": "Copy-Paste & Data Transfer", "question": "When copying a formula in Excel that uses cell references, the references:", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Adjust automatically to reflect the new cell location (relative references)", "correct": true, "comment": "Relative references (e.g. A1) update when you copy the formula. Absolute references ($A$1) stay fixed." },
+      { "option": "Always stay fixed regardless of where you paste", "correct": false },
+      { "option": "Are deleted and must be retyped manually", "correct": false },
+      { "option": "Convert to the values at the time of copying", "correct": false }
+    ]},
+    { "topicTitle": "Copy-Paste & Data Transfer", "question": "What does Ctrl + H open in most Office applications?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Find & Replace — lets you replace one text string with another throughout the document", "correct": true, "comment": "Ctrl+H opens Find & Replace. In Excel, use it to correct consistent errors across many cells at once." },
+      { "option": "The document History panel", "correct": false },
+      { "option": "A hidden field view showing tracked changes", "correct": false },
+      { "option": "The hyperlink insertion dialog", "correct": false }
+    ]},
+    { "topicTitle": "Copy-Paste & Data Transfer", "question": "To paste only the calculated values (not formulas) from Excel cells, use Paste Special and choose:", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Values", "correct": true, "comment": "Paste Values converts formula results to static numbers. Useful before deleting the source data or sharing a file." },
+      { "option": "Formulas", "correct": false },
+      { "option": "Formats", "correct": false },
+      { "option": "All (same as regular Ctrl+V)", "correct": false }
+    ]},
+    { "topicTitle": "Copy-Paste & Data Transfer", "question": "You accidentally copied incorrect data and pasted it over 50 cells. What is the fastest fix?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Press Ctrl + Z immediately to undo the paste", "correct": true, "comment": "Ctrl+Z undoes the last action. Multiple presses undo further back. Always undo before changing anything else." },
+      { "option": "Manually retype all 50 cells with the correct data", "correct": false },
+      { "option": "Close the file without saving and reopen it", "correct": false },
+      { "option": "Use Find & Replace to search for the incorrect value", "correct": false }
+    ]},
+
+    { "topicTitle": "Spreadsheet Data Management", "question": "What does 'Freeze Panes' do in Excel?", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "Locks row(s) or column(s) so they stay visible when scrolling", "correct": true, "comment": "Freeze the top row to keep column headers visible as you scroll down through thousands of records." },
+      { "option": "Prevents any cells in the sheet from being edited", "correct": false },
+      { "option": "Saves the current scroll position for next time you open the file", "correct": false },
+      { "option": "Combines multiple rows into a single frozen summary row", "correct": false }
+    ]},
+    { "topicTitle": "Spreadsheet Data Management", "question": "What is the benefit of converting a data range into an Excel 'Table' (Ctrl+T)?", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "Tables auto-expand, include built-in filters, and extend formulas to new rows automatically", "correct": true, "comment": "Tables (Insert > Table) are the best practice for structured data — they make management much easier." },
+      { "option": "Tables prevent anyone from adding new rows or columns", "correct": false },
+      { "option": "Tables convert all formulas to static values automatically", "correct": false },
+      { "option": "Tables link the data to an external database", "correct": false }
+    ]},
+    { "topicTitle": "Spreadsheet Data Management", "question": "To quickly find the last row of data in a large Excel dataset, press:", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "Ctrl + End", "correct": true, "comment": "Ctrl+End jumps to the last used cell in the sheet. Ctrl+Down Arrow jumps to the last filled cell in a column." },
+      { "option": "Ctrl + Home", "correct": false },
+      { "option": "Ctrl + L", "correct": false },
+      { "option": "Ctrl + Shift + End", "correct": false }
+    ]},
+    { "topicTitle": "Spreadsheet Data Management", "question": "What does 'Split View' in Excel allow you to do?", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "View two different parts of a large spreadsheet simultaneously in the same window", "correct": true, "comment": "Split View (View > Split) divides the window so you can scroll sections independently." },
+      { "option": "Open the same spreadsheet in two separate Excel windows", "correct": false },
+      { "option": "Display two worksheets side by side from the same workbook", "correct": false },
+      { "option": "Separate the sheet into odd and even row views", "correct": false }
+    ]},
+    { "topicTitle": "Spreadsheet Data Management", "question": "When entering data into a large Excel range, pressing Enter after each entry moves the cursor:", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "Down to the next row in the same column", "correct": true, "comment": "Enter moves down. Tab moves right. For column-by-column entry, use Tab; for row-by-row, use Enter." },
+      { "option": "Right to the next cell in the same row", "correct": false },
+      { "option": "To the next empty cell in the spreadsheet in any direction", "correct": false },
+      { "option": "It saves the data and stays in the same cell", "correct": false }
+    ]},
+    { "topicTitle": "Spreadsheet Data Management", "question": "What does Ctrl + Shift + End do in Excel?", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "Extends the selection from the current cell to the last used cell in the sheet", "correct": true, "comment": "Ctrl+Shift+End selects a range from your current cell down to the last used cell — quick for selecting all data." },
+      { "option": "Deletes everything from the current cell to the end of the sheet", "correct": false },
+      { "option": "Moves the cursor to the last cell of the current row", "correct": false },
+      { "option": "Freezes everything below the current row", "correct": false }
+    ]},
+
+    { "topicTitle": "Data Accuracy & Validation", "question": "What does the Excel TRIM() function do?", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "Removes extra spaces from text, leaving only single spaces between words", "correct": true, "comment": "TRIM() fixes the most common data cleaning issue — extra spaces copied from web pages or other systems." },
+      { "option": "Shortens text to a specified number of characters", "correct": false },
+      { "option": "Removes all spaces from a text string entirely", "correct": false },
+      { "option": "Trims a number to the specified number of decimal places", "correct": false }
+    ]},
+    { "topicTitle": "Data Accuracy & Validation", "question": "Which Excel function converts text to all uppercase letters?", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "UPPER()", "correct": true, "comment": "UPPER() converts to capitals. LOWER() converts to lowercase. PROPER() capitalises the first letter of each word." },
+      { "option": "CAPS()", "correct": false },
+      { "option": "TEXT()", "correct": false },
+      { "option": "CONVERT()", "correct": false }
+    ]},
+    { "topicTitle": "Data Accuracy & Validation", "question": "How do you remove duplicate rows from an Excel dataset?", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "Data tab > Remove Duplicates, then select which columns to check", "correct": true, "comment": "Remove Duplicates (Data tab) identifies and deletes duplicate rows based on the columns you specify." },
+      { "option": "Sort the data and manually delete duplicate rows", "correct": false },
+      { "option": "Use Conditional Formatting to colour duplicates, then delete them", "correct": false },
+      { "option": "Apply a filter to hide duplicates without deleting them", "correct": false }
+    ]},
+    { "topicTitle": "Data Accuracy & Validation", "question": "What is the PROPER() function used for in Excel?", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "Capitalises the first letter of each word in a text string", "correct": true, "comment": "=PROPER('john smith') returns 'John Smith'. Useful for standardising inconsistently cased name fields." },
+      { "option": "Checks a cell for common spelling errors", "correct": false },
+      { "option": "Validates that text matches a predefined pattern", "correct": false },
+      { "option": "Converts text to proper sentence case (first letter only)", "correct": false }
+    ]},
+    { "topicTitle": "Data Accuracy & Validation", "question": "What is a 'double-entry check' in data entry?", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "Entering critical data twice and comparing both inputs to catch errors", "correct": true, "comment": "Double-entry is used for high-value or critical data (e.g. bank account numbers) where errors are costly." },
+      { "option": "Entering every record twice to ensure it is saved correctly", "correct": false },
+      { "option": "Filling in a second backup copy of every form", "correct": false },
+      { "option": "Using two different computers to enter the same data simultaneously", "correct": false }
+    ]},
+    { "topicTitle": "Data Accuracy & Validation", "question": "What does using Find & Replace (Ctrl+H) help you fix in a dataset?", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "A systematic error repeated throughout the file (e.g. wrong abbreviation or spelling)", "correct": true, "comment": "If 'UK' was entered as 'U.K.' everywhere, one Replace All fixes the entire column instantly." },
+      { "option": "Formula errors like #N/A and #VALUE!", "correct": false },
+      { "option": "Cells that contain numbers formatted as text", "correct": false },
+      { "option": "Missing entries in a required field", "correct": false }
+    ]},
+
+    { "topicTitle": "Time Management & Productivity", "question": "Which approach helps you handle multiple urgent tasks when everything seems equally important?", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "Prioritise by deadline and impact, then tackle the highest-priority task first", "correct": true, "comment": "When everything is 'urgent', sort by deadline (when it is due) and impact (what happens if it is late)." },
+      { "option": "Start the easiest task first to warm up for the harder ones", "correct": false },
+      { "option": "Work on all tasks simultaneously by switching between them every few minutes", "correct": false },
+      { "option": "Ask your manager to do the most difficult task for you", "correct": false }
+    ]},
+    { "topicTitle": "Time Management & Productivity", "question": "What is the 'Urgent vs Important' matrix used for?", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "Categorising tasks so you tackle high-impact work before reactive fire-fighting", "correct": true, "comment": "Important but not urgent tasks (planning, learning) are often neglected — the matrix ensures they are not." },
+      { "option": "Measuring how long urgent tasks take compared to important ones", "correct": false },
+      { "option": "Deciding which tasks to permanently delete from your to-do list", "correct": false },
+      { "option": "A performance appraisal tool used by managers only", "correct": false }
+    ]},
+    { "topicTitle": "Time Management & Productivity", "question": "If you realise you cannot meet a deadline, the professional action is to:", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "Inform the requester as early as possible and propose a revised timeline", "correct": true, "comment": "Early communication allows the requester to adjust plans. Saying nothing at the last moment causes more harm." },
+      { "option": "Stay silent and submit incomplete work on time", "correct": false },
+      { "option": "Submit the work late without telling anyone", "correct": false },
+      { "option": "Ask a colleague to submit on your behalf so the deadline is technically met", "correct": false }
+    ]},
+    { "topicTitle": "Time Management & Productivity", "question": "What is the best use of a digital calendar in a data entry role?", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "Block time for recurring tasks, set reminders for deadlines, and avoid double-booking", "correct": true, "comment": "A well-managed calendar prevents missed deadlines and helps you protect time for focused data entry work." },
+      { "option": "Record the exact time taken to complete every individual keystroke", "correct": false },
+      { "option": "Automatically generate daily reports of your productivity", "correct": false },
+      { "option": "Monitor other team members' work schedules", "correct": false }
+    ]},
+    { "topicTitle": "Time Management & Productivity", "question": "What is 'time blocking'?", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "Scheduling specific time slots for specific tasks to avoid task-switching", "correct": true, "comment": "Time blocking reduces context-switching overhead — ideal for focused data entry that requires concentration." },
+      { "option": "A security feature that blocks apps after a set number of hours", "correct": false },
+      { "option": "Blocking time in a colleague's calendar without their permission", "correct": false },
+      { "option": "A feature in Outlook that prevents meeting invites from being sent", "correct": false }
+    ]},
+    { "topicTitle": "Time Management & Productivity", "question": "A daily work checklist primarily helps you:", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "Track what needs to be done, ensure nothing is missed, and review progress", "correct": true, "comment": "Checklists externalise memory, freeing mental capacity for the actual work." },
+      { "option": "Automatically submit your completed tasks to your manager", "correct": false },
+      { "option": "Measure your typing speed at the start of each day", "correct": false },
+      { "option": "Generate an invoice for the hours you worked", "correct": false }
+    ]},
+
+    { "topicTitle": "Batch Operations & Excel Macros", "question": "What is Excel's 'Flash Fill' feature?", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "Automatically fills a column based on a pattern it detects from the first entry", "correct": true, "comment": "Flash Fill (Ctrl+E) detects patterns like combining first+last name or extracting a domain from an email." },
+      { "option": "Quickly fills all empty cells with the value from the cell above", "correct": false },
+      { "option": "Copies the entire column to a new worksheet in one step", "correct": false },
+      { "option": "A shortcut to apply the last used format to selected cells", "correct": false }
+    ]},
+    { "topicTitle": "Batch Operations & Excel Macros", "question": "What is a Macro in Microsoft Excel?", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "A recorded series of actions that can be replayed with a single button press", "correct": true, "comment": "Macros are recorded via Developer > Record Macro and save time on repetitive multi-step tasks." },
+      { "option": "A large spreadsheet formula that performs many calculations at once", "correct": false },
+      { "option": "A type of chart used to display large datasets", "correct": false },
+      { "option": "A keyboard shortcut for formatting an entire row", "correct": false }
+    ]},
+    { "topicTitle": "Batch Operations & Excel Macros", "question": "The keyboard shortcut to trigger Flash Fill in Excel is:", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "Ctrl + E", "correct": true, "comment": "Ctrl+E invokes Flash Fill. Alternatively, it activates automatically when Excel detects a pattern." },
+      { "option": "Ctrl + F", "correct": false },
+      { "option": "Ctrl + Shift + F", "correct": false },
+      { "option": "Alt + E", "correct": false }
+    ]},
+    { "topicTitle": "Batch Operations & Excel Macros", "question": "When recording a Macro, what should you do to ensure it runs correctly?", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "Plan and test every step before recording to avoid mistakes in the macro", "correct": true, "comment": "Every action during recording is captured — a wrong step creates a wrong macro. Plan first." },
+      { "option": "Type as fast as possible so the macro runs faster", "correct": false },
+      { "option": "Keep all data on one sheet so the macro never gets confused", "correct": false },
+      { "option": "Record while other applications are open to test real-world speed", "correct": false }
+    ]},
+    { "topicTitle": "Batch Operations & Excel Macros", "question": "Which Excel feature automatically fills a series (e.g. Jan, Feb, Mar) when you drag the fill handle?", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "AutoFill", "correct": true, "comment": "AutoFill recognises sequences: months, days, numbers, and dates. Drag the small square handle to extend the pattern." },
+      { "option": "AutoSum", "correct": false },
+      { "option": "Flash Fill", "correct": false },
+      { "option": "AutoFormat", "correct": false }
+    ]},
+    { "topicTitle": "Batch Operations & Excel Macros", "question": "What file format must you save an Excel workbook in to retain Macro functionality?", "level": 2, "timeAllowed": 75, "options": [
+      { "option": ".xlsm (Excel Macro-Enabled Workbook)", "correct": true, "comment": "Saving a macro file as .xlsx will strip the macros. Always save as .xlsm to preserve them." },
+      { "option": ".xlsx (standard Excel format)", "correct": false },
+      { "option": ".xls (legacy Excel format)", "correct": false },
+      { "option": ".csv (comma-separated values)", "correct": false }
+    ]},
+
+    { "topicTitle": "Document Management & Filing", "question": "What is a professional file naming convention for a document saved on 3 July 2025?", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "2025-07-03_ClientName_Invoice.docx (date-first, YYYY-MM-DD)", "correct": true, "comment": "YYYY-MM-DD sorts files chronologically in any file manager. Descriptive names make content clear at a glance." },
+      { "option": "Invoice_ClientName_3rd July 2025.docx", "correct": false },
+      { "option": "NewDocument(final)(v3)LATEST.docx", "correct": false },
+      { "option": "03-07-25 invoice.docx", "correct": false }
+    ]},
+    { "topicTitle": "Document Management & Filing", "question": "What is the purpose of having a logical folder hierarchy?", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "To find any file quickly without needing to use search every time", "correct": true, "comment": "A well-planned folder structure (Year > Department > Project) reduces time wasted searching for files." },
+      { "option": "To ensure Windows does not run out of storage space", "correct": false },
+      { "option": "To back up files automatically to the cloud", "correct": false },
+      { "option": "To prevent other users from accessing your files", "correct": false }
+    ]},
+    { "topicTitle": "Document Management & Filing", "question": "What does 'versioning' a document mean (e.g. Report_v1, Report_v2)?", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "Saving copies at key stages so you can go back to an earlier version if needed", "correct": true, "comment": "Versioning is critical for documents that are edited by multiple people over time." },
+      { "option": "Adding a version number only to the first draft of every document", "correct": false },
+      { "option": "Using a different file format for each version (v1=.doc, v2=.docx)", "correct": false },
+      { "option": "Sending each version to a different recipient for review", "correct": false }
+    ]},
+    { "topicTitle": "Document Management & Filing", "question": "What is document archiving?", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "Moving completed or old documents to a separate storage area for future reference", "correct": true, "comment": "Archiving keeps working folders clean without permanently deleting records that may be needed later." },
+      { "option": "Permanently deleting documents that are no longer in use", "correct": false },
+      { "option": "Converting documents to PDF before they are printed", "correct": false },
+      { "option": "Encrypting confidential documents before sending by email", "correct": false }
+    ]},
+    { "topicTitle": "Document Management & Filing", "question": "Why should spaces in file names sometimes be avoided when sharing files digitally?", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "Some systems or URLs encode spaces as %20 which can cause link or path errors", "correct": true, "comment": "Use hyphens (-) or underscores (_) instead of spaces for safe cross-platform file names." },
+      { "option": "File names with spaces are automatically flagged as spam by email servers", "correct": false },
+      { "option": "Windows does not allow spaces in file names", "correct": false },
+      { "option": "Files with spaces take more storage space than files without", "correct": false }
+    ]},
+    { "topicTitle": "Document Management & Filing", "question": "What does a document retention policy define?", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "How long different types of documents must be kept and when they can be destroyed", "correct": true, "comment": "Retention policies are often legally required — financial records, HR files, and contracts have minimum periods." },
+      { "option": "The maximum file size allowed for documents stored on the company network", "correct": false },
+      { "option": "The approved fonts and page sizes for all company documents", "correct": false },
+      { "option": "Who is allowed to create new folders in the shared drive", "correct": false }
+    ]}
+  ]
+}

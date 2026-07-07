@@ -7,7 +7,7 @@ import { AppCustomException } from 'src/common/exceptions/app-custom-exception.f
 import { QuestionTopic } from 'src/common/typeorm/entities/quesion-topic.entity';
 import { QuestionOption } from 'src/common/typeorm/entities/question-option.entity';
 import { Question } from 'src/common/typeorm/entities/question.entity';
-import { Topic } from 'src/common/typeorm/entities/topic.entity';
+import { shuffleArray } from 'src/common/utils/common-functions';
 import {
   generateSlug,
   generateUniqueSlug,
@@ -22,7 +22,6 @@ import { GetQuestionsByIdsDto } from '../dtos/get-questions-by-ids.dto';
 import { QuestionListResponseDto } from '../dtos/question-list-response.dto';
 import { UpdateQuestionDto } from '../dtos/update-question.dto';
 import { QuestionOptionService } from './question-option.service';
-import * as he from 'he';
 @Injectable()
 export class QuestionService {
   constructor(
@@ -878,7 +877,7 @@ export class QuestionService {
   }
 
   async getQuestionsFromQIds(
-    dto: GetQuestionsByIdsDto,
+    dto: GetQuestionsByIdsDto, randomOptions: boolean = true
   ): Promise<QuestionListResponseDto[]> {
     const { questionIds } = dto;
     if (!questionIds || questionIds.length === 0) {
@@ -892,9 +891,13 @@ export class QuestionService {
       where: { id: In(questionIds) },
     });
     // Fetch related options
-    const options = await this.dataSource.getRepository(QuestionOption).find({
+    let options = await this.dataSource.getRepository(QuestionOption).find({
       where: { questionId: In(questionIds) },
     });
+    if (randomOptions) {
+    //randomize the array order only if randomOptions is true
+    options = shuffleArray(options);
+    }
     // Fetch related topics via QuestionTopic
     const questionTopics = await this.dataSource
       .getRepository(QuestionTopic)

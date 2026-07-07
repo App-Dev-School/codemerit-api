@@ -1,0 +1,89 @@
+{
+  "subjectSlug": "ci-cd",
+  "topics": [
+    {
+      "title": "CI/CD Fundamentals",
+      "shortDesc": "Continuous integration/deployment",
+      "label": "Foundation",
+      "order": 1,
+      "weight": 1,
+      "description": "Learn the goals of CI/CD and how automated build, test, and deployment processes improve software delivery quality and speed.",
+      "goal": "Explain the purpose of CI/CD in modern engineering teams.",
+      "isPublished": true
+    },
+    {
+      "title": "Build Automation",
+      "shortDesc": "Automated builds",
+      "label": "Foundation",
+      "order": 2,
+      "weight": 1,
+      "description": "Understand build automation, dependency management, and how code is compiled, packaged, or containerised as part of a CI pipeline.",
+      "goal": "Design an automated build stage for a delivery pipeline.",
+      "isPublished": true
+    },
+    {
+      "title": "Automated Testing",
+      "shortDesc": "Test in pipelines",
+      "label": "Intermediate",
+      "order": 3,
+      "weight": 2,
+      "description": "Learn how unit, integration, and smoke tests fit into pipelines and why early feedback in CI is critical for quality.",
+      "goal": "Integrate automated tests into a CI/CD workflow.",
+      "isPublished": true
+    },
+    {
+      "title": "Deployment Strategies",
+      "shortDesc": "Blue-green, canary",
+      "label": "Intermediate",
+      "order": 4,
+      "weight": 2,
+      "description": "Explore deployment strategies such as blue-green, canary, and rolling updates to reduce risk during production releases.",
+      "goal": "Choose a safe release strategy for a deployment pipeline.",
+      "isPublished": true
+    },
+    {
+      "title": "Pipeline as Code",
+      "shortDesc": "Declarative pipelines",
+      "label": "Advanced",
+      "order": 5,
+      "weight": 3,
+      "description": "Learn how to define build and deployment pipelines as code, version them with your application, and make pipeline changes reviewable.",
+      "goal": "Author and maintain pipeline definitions in source control.",
+      "isPublished": true
+    },
+    {
+      "title": "Release Observability",
+      "shortDesc": "Monitor deployments",
+      "label": "Advanced",
+      "order": 6,
+      "weight": 3,
+      "description": "Understand the importance of release observability, release gating, rollback triggers, and validating deployments in production.",
+      "goal": "Monitor and validate deployment outcomes for safer releases.",
+      "isPublished": true
+    }
+  ],
+  "subjectTracks": [
+    {
+      "title": "CI/CD Foundations",
+      "description": "Build a practical understanding of CI/CD concepts and automated build workflows.",
+      "sortOrder": 1,
+      "isPublished": true,
+      "topicTitles": [
+        "CI/CD Fundamentals",
+        "Build Automation",
+        "Automated Testing"
+      ]
+    },
+    {
+      "title": "Delivery Pipelines",
+      "description": "Design and operate reliable deployment pipelines with safe release practices and observability.",
+      "sortOrder": 2,
+      "isPublished": true,
+      "topicTitles": [
+        "Deployment Strategies",
+        "Pipeline as Code",
+        "Release Observability"
+      ]
+    }
+  ]
+}

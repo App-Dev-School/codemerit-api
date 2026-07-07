@@ -1,0 +1,133 @@
+{
+  "subjectSlug": "internet-digital",
+  "topics": [
+    {
+      "title": "Web Browsers & Browsing",
+      "shortDesc": "Chrome, tabs, bookmarks",
+      "label": "Foundation",
+      "order": 1,
+      "weight": 1,
+      "description": "Learn to navigate the internet using a web browser. Covers the browser interface (address bar, tabs, navigation buttons), opening and managing multiple tabs, bookmarking favourite sites, clearing history and cache, downloading files, and setting a homepage.",
+      "goal": "Use a web browser confidently to navigate websites, manage tabs, and download files.",
+      "isPublished": true
+    },
+    {
+      "title": "Search Engines & Research",
+      "shortDesc": "Google search, reliable sources",
+      "label": "Foundation",
+      "order": 2,
+      "weight": 1,
+      "description": "Use search engines effectively to find reliable information. Covers Google search techniques (keywords, phrases, filters), evaluating whether a source is trustworthy, understanding the difference between search results and advertisements, and using Google Images and Maps.",
+      "goal": "Search the internet effectively and critically evaluate the reliability of online information.",
+      "isPublished": true
+    },
+    {
+      "title": "Email Fundamentals",
+      "shortDesc": "Gmail/Outlook, compose, CC, attachments",
+      "label": "Foundation",
+      "order": 3,
+      "weight": 1,
+      "description": "Master professional email communication. Covers creating an email account (Gmail/Outlook), composing and replying to emails, using CC and BCC correctly, attaching files and images, managing inbox folders, spam filters, and basic email etiquette for a professional setting.",
+      "goal": "Compose, send, receive, and organise emails professionally using Gmail or Outlook.",
+      "isPublished": true
+    },
+    {
+      "title": "Cloud Storage & File Sharing",
+      "shortDesc": "Google Drive, OneDrive, share links",
+      "label": "Foundation",
+      "order": 4,
+      "weight": 1,
+      "description": "Use cloud storage services to save, access, and share files from anywhere. Covers Google Drive and OneDrive — uploading files, creating folders, sharing with view/edit permissions, generating share links, and syncing files between your computer and the cloud.",
+      "goal": "Upload, organise, and share files using cloud storage services like Google Drive or OneDrive.",
+      "isPublished": true
+    },
+    {
+      "title": "Video Conferencing",
+      "shortDesc": "Zoom, Teams, screen sharing",
+      "label": "Foundation",
+      "order": 5,
+      "weight": 1,
+      "description": "Participate in and host online meetings professionally. Covers joining and creating meetings in Zoom and Microsoft Teams, managing audio and video settings, using the chat panel, screen sharing, muting/unmuting, and meeting etiquette for professional environments.",
+      "goal": "Join and host video calls on Zoom and Microsoft Teams and use key meeting features professionally.",
+      "isPublished": true
+    },
+    {
+      "title": "Online Communication Tools",
+      "shortDesc": "WhatsApp, Slack, messaging etiquette",
+      "label": "Foundation",
+      "order": 6,
+      "weight": 1,
+      "description": "Communicate effectively using digital messaging tools. Covers WhatsApp Web for personal and informal business use, Slack basics for team communication (channels, direct messages, mentions), professional messaging etiquette, and understanding the right tool for the right type of communication.",
+      "goal": "Use messaging and collaboration tools appropriately and professionally in a workplace context.",
+      "isPublished": true
+    },
+    {
+      "title": "Digital Safety & Privacy",
+      "shortDesc": "Passwords, 2FA, phishing, privacy",
+      "label": "Intermediate",
+      "order": 7,
+      "weight": 2,
+      "description": "Stay safe in the digital world. Covers creating and managing strong passwords, setting up two-factor authentication (2FA), recognising phishing emails and scam websites, understanding data privacy settings on social media and apps, and protecting personal information online.",
+      "goal": "Identify digital threats, protect personal accounts with strong passwords and 2FA, and avoid common online scams.",
+      "isPublished": true
+    },
+    {
+      "title": "Social Media & Professional Networking",
+      "shortDesc": "LinkedIn, professional presence",
+      "label": "Intermediate",
+      "order": 8,
+      "weight": 2,
+      "description": "Build a professional online presence. Covers setting up and optimising a LinkedIn profile, understanding the difference between personal and professional social media use, connecting with colleagues and peers, and the basics of professional digital communication and etiquette.",
+      "goal": "Create a professional LinkedIn profile and understand appropriate professional online behaviour.",
+      "isPublished": true
+    },
+    {
+      "title": "Online Forms & Digital Documents",
+      "shortDesc": "e-forms, e-signatures, PDFs",
+      "label": "Intermediate",
+      "order": 9,
+      "weight": 2,
+      "description": "Handle digital documents and forms professionally. Covers filling out online government and workplace forms, signing documents electronically, working with PDF files (view, annotate, fill forms), converting between file formats (Word to PDF), and submitting documents through online portals.",
+      "goal": "Complete online forms, handle PDF documents, and submit digital documents through online systems.",
+      "isPublished": true
+    },
+    {
+      "title": "Digital Productivity Tools",
+      "shortDesc": "Google Workspace, calendar, notes",
+      "label": "Intermediate",
+      "order": 10,
+      "weight": 2,
+      "description": "Use digital tools to stay organised and productive. Covers Google Calendar and Outlook Calendar for scheduling, Google Keep and OneNote for note-taking, task management with Google Tasks or Microsoft To-Do, and an introduction to Google Workspace and Microsoft 365 online apps for collaborative working.",
+      "goal": "Use digital calendar, notes, and task tools to manage time and stay organised at work.",
+      "isPublished": true
+    }
+  ],
+  "subjectTracks": [
+    {
+      "title": "Internet Essentials",
+      "description": "Get online and stay connected — browse the web, use search engines effectively, manage email, use cloud storage, and communicate via video and messaging tools.",
+      "sortOrder": 1,
+      "isPublished": true,
+      "topicTitles": [
+        "Web Browsers & Browsing",
+        "Search Engines & Research",
+        "Email Fundamentals",
+        "Cloud Storage & File Sharing",
+        "Video Conferencing",
+        "Online Communication Tools"
+      ]
+    },
+    {
+      "title": "Digital Safety & Productivity",
+      "description": "Stay safe online and work productively in the digital world — privacy, security, professional networking, digital documents, and productivity tools.",
+      "sortOrder": 2,
+      "isPublished": true,
+      "topicTitles": [
+        "Digital Safety & Privacy",
+        "Social Media & Professional Networking",
+        "Online Forms & Digital Documents",
+        "Digital Productivity Tools"
+      ]
+    }
+  ]
+}

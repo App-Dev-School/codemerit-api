@@ -1,0 +1,100 @@
+{
+  "subjectSlug": "kubernetes",
+  "topics": [
+    {
+      "title": "Kubernetes Architecture",
+      "shortDesc": "Control plane and nodes",
+      "label": "Foundation",
+      "order": 1,
+      "weight": 1,
+      "description": "Learn the key Kubernetes components: control plane, nodes, pods, and how they work together to run containerised applications.",
+      "goal": "Describe the architecture of a Kubernetes cluster.",
+      "isPublished": true
+    },
+    {
+      "title": "Pods, Deployments & ReplicaSets",
+      "shortDesc": "Workloads and scaling",
+      "label": "Foundation",
+      "order": 2,
+      "weight": 1,
+      "description": "Understand Kubernetes workload objects such as Pods, Deployments, and ReplicaSets, and how they enable scaling and self-healing.",
+      "goal": "Create and manage basic Kubernetes workloads.",
+      "isPublished": true
+    },
+    {
+      "title": "Services & Networking",
+      "shortDesc": "Service discovery",
+      "label": "Intermediate",
+      "order": 3,
+      "weight": 2,
+      "description": "Learn how Kubernetes exposes applications using Services, DNS, and Ingress resources, including cluster networking and load balancing.",
+      "goal": "Connect Kubernetes workloads to users and other services securely.",
+      "isPublished": true
+    },
+    {
+      "title": "ConfigMaps & Secrets",
+      "shortDesc": "Configuration management",
+      "label": "Intermediate",
+      "order": 4,
+      "weight": 2,
+      "description": "Manage configuration and sensitive data in Kubernetes using ConfigMaps and Secrets, and understand best practices for environment-specific settings.",
+      "goal": "Store and inject config and secrets into Kubernetes workloads safely.",
+      "isPublished": true
+    },
+    {
+      "title": "Storage & Volumes",
+      "shortDesc": "Persistent storage",
+      "label": "Intermediate",
+      "order": 5,
+      "weight": 2,
+      "description": "Explore Kubernetes storage options, including persistent volumes, persistent volume claims, and storage classes.",
+      "goal": "Use persistent storage in Kubernetes applications.",
+      "isPublished": true
+    },
+    {
+      "title": "Scaling, Rollouts & Updates",
+      "shortDesc": "Manage releases",
+      "label": "Advanced",
+      "order": 6,
+      "weight": 3,
+      "description": "Learn scaling and rollout techniques such as rolling updates, rollbacks, and horizontal pod autoscaling for resilient deployments.",
+      "goal": "Operate Kubernetes workloads through updates and scaling events.",
+      "isPublished": true
+    },
+    {
+      "title": "Observability & Troubleshooting",
+      "shortDesc": "Monitor and debug",
+      "label": "Advanced",
+      "order": 7,
+      "weight": 3,
+      "description": "Understand monitoring and logging practices for Kubernetes, including health checks, pod status, and troubleshooting common cluster issues.",
+      "goal": "Observe and troubleshoot Kubernetes applications in production.",
+      "isPublished": true
+    }
+  ],
+  "subjectTracks": [
+    {
+      "title": "Kubernetes Basics",
+      "description": "Learn Kubernetes core objects and how to deploy simple containerised apps.",
+      "sortOrder": 1,
+      "isPublished": true,
+      "topicTitles": [
+        "Kubernetes Architecture",
+        "Pods, Deployments & ReplicaSets",
+        "Services & Networking"
+      ]
+    },
+    {
+      "title": "Kubernetes Operations",
+      "description": "Operate Kubernetes in production with config management, storage, scaling, and observability.",
+      "sortOrder": 2,
+      "isPublished": true,
+      "topicTitles": [
+        "ConfigMaps & Secrets",
+        "Storage & Volumes",
+        "Scaling, Rollouts & Updates",
+        "Observability & Troubleshooting"
+      ]
+    }
+  ]
+}
