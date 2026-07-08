@@ -3,16 +3,19 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DifficultyLevelEnum } from 'src/common/enum/difficulty-lavel.enum';
 import { QuestionStatusEnum } from 'src/common/enum/question-status.enum';
 import { QuestionTypeEnum } from 'src/common/enum/question-type.enum';
+import { UserLessonTrackerStatusEnum } from 'src/common/enum/user-lesson-tracker-status.enum';
 import { AssessmentSession } from 'src/common/typeorm/entities/assessment-session.entity';
+import { Certificate } from 'src/common/typeorm/entities/certificate.entity';
 import { JobRoleSubject } from 'src/common/typeorm/entities/job-role-subject.entity';
 import { QuestionAttempt } from 'src/common/typeorm/entities/question-attempt.entity';
 import { Subject } from 'src/common/typeorm/entities/subject.entity';
 import { SubjectTrack } from 'src/common/typeorm/entities/subject-track.entity';
 import { UserSubject } from 'src/common/typeorm/entities/user-subject.entity';
 import { generateScore } from 'src/common/utils/common-functions';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, In, Repository } from 'typeorm';
 import { MeritService } from './merit.service';
 import { TopicAnalysisService } from './topic-analysis.service';
+import { SubjectTrackAnalysisService } from './subject-track-analysis.service';
 
 @Injectable()
 export class SubjectStatsService {
@@ -29,6 +32,7 @@ export class SubjectStatsService {
     private readonly dataSource: DataSource,
     private readonly topicAnalyzer: TopicAnalysisService,
     private readonly meritService: MeritService,
+    private readonly subjectTrackAnalyzer: SubjectTrackAnalysisService,
   ) {}
 
   // ─── Subject Track Counts ─────────────────────────────────────────────────────
@@ -154,15 +158,32 @@ export class SubjectStatsService {
 
     const subjectId = subject.id;
 
-    const [raw, syllabus, subjectMerits, popularTopicsMap, ratings] = await Promise.all([
+    const [raw, syllabus, subjectMerits, popularTopicsMap, ratings, lessons, relatedJobRoles] = await Promise.all([
       this.getSubjectStats(subjectId, userId),
       this.topicAnalyzer.getTopicStatsBySubject(subjectId, userId),
       this.meritService.getSubjectMeritsWithRanks([subjectId], userId),
       this.meritService.getPopularTopicsBySubject([subjectId]),
       userId ? this.getSubjectRatings(subjectId, userId) : Promise.resolve([]),
+      this.getSubjectLessons(subjectId, userId),
+      this.getRelatedJobRoles(subjectId),
     ]);
 
     if (!raw) return null;
+
+    // Reuse the per-topic stats already computed for `syllabus` — avoids a second
+    // grouped join over question_topic/question for the same topic set.
+    const topicStatsMap = new Map<number, any>(syllabus.map((t: any) => [t.id, t]));
+    const subjectTracks = await this.subjectTrackAnalyzer.getSubjectTracksBySubject(
+      subjectId,
+      topicStatsMap,
+      userId,
+    );
+    const subjectTrackMap = new Map<number, any>(subjectTracks.map((st: any) => [st.id, st]));
+    const certificationTracks = await this.getCertificationTracksForSubject(
+      [...subjectTrackMap.keys()],
+      subjectTrackMap,
+      userId,
+    );
 
     const attempted = +raw.attempted || 0;
     const correct = +raw.correct || 0;
@@ -202,10 +223,190 @@ export class SubjectStatsService {
       score,
       userRank: subjectMerits.userRanks.get(subjectId) ?? null,
       syllabus,
+      subjectTracks,
+      certificationTracks,
+      lessons,
+      relatedJobRoles,
       meritList: subjectMerits.meritLists.get(subjectId) ?? [],
       popularTopics: popularTopicsMap.get(subjectId) ?? [],
       subjectRatings: ratings,
     };
+  }
+
+  // ─── Certification Tracks (via SubjectTrack -> CertificationTrackSubjectTrack) ─
+
+  private async getCertificationTracksForSubject(
+    subjectTrackIds: number[],
+    subjectTrackMap: Map<number, any>,
+    userId?: number,
+  ) {
+    if (!subjectTrackIds.length) return [];
+
+    const rows = await this.dataSource
+      .createQueryBuilder()
+      .select('ct.id', 'ctId')
+      .addSelect('ct.title', 'ctTitle')
+      .addSelect('ct.description', 'ctDesc')
+      .addSelect('ct.sortOrder', 'ctSortOrder')
+      .addSelect('jr.id', 'jrId')
+      .addSelect('jr.title', 'jrTitle')
+      .addSelect('jr.slug', 'jrSlug')
+      .addSelect('jr.image', 'jrImage')
+      .addSelect('jr.color', 'jrColor')
+      .addSelect('ctst.subjectTrackId', 'stId')
+      .from('certification_track_subject_track', 'ctst')
+      .innerJoin('certification_track', 'ct', 'ct.id = ctst.certificationTrackId AND ct.isPublished = 1')
+      .innerJoin('job_role', 'jr', 'jr.id = ct.jobRoleId AND jr.isPublished = 1')
+      .where('ctst.subjectTrackId IN (:...subjectTrackIds)', { subjectTrackIds })
+      .orderBy('ct.sortOrder', 'ASC')
+      .getRawMany();
+
+    if (!rows.length) return [];
+
+    const ctIds = [...new Set(rows.map((r) => +r.ctId))];
+
+    const [totalRows, myCertificates] = await Promise.all([
+      this.dataSource
+        .createQueryBuilder()
+        .select('ctst.certificationTrackId', 'ctId')
+        .addSelect('COUNT(DISTINCT ctst.subjectTrackId)', 'total')
+        .from('certification_track_subject_track', 'ctst')
+        .innerJoin('subject_track', 'st', 'st.id = ctst.subjectTrackId AND st.isPublished = 1')
+        .where('ctst.certificationTrackId IN (:...ctIds)', { ctIds })
+        .groupBy('ctst.certificationTrackId')
+        .getRawMany(),
+      userId
+        ? this.dataSource
+            .getRepository(Certificate)
+            .find({ where: { userId, certificationTrackId: In(ctIds) } })
+        : Promise.resolve([]),
+    ]);
+
+    const totalMap = new Map<number, number>(totalRows.map((r) => [+r.ctId, +r.total]));
+    const certMap = new Map<number, Certificate>(myCertificates.map((c) => [c.certificationTrackId, c]));
+
+    type CtEntry = { meta: any; stIds: number[] };
+    const ctIndex = new Map<number, CtEntry>();
+    for (const row of rows) {
+      const ctId = +row.ctId;
+      if (!ctIndex.has(ctId)) {
+        ctIndex.set(ctId, {
+          meta: {
+            id: ctId,
+            title: row.ctTitle,
+            description: row.ctDesc,
+            sortOrder: +row.ctSortOrder,
+            jobRole: {
+              id: +row.jrId, title: row.jrTitle, slug: row.jrSlug,
+              image: row.jrImage, color: row.jrColor,
+            },
+          },
+          stIds: [],
+        });
+      }
+      ctIndex.get(ctId)!.stIds.push(+row.stId);
+    }
+
+    return [...ctIndex.values()]
+      .sort((a, b) => a.meta.sortOrder - b.meta.sortOrder)
+      .map(({ meta, stIds }) => {
+        const subjectTracks = stIds
+          .map((id) => subjectTrackMap.get(id))
+          .filter(Boolean)
+          .map((st: any) => ({
+            id: st.id, title: st.title, slug: st.slug, totalTopics: st.totalTopics,
+            progressPercent: st.progressPercent, score: st.score, isCompleted: st.isCompleted,
+          }));
+
+        const card: any = {
+          ...meta,
+          totalSubjectTracks: totalMap.get(meta.id) ?? subjectTracks.length,
+          subjectTracks,
+        };
+
+        if (userId) {
+          const cert = certMap.get(meta.id);
+          card.myCertificate = cert
+            ? {
+                certificateNumber: cert.certificateNumber, status: cert.status,
+                issuedAt: cert.issuedAt, pdfUrl: cert.pdfUrl,
+              }
+            : null;
+        }
+
+        return card;
+      });
+  }
+
+  // ─── Lessons ────────────────────────────────────────────────────────────────
+
+  private async getSubjectLessons(subjectId: number, userId?: number) {
+    const qb = this.dataSource
+      .createQueryBuilder()
+      .select('l.id', 'id')
+      .addSelect('l.title', 'title')
+      .addSelect('l.slug', 'slug')
+      .addSelect('l.level', 'level')
+      .addSelect('l.topicId', 'topicId')
+      .addSelect('t.title', 'topicTitle')
+      .addSelect('t.slug', 'topicSlug')
+      .addSelect('COUNT(DISTINCT ls.id)', 'numSections')
+      .from('lesson', 'l')
+      .leftJoin('topic', 't', 't.id = l.topicId')
+      .leftJoin('lesson_section', 'ls', 'ls.lessonId = l.id')
+      .where('l.subjectId = :subjectId', { subjectId })
+      .groupBy('l.id')
+      .orderBy('t.order', 'ASC')
+      .addOrderBy('l.id', 'ASC');
+
+    if (userId) {
+      qb.leftJoin('user_lesson_tracker', 'ult', 'ult.lessonId = l.id AND ult.userId = :userId', { userId })
+        .addSelect('ult.status', 'status')
+        .addSelect('ult.views', 'views');
+    }
+
+    const rows = await qb.getRawMany();
+
+    const list = rows.map((r) => ({
+      id: +r.id,
+      title: r.title,
+      slug: r.slug,
+      level: +r.level,
+      topicId: r.topicId ? +r.topicId : null,
+      topicTitle: r.topicTitle ?? null,
+      topicSlug: r.topicSlug ?? null,
+      numSections: +r.numSections || 0,
+      status: userId ? (r.status ?? UserLessonTrackerStatusEnum.Pending) : null,
+      views: userId ? +r.views || 0 : 0,
+    }));
+
+    const completed = userId
+      ? list.filter((l) => l.status === UserLessonTrackerStatusEnum.Completed).length
+      : 0;
+
+    return { total: list.length, completed, list };
+  }
+
+  // ─── Related Job Roles ────────────────────────────────────────────────────────
+
+  private async getRelatedJobRoles(subjectId: number) {
+    const rows = await this.dataSource
+      .createQueryBuilder()
+      .select('jr.id', 'id')
+      .addSelect('jr.title', 'title')
+      .addSelect('jr.slug', 'slug')
+      .addSelect('jr.image', 'image')
+      .addSelect('jr.color', 'color')
+      .addSelect('jrs.tag', 'tag')
+      .from('job_role_subject', 'jrs')
+      .innerJoin('job_role', 'jr', 'jr.id = jrs.jobRoleId AND jr.isPublished = 1')
+      .where('jrs.subjectId = :subjectId', { subjectId })
+      .orderBy('jrs.sortOrder', 'ASC')
+      .getRawMany();
+
+    return rows.map((r) => ({
+      id: +r.id, title: r.title, slug: r.slug, image: r.image, color: r.color, tag: r.tag,
+    }));
   }
 
   // ─── Assessment Ratings ───────────────────────────────────────────────────────

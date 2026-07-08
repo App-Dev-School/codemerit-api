@@ -19,6 +19,7 @@ import { CertificationTrack } from 'src/common/typeorm/entities/certification-tr
 import { MeritService } from './providers/merit.service';
 import { SubjectStatsService } from './providers/subject-stats.service';
 import { ProgramService } from './providers/program.service';
+import { SubjectTrackAnalysisService } from './providers/subject-track-analysis.service';
 
 @Module({
   imports: [
@@ -31,11 +32,11 @@ import { ProgramService } from './providers/program.service';
   controllers: [MasterController],
   providers: [
     MasterService, SubjectAnalysisService, TopicAnalysisService, RouteService,
-    MeritService, SubjectStatsService, ProgramService,
+    MeritService, SubjectStatsService, ProgramService, SubjectTrackAnalysisService,
   ],
   exports: [
     MasterService, SubjectAnalysisService, TopicAnalysisService, RouteService,
-    MeritService, SubjectStatsService, ProgramService,
+    MeritService, SubjectStatsService, ProgramService, SubjectTrackAnalysisService,
   ],
 })
 export class MasterModule {}

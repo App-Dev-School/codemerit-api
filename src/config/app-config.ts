@@ -6,7 +6,7 @@ export interface IAppConfig {
 
 export const appConfig = registerAs('app', (): IAppConfig => {
   const config: IAppConfig = {
-    port: parseInt(process.env.PORT) || 3800,
+    port: parseInt(process.env.PORT) || 3000,
   };
   return config;
 });

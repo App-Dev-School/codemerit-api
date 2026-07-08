@@ -352,6 +352,7 @@ export class QuizService {
         }
 
         //Send a temp mail
+        console.log('QuizBuilder sending email');
         try {
         this.mailService.sendMail('javacheartofmine@gmail.com', "Quiz Attempted from CodeMerit", "Quiz Attempted by userId: "+submitQuizDto?.userId+" with score: "+submitQuizDto?.score);
       } catch (error) {
