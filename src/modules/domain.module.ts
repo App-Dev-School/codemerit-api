@@ -13,6 +13,7 @@ import { InterviewModule } from './interview/interview.module';
 import { LessonModule } from './lesson/lesson.module';
 import { SubjectTrackModule } from './subject-track/subject-track.module';
 import { CertificationTrackModule } from './certification-track/certification-track.module';
+import { ActivityModule } from './activity/activity.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { CertificationTrackModule } from './certification-track/certification-tr
     UserPermissionModule,
     SkillRatingModule,
     NotificationModule,
+    ActivityModule,
     InterviewModule,
     LessonModule,
     SubjectTrackModule,
