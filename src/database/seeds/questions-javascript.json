@@ -1,0 +1,5391 @@
+{
+  "subjectSlug": "javascript",
+  "questions": [
+    {
+      "slug": "where-does-javascript-run",
+      "topicTitle": "Introduction to JavaScript",
+      "question": "Which environment can JavaScript run in?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "In Web Browsers",
+          "correct": false
+        },
+        {
+          "option": "On Server",
+          "correct": false
+        },
+        {
+          "option": "Both browsers and servers",
+          "correct": true
+        },
+        {
+          "option": "Only on mobile devices",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "what-is-javascript-primarily-used-for-in",
+      "topicTitle": "Introduction to JavaScript",
+      "question": "What is JavaScript primarily used for in web development?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Styling web pages",
+          "correct": false
+        },
+        {
+          "option": "Structuring web content",
+          "correct": false
+        },
+        {
+          "option": "Adding interactivity and dynamic behavior",
+          "correct": true
+        },
+        {
+          "option": "Managing databases",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-technology-allows-javascript-to-be",
+      "topicTitle": "Introduction to JavaScript",
+      "question": "Which technology allows JavaScript to be executed outside of the browser?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "React",
+          "correct": false
+        },
+        {
+          "option": "Node.js",
+          "correct": true
+        },
+        {
+          "option": "Bootstrap",
+          "correct": false
+        },
+        {
+          "option": "Angular",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "what-type-of-programming-language-is-jav",
+      "topicTitle": "Introduction to JavaScript",
+      "question": "What type of programming language is JavaScript?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Compiled, statically-typed language",
+          "correct": false
+        },
+        {
+          "option": "Interpreted, dynamically-typed language",
+          "correct": true
+        },
+        {
+          "option": "Assembly language",
+          "correct": false
+        },
+        {
+          "option": "Query language",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-of-the-following-statements-is-tru",
+      "topicTitle": "Introduction to JavaScript",
+      "question": "Which of the following statements is TRUE about JavaScript?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "It can directly interact with the file system in the browser.",
+          "correct": false
+        },
+        {
+          "option": "It was created to style web pages.",
+          "correct": false
+        },
+        {
+          "option": "It is executed in the browser’s rendering engine.",
+          "correct": false
+        },
+        {
+          "option": "It allows you to create dynamic and interactive web content.",
+          "correct": true
+        }
+      ]
+    },
+    {
+      "slug": "who-developed-javascript-and-in-what-yea",
+      "topicTitle": "Introduction to JavaScript",
+      "question": "Who developed JavaScript and in what year?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Brendan Eich in 1995",
+          "correct": true
+        },
+        {
+          "option": "Tim Berners-Lee in 1991",
+          "correct": false
+        },
+        {
+          "option": "Bjarne Stroustrup in 1990",
+          "correct": false
+        },
+        {
+          "option": "Mark Zuckerberg in 2004",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-of-the-following-is-a-core-feature",
+      "topicTitle": "Introduction to JavaScript",
+      "question": "Which of the following is a core feature of JavaScript in the browser?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Direct database access",
+          "correct": false
+        },
+        {
+          "option": "Compiling code at runtime",
+          "correct": false
+        },
+        {
+          "option": "Manipulating the DOM",
+          "correct": true
+        },
+        {
+          "option": "Accessing OS-level APIs",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-engine-is-used-by-google-chrome-to",
+      "topicTitle": "Introduction to JavaScript",
+      "question": "Which engine is used by Google Chrome to run JavaScript?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "V8",
+          "correct": true
+        },
+        {
+          "option": "Chakra",
+          "correct": false
+        },
+        {
+          "option": "SpiderMonkey",
+          "correct": false
+        },
+        {
+          "option": "Rhino",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "javascript-can-only-be-used-for-front-en",
+      "topicTitle": "Introduction to JavaScript",
+      "question": "Where can JavaScript code be executed?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Only in web browsers",
+          "correct": false
+        },
+        {
+          "option": "Only on the server using Node.js",
+          "correct": false
+        },
+        {
+          "option": "In both browsers and on the server via Node.js",
+          "correct": true,
+          "comment": "JavaScript started as a browser-only language. Node.js (2009) brought it to the server, making it the only mainstream language that runs natively on both frontend and backend."
+        },
+        {
+          "option": "Only inside HTML files",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "what-makes-javascript-asynchronous-and-n",
+      "topicTitle": "Introduction to JavaScript",
+      "question": "What makes JavaScript asynchronous and non-blocking in the browser?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Synchronous loops",
+          "correct": false
+        },
+        {
+          "option": "Multi-threading",
+          "correct": false
+        },
+        {
+          "option": "Event loop and callback queue",
+          "correct": true
+        },
+        {
+          "option": "Java Virtual Machine",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-of-the-following-is-the-most-recom",
+      "topicTitle": "Introduction to JavaScript",
+      "question": "Which of the following is the most recommended code editor for JavaScript beginners?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Notepad",
+          "correct": false
+        },
+        {
+          "option": "VS Code",
+          "correct": true
+        },
+        {
+          "option": "Microsoft Word",
+          "correct": false
+        },
+        {
+          "option": "Atom (Deprecated)",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "what-is-the-purpose-of-installing-nodej",
+      "topicTitle": "Introduction to JavaScript",
+      "question": "What is the purpose of installing Node.js in a JavaScript development environment?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "To design HTML pages",
+          "correct": false
+        },
+        {
+          "option": "To run JavaScript on the server-side or outside the browser",
+          "correct": true
+        },
+        {
+          "option": "To create CSS styles",
+          "correct": false
+        },
+        {
+          "option": "To compile JavaScript into machine code",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "what-does-npm-stand-for",
+      "topicTitle": "Introduction to JavaScript",
+      "question": "What does npm stand for?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Node Personal Manager",
+          "correct": false
+        },
+        {
+          "option": "Network Programming Module",
+          "correct": false
+        },
+        {
+          "option": "Node Package Manager",
+          "correct": true
+        },
+        {
+          "option": "New Project Module",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-feature-does-not-belong-to-brow",
+      "topicTitle": "Introduction to JavaScript",
+      "question": "Which feature does not belong to browser developer tools?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Inspecting HTML/CSS",
+          "correct": false
+        },
+        {
+          "option": "Debugging JavaScript",
+          "correct": false
+        },
+        {
+          "option": "Running backend scripts",
+          "correct": true
+        },
+        {
+          "option": "Viewing network requests",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-of-the-following-tools-is-used-to",
+      "topicTitle": "Introduction to JavaScript",
+      "question": "Which of the following tools is used to install external JavaScript libraries into your project?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "VS Code",
+          "correct": false
+        },
+        {
+          "option": "npm",
+          "correct": true
+        },
+        {
+          "option": "git",
+          "correct": false
+        },
+        {
+          "option": "Chrome Developer Tools",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "nodejs-is-required-to-run-javascript-in",
+      "topicTitle": "Introduction to JavaScript",
+      "question": "What is needed to run JavaScript in a web browser?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "A separate Node.js installation",
+          "correct": false
+        },
+        {
+          "option": "The JavaScript runtime built into the browser engine",
+          "correct": true,
+          "comment": "Every modern browser ships with a built-in JS engine (V8 in Chrome, SpiderMonkey in Firefox). No extra installation is needed — Node.js is only required for running JS outside the browser."
+        },
+        {
+          "option": "A transpiler like Babel",
+          "correct": false
+        },
+        {
+          "option": "A web server running in the background",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "npm-comes-bundled-with-nodejs-installat",
+      "topicTitle": "Introduction to JavaScript",
+      "question": "How is npm typically installed on a developer's machine?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Install it separately from npmjs.com",
+          "correct": false
+        },
+        {
+          "option": "It is bundled with the Node.js installer",
+          "correct": true,
+          "comment": "When you install Node.js from nodejs.org, npm is automatically installed alongside it. Running 'node -v' and 'npm -v' after installation will show both versions."
+        },
+        {
+          "option": "It is pre-installed on all operating systems",
+          "correct": false
+        },
+        {
+          "option": "Install it via a browser extension",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "browser-developer-tools-are-only-availab",
+      "topicTitle": "Introduction to JavaScript",
+      "question": "Which browsers include built-in Developer Tools for debugging JavaScript?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Only Google Chrome",
+          "correct": false
+        },
+        {
+          "option": "Only Chrome and Firefox",
+          "correct": false
+        },
+        {
+          "option": "All major browsers (Chrome, Firefox, Edge, Safari)",
+          "correct": true,
+          "comment": "Every major browser ships with Developer Tools. They provide similar panels: Elements/Inspector, Console, Sources/Debugger, Network, and Application. Open them with F12 or Ctrl+Shift+I."
+        },
+        {
+          "option": "Only Chromium-based browsers",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-keyword-is-used-to-test-multiple-c",
+      "topicTitle": "Control Flow & Logic Building",
+      "question": "Which keyword is used to test multiple conditions in JavaScript?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "if",
+          "correct": false
+        },
+        {
+          "option": "else",
+          "correct": false
+        },
+        {
+          "option": "switch",
+          "correct": true
+        },
+        {
+          "option": "case",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "what-is-the-default-value-of-a-missing-c",
+      "topicTitle": "Control Flow & Logic Building",
+      "question": "What is the default value of a missing case in a switch statement?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "undefined",
+          "correct": false
+        },
+        {
+          "option": "null",
+          "correct": false
+        },
+        {
+          "option": "0",
+          "correct": false
+        },
+        {
+          "option": "No case executes unless explicitly matched",
+          "correct": true
+        }
+      ]
+    },
+    {
+      "slug": "which-loop-will-execute-at-least-once-re",
+      "topicTitle": "Control Flow & Logic Building",
+      "question": "Which loop will execute at least once regardless of condition?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "for",
+          "correct": false
+        },
+        {
+          "option": "while",
+          "correct": false
+        },
+        {
+          "option": "do...while",
+          "correct": true
+        },
+        {
+          "option": "foreach",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-statement-immediately-exits-a-loop",
+      "topicTitle": "Control Flow & Logic Building",
+      "question": "Which statement immediately exits a loop in JavaScript?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "break",
+          "correct": true
+        },
+        {
+          "option": "continue",
+          "correct": false
+        },
+        {
+          "option": "exit",
+          "correct": false
+        },
+        {
+          "option": "stop",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "what-does-continue-do-inside-a-loop",
+      "topicTitle": "Control Flow & Logic Building",
+      "question": "What does continue do inside a loop?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Ends the entire loop",
+          "correct": false
+        },
+        {
+          "option": "Skips the current iteration and continues with the next",
+          "correct": true
+        },
+        {
+          "option": "Restarts the loop from the beginning",
+          "correct": false
+        },
+        {
+          "option": "Throws an error",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "in-nested-if-else-how-does-javascript-d",
+      "topicTitle": "Control Flow & Logic Building",
+      "question": "In nested if-else, how does JavaScript decide which else pairs with which if?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "The first if",
+          "correct": false
+        },
+        {
+          "option": "The last unmatched if",
+          "correct": true
+        },
+        {
+          "option": "Randomly",
+          "correct": false
+        },
+        {
+          "option": "Based on indentation",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-of-the-following-is-the-correct-wa",
+      "topicTitle": "JavaScript Syntax and Basics",
+      "question": "Which of the following is the correct way to write a single-line comment in JavaScript?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "<!-- This is a comment -->",
+          "correct": false
+        },
+        {
+          "option": "// This is a comment",
+          "correct": true
+        },
+        {
+          "option": "/* This is a comment */",
+          "correct": false
+        },
+        {
+          "option": "# This is a comment",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "what-is-the-correct-way-to-declare-a-var",
+      "topicTitle": "JavaScript Syntax and Basics",
+      "question": "What is the correct way to declare a variable in modern JavaScript?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "var name = \"John\";",
+          "correct": false
+        },
+        {
+          "option": "let name = \"John\";",
+          "correct": false
+        },
+        {
+          "option": "const name = \"John\";",
+          "correct": false
+        },
+        {
+          "option": "All of the above",
+          "correct": true
+        }
+      ]
+    },
+    {
+      "slug": "which-of-the-following-identifiers-is-va",
+      "topicTitle": "JavaScript Syntax and Basics",
+      "question": "Which of the following identifiers is valid in JavaScript?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "2names",
+          "correct": false
+        },
+        {
+          "option": "first_name",
+          "correct": true
+        },
+        {
+          "option": "first-name",
+          "correct": false
+        },
+        {
+          "option": "let",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "in-javascript-what-is-the-purpose-of-a",
+      "topicTitle": "JavaScript Syntax and Basics",
+      "question": "What is the purpose of a semicolon (;) in JavaScript?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "It is mandatory at the end of every statement",
+          "correct": false
+        },
+        {
+          "option": "It is used only inside functions",
+          "correct": false
+        },
+        {
+          "option": "It separates statements",
+          "correct": true
+        },
+        {
+          "option": "It has no role in JavaScript",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-of-the-following-is-a-falsy-value",
+      "topicTitle": "JavaScript Syntax and Basics",
+      "question": "Which of the following is a falsy value in JavaScript?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "\"false\"",
+          "correct": false
+        },
+        {
+          "option": "0",
+          "correct": true
+        },
+        {
+          "option": "[]",
+          "correct": false
+        },
+        {
+          "option": "\"0\"",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-of-the-following-is-the-correct-sy",
+      "topicTitle": "JavaScript Syntax and Basics",
+      "question": "Which of the following is the correct syntax to create a function in JavaScript?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "function: myFunction() {}",
+          "correct": false
+        },
+        {
+          "option": "function myFunction() {}",
+          "correct": true
+        },
+        {
+          "option": "function = myFunction() {}",
+          "correct": false
+        },
+        {
+          "option": "myFunction() => function {}",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "what-type-of-value-is-returned-by-the-ty",
+      "topicTitle": "JavaScript Syntax and Basics",
+      "question": "What type of value is returned by the typeof operator?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "String",
+          "correct": true
+        },
+        {
+          "option": "Number",
+          "correct": false
+        },
+        {
+          "option": "Boolean",
+          "correct": false
+        },
+        {
+          "option": "Enum",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "how-do-you-define-a-constant-in-javascri",
+      "topicTitle": "JavaScript Syntax and Basics",
+      "question": "How do you define a constant in JavaScript?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "constant x = 10;",
+          "correct": false
+        },
+        {
+          "option": "const x = 10;",
+          "correct": true
+        },
+        {
+          "option": "let x = 10;",
+          "correct": false
+        },
+        {
+          "option": "final x = 10;",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-of-the-following-keywords-is-used",
+      "topicTitle": "JavaScript Syntax and Basics",
+      "question": "Which of the following keywords is used to declare a variable that can be reassigned?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "let",
+          "correct": false
+        },
+        {
+          "option": "const",
+          "correct": false
+        },
+        {
+          "option": "var",
+          "correct": false
+        },
+        {
+          "option": "Both let and var",
+          "correct": true,
+          "comment": "Both let and var allow reassignment. const does not — attempting to reassign a const throws a TypeError."
+        }
+      ]
+    },
+    {
+      "slug": "which-operator-is-used-to-compare-both-v",
+      "topicTitle": "JavaScript Syntax and Basics",
+      "question": "Which operator is used to compare both value and type in JavaScript?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "==",
+          "correct": false
+        },
+        {
+          "option": "===",
+          "correct": true
+        },
+        {
+          "option": "!=",
+          "correct": false
+        },
+        {
+          "option": "!==",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "what-does-the-return-statement-do-in-a-f",
+      "topicTitle": "JavaScript Syntax and Basics",
+      "question": "What does the return statement do in a function?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "It exits the function",
+          "correct": false
+        },
+        {
+          "option": "It returns a value to the calling code",
+          "correct": true
+        },
+        {
+          "option": "It logs a value to the console",
+          "correct": false
+        },
+        {
+          "option": "It repeats the function",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "18-which-of-the-following-is-the-correc",
+      "topicTitle": "JavaScript Arrays and Objects",
+      "question": "Which of the following is the correct way to define an array in JavaScript?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "let arr = (1, 2, 3);",
+          "correct": false
+        },
+        {
+          "option": "let arr = [1, 2, 3];",
+          "correct": true
+        },
+        {
+          "option": "let arr = {1, 2, 3};",
+          "correct": false
+        },
+        {
+          "option": "let arr = <1, 2, 3>",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-of-the-following-methods-can-be-us",
+      "topicTitle": "JavaScript Arrays and Objects",
+      "question": "Which of the following methods can be used to add an element to the end of an array in JavaScript?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "array.push()",
+          "correct": true
+        },
+        {
+          "option": "array.pop()",
+          "correct": false
+        },
+        {
+          "option": "array.shift()",
+          "correct": false
+        },
+        {
+          "option": "array.unshift()",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "what-happens-when-you-access-an-array-el",
+      "topicTitle": "JavaScript Arrays and Objects",
+      "question": "What happens when you access an array element that doesn’t exist?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "Throws an error",
+          "correct": false
+        },
+        {
+          "option": "Returns null",
+          "correct": false
+        },
+        {
+          "option": "Returns undefined",
+          "correct": true
+        },
+        {
+          "option": "Returns 0",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "if-you-add-a-property-with-a-string-key",
+      "topicTitle": "JavaScript Arrays and Objects",
+      "question": "If you add a property with a string key to an array, what happens to the array’s length?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "It increases",
+          "correct": false
+        },
+        {
+          "option": "It decreases",
+          "correct": false
+        },
+        {
+          "option": "It stays the same",
+          "correct": true
+        },
+        {
+          "option": "It resets to zero",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-of-the-following-is-the-correct-sy-meydqu9j",
+      "topicTitle": "Control Flow & Logic Building",
+      "question": "Which of the following is the correct syntax for a switch statement in JavaScript?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "switch (expression) { case x: // code }",
+          "correct": true
+        },
+        {
+          "option": "switch expression { case x: // code }",
+          "correct": false
+        },
+        {
+          "option": "switch (expression) { x: // code }",
+          "correct": false
+        },
+        {
+          "option": "switch { case expression: // code }",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "what-is-the-difference-between-for-and-w",
+      "topicTitle": "Control Flow & Logic Building",
+      "question": "What is the difference between for and while loops in JavaScript?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "for loops are used for infinite loops, while while loops are for finite loops.",
+          "correct": false
+        },
+        {
+          "option": "for loops have a fixed number of iterations, while while loops continue until a condition is false.",
+          "correct": true
+        },
+        {
+          "option": "for loops execute code only once, while while loops can execute code multiple times.",
+          "correct": false
+        },
+        {
+          "option": "There is no difference; they are used interchangeably.",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-of-the-following-is-true-about-the",
+      "topicTitle": "Control Flow & Logic Building",
+      "question": "Which of the following is true about the break statement in loops and switch statements?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "break terminates only the current switch or for loop.",
+          "correct": true
+        },
+        {
+          "option": "break terminates all loops and switch statements within a function.",
+          "correct": false
+        },
+        {
+          "option": "break causes an infinite loop.",
+          "correct": false
+        },
+        {
+          "option": "break terminates the entire program.",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "how-does-a-while-loop-differ-from-a-do",
+      "topicTitle": "Control Flow & Logic Building",
+      "question": "How does a while loop differ from a do...while loop in JavaScript?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "A while loop executes at least once, while a do...while loop may not execute.",
+          "correct": false
+        },
+        {
+          "option": "A do...while loop executes at least once, while a while loop may not execute.",
+          "correct": true
+        },
+        {
+          "option": "There is no difference between the two.",
+          "correct": false
+        },
+        {
+          "option": "A while loop is only used in arrays.",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-of-the-following-is-the-correct-sy-mfmsm4ea",
+      "topicTitle": "Control Flow & Logic Building",
+      "question": "Which of the following is the correct syntax of a for loop?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "for (init; condition; increment) { }",
+          "correct": true
+        },
+        {
+          "option": "for (condition; init; increment) { }",
+          "correct": false
+        },
+        {
+          "option": "for (init; increment; condition) { }",
+          "correct": false
+        },
+        {
+          "option": "for (init, condition, increment) { }",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-of-these-scenarios-is-best-for-usi",
+      "topicTitle": "Control Flow & Logic Building",
+      "question": "Which of these scenarios is best for using a switch statement instead of if-else?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "Checking if a number is even or odd",
+          "correct": false
+        },
+        {
+          "option": "Comparing a variable to multiple fixed values",
+          "correct": true
+        },
+        {
+          "option": "Looping through numbers",
+          "correct": false
+        },
+        {
+          "option": "Handling ranges of values",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "what-is-the-time-complexity-of-a-loop-li",
+      "topicTitle": "Control Flow & Logic Building",
+      "question": "What is the time complexity of a loop like for (let i=0; i<n; i++)?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "O(1)",
+          "correct": false
+        },
+        {
+          "option": "O(n)",
+          "correct": true
+        },
+        {
+          "option": "O(n²)",
+          "correct": false
+        },
+        {
+          "option": "O(log n)",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "what-happens-if-you-forget-to-use-break",
+      "topicTitle": "Control Flow & Logic Building",
+      "question": "What happens if you forget to use break in a switch case?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "Only default executes",
+          "correct": false
+        },
+        {
+          "option": "It causes an error",
+          "correct": false
+        },
+        {
+          "option": "Execution falls through to the next case",
+          "correct": true
+        },
+        {
+          "option": "Nothing happens",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-construct-is-better-for-an-unknown",
+      "topicTitle": "Control Flow & Logic Building",
+      "question": "Which construct is better for an unknown number of iterations until a condition is met?",
+      "level": 3,
+      "timeAllowed": 90,
+      "options": [
+        {
+          "option": "for",
+          "correct": false
+        },
+        {
+          "option": "while",
+          "correct": true
+        },
+        {
+          "option": "switch",
+          "correct": false
+        },
+        {
+          "option": "if",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "why-is-breaking-code-into-reusable-funct",
+      "topicTitle": "Functions and Code Reusability",
+      "question": "Why is breaking code into reusable functions important in programming?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "It makes the code longer.",
+          "correct": false
+        },
+        {
+          "option": "It improves performance.",
+          "correct": false
+        },
+        {
+          "option": "It simplifies code maintenance and reduces repetition.",
+          "correct": true
+        },
+        {
+          "option": "It makes the code harder to understand.",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-of-the-following-statements-about",
+      "topicTitle": "Functions and Code Reusability",
+      "question": "Which of the following statements about function scope in JavaScript is true?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "A variable defined inside a function is accessible outside the function.",
+          "correct": false
+        },
+        {
+          "option": "A variable defined outside a function can be accessed inside the function.",
+          "correct": false
+        },
+        {
+          "option": "A function's local variables are only accessible within the function.",
+          "correct": true
+        },
+        {
+          "option": "A function cannot access any variables outside of it.",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-of-the-following-correctly-demonst",
+      "topicTitle": "Functions and Code Reusability",
+      "question": "Which of the following correctly demonstrates how to pass an argument to a function in JavaScript?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "functionName(argument)",
+          "correct": true
+        },
+        {
+          "option": "argument => functionName();",
+          "correct": false
+        },
+        {
+          "option": "functionName {argument};",
+          "correct": false
+        },
+        {
+          "option": "function argumentName()",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "what-will-happen-if-you-try-to-access-a",
+      "topicTitle": "Functions and Code Reusability",
+      "question": "What will happen if you try to access a function's local variable from outside the function?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "The local variable will be accessible because JavaScript automatically makes it global.",
+          "correct": false
+        },
+        {
+          "option": "The program will throw an error because the variable is out of scope.",
+          "correct": true
+        },
+        {
+          "option": "The local variable will be assigned undefined.",
+          "correct": false
+        },
+        {
+          "option": "JavaScript will automatically assign a default value to the local variable.",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "what-will-a-function-return-if-there-is",
+      "topicTitle": "Functions and Code Reusability",
+      "question": "What will a function return if there is no return statement?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "null",
+          "correct": false
+        },
+        {
+          "option": "undefined",
+          "correct": true
+        },
+        {
+          "option": "false",
+          "correct": false
+        },
+        {
+          "option": "An empty string",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-of-the-following-is-true-about-par",
+      "topicTitle": "Functions and Code Reusability",
+      "question": "Which of the following is true about parameters in JavaScript functions?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Parameters are required.",
+          "correct": false
+        },
+        {
+          "option": "Missing parameters cause errors.",
+          "correct": false
+        },
+        {
+          "option": "Parameters default to undefined if not provided.",
+          "correct": true
+        },
+        {
+          "option": "JavaScript requires explicit type declarations for parameters.",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-scope-do-variables-declared-inside",
+      "topicTitle": "Functions and Code Reusability",
+      "question": "Which scope do variables declared inside a function belong to?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Global scope",
+          "correct": false
+        },
+        {
+          "option": "Block scope",
+          "correct": false
+        },
+        {
+          "option": "Function scope",
+          "correct": true
+        },
+        {
+          "option": "Module scope",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "what-does-the-return-keyword-do-in-a-fun",
+      "topicTitle": "Functions and Code Reusability",
+      "question": "What does the return keyword do in a function?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Ends the function and sends back a value",
+          "correct": true
+        },
+        {
+          "option": "Ends the function without sending a value",
+          "correct": false
+        },
+        {
+          "option": "Pauses the function until resumed",
+          "correct": false
+        },
+        {
+          "option": "Restarts the function from the beginning",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "if-a-variable-is-declared-outside-of-a",
+      "topicTitle": "Functions and Code Reusability",
+      "question": "If a variable is declared outside of any function, what scope does it have?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Local scope",
+          "correct": false
+        },
+        {
+          "option": "Block scope",
+          "correct": false
+        },
+        {
+          "option": "Global scope",
+          "correct": true
+        },
+        {
+          "option": "Function scope",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-of-the-following-best-describes-a",
+      "topicTitle": "Functions and Code Reusability",
+      "question": "Which of the following best describes a function that is designed to take input and give output?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "A reusable block of code",
+          "correct": true
+        },
+        {
+          "option": "A variable declaration",
+          "correct": false
+        },
+        {
+          "option": "A loop construct",
+          "correct": false
+        },
+        {
+          "option": "A conditional statement",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-of-the-following-is-the-simplest-w",
+      "topicTitle": "Debugging and Console Tools",
+      "question": "Which of the following is the simplest way to print values for debugging in JavaScript?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "alert()",
+          "correct": false
+        },
+        {
+          "option": "console.log()",
+          "correct": true
+        },
+        {
+          "option": "print()",
+          "correct": false
+        },
+        {
+          "option": "document.log()",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "what-does-consoleerror-do-differently",
+      "topicTitle": "Debugging and Console Tools",
+      "question": "What does console.error() do differently from console.log()?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Stops script execution",
+          "correct": false
+        },
+        {
+          "option": "Displays a red-styled error message in console",
+          "correct": true
+        },
+        {
+          "option": "Hides the log from console",
+          "correct": false
+        },
+        {
+          "option": "Opens DevTools automatically",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-devtools-panel-in-browsers-is-prim",
+      "topicTitle": "Debugging and Console Tools",
+      "question": "Which DevTools panel in browsers is primarily used for debugging JavaScript?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Elements",
+          "correct": false
+        },
+        {
+          "option": "Sources",
+          "correct": true,
+          "comment": "The Sources panel in Chrome/Edge DevTools is where you set breakpoints, step through code line-by-line, and inspect the call stack."
+        },
+        {
+          "option": "Network",
+          "correct": false
+        },
+        {
+          "option": "Application",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "what-happens-when-you-set-a-breakpoint-i",
+      "topicTitle": "Debugging and Console Tools",
+      "question": "What happens when you set a breakpoint in DevTools?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "The page reloads automatically",
+          "correct": false
+        },
+        {
+          "option": "JavaScript execution pauses at that line",
+          "correct": true
+        },
+        {
+          "option": "All console logs are cleared",
+          "correct": false
+        },
+        {
+          "option": "The function is skipped",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "what-does-debugger-statement-in-javascr",
+      "topicTitle": "Debugging and Console Tools",
+      "question": "What does debugger statement in JavaScript do?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "Deletes a variable",
+          "correct": false
+        },
+        {
+          "option": "Opens browser DevTools automatically and pauses execution",
+          "correct": true
+        },
+        {
+          "option": "Acts like console.log()",
+          "correct": false
+        },
+        {
+          "option": "Optimizes performance",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-console-method-is-best-for-showing",
+      "topicTitle": "Debugging and Console Tools",
+      "question": "Which console method is best for showing structured objects?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "console.log()",
+          "correct": false
+        },
+        {
+          "option": "console.dir()",
+          "correct": true
+        },
+        {
+          "option": "console.debug()",
+          "correct": false
+        },
+        {
+          "option": "console.com",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "in-devtools-what-does-the-step-over-b",
+      "topicTitle": "Debugging and Console Tools",
+      "question": "In DevTools, what does the “Step Over” button do during debugging?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "Executes the function call without stepping inside it",
+          "correct": true
+        },
+        {
+          "option": "Skips the line entirely",
+          "correct": false
+        },
+        {
+          "option": "Goes back to the previous line",
+          "correct": false
+        },
+        {
+          "option": "Runs all remaining code",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "how-can-you-group-related-logs-in-the-co",
+      "topicTitle": "Debugging and Console Tools",
+      "question": "How can you group related logs in the console?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "console.group() and console.groupEnd()",
+          "correct": true
+        },
+        {
+          "option": "console.table()",
+          "correct": false
+        },
+        {
+          "option": "console.count()",
+          "correct": false
+        },
+        {
+          "option": "console.trace()",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-of-the-following-will-print-an-arr",
+      "topicTitle": "Debugging and Console Tools",
+      "question": "Which of the following will print an array in a tabular format in the console?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "console.log(array)",
+          "correct": false
+        },
+        {
+          "option": "console.dir(array)",
+          "correct": false
+        },
+        {
+          "option": "console.table(array)",
+          "correct": true
+        },
+        {
+          "option": "console.error(array)",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "if-you-want-to-measure-the-performance",
+      "topicTitle": "Debugging and Console Tools",
+      "question": "If you want to measure the performance of a block of code, which methods should you use?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "console.error() / console.warn()",
+          "correct": false
+        },
+        {
+          "option": "console.time() / console.timeEnd()",
+          "correct": true
+        },
+        {
+          "option": "console.group() / console.groupEnd()",
+          "correct": false
+        },
+        {
+          "option": "console.trace()",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "what-is-the-purpose-of-the-call-stack-pa",
+      "topicTitle": "Debugging and Console Tools",
+      "question": "What is the purpose of the Call Stack panel in DevTools?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "Shows network requests",
+          "correct": false
+        },
+        {
+          "option": "Displays sequence of executed functions leading to current breakpoint",
+          "correct": true
+        },
+        {
+          "option": "Optimizes memory",
+          "correct": false
+        },
+        {
+          "option": "Highlights CSS issues",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-shortcut-usually-opens-devtools-in",
+      "topicTitle": "Debugging and Console Tools",
+      "question": "Which shortcut usually opens DevTools in most browsers?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Ctrl + C",
+          "correct": false
+        },
+        {
+          "option": "F12 or Ctrl + Shift + I",
+          "correct": true
+        },
+        {
+          "option": "Ctrl + L",
+          "correct": false
+        },
+        {
+          "option": "Shift + Tab",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "what-is-a-conditional-breakpoint-in-devt",
+      "topicTitle": "Debugging and Console Tools",
+      "question": "What is a conditional breakpoint in DevTools?",
+      "level": 3,
+      "timeAllowed": 90,
+      "options": [
+        {
+          "option": "Breakpoint that runs only for specific conditions",
+          "correct": true
+        },
+        {
+          "option": "Breakpoint that always stops code",
+          "correct": false
+        },
+        {
+          "option": "Breakpoint that ignores variables",
+          "correct": false
+        },
+        {
+          "option": "Breakpoint that deletes code",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "how-can-you-log-stack-traces-for-debuggi",
+      "topicTitle": "Debugging and Console Tools",
+      "question": "How can you log stack traces for debugging function calls?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "console.group()",
+          "correct": false
+        },
+        {
+          "option": "console.trace()",
+          "correct": true
+        },
+        {
+          "option": "console.warn()",
+          "correct": false
+        },
+        {
+          "option": "console.count()",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-console-method-increments-a-counte",
+      "topicTitle": "Debugging and Console Tools",
+      "question": "Which console method increments a counter each time it’s called with the same label?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "console.trace()",
+          "correct": false
+        },
+        {
+          "option": "console.count()",
+          "correct": true
+        },
+        {
+          "option": "console.group()",
+          "correct": false
+        },
+        {
+          "option": "console.assert()",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "what-happens-if-you-use-consoleassert",
+      "topicTitle": "Debugging and Console Tools",
+      "question": "What happens if you use console.assert(false, \"Error Message\")?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "Nothing happens",
+          "correct": false
+        },
+        {
+          "option": "It throws a JavaScript runtime error",
+          "correct": false
+        },
+        {
+          "option": "Logs “Error Message” in console",
+          "correct": true
+        },
+        {
+          "option": "Stops code execution",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "what-is-the-difference-between-step-int",
+      "topicTitle": "Debugging and Console Tools",
+      "question": "What is the difference between “Step Into” and “Step Over” in debugging?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "Both are the same",
+          "correct": false
+        },
+        {
+          "option": "Step Into enters inside function calls, Step Over skips entering",
+          "correct": true
+        },
+        {
+          "option": "Step Over pauses all code, Step Into skips code",
+          "correct": false
+        },
+        {
+          "option": "Step Into repeats execution, Step Over stops execution",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "how-can-you-resume-script-execution-afte",
+      "topicTitle": "Debugging and Console Tools",
+      "question": "How can you resume script execution after hitting a breakpoint in DevTools?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Reload the page",
+          "correct": false
+        },
+        {
+          "option": "Click “Resume script execution” (▶ button)",
+          "correct": true
+        },
+        {
+          "option": "Press Ctrl + C",
+          "correct": false
+        },
+        {
+          "option": "Remove the breakpoint",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "why-are-source-maps-important-in-debuggi",
+      "topicTitle": "Debugging and Console Tools",
+      "question": "Why are Source Maps important in debugging JavaScript?",
+      "level": 3,
+      "timeAllowed": 90,
+      "options": [
+        {
+          "option": "They speed up execution",
+          "correct": false
+        },
+        {
+          "option": "They map minified/transpiled code back to original source",
+          "correct": true
+        },
+        {
+          "option": "They optimize memory usage",
+          "correct": false
+        },
+        {
+          "option": "They reduce bundle size",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-console-method-can-help-display-ne",
+      "topicTitle": "Debugging and Console Tools",
+      "question": "Which console method can help display nested objects in an expandable view?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "console.dir()",
+          "correct": true
+        },
+        {
+          "option": "console.table()",
+          "correct": false
+        },
+        {
+          "option": "console.group()",
+          "correct": false
+        },
+        {
+          "option": "console.warn()",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "what-is-the-main-purpose-of-an-array-in",
+      "topicTitle": "JavaScript Arrays and Objects",
+      "question": "What is the main purpose of an array in JavaScript?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "To store a single value",
+          "correct": false
+        },
+        {
+          "option": "To store multiple values in one variable",
+          "correct": true
+        },
+        {
+          "option": "To define functions",
+          "correct": false
+        },
+        {
+          "option": "To create objects",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "what-is-the-index-of-the-first-element-i",
+      "topicTitle": "JavaScript Arrays and Objects",
+      "question": "What is the index of the first element in a JavaScript array?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "0",
+          "correct": true,
+          "comment": "JavaScript arrays are zero-indexed — the first element is always at index 0."
+        },
+        {
+          "option": "1",
+          "correct": false
+        },
+        {
+          "option": "-1",
+          "correct": false
+        },
+        {
+          "option": "undefined",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-property-gives-the-number-of-eleme",
+      "topicTitle": "JavaScript Arrays and Objects",
+      "question": "Which property gives the number of elements in an array?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "count",
+          "correct": false
+        },
+        {
+          "option": "size",
+          "correct": false
+        },
+        {
+          "option": "length",
+          "correct": true
+        },
+        {
+          "option": "items",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-of-the-following-can-arrays-store",
+      "topicTitle": "JavaScript Arrays and Objects",
+      "question": "Which of the following can arrays store in JavaScript?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Only numbers",
+          "correct": false
+        },
+        {
+          "option": "Only strings",
+          "correct": false
+        },
+        {
+          "option": "Any data type, including objects and arrays",
+          "correct": true
+        },
+        {
+          "option": "Only boolean values",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "what-is-the-main-difference-between-arr",
+      "topicTitle": "JavaScript Arrays and Objects",
+      "question": "What is the main difference between arrays and objects?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Arrays use keys, objects use indexes",
+          "correct": false
+        },
+        {
+          "option": "Arrays use indexes, objects use keys",
+          "correct": true
+        },
+        {
+          "option": "Both use indexes",
+          "correct": false
+        },
+        {
+          "option": "Both use keys",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "can-objects-in-javascript-contain-functi",
+      "topicTitle": "JavaScript Arrays and Objects",
+      "question": "Can objects in JavaScript contain functions?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Yes, as methods",
+          "correct": true,
+          "comment": "Functions stored as object properties are called methods. Example: const obj = { greet() { return \"hi\"; } }."
+        },
+        {
+          "option": "No",
+          "correct": false
+        },
+        {
+          "option": "Only inside arrays",
+          "correct": false
+        },
+        {
+          "option": "Only with special syntax",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-loop-is-most-commonly-used-to-iter",
+      "topicTitle": "JavaScript Arrays and Objects",
+      "question": "Which loop is most commonly used to iterate over array values?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "for...in",
+          "correct": false
+        },
+        {
+          "option": "for...of",
+          "correct": true
+        },
+        {
+          "option": "while",
+          "correct": false
+        },
+        {
+          "option": "switch",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "what-happens-if-an-object-has-two-prope",
+      "topicTitle": "JavaScript Arrays and Objects",
+      "question": "What happens if an object has two properties with the same key?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "Both remain stored",
+          "correct": false
+        },
+        {
+          "option": "It throws an error",
+          "correct": false
+        },
+        {
+          "option": "The last one overwrites the first",
+          "correct": true
+        },
+        {
+          "option": "It becomes an array",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "what-is-true-about-const-objects-and-arr",
+      "topicTitle": "JavaScript Arrays and Objects",
+      "question": "What is true about const objects and arrays?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "They cannot be changed at all",
+          "correct": false
+        },
+        {
+          "option": "They can be reassigned but not modified",
+          "correct": false
+        },
+        {
+          "option": "They cannot be reassigned but can be modified",
+          "correct": true
+        },
+        {
+          "option": "They behave the same as let",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "when-is-an-array-a-better-choice-than-an",
+      "topicTitle": "JavaScript Arrays and Objects",
+      "question": "When is an array a better choice than an object?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "When storing key-value pairs",
+          "correct": false
+        },
+        {
+          "option": "When storing ordered data",
+          "correct": true
+        },
+        {
+          "option": "When using string keys",
+          "correct": false
+        },
+        {
+          "option": "When preventing modifications",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "what-does-the-delete-operator-do-when-us",
+      "topicTitle": "JavaScript Arrays and Objects",
+      "question": "What does the delete operator do when used on an array element?",
+      "level": 3,
+      "timeAllowed": 90,
+      "options": [
+        {
+          "option": "Removes the element and shifts the rest",
+          "correct": false
+        },
+        {
+          "option": "Removes the value but leaves an empty slot",
+          "correct": true
+        },
+        {
+          "option": "Resets the entire array",
+          "correct": false
+        },
+        {
+          "option": "Changes the length property",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "why-are-objects-better-than-arrays-for",
+      "topicTitle": "JavaScript Arrays and Objects",
+      "question": "Why are objects better than arrays for storing labeled data?",
+      "level": 3,
+      "timeAllowed": 90,
+      "options": [
+        {
+          "option": "They are faster",
+          "correct": false
+        },
+        {
+          "option": "They use numeric indexes",
+          "correct": false
+        },
+        {
+          "option": "They use descriptive keys",
+          "correct": true
+        },
+        {
+          "option": "They cannot be changed",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "internally-how-are-javascript-arrays-r",
+      "topicTitle": "JavaScript Arrays and Objects",
+      "question": "Internally, how are JavaScript arrays represented?",
+      "level": 3,
+      "timeAllowed": 90,
+      "options": [
+        {
+          "option": "As lists",
+          "correct": false
+        },
+        {
+          "option": "As specialized objects with numeric keys",
+          "correct": true
+        },
+        {
+          "option": "As dictionaries",
+          "correct": false
+        },
+        {
+          "option": "As sets",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "what-happens-if-you-assign-a-value-at-a",
+      "topicTitle": "JavaScript Arrays and Objects",
+      "question": "What happens if you assign a value at a very high index in an array?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Array size remains unchanged",
+          "correct": false
+        },
+        {
+          "option": "The array fills all gaps with undefined",
+          "correct": true
+        },
+        {
+          "option": "The array becomes invalid",
+          "correct": false
+        },
+        {
+          "option": "Only that index is added",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "why-is-it-preferable-to-use-push-instead",
+      "topicTitle": "JavaScript Arrays and Objects",
+      "question": "Why is it preferable to use push instead of direct assignment to the next index?",
+      "level": 3,
+      "timeAllowed": 90,
+      "options": [
+        {
+          "option": "It makes arrays immutable",
+          "correct": false
+        },
+        {
+          "option": "It ensures no gaps are left in the array",
+          "correct": true
+        },
+        {
+          "option": "It decreases performance",
+          "correct": false
+        },
+        {
+          "option": "It removes duplicates automatically",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "what-do-we-call-an-array-or-object-store",
+      "topicTitle": "JavaScript Arrays and Objects",
+      "question": "What do we call an array or object stored inside another array or object?",
+      "level": 3,
+      "timeAllowed": 90,
+      "options": [
+        {
+          "option": "Shallow copy",
+          "correct": false
+        },
+        {
+          "option": "Nested structure",
+          "correct": true
+        },
+        {
+          "option": "Loop reference",
+          "correct": false
+        },
+        {
+          "option": "Static data",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "how-are-arrays-and-objects-often-combin",
+      "topicTitle": "JavaScript Arrays and Objects",
+      "question": "How are arrays and objects often combined in applications?",
+      "level": 3,
+      "timeAllowed": 90,
+      "options": [
+        {
+          "option": "Arrays store keys, objects store values",
+          "correct": false
+        },
+        {
+          "option": "Arrays store objects, objects store structured details",
+          "correct": true
+        },
+        {
+          "option": "Arrays and objects are never used together",
+          "correct": false
+        },
+        {
+          "option": "Arrays are faster than objects",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "why-might-you-still-use-objects-instead",
+      "topicTitle": "JavaScript Arrays and Objects",
+      "question": "Why might you still use objects instead of Map or Set?",
+      "level": 3,
+      "timeAllowed": 90,
+      "options": [
+        {
+          "option": "Objects are immutable",
+          "correct": false
+        },
+        {
+          "option": "Objects are simpler and ideal for string-keyed data",
+          "correct": true
+        },
+        {
+          "option": "Objects are faster in all cases",
+          "correct": false
+        },
+        {
+          "option": "Objects are automatically sorted",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "what-is-the-difference-between-capturing",
+      "topicTitle": "DOM Events and User Interaction",
+      "question": "What is the difference between capturing and bubbling in event propagation?",
+      "level": 3,
+      "timeAllowed": 90,
+      "options": [
+        {
+          "option": "Capturing goes from parent to child; bubbling goes from child to parent",
+          "correct": true
+        },
+        {
+          "option": "Capturing and bubbling are the same",
+          "correct": false
+        },
+        {
+          "option": "Bubbling happens first, capturing second",
+          "correct": false
+        },
+        {
+          "option": "Only mouse events can bubble",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "what-is-a-dom-event-in-javascript",
+      "topicTitle": "DOM Events and User Interaction",
+      "question": "What is a DOM event in JavaScript?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "An action or occurrence that happens in the browser",
+          "correct": true
+        },
+        {
+          "option": "A JavaScript function",
+          "correct": false
+        },
+        {
+          "option": "A CSS property",
+          "correct": false
+        },
+        {
+          "option": "A type of HTML element",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-of-the-following-is-a-common-mouse",
+      "topicTitle": "DOM Events and User Interaction",
+      "question": "Which of the following is a common mouse event?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "click",
+          "correct": true
+        },
+        {
+          "option": "keydown",
+          "correct": false
+        },
+        {
+          "option": "submit",
+          "correct": false
+        },
+        {
+          "option": "load",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-event-type-is-triggered-when-a-us",
+      "topicTitle": "DOM Events and User Interaction",
+      "question": "Which event type is triggered when a user presses a key?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "mouseover",
+          "correct": false
+        },
+        {
+          "option": "keydown",
+          "correct": true
+        },
+        {
+          "option": "click",
+          "correct": false
+        },
+        {
+          "option": "focus",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "what-does-the-submit-event-do-in-javascr",
+      "topicTitle": "DOM Events and User Interaction",
+      "question": "What does the submit event do in JavaScript?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Fires when a page is loaded",
+          "correct": false
+        },
+        {
+          "option": "Fires when a form is submitted",
+          "correct": true
+        },
+        {
+          "option": "Fires when a button is clicked",
+          "correct": false
+        },
+        {
+          "option": "Fires when an input gains focus",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "how-can-you-attach-an-event-handler-to-a",
+      "topicTitle": "DOM Events and User Interaction",
+      "question": "How can you attach an event handler to an element?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "Using document.getElementById()",
+          "correct": false
+        },
+        {
+          "option": "Using addEventListener()",
+          "correct": true
+        },
+        {
+          "option": "Using innerHTML",
+          "correct": false
+        },
+        {
+          "option": "Using setTimeout()",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-of-the-following-statements-is-tru-mf40dlyt",
+      "topicTitle": "DOM Events and User Interaction",
+      "question": "Which of the following statements is true about onclick vs addEventListener('click', …)?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "onclick can attach multiple handlers",
+          "correct": false
+        },
+        {
+          "option": "addEventListener can attach multiple handlers",
+          "correct": true
+        },
+        {
+          "option": "Both behave exactly the same",
+          "correct": false
+        },
+        {
+          "option": "Neither works on buttons",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "what-is-the-purpose-of-the-eventprevent",
+      "topicTitle": "DOM Events and User Interaction",
+      "question": "What is the purpose of the event.preventDefault() method?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Stops propagation of an event",
+          "correct": false
+        },
+        {
+          "option": "Prevents the default browser behavior",
+          "correct": true
+        },
+        {
+          "option": "Removes an event listener",
+          "correct": false
+        },
+        {
+          "option": "Fires the event manually",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-method-stops-the-event-from-bubbli",
+      "topicTitle": "DOM Events and User Interaction",
+      "question": "Which method stops the event from bubbling up the DOM tree?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "stopPropagation()",
+          "correct": true
+        },
+        {
+          "option": "preventDefault()",
+          "correct": false
+        },
+        {
+          "option": "addEventListener()",
+          "correct": false
+        },
+        {
+          "option": "removeEventListener()",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "what-is-event-delegation",
+      "topicTitle": "DOM Events and User Interaction",
+      "question": "What is event delegation?",
+      "level": 3,
+      "timeAllowed": 90,
+      "options": [
+        {
+          "option": "Attaching events to multiple elements individually",
+          "correct": false
+        },
+        {
+          "option": "Attaching a single event listener to a parent element to handle events on its children",
+          "correct": true
+        },
+        {
+          "option": "Delegating a function to a third-party library",
+          "correct": false
+        },
+        {
+          "option": "Using onclick only",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-event-fires-when-an-html-element-l",
+      "topicTitle": "DOM Events and User Interaction",
+      "question": "Which event fires when an HTML element loses focus?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "blur",
+          "correct": true
+        },
+        {
+          "option": "focus",
+          "correct": false
+        },
+        {
+          "option": "change",
+          "correct": false
+        },
+        {
+          "option": "submit",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "what-is-the-difference-between-keyup-and",
+      "topicTitle": "DOM Events and User Interaction",
+      "question": "What is the difference between keyup and keydown events?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "keydown fires after key is released; keyup fires when key is pressed",
+          "correct": false
+        },
+        {
+          "option": "keydown fires when key is pressed; keyup fires after key is released",
+          "correct": true
+        },
+        {
+          "option": "Both fire at the same time",
+          "correct": false
+        },
+        {
+          "option": "Only keyup exists",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-event-is-triggered-when-the-conte",
+      "topicTitle": "DOM Events and User Interaction",
+      "question": "Which event is triggered when the content of an input element changes?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "input",
+          "correct": false
+        },
+        {
+          "option": "change",
+          "correct": true
+        },
+        {
+          "option": "submit",
+          "correct": false
+        },
+        {
+          "option": "focus",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "what-does-once-true-option-in-addeventl",
+      "topicTitle": "DOM Events and User Interaction",
+      "question": "What does once: true option in addEventListener do?",
+      "level": 3,
+      "timeAllowed": 90,
+      "options": [
+        {
+          "option": "Attaches the listener to multiple elements",
+          "correct": false
+        },
+        {
+          "option": "Executes the listener only once and then removes it",
+          "correct": true
+        },
+        {
+          "option": "Makes the listener asynchronous",
+          "correct": false
+        },
+        {
+          "option": "Prevents event bubbling",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-event-fires-when-the-page-and-its",
+      "topicTitle": "DOM Events and User Interaction",
+      "question": "Which event fires when the page and its resources are fully loaded?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "load",
+          "correct": true
+        },
+        {
+          "option": "DOMContentLoaded",
+          "correct": false
+        },
+        {
+          "option": "ready",
+          "correct": false
+        },
+        {
+          "option": "click",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-event-is-more-suitable-for-running",
+      "topicTitle": "DOM Events and User Interaction",
+      "question": "Which event is more suitable for running JavaScript after the DOM is ready but before resources like images are loaded?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "load",
+          "correct": false
+        },
+        {
+          "option": "click",
+          "correct": false
+        },
+        {
+          "option": "DOMContentLoaded",
+          "correct": true
+        },
+        {
+          "option": "submit",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "what-is-the-eventtarget-property",
+      "topicTitle": "DOM Events and User Interaction",
+      "question": "What is the event.target property?",
+      "level": 3,
+      "timeAllowed": 90,
+      "options": [
+        {
+          "option": "The parent element of the event",
+          "correct": false
+        },
+        {
+          "option": "The element on which the event occurred",
+          "correct": true
+        },
+        {
+          "option": "The type of the event",
+          "correct": false
+        },
+        {
+          "option": "The handler function",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "how-do-you-remove-an-event-listener",
+      "topicTitle": "DOM Events and User Interaction",
+      "question": "How do you remove an event listener?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "deleteEventListener()",
+          "correct": false
+        },
+        {
+          "option": "removeEventListener()",
+          "correct": true
+        },
+        {
+          "option": "detachEvent()",
+          "correct": false
+        },
+        {
+          "option": "stopPropagation()",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-of-the-following-events-can-be-can",
+      "topicTitle": "DOM Events and User Interaction",
+      "question": "Which of the following events can be canceled using preventDefault()?",
+      "level": 3,
+      "timeAllowed": 90,
+      "options": [
+        {
+          "option": "click on a disabled button",
+          "correct": false
+        },
+        {
+          "option": "submit of a form",
+          "correct": true
+        },
+        {
+          "option": "keydown of a non-character key",
+          "correct": false
+        },
+        {
+          "option": "mouseover on a div",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "what-does-the-fetch-api-return",
+      "topicTitle": "Working with Real Data",
+      "question": "What does the fetch() API return?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "A Response object",
+          "correct": false
+        },
+        {
+          "option": "A Promise",
+          "correct": true
+        },
+        {
+          "option": "JSON data directly",
+          "correct": false
+        },
+        {
+          "option": "An XMLHttpRequest",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-method-is-used-on-the-response-obj",
+      "topicTitle": "Working with Real Data",
+      "question": "Which method is used on the Response object to parse JSON?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": ".text()",
+          "correct": false
+        },
+        {
+          "option": ".json()",
+          "correct": true
+        },
+        {
+          "option": ".parse()",
+          "correct": false
+        },
+        {
+          "option": ".data()",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "json-stands-for",
+      "topicTitle": "Working with Real Data",
+      "question": "JSON stands for:",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "JavaScript Output Notation",
+          "correct": false
+        },
+        {
+          "option": "Java Source Object Notation",
+          "correct": false
+        },
+        {
+          "option": "JavaScript Object Notation",
+          "correct": true
+        },
+        {
+          "option": "Java Syntax Object Notation",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-function-converts-a-javascript-obj",
+      "topicTitle": "Working with Real Data",
+      "question": "Which function converts a JavaScript object into JSON?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "JSON.stringify()",
+          "correct": true
+        },
+        {
+          "option": "JSON.parse()",
+          "correct": false
+        },
+        {
+          "option": "toJSON()",
+          "correct": false
+        },
+        {
+          "option": "JSON.convert()",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-function-converts-json-strings-int",
+      "topicTitle": "Working with Real Data",
+      "question": "Which function converts JSON strings into JavaScript objects?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "JSON.stringify()",
+          "correct": false
+        },
+        {
+          "option": "JSON.parse()",
+          "correct": true
+        },
+        {
+          "option": "JSON.read()",
+          "correct": false
+        },
+        {
+          "option": "JSON.toObject()",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "what-is-the-default-http-method-in-fetch",
+      "topicTitle": "Working with Real Data",
+      "question": "What is the default HTTP method in fetch()?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "POST",
+          "correct": false
+        },
+        {
+          "option": "PUT",
+          "correct": false
+        },
+        {
+          "option": "GET",
+          "correct": true
+        },
+        {
+          "option": "DELETE",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "the-ok-property-of-a-response-object-is",
+      "topicTitle": "Working with Real Data",
+      "question": "The .ok property of a Response object is:",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "A Boolean indicating if the status is 200–299",
+          "correct": true
+        },
+        {
+          "option": "The same as HTTP status code",
+          "correct": false
+        },
+        {
+          "option": "Always true if request is sent",
+          "correct": false
+        },
+        {
+          "option": "Always false for errors",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-header-is-usually-sent-when-posti",
+      "topicTitle": "Working with Real Data",
+      "question": "Which header is usually sent when posting JSON data?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "\"Accept: application/xml\"",
+          "correct": false
+        },
+        {
+          "option": "\"Content-Type: application/json\"",
+          "correct": true
+        },
+        {
+          "option": "\"Content-Type: text/html\"",
+          "correct": false
+        },
+        {
+          "option": "\"Accept: text/plain\"",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "if-a-network-error-occurs-how-does-fet",
+      "topicTitle": "Working with Real Data",
+      "question": "If a network error occurs, how does fetch() behave?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "It returns null",
+          "correct": false
+        },
+        {
+          "option": "It rejects the Promise",
+          "correct": true
+        },
+        {
+          "option": "It resolves with status 500",
+          "correct": false
+        },
+        {
+          "option": "It throws a syntax error",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-of-the-following-is-a-valid-method",
+      "topicTitle": "Working with Real Data",
+      "question": "Which of the following is a valid method besides GET for fetch()?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "SEND",
+          "correct": false
+        },
+        {
+          "option": "POST",
+          "correct": true
+        },
+        {
+          "option": "RETRIEVE",
+          "correct": false
+        },
+        {
+          "option": "REQUEST",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "why-is-then-often-used-with-fetch",
+      "topicTitle": "Working with Real Data",
+      "question": "Why is .then() often used with fetch()?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "To convert JSON into XML",
+          "correct": false
+        },
+        {
+          "option": "To handle asynchronous results",
+          "correct": true
+        },
+        {
+          "option": "To block the main thread",
+          "correct": false
+        },
+        {
+          "option": "To parse headers",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "calling-responsejson-more-than-once-w",
+      "topicTitle": "Working with Real Data",
+      "question": "Calling response.json() more than once will:",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "Return cached JSON",
+          "correct": false
+        },
+        {
+          "option": "Throw an error",
+          "correct": true
+        },
+        {
+          "option": "Work only with GET requests",
+          "correct": false
+        },
+        {
+          "option": "Ignore the second call",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "why-doesnt-fetch-reject-for-404-or-50",
+      "topicTitle": "Working with Real Data",
+      "question": "Why doesn’t fetch() reject for 404 or 500 errors?",
+      "level": 3,
+      "timeAllowed": 90,
+      "options": [
+        {
+          "option": "It only rejects for JavaScript errors",
+          "correct": false
+        },
+        {
+          "option": "It always ignores status codes",
+          "correct": false
+        },
+        {
+          "option": "The request technically succeeded — the server responded",
+          "correct": true,
+          "comment": "fetch() rejects only on network failures. A 404 or 500 response still means the server was reached and responded, so the Promise resolves — you must check response.ok yourself."
+        },
+        {
+          "option": "fetch() throws a TypeError for all non-200 statuses",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "what-api-is-used-to-cancel-a-fetch-requ",
+      "topicTitle": "Working with Real Data",
+      "question": "What API is used to cancel a fetch request?",
+      "level": 3,
+      "timeAllowed": 90,
+      "options": [
+        {
+          "option": "StopRequest API",
+          "correct": false
+        },
+        {
+          "option": "AbortController API",
+          "correct": true
+        },
+        {
+          "option": "CancelFetch API",
+          "correct": false
+        },
+        {
+          "option": "Timeout API",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-of-these-best-describes-asyncawai",
+      "topicTitle": "Working with Real Data",
+      "question": "Which of these best describes async/await with fetch?",
+      "level": 3,
+      "timeAllowed": 90,
+      "options": [
+        {
+          "option": "It blocks JavaScript execution",
+          "correct": false
+        },
+        {
+          "option": "It makes async code look synchronous",
+          "correct": true,
+          "comment": "async/await is syntactic sugar over Promises. It lets you write asynchronous operations in a linear, readable style without nesting .then() chains."
+        },
+        {
+          "option": "It completely replaces Promises",
+          "correct": false
+        },
+        {
+          "option": "It only works with the Fetch API",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "what-is-a-common-cors-related-issue-when",
+      "topicTitle": "Working with Real Data",
+      "question": "What is a common CORS-related issue when using fetch?",
+      "level": 3,
+      "timeAllowed": 90,
+      "options": [
+        {
+          "option": "Fetch returns an empty object",
+          "correct": false
+        },
+        {
+          "option": "Browser blocks request to another domain",
+          "correct": true
+        },
+        {
+          "option": "JSON parsing fails",
+          "correct": false
+        },
+        {
+          "option": "Content-Type header is ignored",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "what-do-you-get-if-you-forget-await-with",
+      "topicTitle": "Working with Real Data",
+      "question": "What do you get if you forget await with response.json()?",
+      "level": 3,
+      "timeAllowed": 90,
+      "options": [
+        {
+          "option": "A JavaScript object",
+          "correct": false
+        },
+        {
+          "option": "A rejected promise",
+          "correct": false
+        },
+        {
+          "option": "A pending Promise",
+          "correct": true
+        },
+        {
+          "option": "undefined",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "why-is-json-often-preferred-over-xml-in",
+      "topicTitle": "Working with Real Data",
+      "question": "Why is JSON often preferred over XML in APIs?",
+      "level": 3,
+      "timeAllowed": 90,
+      "options": [
+        {
+          "option": "JSON is heavier than XML",
+          "correct": false
+        },
+        {
+          "option": "JSON is natively supported in JavaScript",
+          "correct": true
+        },
+        {
+          "option": "XML is not structured",
+          "correct": false
+        },
+        {
+          "option": "JSON requires more bandwidth",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-of-the-following-best-describes-fe",
+      "topicTitle": "Working with Real Data",
+      "question": "Which of the following best describes fetch() error handling?",
+      "level": 3,
+      "timeAllowed": 90,
+      "options": [
+        {
+          "option": "Always rejected for any server issue",
+          "correct": false
+        },
+        {
+          "option": "Only rejected for network-level errors",
+          "correct": true
+        },
+        {
+          "option": "Always successful regardless of server response",
+          "correct": false
+        },
+        {
+          "option": "Only works with GET requests",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "what-happens-when-jsonstringify-encou",
+      "topicTitle": "Working with Real Data",
+      "question": "What happens when JSON.stringify() encounters circular references in an object?",
+      "level": 3,
+      "timeAllowed": 90,
+      "options": [
+        {
+          "option": "Converts them into null",
+          "correct": false
+        },
+        {
+          "option": "Throws an error",
+          "correct": true
+        },
+        {
+          "option": "Ignores the references",
+          "correct": false
+        },
+        {
+          "option": "Converts into empty strings",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-type-of-web-storage-persists-even",
+      "topicTitle": "Storing Data in the Browser",
+      "question": "Which type of web storage persists even after the browser is closed and reopened?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Cookies",
+          "correct": false
+        },
+        {
+          "option": "sessionStorage",
+          "correct": false
+        },
+        {
+          "option": "localStorage",
+          "correct": true
+        },
+        {
+          "option": "Cache",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "what-is-the-maximum-size-limit-of-locals",
+      "topicTitle": "Storing Data in the Browser",
+      "question": "What is the maximum size limit of localStorage in most modern browsers?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "5–10 MB",
+          "correct": true
+        },
+        {
+          "option": "50 KB",
+          "correct": false
+        },
+        {
+          "option": "1 GB",
+          "correct": false
+        },
+        {
+          "option": "Unlimited",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "both-localstorage-and-sessionstorage-sto",
+      "topicTitle": "Storing Data in the Browser",
+      "question": "Both localStorage and sessionStorage store data in which format?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "Binary",
+          "correct": false
+        },
+        {
+          "option": "Plain text",
+          "correct": true
+        },
+        {
+          "option": "JSON only",
+          "correct": false
+        },
+        {
+          "option": "XML",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-method-is-used-to-retrieve-a-valu",
+      "topicTitle": "Storing Data in the Browser",
+      "question": "Which method is used to retrieve a value from localStorage?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "get()",
+          "correct": false
+        },
+        {
+          "option": "fetchItem()",
+          "correct": false
+        },
+        {
+          "option": "getItem()",
+          "correct": true
+        },
+        {
+          "option": "retrieve()",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "what-happens-if-you-try-to-store-an-obje",
+      "topicTitle": "Storing Data in the Browser",
+      "question": "What happens if you try to store an object directly in localStorage without converting it to JSON?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "It throws an error",
+          "correct": false
+        },
+        {
+          "option": "It stores [object Object]",
+          "correct": true
+        },
+        {
+          "option": "It stores as JSON automatically",
+          "correct": false
+        },
+        {
+          "option": "It crashes the browser",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-statement-is-true-about-sessionsto",
+      "topicTitle": "Storing Data in the Browser",
+      "question": "Which statement is true about sessionStorage and localStorage regarding scope?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "Both share data across tabs of the same domain",
+          "correct": false
+        },
+        {
+          "option": "sessionStorage is unique per tab, localStorage is shared across tabs of the same domain",
+          "correct": true
+        },
+        {
+          "option": "Both are cleared on closing the tab",
+          "correct": false
+        },
+        {
+          "option": "localStorage is unique per tab",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-method-clears-all-key-value-pairs",
+      "topicTitle": "Storing Data in the Browser",
+      "question": "Which method clears all key-value pairs from localStorage?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "clearAll()",
+          "correct": false
+        },
+        {
+          "option": "removeAll()",
+          "correct": false
+        },
+        {
+          "option": "clear()",
+          "correct": true
+        },
+        {
+          "option": "reset()",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "why-might-developers-prefer-localstorage",
+      "topicTitle": "Storing Data in the Browser",
+      "question": "Why might developers prefer localStorage over cookies for storing data?",
+      "level": 3,
+      "timeAllowed": 90,
+      "options": [
+        {
+          "option": "localStorage is sent automatically with each HTTP request",
+          "correct": false
+        },
+        {
+          "option": "localStorage offers larger storage and is not automatically sent to the server",
+          "correct": true
+        },
+        {
+          "option": "localStorage is encrypted by default",
+          "correct": false
+        },
+        {
+          "option": "localStorage is only available in incognito mode",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-situation-would-make-sessionstorag",
+      "topicTitle": "Storing Data in the Browser",
+      "question": "Which situation would make sessionStorage more appropriate than localStorage?",
+      "level": 3,
+      "timeAllowed": 90,
+      "options": [
+        {
+          "option": "Remembering user preferences permanently",
+          "correct": false
+        },
+        {
+          "option": "Storing temporary data that should reset on tab close",
+          "correct": true
+        },
+        {
+          "option": "Saving shopping cart items for later visits",
+          "correct": false
+        },
+        {
+          "option": "Offline caching of application data",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-keyword-declares-a-block-scoped-va",
+      "topicTitle": "Modern JavaScript (ES6+) Essentials",
+      "question": "Which keyword declares a block-scoped variable in ES6?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "var",
+          "correct": false
+        },
+        {
+          "option": "let",
+          "correct": true
+        },
+        {
+          "option": "function",
+          "correct": false
+        },
+        {
+          "option": "none",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "what-is-the-main-purpose-of-template-lit",
+      "topicTitle": "Modern JavaScript (ES6+) Essentials",
+      "question": "What is the main purpose of template literals?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "String concatenation only",
+          "correct": false
+        },
+        {
+          "option": "Embedding variables and expressions inside strings",
+          "correct": true
+        },
+        {
+          "option": "Declaring constants",
+          "correct": false
+        },
+        {
+          "option": "Looping through arrays",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "what-is-assigned-if-a-destructured-value",
+      "topicTitle": "Modern JavaScript (ES6+) Essentials",
+      "question": "What is assigned if a destructured value is missing?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "0",
+          "correct": false
+        },
+        {
+          "option": "null",
+          "correct": false
+        },
+        {
+          "option": "undefined",
+          "correct": true
+        },
+        {
+          "option": "false",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-symbol-represents-both-rest-and-sp",
+      "topicTitle": "Modern JavaScript (ES6+) Essentials",
+      "question": "Which symbol represents both rest and spread operators?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "&&",
+          "correct": false
+        },
+        {
+          "option": "...",
+          "correct": true
+        },
+        {
+          "option": "::",
+          "correct": false
+        },
+        {
+          "option": "=>",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-keyword-prevents-reassignment-of-a",
+      "topicTitle": "Modern JavaScript (ES6+) Essentials",
+      "question": "Which keyword prevents reassignment of a variable?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "var",
+          "correct": false
+        },
+        {
+          "option": "const",
+          "correct": true
+        },
+        {
+          "option": "let",
+          "correct": false
+        },
+        {
+          "option": "static",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-function-type-does-not-bind-its-ow",
+      "topicTitle": "Modern JavaScript (ES6+) Essentials",
+      "question": "Which function type does not bind its own this?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "Regular function",
+          "correct": false
+        },
+        {
+          "option": "Arrow function",
+          "correct": true
+        },
+        {
+          "option": "Anonymous function",
+          "correct": false
+        },
+        {
+          "option": "Generator function",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "what-happens-if-you-declare-a-const-with",
+      "topicTitle": "Modern JavaScript (ES6+) Essentials",
+      "question": "What happens if you declare a const without initialization?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "It is set to undefined",
+          "correct": false
+        },
+        {
+          "option": "It throws a syntax error",
+          "correct": true
+        },
+        {
+          "option": "It is set to null",
+          "correct": false
+        },
+        {
+          "option": "It works normally",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-operator-is-used-to-expand-an-arra",
+      "topicTitle": "Modern JavaScript (ES6+) Essentials",
+      "question": "Which operator is used to expand an array into individual arguments?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "Rest (...)",
+          "correct": false
+        },
+        {
+          "option": "Spread (...)",
+          "correct": true
+        },
+        {
+          "option": "Call",
+          "correct": false
+        },
+        {
+          "option": "Apply",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "what-happens-when-you-use-new-with-an-ar",
+      "topicTitle": "Modern JavaScript (ES6+) Essentials",
+      "question": "What happens when you use new with an arrow function?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Creates an object",
+          "correct": false
+        },
+        {
+          "option": "Returns undefined",
+          "correct": false
+        },
+        {
+          "option": "Throws an error",
+          "correct": true
+        },
+        {
+          "option": "Works like normal functions",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-loop-iterates-directly-over-values",
+      "topicTitle": "Modern JavaScript (ES6+) Essentials",
+      "question": "Which loop iterates directly over values of an array?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "for...in",
+          "correct": false
+        },
+        {
+          "option": "for...of",
+          "correct": true
+        },
+        {
+          "option": "while",
+          "correct": false
+        },
+        {
+          "option": "do...while",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "how-can-you-rename-a-property-in-object",
+      "topicTitle": "Modern JavaScript (ES6+) Essentials",
+      "question": "How can you rename a property in object destructuring?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "{prop = alias}",
+          "correct": false
+        },
+        {
+          "option": "{prop: alias}",
+          "correct": true
+        },
+        {
+          "option": "{alias = prop}",
+          "correct": false
+        },
+        {
+          "option": "{prop -> alias}",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "what-results-from-spreading-an-array-in",
+      "topicTitle": "Modern JavaScript (ES6+) Essentials",
+      "question": "What results from spreading an array into an object?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Object with numeric keys",
+          "correct": true
+        },
+        {
+          "option": "An array",
+          "correct": false
+        },
+        {
+          "option": "A string",
+          "correct": false
+        },
+        {
+          "option": "Syntax error",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-feature-allows-natural-multiline-s",
+      "topicTitle": "Modern JavaScript (ES6+) Essentials",
+      "question": "Which feature allows natural multiline strings?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Double quotes",
+          "correct": false
+        },
+        {
+          "option": "Single quotes",
+          "correct": false
+        },
+        {
+          "option": "Template literals",
+          "correct": true
+        },
+        {
+          "option": "Escape sequences",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "how-do-arrow-functions-handle-the-argume",
+      "topicTitle": "Modern JavaScript (ES6+) Essentials",
+      "question": "How do arrow functions handle the arguments object?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "They create their own",
+          "correct": false
+        },
+        {
+          "option": "They inherit from the enclosing scope",
+          "correct": true
+        },
+        {
+          "option": "They throw an error",
+          "correct": false
+        },
+        {
+          "option": "They always return undefined",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-es6-feature-allows-writing-x-y",
+      "topicTitle": "Modern JavaScript (ES6+) Essentials",
+      "question": "Which ES6 feature allows writing {x, y} instead of {x:x, y:y}?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Object property shorthand",
+          "correct": true
+        },
+        {
+          "option": "Spread operator",
+          "correct": false
+        },
+        {
+          "option": "Template literals",
+          "correct": false
+        },
+        {
+          "option": "Arrow functions",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "what-values-are-assigned-in-a-b-",
+      "topicTitle": "Modern JavaScript (ES6+) Essentials",
+      "question": "What values are assigned in [a, , b] = [1, 2, 3]?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "a=1, b=2",
+          "correct": false
+        },
+        {
+          "option": "a=2, b=3",
+          "correct": false
+        },
+        {
+          "option": "a=1, b=3",
+          "correct": true
+        },
+        {
+          "option": "a=undefined, b=3",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-of-the-following-can-forof-iter",
+      "topicTitle": "Modern JavaScript (ES6+) Essentials",
+      "question": "Which of the following can for...of iterate?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "Arrays",
+          "correct": false
+        },
+        {
+          "option": "Strings",
+          "correct": false
+        },
+        {
+          "option": "Sets",
+          "correct": false
+        },
+        {
+          "option": "All of the above",
+          "correct": true
+        }
+      ]
+    },
+    {
+      "slug": "what-is-the-benefit-of-default-parameter",
+      "topicTitle": "Modern JavaScript (ES6+) Essentials",
+      "question": "What is the benefit of default parameters in functions?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "Avoids runtime errors if arguments are missing",
+          "correct": true
+        },
+        {
+          "option": "Increases execution speed",
+          "correct": false
+        },
+        {
+          "option": "Prevents reassignment",
+          "correct": false
+        },
+        {
+          "option": "Enables template literals",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-statement-about-let-and-const-is",
+      "topicTitle": "Modern JavaScript (ES6+) Essentials",
+      "question": "Which statement about let and const is true?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "Both are function-scoped",
+          "correct": false
+        },
+        {
+          "option": "Both are block-scoped",
+          "correct": true
+        },
+        {
+          "option": "let is block-scoped, const is function-scoped",
+          "correct": false
+        },
+        {
+          "option": "Both are globally scoped",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-storage-mechanism-is-cleared-autom",
+      "topicTitle": "Storing Data in the Browser",
+      "question": "Which storage mechanism is cleared automatically when a browser tab is closed?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "localStorage",
+          "correct": false
+        },
+        {
+          "option": "sessionStorage",
+          "correct": true
+        },
+        {
+          "option": "Cookies",
+          "correct": false
+        },
+        {
+          "option": "IndexedDB",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "why-do-developers-split-javascript-code",
+      "topicTitle": "Organizing Code with Modules",
+      "question": "Why do developers split JavaScript code into separate modules?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "To make the code larger",
+          "correct": false
+        },
+        {
+          "option": "To reduce performance",
+          "correct": false
+        },
+        {
+          "option": "To improve organization and reusability",
+          "correct": true
+        },
+        {
+          "option": "To remove comments",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-keyword-is-used-to-share-functions",
+      "topicTitle": "Organizing Code with Modules",
+      "question": "Which keyword is used to share functions or variables from a module?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "share",
+          "correct": false
+        },
+        {
+          "option": "import",
+          "correct": false
+        },
+        {
+          "option": "export",
+          "correct": true
+        },
+        {
+          "option": "return",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-keyword-is-used-to-bring-in-code-f",
+      "topicTitle": "Organizing Code with Modules",
+      "question": "Which keyword is used to bring in code from another module?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "load",
+          "correct": false
+        },
+        {
+          "option": "import",
+          "correct": true
+        },
+        {
+          "option": "require",
+          "correct": false
+        },
+        {
+          "option": "include",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-html-attribute-tells-the-browser-t",
+      "topicTitle": "Organizing Code with Modules",
+      "question": "Which HTML attribute tells the browser to treat a script as an ES Module?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "type=\"javascript\"",
+          "correct": false
+        },
+        {
+          "option": "type=\"text\"",
+          "correct": false
+        },
+        {
+          "option": "type=\"module\"",
+          "correct": true
+        },
+        {
+          "option": "module=\"true\"",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "in-es-modules-how-are-imports-loaded",
+      "topicTitle": "Organizing Code with Modules",
+      "question": "In ES Modules, how are imports loaded?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "Synchronously, blocking further execution",
+          "correct": false
+        },
+        {
+          "option": "Lazily, only when first called",
+          "correct": false
+        },
+        {
+          "option": "Asynchronously, in the background",
+          "correct": true,
+          "comment": "ES Modules are loaded asynchronously, which allows bundlers to perform static analysis and tree-shaking before code runs."
+        },
+        {
+          "option": "Only at runtime after the page loads",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "what-is-the-default-value-of-this-insid",
+      "topicTitle": "Organizing Code with Modules",
+      "question": "What is the default value of this inside an ES Module?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "window",
+          "correct": false
+        },
+        {
+          "option": "globalThis",
+          "correct": false
+        },
+        {
+          "option": "undefined",
+          "correct": true
+        },
+        {
+          "option": "document",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-export-type-allows-only-one-export",
+      "topicTitle": "Organizing Code with Modules",
+      "question": "Which export type allows only one export per module?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "Named export",
+          "correct": false
+        },
+        {
+          "option": "Multiple export",
+          "correct": false
+        },
+        {
+          "option": "Default export",
+          "correct": true
+        },
+        {
+          "option": "Global export",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-module-system-was-commonly-used-i",
+      "topicTitle": "Organizing Code with Modules",
+      "question": "Which module system was commonly used in Node.js before ES Modules?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "CommonJS",
+          "correct": true
+        },
+        {
+          "option": "AMD",
+          "correct": false
+        },
+        {
+          "option": "UMD",
+          "correct": false
+        },
+        {
+          "option": "ES5",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "how-do-commonjs-modules-load-compared-to",
+      "topicTitle": "Organizing Code with Modules",
+      "question": "How do CommonJS modules load compared to ES Modules?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "Both are asynchronous",
+          "correct": false
+        },
+        {
+          "option": "CommonJS is synchronous, ES Modules are asynchronous",
+          "correct": true
+        },
+        {
+          "option": "CommonJS is faster always",
+          "correct": false
+        },
+        {
+          "option": "Both are synchronous",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "what-problem-can-circular-dependencies-c",
+      "topicTitle": "Organizing Code with Modules",
+      "question": "What problem can circular dependencies cause in modules?",
+      "level": 3,
+      "timeAllowed": 90,
+      "options": [
+        {
+          "option": "Code duplication",
+          "correct": false
+        },
+        {
+          "option": "Syntax errors",
+          "correct": false
+        },
+        {
+          "option": "Undefined or incomplete imports",
+          "correct": true
+        },
+        {
+          "option": "Too many exports",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "how-can-es-modules-be-dynamically-import",
+      "topicTitle": "Organizing Code with Modules",
+      "question": "How can ES Modules be dynamically imported at runtime?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "require()",
+          "correct": false
+        },
+        {
+          "option": "load()",
+          "correct": false
+        },
+        {
+          "option": "import()",
+          "correct": true
+        },
+        {
+          "option": "include()",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "what-is-the-scope-of-variables-inside-an",
+      "topicTitle": "Organizing Code with Modules",
+      "question": "What is the scope of variables inside an ES Module?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Global scope",
+          "correct": false
+        },
+        {
+          "option": "Module scope",
+          "correct": true
+        },
+        {
+          "option": "Block scope only",
+          "correct": false
+        },
+        {
+          "option": "Function scope only",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "what-extension-can-nodejs-use-for-es-mo",
+      "topicTitle": "Organizing Code with Modules",
+      "question": "What extension can Node.js use for ES Modules?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": ".js only",
+          "correct": false
+        },
+        {
+          "option": ".es",
+          "correct": false
+        },
+        {
+          "option": ".mjs",
+          "correct": true
+        },
+        {
+          "option": ".esm",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "why-are-es-modules-preferred-over-common",
+      "topicTitle": "Organizing Code with Modules",
+      "question": "Why are ES Modules preferred over CommonJS for bundling?",
+      "level": 3,
+      "timeAllowed": 90,
+      "options": [
+        {
+          "option": "Faster execution always",
+          "correct": false
+        },
+        {
+          "option": "Support for synchronous loading",
+          "correct": false
+        },
+        {
+          "option": "Static analysis and tree-shaking",
+          "correct": true
+        },
+        {
+          "option": "Easier syntax",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-tool-bundles-multiple-modules-int",
+      "topicTitle": "Organizing Code with Modules",
+      "question": "Which tool bundles multiple modules into one optimized file?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "Node",
+          "correct": false
+        },
+        {
+          "option": "Webpack",
+          "correct": true
+        },
+        {
+          "option": "Express",
+          "correct": false
+        },
+        {
+          "option": "Babel",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "what-happens-when-a-module-is-imported",
+      "topicTitle": "Organizing Code with Modules",
+      "question": "What happens when a module is imported multiple times?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "It is executed again each time",
+          "correct": false
+        },
+        {
+          "option": "It is cached and reused",
+          "correct": true
+        },
+        {
+          "option": "It throws an error",
+          "correct": false
+        },
+        {
+          "option": "It creates duplicate variables",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "what-is-tree-shaking-in-javascript-modu",
+      "topicTitle": "Organizing Code with Modules",
+      "question": "What is tree-shaking in JavaScript modules?",
+      "level": 3,
+      "timeAllowed": 90,
+      "options": [
+        {
+          "option": "Compressing files",
+          "correct": false
+        },
+        {
+          "option": "Removing unused exports",
+          "correct": true
+        },
+        {
+          "option": "Splitting modules into trees",
+          "correct": false
+        },
+        {
+          "option": "Importing all functions",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "can-es-modules-be-used-directly-in-brows",
+      "topicTitle": "Organizing Code with Modules",
+      "question": "Can ES Modules be used directly in browsers without bundlers?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "No, they need Webpack",
+          "correct": false
+        },
+        {
+          "option": "Yes, with type=\"module\"",
+          "correct": true
+        },
+        {
+          "option": "Only in Node.js",
+          "correct": false
+        },
+        {
+          "option": "Only with Babel",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "why-might-named-exports-be-preferred-in",
+      "topicTitle": "Organizing Code with Modules",
+      "question": "Why might named exports be preferred in large projects?",
+      "level": 3,
+      "timeAllowed": 90,
+      "options": [
+        {
+          "option": "They are faster",
+          "correct": false
+        },
+        {
+          "option": "They reduce bundle size",
+          "correct": false
+        },
+        {
+          "option": "They improve readability and refactoring",
+          "correct": true
+        },
+        {
+          "option": "They require fewer imports",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-of-the-following-is-true-about-es",
+      "topicTitle": "Organizing Code with Modules",
+      "question": "Which of the following is true about ES Modules?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "They always run in non-strict mode",
+          "correct": false
+        },
+        {
+          "option": "Variables are global by default",
+          "correct": false
+        },
+        {
+          "option": "They run in strict mode automatically",
+          "correct": true
+        },
+        {
+          "option": "They don’t support imports",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-keyword-is-used-to-handle-exceptio",
+      "topicTitle": "Basic Error Handling",
+      "question": "Which keyword is used to handle exceptions in JavaScript?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "catch",
+          "correct": true
+        },
+        {
+          "option": "handle",
+          "correct": false
+        },
+        {
+          "option": "except",
+          "correct": false
+        },
+        {
+          "option": "error",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-of-the-following-is-not-a-built-in",
+      "topicTitle": "Basic Error Handling",
+      "question": "Which of the following is NOT a built-in error type in JavaScript?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "EvalError",
+          "correct": false
+        },
+        {
+          "option": "TypeError",
+          "correct": false
+        },
+        {
+          "option": "LogicError",
+          "correct": true
+        },
+        {
+          "option": "URIError",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "how-do-you-create-a-custom-error-in-java",
+      "topicTitle": "Basic Error Handling",
+      "question": "How do you create a custom error in JavaScript?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "new Exception(\"message\")",
+          "correct": false
+        },
+        {
+          "option": "throw \"message\"",
+          "correct": false
+        },
+        {
+          "option": "throw new Error(\"message\")",
+          "correct": true
+        },
+        {
+          "option": "throw Error.create(\"message\")",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "what-happens-if-an-error-is-thrown-insid",
+      "topicTitle": "Basic Error Handling",
+      "question": "What happens if an error is thrown inside a try block but there’s no catch?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "The script stops immediately.",
+          "correct": false
+        },
+        {
+          "option": "The error is ignored.",
+          "correct": false
+        },
+        {
+          "option": "The error propagates up the call stack.",
+          "correct": true
+        },
+        {
+          "option": "finally block executes and script ends normally.",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-of-these-errors-occurs-when-you-ca",
+      "topicTitle": "Basic Error Handling",
+      "question": "Which of these errors occurs when you call a method on a non-object type?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "RangeError",
+          "correct": false
+        },
+        {
+          "option": "ReferenceError",
+          "correct": false
+        },
+        {
+          "option": "SyntaxError",
+          "correct": false
+        },
+        {
+          "option": "TypeError",
+          "correct": true
+        }
+      ]
+    },
+    {
+      "slug": "which-statement-about-throw-in-javascri",
+      "topicTitle": "Basic Error Handling",
+      "question": "Which statement about throw in JavaScript is true?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "Only Error objects can be thrown.",
+          "correct": false
+        },
+        {
+          "option": "You can throw any value (string, number, object).",
+          "correct": true
+        },
+        {
+          "option": "Only strings can be thrown.",
+          "correct": false
+        },
+        {
+          "option": "You cannot throw custom errors.",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "what-is-the-correct-way-to-re-throw-an-e",
+      "topicTitle": "Basic Error Handling",
+      "question": "What is the correct way to re-throw an error inside a catch block?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "catch (e) { throw e; }",
+          "correct": true
+        },
+        {
+          "option": "catch (e) { return e; }",
+          "correct": false
+        },
+        {
+          "option": "catch (e) { raise e; }",
+          "correct": false
+        },
+        {
+          "option": "catch (e) { throw new e; }",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "in-nodejs-how-do-you-catch-unhandled",
+      "topicTitle": "Basic Error Handling",
+      "question": "In Node.js, how do you catch unhandled promise rejections globally?",
+      "level": 3,
+      "timeAllowed": 90,
+      "options": [
+        {
+          "option": "process.on(\"promiseError\")",
+          "correct": false
+        },
+        {
+          "option": "window\\.onunhandledrejection",
+          "correct": false
+        },
+        {
+          "option": "process.on(\"unhandledRejection\")",
+          "correct": true
+        },
+        {
+          "option": "Promise.catchGlobal",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-of-these-errors-is-thrown-when-a",
+      "topicTitle": "Basic Error Handling",
+      "question": "Which of these errors is thrown when a number is outside the valid range?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "RangeError",
+          "correct": true
+        },
+        {
+          "option": "ReferenceError",
+          "correct": false
+        },
+        {
+          "option": "OverflowError",
+          "correct": false
+        },
+        {
+          "option": "TypeError",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-mechanism-ensures-resources-are-re",
+      "topicTitle": "Basic Error Handling",
+      "question": "Which mechanism ensures resources are released even if an error occurs?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "throw",
+          "correct": false
+        },
+        {
+          "option": "finally",
+          "correct": true
+        },
+        {
+          "option": "catch",
+          "correct": false
+        },
+        {
+          "option": "default",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "what-is-the-main-difference-between-try",
+      "topicTitle": "Basic Error Handling",
+      "question": "What is the main difference between try...catch and Promise.catch()?",
+      "level": 3,
+      "timeAllowed": 90,
+      "options": [
+        {
+          "option": "try...catch works only for async code.",
+          "correct": false
+        },
+        {
+          "option": "Promise.catch() works only for synchronous code.",
+          "correct": false
+        },
+        {
+          "option": "try...catch handles synchronous errors, Promise.catch() handles async errors.",
+          "correct": true
+        },
+        {
+          "option": "They are interchangeable in all cases.",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-property-of-an-error-object-contai",
+      "topicTitle": "Basic Error Handling",
+      "question": "Which property of an Error object contains the stack trace?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "error.line",
+          "correct": false
+        },
+        {
+          "option": "error.trace",
+          "correct": false
+        },
+        {
+          "option": "error.stack",
+          "correct": true
+        },
+        {
+          "option": "error.location",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-of-the-following-is-the-default-pa",
+      "topicTitle": "Basics of Package Management (npm/yarn)",
+      "question": "Which of the following is the default package manager for Node.js?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Yarn",
+          "correct": false
+        },
+        {
+          "option": "npm",
+          "correct": true
+        },
+        {
+          "option": "pnpm",
+          "correct": false
+        },
+        {
+          "option": "Bun",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-file-in-a-nodejs-project-stores-m",
+      "topicTitle": "Basics of Package Management (npm/yarn)",
+      "question": "Which file in a Node.js project stores metadata and dependencies?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "index.js",
+          "correct": false
+        },
+        {
+          "option": "package.json",
+          "correct": true
+        },
+        {
+          "option": "node\\_modules.json",
+          "correct": false
+        },
+        {
+          "option": "dependencies.json",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-command-installs-all-dependencies",
+      "topicTitle": "Basics of Package Management (npm/yarn)",
+      "question": "Which command installs all dependencies listed in package.json?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "npm start",
+          "correct": false
+        },
+        {
+          "option": "npm install",
+          "correct": true
+        },
+        {
+          "option": "npm init",
+          "correct": false
+        },
+        {
+          "option": "npm build",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-javascript-package-manager-introdu",
+      "topicTitle": "Basics of Package Management (npm/yarn)",
+      "question": "Which JavaScript package manager introduced the concept of \"workspaces\"?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "npm",
+          "correct": false
+        },
+        {
+          "option": "Yarn",
+          "correct": true
+        },
+        {
+          "option": "pnpm",
+          "correct": false
+        },
+        {
+          "option": "Bun",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "how-does-pnpm-save-disk-space-compared-t",
+      "topicTitle": "Basics of Package Management (npm/yarn)",
+      "question": "How does pnpm save disk space compared to npm or Yarn (classic)?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "By compressing node\\_modules",
+          "correct": false
+        },
+        {
+          "option": "By using hard links and symlinks",
+          "correct": true
+        },
+        {
+          "option": "By storing only devDependencies",
+          "correct": false
+        },
+        {
+          "option": "By using a cloud registry",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-of-the-following-commands-adds-a-p",
+      "topicTitle": "Basics of Package Management (npm/yarn)",
+      "question": "Which of the following commands adds a package as a development dependency using npm?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "npm install eslint",
+          "correct": false
+        },
+        {
+          "option": "npm install eslint --save",
+          "correct": false
+        },
+        {
+          "option": "npm install eslint --save-dev",
+          "correct": true
+        },
+        {
+          "option": "npm install eslint -g",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-package-manager-is-known-for-its-u",
+      "topicTitle": "Basics of Package Management (npm/yarn)",
+      "question": "Which package manager is known for its ultra-fast performance due to being written in Zig?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "npm",
+          "correct": false
+        },
+        {
+          "option": "Yarn",
+          "correct": false
+        },
+        {
+          "option": "Bun",
+          "correct": true
+        },
+        {
+          "option": "pnpm",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "what-is-the-main-advantage-of-yarns-plu",
+      "topicTitle": "Basics of Package Management (npm/yarn)",
+      "question": "What is the main advantage of Yarn’s Plug’n’Play (PnP) mode?",
+      "level": 3,
+      "timeAllowed": 90,
+      "options": [
+        {
+          "option": "It removes the need for node\\_modules",
+          "correct": true
+        },
+        {
+          "option": "It makes installs slower but safer",
+          "correct": false
+        },
+        {
+          "option": "It uses only global dependencies",
+          "correct": false
+        },
+        {
+          "option": "It works only with pnpm",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-of-these-commands-initializes-a-ne",
+      "topicTitle": "Basics of Package Management (npm/yarn)",
+      "question": "Which of these commands initializes a new npm project?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "npm init",
+          "correct": true
+        },
+        {
+          "option": "npm create",
+          "correct": false
+        },
+        {
+          "option": "npm generate",
+          "correct": false
+        },
+        {
+          "option": "npm new",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-npm-command-is-used-to-install-a-p",
+      "topicTitle": "Basics of Package Management (npm/yarn)",
+      "question": "Which npm command is used to install a package globally?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "npm install lodash",
+          "correct": false
+        },
+        {
+          "option": "npm install lodash -g",
+          "correct": true
+        },
+        {
+          "option": "npm install lodash --save",
+          "correct": false
+        },
+        {
+          "option": "npm install lodash --global-dev",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "what-does-the-npx-command-do",
+      "topicTitle": "Basics of Package Management (npm/yarn)",
+      "question": "What does the npx command do?",
+      "level": 2,
+      "timeAllowed": 75,
+      "options": [
+        {
+          "option": "Installs Node.js",
+          "correct": false
+        },
+        {
+          "option": "Executes npm packages without installing globally",
+          "correct": true
+        },
+        {
+          "option": "Runs npm in debug mode",
+          "correct": false
+        },
+        {
+          "option": "Creates a new project template",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-of-the-following-package-managers",
+      "topicTitle": "Basics of Package Management (npm/yarn)",
+      "question": "Which of the following package managers is backed by Facebook (Meta)?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "npm",
+          "correct": false
+        },
+        {
+          "option": "Yarn",
+          "correct": true
+        },
+        {
+          "option": "pnpm",
+          "correct": false
+        },
+        {
+          "option": "Bun",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-package-manager-supports-hoisting",
+      "topicTitle": "Basics of Package Management (npm/yarn)",
+      "question": "Which package manager supports \"hoisting\" in monorepos?",
+      "level": 3,
+      "timeAllowed": 90,
+      "options": [
+        {
+          "option": "Only Yarn",
+          "correct": false
+        },
+        {
+          "option": "Only npm",
+          "correct": false
+        },
+        {
+          "option": "npm, Yarn, pnpm",
+          "correct": true
+        },
+        {
+          "option": "None of them",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "in-npm-what-is-the-purpose-of-the-packa",
+      "topicTitle": "Basics of Package Management (npm/yarn)",
+      "question": "In npm, what is the purpose of the package-lock.json file?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "It replaces package.json",
+          "correct": false
+        },
+        {
+          "option": "It locks dependencies to specific versions",
+          "correct": true
+        },
+        {
+          "option": "It contains only devDependencies",
+          "correct": false
+        },
+        {
+          "option": "It is optional and unused",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-of-these-package-managers-provides",
+      "topicTitle": "Basics of Package Management (npm/yarn)",
+      "question": "Which of these package managers provides a built-in store command to manage global content?",
+      "level": 3,
+      "timeAllowed": 90,
+      "options": [
+        {
+          "option": "npm",
+          "correct": false
+        },
+        {
+          "option": "Yarn",
+          "correct": false
+        },
+        {
+          "option": "Bun",
+          "correct": false
+        },
+        {
+          "option": "pnpm",
+          "correct": true
+        }
+      ]
+    },
+    {
+      "slug": "what-type-of-error-occurs-when-a-variabl",
+      "topicTitle": "Basic Error Handling",
+      "question": "What type of error occurs when a variable is used before declaration?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "SyntaxError",
+          "correct": false
+        },
+        {
+          "option": "ReferenceError",
+          "correct": true
+        },
+        {
+          "option": "TypeError",
+          "correct": false
+        },
+        {
+          "option": "RangeError",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-block-in-a-trycatchfinally-s",
+      "topicTitle": "Basic Error Handling",
+      "question": "Which block in a try...catch...finally statement always executes?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "try",
+          "correct": false
+        },
+        {
+          "option": "catch",
+          "correct": false
+        },
+        {
+          "option": "finally",
+          "correct": true
+        },
+        {
+          "option": "throw",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-keyword-is-used-to-manually-trigge",
+      "topicTitle": "Basic Error Handling",
+      "question": "Which keyword is used to manually trigger an exception in JavaScript?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "raise",
+          "correct": false
+        },
+        {
+          "option": "throw",
+          "correct": true
+        },
+        {
+          "option": "error",
+          "correct": false
+        },
+        {
+          "option": "emit",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "which-function-can-be-used-to-catch-glob",
+      "topicTitle": "Basic Error Handling",
+      "question": "Which function can be used to catch global runtime errors in browsers?",
+      "level": 3,
+      "timeAllowed": 90,
+      "options": [
+        {
+          "option": "window\\.onerror",
+          "correct": true
+        },
+        {
+          "option": "document.oncrash",
+          "correct": false
+        },
+        {
+          "option": "process.error",
+          "correct": false
+        },
+        {
+          "option": "globalThis.errorHandler",
+          "correct": false
+        }
+      ]
+    }
+  ]
+}

@@ -48,11 +48,10 @@ export class PermissionsGuard implements CanActivate {
             resourceId = +request.params.id || +request.body.resourceId || null;
             hasPermission = await this.permissionService.findOneByUser(user.id, permission, resourceType, resourceId);
         }
-        console.log('hasPermission', { user, permission, resourceType, resourceId });
         if (!hasPermission) {
             throw new AppCustomException(
                 HttpStatus.FORBIDDEN,
-                `You do not have sufficient permissions to take this action. Request grant for ${permission}. Please contact admin.`,
+                `You do not have sufficient permission to request this action. Please contact admin.`,
             );
         }
 

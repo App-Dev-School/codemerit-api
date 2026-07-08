@@ -1,0 +1,375 @@
+{
+  "subjectSlug": "internet-digital",
+  "questions": [
+
+    { "topicTitle": "Web Browsers & Browsing", "question": "Which of the following is a web browser?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Google Chrome", "correct": true, "comment": "Web browsers include Chrome, Edge, Firefox, and Safari. Google is a search engine, not a browser." },
+      { "option": "Microsoft Word", "correct": false },
+      { "option": "Adobe Photoshop", "correct": false },
+      { "option": "Windows Explorer (File Explorer)", "correct": false }
+    ]},
+    { "topicTitle": "Web Browsers & Browsing", "question": "What does the address bar in a browser do?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Shows and accepts the web address (URL) of the current page", "correct": true, "comment": "Type a URL or search term in the address bar to navigate. Ctrl+L moves focus there quickly." },
+      { "option": "Stores all your downloaded files", "correct": false },
+      { "option": "Shows the computer's IP address", "correct": false },
+      { "option": "Connects the browser to a VPN automatically", "correct": false }
+    ]},
+    { "topicTitle": "Web Browsers & Browsing", "question": "What does Ctrl + T do in a web browser?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Opens a new tab", "correct": true, "comment": "Ctrl+T = new tab. Ctrl+W closes the current tab. Ctrl+N opens a new window." },
+      { "option": "Opens a new browser window", "correct": false },
+      { "option": "Opens the browser history", "correct": false },
+      { "option": "Translates the current page", "correct": false }
+    ]},
+    { "topicTitle": "Web Browsers & Browsing", "question": "Browser bookmarks (favourites) are used to:", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Save links to websites you want to revisit easily", "correct": true, "comment": "Bookmarks store URLs for quick access — no need to remember or retype the full address." },
+      { "option": "Remember your login passwords automatically", "correct": false },
+      { "option": "Download website content to your hard drive", "correct": false },
+      { "option": "Block unwanted pop-up advertisements", "correct": false }
+    ]},
+    { "topicTitle": "Web Browsers & Browsing", "question": "Why does 'HTTPS' in a web address matter?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "It means the connection is encrypted and more secure", "correct": true, "comment": "The 'S' in HTTPS stands for Secure. Avoid entering sensitive data on HTTP-only sites." },
+      { "option": "It means the website loads faster than HTTP", "correct": false },
+      { "option": "It confirms the website is government-approved", "correct": false },
+      { "option": "It means you need a password to view the page", "correct": false }
+    ]},
+    { "topicTitle": "Web Browsers & Browsing", "question": "What is browser history used for?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "To show a list of websites you have previously visited", "correct": true, "comment": "History (Ctrl+H) helps you find a page you visited before. You can clear it for privacy." },
+      { "option": "To show all websites on the internet", "correct": false },
+      { "option": "To block websites from loading again", "correct": false },
+      { "option": "To record your typed passwords", "correct": false }
+    ]},
+
+    { "topicTitle": "Search Engines & Research", "question": "What is a search engine?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "A tool that finds and lists web pages matching your query", "correct": true, "comment": "Search engines like Google, Bing, and DuckDuckGo index billions of pages and rank results by relevance." },
+      { "option": "A program that blocks harmful websites", "correct": false },
+      { "option": "A type of web browser for finding files", "correct": false },
+      { "option": "The part of the browser that translates foreign languages", "correct": false }
+    ]},
+    { "topicTitle": "Search Engines & Research", "question": "Using quotation marks around a phrase in Google, e.g. \"digital literacy\", will:", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Return results that contain that exact phrase", "correct": true, "comment": "Quotes force an exact phrase match, reducing irrelevant results — a key search refinement technique." },
+      { "option": "Search only within Wikipedia articles", "correct": false },
+      { "option": "Find images related to the phrase only", "correct": false },
+      { "option": "Translate the phrase into multiple languages", "correct": false }
+    ]},
+    { "topicTitle": "Search Engines & Research", "question": "How can you tell the difference between a Google advertisement and an organic search result?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Ads are labelled 'Sponsored' and appear at the top or bottom of results", "correct": true, "comment": "Google labels paid results as 'Sponsored'. Organic results rank by relevance, not payment." },
+      { "option": "Ads appear only in the Images tab", "correct": false },
+      { "option": "Ads have a different font colour — always red", "correct": false },
+      { "option": "Organic results are displayed with a lock icon", "correct": false }
+    ]},
+    { "topicTitle": "Search Engines & Research", "question": "Which of these indicates a trustworthy source of information online?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "An official government (.gov) or established academic (.edu) website", "correct": true, "comment": "Authoritative sites have clear authorship, citations, and institutional accountability." },
+      { "option": "A website that ranks first in every Google search", "correct": false },
+      { "option": "A website with lots of pop-up advertisements", "correct": false },
+      { "option": "Any website that ends in .com", "correct": false }
+    ]},
+    { "topicTitle": "Search Engines & Research", "question": "Adding 'site:' to a Google search (e.g. site:bbc.com climate) will:", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Limit results to only that specific website", "correct": true, "comment": "The 'site:' operator is an advanced filter — handy for searching within a trusted source." },
+      { "option": "Create a shortcut to that website in your browser", "correct": false },
+      { "option": "Check if that website is currently online", "correct": false },
+      { "option": "Search all websites except that one", "correct": false }
+    ]},
+    { "topicTitle": "Search Engines & Research", "question": "When should you question information you find online?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Always — verify claims with multiple credible sources", "correct": true, "comment": "Anyone can publish online. Cross-referencing with authoritative sources is good digital research practice." },
+      { "option": "Only when the website looks poorly designed", "correct": false },
+      { "option": "Never — published content is always checked for accuracy", "correct": false },
+      { "option": "Only for medical and financial information", "correct": false }
+    ]},
+
+    { "topicTitle": "Email Fundamentals", "question": "Which of the following is a valid email address format?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "username@domain.com", "correct": true, "comment": "An email address requires a local part, the @ symbol, and a domain name with a valid extension." },
+      { "option": "username//domain.com", "correct": false },
+      { "option": "www.username.domain.com", "correct": false },
+      { "option": "username:domain@com", "correct": false }
+    ]},
+    { "topicTitle": "Email Fundamentals", "question": "What does CC stand for in an email?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Carbon Copy — sends a visible copy to another recipient", "correct": true, "comment": "CC recipients are visible to all. BCC (Blind Carbon Copy) hides the extra recipients from others." },
+      { "option": "Confidential Content — marks the email private", "correct": false },
+      { "option": "Confirmed Contact — verifies the recipient's address", "correct": false },
+      { "option": "Computer Communication — a technical header field", "correct": false }
+    ]},
+    { "topicTitle": "Email Fundamentals", "question": "Where do new incoming emails appear?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "The Inbox", "correct": true, "comment": "Inbox = new mail. Sent = sent items. Drafts = unsent. Trash/Bin = deleted. Spam = junk." },
+      { "option": "The Drafts folder", "correct": false },
+      { "option": "The Outbox", "correct": false },
+      { "option": "The Spam folder", "correct": false }
+    ]},
+    { "topicTitle": "Email Fundamentals", "question": "An email attachment is:", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "A file (document, image, etc.) sent alongside the email body", "correct": true, "comment": "Most services limit attachments to 25 MB. For larger files, share a cloud storage link instead." },
+      { "option": "A link to a website embedded in the email body", "correct": false },
+      { "option": "The email signature at the bottom of the message", "correct": false },
+      { "option": "A request for a meeting sent automatically", "correct": false }
+    ]},
+    { "topicTitle": "Email Fundamentals", "question": "What is 'Reply All' and when should you use it carefully?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "It sends your reply to everyone on the thread — avoid for private replies", "correct": true, "comment": "Reply All is appropriate for group discussions. For personal replies, use Reply (to sender only)." },
+      { "option": "It sends your email to all contacts in your address book", "correct": false },
+      { "option": "It schedules the reply for a later time", "correct": false },
+      { "option": "It marks the email as urgent for all recipients", "correct": false }
+    ]},
+    { "topicTitle": "Email Fundamentals", "question": "What is a spam email?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Unwanted bulk messages often advertising or attempting scams", "correct": true, "comment": "Spam clogs inboxes and can contain phishing links or malware. Never click links in spam." },
+      { "option": "An email that is too large to be delivered", "correct": false },
+      { "option": "An email sent to the wrong person by mistake", "correct": false },
+      { "option": "An email with no subject line", "correct": false }
+    ]},
+
+    { "topicTitle": "Cloud Storage & File Sharing", "question": "Which of the following is a cloud storage service?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Google Drive", "correct": true, "comment": "Cloud storage services include Google Drive, Microsoft OneDrive, and Dropbox." },
+      { "option": "USB flash drive", "correct": false },
+      { "option": "DVD-ROM disc", "correct": false },
+      { "option": "The SSD inside your computer", "correct": false }
+    ]},
+    { "topicTitle": "Cloud Storage & File Sharing", "question": "What is the main advantage of cloud storage over a USB flash drive?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Files can be accessed from any device with internet, and shared with others", "correct": true, "comment": "Cloud storage enables remote access and real-time collaboration — no physical device needed." },
+      { "option": "Cloud storage is faster to read and write than a USB drive", "correct": false },
+      { "option": "Cloud storage works without an internet connection", "correct": false },
+      { "option": "Cloud storage can only hold documents, not images", "correct": false }
+    ]},
+    { "topicTitle": "Cloud Storage & File Sharing", "question": "What does 'View Only' permission mean when sharing a Google Drive file?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "The recipient can read but cannot edit or comment on the file", "correct": true, "comment": "Drive has three sharing levels: Viewer (read only), Commenter (add notes), Editor (full changes)." },
+      { "option": "The file is visible only while the owner is online", "correct": false },
+      { "option": "The file deletes itself after it is viewed once", "correct": false },
+      { "option": "The recipient must download the file to read it", "correct": false }
+    ]},
+    { "topicTitle": "Cloud Storage & File Sharing", "question": "Which tool is best for collaborating on a document with colleagues in real time?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Google Docs or Microsoft 365 Online (collaborative editing)", "correct": true, "comment": "These tools show live edits from all collaborators simultaneously, preventing version conflicts." },
+      { "option": "Sending a .docx file as an email attachment each time", "correct": false },
+      { "option": "Printing the document and mailing it to each colleague", "correct": false },
+      { "option": "Saving the file to a USB drive and passing it around", "correct": false }
+    ]},
+    { "topicTitle": "Cloud Storage & File Sharing", "question": "How do you share a file from Google Drive with someone outside your organisation?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Right-click the file, choose Share, and enter their email or generate a link", "correct": true, "comment": "Google Drive lets you share by email address or by generating a shareable link with chosen permissions." },
+      { "option": "Download the file and send it by post", "correct": false },
+      { "option": "You cannot share with people outside your organisation", "correct": false },
+      { "option": "Upload the file to an FTP server first", "correct": false }
+    ]},
+    { "topicTitle": "Cloud Storage & File Sharing", "question": "What happens to a file on Google Drive when you delete it?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "It moves to the Trash and can be restored within 30 days", "correct": true, "comment": "Google Drive Trash retains deleted files for 30 days before permanent deletion." },
+      { "option": "It is permanently deleted immediately from the internet", "correct": false },
+      { "option": "It is sent to all people you previously shared it with", "correct": false },
+      { "option": "It is converted to a read-only file automatically", "correct": false }
+    ]},
+
+    { "topicTitle": "Video Conferencing", "question": "Which of the following is a video conferencing application?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Microsoft Teams", "correct": true, "comment": "Video conferencing tools include Microsoft Teams, Zoom, and Google Meet." },
+      { "option": "Microsoft Excel", "correct": false },
+      { "option": "Adobe Reader", "correct": false },
+      { "option": "Google Chrome", "correct": false }
+    ]},
+    { "topicTitle": "Video Conferencing", "question": "What should you do before joining a professional video call?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Test your microphone and camera, and ensure a quiet background", "correct": true, "comment": "Technical checks before a call prevent disruptions and show professionalism." },
+      { "option": "Turn off your microphone permanently to avoid background noise", "correct": false },
+      { "option": "Set your status to 'Busy' so no one knows you are on a call", "correct": false },
+      { "option": "Use a phone call instead — video is not professional", "correct": false }
+    ]},
+    { "topicTitle": "Video Conferencing", "question": "What does 'Screen Share' do in Zoom or Teams?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Shows your computer screen to all meeting participants", "correct": true, "comment": "Screen sharing is used to present documents, slides, or demonstrate software to attendees." },
+      { "option": "Sends a copy of your screen as an email attachment", "correct": false },
+      { "option": "Takes a screenshot and saves it to Google Drive", "correct": false },
+      { "option": "Blocks other participants from seeing your video", "correct": false }
+    ]},
+    { "topicTitle": "Video Conferencing", "question": "What is the purpose of the 'Mute' button during a video call?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "To silence your microphone so others cannot hear your background noise", "correct": true, "comment": "Muting when not speaking is good meeting etiquette — it reduces distracting background sounds." },
+      { "option": "To turn off your camera so others cannot see you", "correct": false },
+      { "option": "To leave the meeting without notifying others", "correct": false },
+      { "option": "To record the meeting secretly", "correct": false }
+    ]},
+    { "topicTitle": "Video Conferencing", "question": "What does it mean when a Zoom meeting has a 'Waiting Room' enabled?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Participants must wait for the host to admit them before joining", "correct": true, "comment": "The Waiting Room prevents uninvited attendees from joining automatically — a security feature." },
+      { "option": "The meeting has not started yet and will begin automatically", "correct": false },
+      { "option": "Your internet connection is too slow to join the meeting", "correct": false },
+      { "option": "You need to install a software update before joining", "correct": false }
+    ]},
+    { "topicTitle": "Video Conferencing", "question": "What is a virtual background in a video call?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "A digital image placed behind you to hide your actual surroundings", "correct": true, "comment": "Virtual backgrounds maintain privacy and professionalism when working from home." },
+      { "option": "A setting that records the call and sends it as background audio", "correct": false },
+      { "option": "A screen that shows all meeting participants at once", "correct": false },
+      { "option": "An automatic transcript of what everyone says", "correct": false }
+    ]},
+
+    { "topicTitle": "Online Communication Tools", "question": "What is Slack primarily used for?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Team messaging and collaboration through channels and direct messages", "correct": true, "comment": "Slack organises team communication into channels (topics) and direct messages for quick conversations." },
+      { "option": "Video calls only — it replaces Zoom for meetings", "correct": false },
+      { "option": "Sending formatted email newsletters to customers", "correct": false },
+      { "option": "Managing databases and project files", "correct": false }
+    ]},
+    { "topicTitle": "Online Communication Tools", "question": "What is an appropriate rule for professional online messaging?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Use clear, polite language and reply within a reasonable time", "correct": true, "comment": "Professional digital communication: no all-caps (shouting), clear subject, timely response." },
+      { "option": "Use as many abbreviations as possible to save time", "correct": false },
+      { "option": "Write in all capital letters to show emphasis", "correct": false },
+      { "option": "Never use punctuation — it slows down typing", "correct": false }
+    ]},
+    { "topicTitle": "Online Communication Tools", "question": "When is email a better choice than instant messaging?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "For formal, detailed communication that needs a written record", "correct": true, "comment": "Email is best for formal requests, decisions, or anything that needs to be documented." },
+      { "option": "For quick back-and-forth conversations in real time", "correct": false },
+      { "option": "When you need to discuss something in under 30 seconds", "correct": false },
+      { "option": "When chatting with friends outside work", "correct": false }
+    ]},
+    { "topicTitle": "Online Communication Tools", "question": "What does '@mentioning' someone in a Slack message do?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Sends them a notification that they were specifically mentioned", "correct": true, "comment": "@ mentions ensure the right person is alerted. @channel notifies everyone in a channel." },
+      { "option": "Sends them an email copy of the message automatically", "correct": false },
+      { "option": "Creates a video call with that person immediately", "correct": false },
+      { "option": "Adds them as a co-worker in your contacts list", "correct": false }
+    ]},
+    { "topicTitle": "Online Communication Tools", "question": "WhatsApp Web allows you to:", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "Use WhatsApp from your computer browser linked to your phone", "correct": true, "comment": "WhatsApp Web mirrors your phone's WhatsApp — convenient for typing longer messages on a keyboard." },
+      { "option": "Create a WhatsApp account without a phone number", "correct": false },
+      { "option": "Send messages that automatically delete after 10 seconds", "correct": false },
+      { "option": "Make international calls for free without WiFi", "correct": false }
+    ]},
+    { "topicTitle": "Online Communication Tools", "question": "What is the purpose of a Slack 'channel'?", "level": 1, "timeAllowed": 60, "options": [
+      { "option": "A shared space for a specific team or topic to keep conversations organised", "correct": true, "comment": "Channels (e.g. #marketing, #general) keep conversations sorted so messages reach the right people." },
+      { "option": "A private video call between two people", "correct": false },
+      { "option": "A folder for storing shared documents", "correct": false },
+      { "option": "A notification setting that mutes all messages", "correct": false }
+    ]},
+
+    { "topicTitle": "Digital Safety & Privacy", "question": "What is a phishing email?", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "A fake email designed to trick you into revealing personal information", "correct": true, "comment": "Phishing emails impersonate trusted organisations to steal passwords or financial details." },
+      { "option": "An email that contains a large file attachment", "correct": false },
+      { "option": "A marketing newsletter you signed up for", "correct": false },
+      { "option": "An email that arrives in your spam folder by mistake", "correct": false }
+    ]},
+    { "topicTitle": "Digital Safety & Privacy", "question": "Which of the following is a strong password?", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "Tr0ub4dor&3#Mn!", "correct": true, "comment": "Strong passwords mix uppercase, lowercase, digits, and symbols, and are at least 12 characters." },
+      { "option": "password123", "correct": false },
+      { "option": "your date of birth", "correct": false },
+      { "option": "your name followed by 1", "correct": false }
+    ]},
+    { "topicTitle": "Digital Safety & Privacy", "question": "What is Two-Factor Authentication (2FA)?", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "A security step requiring a password plus a second verification (e.g. a code)", "correct": true, "comment": "2FA protects accounts even if your password is stolen — the attacker still needs the second factor." },
+      { "option": "Using two different passwords for the same account", "correct": false },
+      { "option": "Signing in twice within 24 hours to stay active", "correct": false },
+      { "option": "Sharing your account with two authorised users", "correct": false }
+    ]},
+    { "topicTitle": "Digital Safety & Privacy", "question": "What does a padlock icon in the browser address bar indicate?", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "The connection to the website is encrypted (HTTPS)", "correct": true, "comment": "A padlock means data is encrypted in transit. Always check for it before entering sensitive data." },
+      { "option": "The website is government-approved and verified", "correct": false },
+      { "option": "Your password for this site is saved in the browser", "correct": false },
+      { "option": "The website cannot be accessed by others while you browse", "correct": false }
+    ]},
+    { "topicTitle": "Digital Safety & Privacy", "question": "Which is the safest practice when using public WiFi?", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "Avoid logging into banking or sensitive accounts on public WiFi", "correct": true, "comment": "Public WiFi is often unencrypted. Use a VPN or mobile data for sensitive tasks." },
+      { "option": "Always log into your bank to verify it works everywhere", "correct": false },
+      { "option": "Public WiFi is as safe as home WiFi since all routers are identical", "correct": false },
+      { "option": "Turn off HTTPS in browser settings when on public WiFi", "correct": false }
+    ]},
+    { "topicTitle": "Digital Safety & Privacy", "question": "What should you do before clicking a link in a suspicious email?", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "Hover over the link to check the actual destination URL before clicking", "correct": true, "comment": "Hover preview reveals the true URL. If it looks unfamiliar or misspelled, do not click it." },
+      { "option": "Forward the email to all contacts to warn them first", "correct": false },
+      { "option": "Click quickly so your antivirus can scan it", "correct": false },
+      { "option": "Copy the link and post it in a search engine to test it", "correct": false }
+    ]},
+
+    { "topicTitle": "Social Media & Professional Networking", "question": "Which platform is designed specifically for professional networking?", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "LinkedIn", "correct": true, "comment": "LinkedIn is the leading professional network for jobs, career development, and industry connections." },
+      { "option": "Instagram", "correct": false },
+      { "option": "TikTok", "correct": false },
+      { "option": "Snapchat", "correct": false }
+    ]},
+    { "topicTitle": "Social Media & Professional Networking", "question": "What should a professional LinkedIn profile include?", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "A professional photo, clear headline, work experience, and skills", "correct": true, "comment": "A complete profile increases visibility to recruiters and establishes your professional identity." },
+      { "option": "Personal holiday photos and hobbies only", "correct": false },
+      { "option": "Your home address and phone number publicly visible", "correct": false },
+      { "option": "A list of complaints about previous employers", "correct": false }
+    ]},
+    { "topicTitle": "Social Media & Professional Networking", "question": "What privacy setting should you check on social media accounts?", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "Who can see your posts, location, and personal details", "correct": true, "comment": "Regularly reviewing privacy settings limits unwanted data sharing and protects your personal information." },
+      { "option": "Whether your account is older than 5 years", "correct": false },
+      { "option": "The number of followers you have compared to others", "correct": false },
+      { "option": "The colour theme of your profile page", "correct": false }
+    ]},
+    { "topicTitle": "Social Media & Professional Networking", "question": "Which behaviour is appropriate on a professional LinkedIn page?", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "Sharing industry news, skills updates, and engaging respectfully with others", "correct": true, "comment": "Professional content builds your personal brand. Casual posts are better suited to personal platforms." },
+      { "option": "Posting complaints about your current employer publicly", "correct": false },
+      { "option": "Using slang and emoji-heavy language in all messages", "correct": false },
+      { "option": "Sending bulk connection requests to thousands of strangers daily", "correct": false }
+    ]},
+    { "topicTitle": "Social Media & Professional Networking", "question": "What does 'digital footprint' mean?", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "The trail of data you leave behind through your online activity", "correct": true, "comment": "Your digital footprint includes search history, social media posts, emails, and purchases — it can be seen by others." },
+      { "option": "The physical size of your computer monitor", "correct": false },
+      { "option": "How many apps are installed on your device", "correct": false },
+      { "option": "The amount of data stored on your USB drive", "correct": false }
+    ]},
+    { "topicTitle": "Social Media & Professional Networking", "question": "Why should you think before posting personal information publicly online?", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "It can damage your reputation, compromise privacy, or be misused", "correct": true, "comment": "Online posts can be seen by employers, strangers, or scammers — and can be very difficult to remove." },
+      { "option": "Online posts expire after 24 hours and have no lasting impact", "correct": false },
+      { "option": "Your ISP automatically removes harmful posts on your behalf", "correct": false },
+      { "option": "Only posts with photos can be seen by others online", "correct": false }
+    ]},
+
+    { "topicTitle": "Online Forms & Digital Documents", "question": "What file format is most commonly used to share documents that should not be easily edited?", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "PDF (Portable Document Format)", "correct": true, "comment": "PDFs preserve formatting across devices and are difficult to edit, making them ideal for official documents." },
+      { "option": ".docx (Microsoft Word)", "correct": false },
+      { "option": ".xlsx (Microsoft Excel)", "correct": false },
+      { "option": ".txt (Plain Text)", "correct": false }
+    ]},
+    { "topicTitle": "Online Forms & Digital Documents", "question": "What is an electronic signature (e-signature)?", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "A legally recognised digital mark used to sign documents online", "correct": true, "comment": "E-signatures (e.g. DocuSign, Adobe Sign) are legally binding in most countries." },
+      { "option": "A scanned image of your handwritten signature pasted into a document", "correct": false },
+      { "option": "Your name typed in italic font at the bottom of an email", "correct": false },
+      { "option": "A PIN code used to access an online government portal", "correct": false }
+    ]},
+    { "topicTitle": "Online Forms & Digital Documents", "question": "Which tool can you use to fill and submit forms on government websites?", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "A web browser on any internet-connected device", "correct": true, "comment": "Most government e-services are web-based — no special software required, just a browser." },
+      { "option": "A USB printer connected to the government office's computer", "correct": false },
+      { "option": "Only a government-issued laptop with special software", "correct": false },
+      { "option": "A fax machine for secure transmission", "correct": false }
+    ]},
+    { "topicTitle": "Online Forms & Digital Documents", "question": "How do you convert a Microsoft Word document to a PDF?", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "File > Save As and select PDF from the file type dropdown", "correct": true, "comment": "Word (and most Office apps) export directly to PDF via File > Save As or File > Export." },
+      { "option": "Copy the text and paste it into Adobe Acrobat's blank page", "correct": false },
+      { "option": "Take a screenshot of each page and save as images", "correct": false },
+      { "option": "Open the file in Notepad and rename it with a .pdf extension", "correct": false }
+    ]},
+    { "topicTitle": "Online Forms & Digital Documents", "question": "When submitting an online form, what should you do before clicking 'Submit'?", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "Review all fields for accuracy and ensure required fields are complete", "correct": true, "comment": "Mistakes on submitted forms may be hard to correct and could delay applications or payments." },
+      { "option": "Clear your browser history so the form is submitted anonymously", "correct": false },
+      { "option": "Print the page before submitting it so you have a reference", "correct": false },
+      { "option": "Refresh the page to check the form loads correctly before submitting", "correct": false }
+    ]},
+    { "topicTitle": "Online Forms & Digital Documents", "question": "A mandatory field on an online form is indicated by:", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "An asterisk (*) beside the field label", "correct": true, "comment": "An asterisk (*) is the standard convention for required fields. The form won't submit without them." },
+      { "option": "A red background colour behind the field", "correct": false },
+      { "option": "The word 'Optional' in brackets next to the label", "correct": false },
+      { "option": "A double border around the input box", "correct": false }
+    ]},
+
+    { "topicTitle": "Digital Productivity Tools", "question": "What is a digital calendar primarily used for?", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "Scheduling appointments, meetings, and reminders", "correct": true, "comment": "Google Calendar and Outlook Calendar sync across devices and can send automatic reminders." },
+      { "option": "Storing files and documents in date order", "correct": false },
+      { "option": "Tracking website traffic and page visits", "correct": false },
+      { "option": "Recording your work hours for payroll automatically", "correct": false }
+    ]},
+    { "topicTitle": "Digital Productivity Tools", "question": "Which app is best for taking quick notes and organising them on your phone or computer?", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "Google Keep or Microsoft OneNote", "correct": true, "comment": "Note-taking apps sync across devices and support labels, reminders, and sharing." },
+      { "option": "Google Sheets", "correct": false },
+      { "option": "Microsoft PowerPoint", "correct": false },
+      { "option": "Adobe Photoshop", "correct": false }
+    ]},
+    { "topicTitle": "Digital Productivity Tools", "question": "What is the main benefit of using a task management tool like Microsoft To-Do or Google Tasks?", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "Track tasks, set due dates, and receive reminders to stay organised", "correct": true, "comment": "Task tools prevent things falling through the cracks by keeping all actions in one place." },
+      { "option": "Automatically complete your work tasks on your behalf", "correct": false },
+      { "option": "Block distracting websites while you work", "correct": false },
+      { "option": "Send emails automatically when tasks are due", "correct": false }
+    ]},
+    { "topicTitle": "Digital Productivity Tools", "question": "What is Google Workspace (formerly G Suite)?", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "A set of cloud-based productivity tools including Docs, Sheets, Drive, and Meet", "correct": true, "comment": "Google Workspace is Google's business productivity suite — cloud-based and collaborative by design." },
+      { "option": "A Windows application for managing local files", "correct": false },
+      { "option": "An antivirus solution provided by Google", "correct": false },
+      { "option": "Google's operating system for Chromebook only", "correct": false }
+    ]},
+    { "topicTitle": "Digital Productivity Tools", "question": "What does it mean to 'sync' an app across devices?", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "Your data (notes, calendar, files) updates automatically on all your devices", "correct": true, "comment": "Sync means any change you make on your phone appears on your laptop and vice versa, via the cloud." },
+      { "option": "The app is installed on all devices at the same time", "correct": false },
+      { "option": "Two devices are physically connected with a cable", "correct": false },
+      { "option": "Your battery levels are equalised between devices", "correct": false }
+    ]},
+    { "topicTitle": "Digital Productivity Tools", "question": "What is the purpose of setting a 'due date' on a task in a productivity app?", "level": 2, "timeAllowed": 75, "options": [
+      { "option": "To receive a reminder and ensure the task is completed on time", "correct": true, "comment": "Due dates trigger alerts and help prioritise your workload — a core time management technique." },
+      { "option": "To automatically send the completed task to your manager", "correct": false },
+      { "option": "To lock the task so others cannot edit it", "correct": false },
+      { "option": "To bill the time to a client's invoice", "correct": false }
+    ]}
+  ]
+}

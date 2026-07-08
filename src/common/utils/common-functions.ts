@@ -9,9 +9,11 @@ export const getTitleBySubjectIds = (subjects: Subject[]): string => {
    // Example: join subject names with comma, or return an empty string if not available
    return subjects && subjects.length > 0 ? subjects.map((s: Subject) => s.title).join(' ') : '';
 };
+
 export const getTitleByTopicIds = (topics: Topic[]): string => {
    return topics && topics.length > 0 ? topics.map((t: Topic) => t.title).join(' ') : '';
 };
+
 export const generateScore = (
   attempted: number,
   correct: number,
@@ -25,5 +27,16 @@ export const generateScore = (
   const normalized = (rawScore / attempted) * 100;
   return Math.max(0, Math.min(100, Number(normalized.toFixed(1))));
 };
+
+export function shuffleArray(array) {
+  // Used for randomzing Don't mutate the original array
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    // Swap
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
 
 

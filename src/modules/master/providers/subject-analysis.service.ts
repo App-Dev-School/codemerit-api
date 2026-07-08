@@ -5,6 +5,7 @@ import { JobRoleSubject } from 'src/common/typeorm/entities/job-role-subject.ent
 import { JobRole } from 'src/common/typeorm/entities/job-role.entity';
 import { QuestionAttempt } from 'src/common/typeorm/entities/question-attempt.entity';
 import { Subject } from 'src/common/typeorm/entities/subject.entity';
+import { SubjectTrack } from 'src/common/typeorm/entities/subject-track.entity';
 import { Topic } from 'src/common/typeorm/entities/topic.entity';
 import { UserSubject } from 'src/common/typeorm/entities/user-subject.entity';
 import { User } from 'src/common/typeorm/entities/user.entity';
@@ -35,9 +36,22 @@ export class SubjectAnalysisService {
     @InjectRepository(UserSubject)
     private readonly userSubjectRepo: Repository<UserSubject>,
 
+    @InjectRepository(SubjectTrack)
+    private readonly subjectTrackRepo: Repository<SubjectTrack>,
+
     private readonly dataSource: DataSource,
     private topicAnalyzer: TopicAnalysisService
   ) { }
+
+  private async getSubjectTrackCounts(): Promise<Map<number, number>> {
+    const rows = await this.subjectTrackRepo
+      .createQueryBuilder('st')
+      .select('st.subjectId', 'subjectId')
+      .addSelect('COUNT(st.id)', 'count')
+      .groupBy('st.subjectId')
+      .getRawMany();
+    return new Map(rows.map((r) => [+r.subjectId, +r.count]));
+  }
 
   /**
    * Core query for subject stats.
@@ -224,7 +238,10 @@ export class SubjectAnalysisService {
 
   /** all subjects (master) — minimal fields */
   async getAllSubjects(userId?: number) {
-    const rows = await this.getSubjectStats(undefined, userId);
+    const [rows, subjectTrackCounts] = await Promise.all([
+      this.getSubjectStats(undefined, userId),
+      this.getSubjectTrackCounts(),
+    ]);
     return rows.map((r) => ({
       id: +r.subjectId,
       title: r.title,
@@ -235,7 +252,8 @@ export class SubjectAnalysisService {
       color: r.color,
       numQuestions: +r.numQuestions || 0,
       numTrivia: +r.numTrivia || 0,
-      isSubscribed: r.isSubscribed === 1 || r.isSubscribed === '1'
+      isSubscribed: r.isSubscribed === 1 || r.isSubscribed === '1',
+      subjectTrackCount: subjectTrackCounts.get(+r.subjectId) ?? 0,
     }));
   }
 
@@ -282,6 +300,284 @@ export class SubjectAnalysisService {
     ),
   );
 }
+
+  // ─── Career Dashboard ────────────────────────────────────────────────────────
+
+  private static readonly TOPIC_COMPLETION_THRESHOLD = 70;       // coverage % to mark a topic done
+  private static readonly SUBJECTTRACK_COMPLETION_THRESHOLD = 70; // % of topics done to mark a track done
+  private static readonly CERT_ACHIEVEMENT_THRESHOLD = 80;        // % of subject tracks done to "achieve" a cert
+
+  async getCareerDashboard(userId: number) {
+    // 1. User's job roles with metadata
+    const jobRoles = await this.dataSource
+      .createQueryBuilder()
+      .select('jr.id', 'id')
+      .addSelect('jr.title', 'title')
+      .addSelect('jr.slug', 'slug')
+      .addSelect('jr.image', 'image')
+      .addSelect('jr.color', 'color')
+      .addSelect('jr.description', 'description')
+      .from(JobRole, 'jr')
+      .innerJoin('user_job_role', 'ujr', 'ujr.jobRoleId = jr.id')
+      .where('ujr.userId = :userId', { userId })
+      .andWhere('jr.isPublished = 1')
+      .orderBy('jr.orderId', 'ASC')
+      .getRawMany();
+
+    if (!jobRoles.length) {
+      return {
+        overallSummary: { totalSubjects: 0, overallReadiness: 0, totalCertificationTracks: 0, certTracksAchieved: 0, certTracksInProgress: 0, certTracksNotStarted: 0 },
+        jobRoles: [],
+      };
+    }
+
+    const jobRoleIds = jobRoles.map((jr) => +jr.id);
+
+    // 2. Subjects per job role with tag + sortOrder
+    const roleSubjectRows = await this.dataSource
+      .createQueryBuilder()
+      .select('jrs.jobRoleId', 'jobRoleId')
+      .addSelect('jrs.subjectId', 'subjectId')
+      .addSelect('jrs.tag', 'tag')
+      .addSelect('jrs.sortOrder', 'sortOrder')
+      .addSelect('s.title', 'sTitle')
+      .addSelect('s.slug', 'sSlug')
+      .addSelect('s.color', 'sColor')
+      .addSelect('s.image', 'sImage')
+      .from(JobRoleSubject, 'jrs')
+      .innerJoin('subject', 's', 's.id = jrs.subjectId AND s.isPublished = 1')
+      .where('jrs.jobRoleId IN (:...jobRoleIds)', { jobRoleIds })
+      .orderBy('jrs.jobRoleId', 'ASC')
+      .addOrderBy('jrs.sortOrder', 'ASC')
+      .getRawMany();
+
+    const allSubjectIds = [...new Set(roleSubjectRows.map((rs) => +rs.subjectId))];
+
+    // 3. Subject stats for all relevant subjects (reuse existing query, filter in-memory)
+    const allSubjectStats: any[] = (await this.getSubjectStats(undefined, userId)) as any[];
+    const subjectStatsMap = new Map<number, any>(
+      allSubjectStats
+        .filter((s) => allSubjectIds.includes(+s.subjectId))
+        .map((s) => [+s.subjectId, s]),
+    );
+
+    // 4. Certification track hierarchy: certTrack → subjectTrack → topic
+    const certRows = await this.dataSource
+      .createQueryBuilder()
+      .select('ct.id', 'ctId')
+      .addSelect('ct.title', 'ctTitle')
+      .addSelect('ct.description', 'ctDesc')
+      .addSelect('ct.sortOrder', 'ctSortOrder')
+      .addSelect('ct.jobRoleId', 'ctJobRoleId')
+      .addSelect('st.id', 'stId')
+      .addSelect('st.title', 'stTitle')
+      .addSelect('st.slug', 'stSlug')
+      .addSelect('st.description', 'stDesc')
+      .addSelect('st.sortOrder', 'stSortOrder')
+      .addSelect('st.subjectId', 'stSubjectId')
+      .addSelect('s.title', 'stSubjectTitle')
+      .addSelect('s.slug', 'stSubjectSlug')
+      .addSelect('t.id', 'tId')
+      .addSelect('t.title', 'tTitle')
+      .addSelect('t.slug', 'tSlug')
+      .addSelect('t.label', 'tLabel')
+      .addSelect('t.order', 'tOrder')
+      .from('certification_track', 'ct')
+      .innerJoin('certification_track_subject_track', 'ctst', 'ctst.certificationTrackId = ct.id')
+      .innerJoin('subject_track', 'st', 'st.id = ctst.subjectTrackId AND st.isPublished = 1')
+      .innerJoin('subject', 's', 's.id = st.subjectId')
+      .innerJoin('subject_track_topic', 'stt', 'stt.subjectTrackId = st.id')
+      .innerJoin('topic', 't', 't.id = stt.topicId AND t.isPublished = 1')
+      .where('ct.jobRoleId IN (:...jobRoleIds)', { jobRoleIds })
+      .andWhere('ct.isPublished = 1')
+      .orderBy('ct.jobRoleId', 'ASC')
+      .addOrderBy('ct.sortOrder', 'ASC')
+      .addOrderBy('st.sortOrder', 'ASC')
+      .addOrderBy('t.order', 'ASC')
+      .getRawMany();
+
+    // 5. Topic stats for every topic appearing in cert tracks
+    const allTopicIds = [...new Set(certRows.map((r) => +r.tId))];
+    const topicStatsList = allTopicIds.length
+      ? await this.topicAnalyzer.getTopicStatsByIds(allTopicIds, userId)
+      : [];
+    const topicStatsMap = new Map<number, any>(topicStatsList.map((t) => [t.id, t]));
+
+    // 6. Index certRows: jobRoleId → certTrackId → subjectTrackId → topicIds[]
+    type TrackEntry = { meta: any; topicIds: number[] };
+    type CertEntry = { meta: any; tracks: Map<number, TrackEntry> };
+    const certByJobRole = new Map<number, Map<number, CertEntry>>();
+
+    for (const row of certRows) {
+      const jrId = +row.ctJobRoleId;
+      if (!certByJobRole.has(jrId)) certByJobRole.set(jrId, new Map());
+      const certMap = certByJobRole.get(jrId)!;
+
+      if (!certMap.has(+row.ctId)) {
+        certMap.set(+row.ctId, {
+          meta: { id: +row.ctId, title: row.ctTitle, description: row.ctDesc, sortOrder: +row.ctSortOrder },
+          tracks: new Map(),
+        });
+      }
+      const cert = certMap.get(+row.ctId)!;
+
+      if (!cert.tracks.has(+row.stId)) {
+        cert.tracks.set(+row.stId, {
+          meta: {
+            id: +row.stId, title: row.stTitle, slug: row.stSlug,
+            description: row.stDesc, sortOrder: +row.stSortOrder,
+            subject: { id: +row.stSubjectId, title: row.stSubjectTitle, slug: row.stSubjectSlug },
+          },
+          topicIds: [],
+        });
+      }
+      cert.tracks.get(+row.stId)!.topicIds.push(+row.tId);
+    }
+
+    // 7. Index subjects by jobRole
+    const subjectsByJobRole = new Map<number, any[]>();
+    for (const rs of roleSubjectRows) {
+      const jrId = +rs.jobRoleId;
+      if (!subjectsByJobRole.has(jrId)) subjectsByJobRole.set(jrId, []);
+      const raw = subjectStatsMap.get(+rs.subjectId) ?? {};
+      const attempted = +raw.attempted || 0;
+      const correct = +raw.correct || 0;
+      const wrong = +raw.wrong || 0;
+      const skipped = +raw.skipped || 0;
+      const numTrivia = +raw.numTrivia || 0;
+      const coverage = numTrivia > 0 ? +((attempted / numTrivia) * 100).toFixed(1) : 0;
+      const accuracy = attempted > 0 ? +(correct * 100 / attempted).toFixed(1) : 0;
+      const score = +generateScore(attempted, correct, wrong).toFixed(0);
+      subjectsByJobRole.get(jrId)!.push({
+        id: +rs.subjectId,
+        title: rs.sTitle, slug: rs.sSlug, color: rs.sColor, image: rs.sImage,
+        tag: rs.tag, sortOrder: +rs.sortOrder,
+        isSubscribed: raw.isSubscribed === 1 || raw.isSubscribed === '1',
+        numQuestions: +raw.numQuestions || 0, numTrivia,
+        attempted, correct, wrong, skipped,
+        accuracy, coverage, score,
+      });
+    }
+
+    // 8. Assemble response
+    let totalSubjects = 0, totalCerts = 0, certsAchieved = 0, certsInProgress = 0;
+    const allReadinessScores: number[] = [];
+
+    const jobRoleDashboards = jobRoles.map((jr) => {
+      const subjects = subjectsByJobRole.get(+jr.id) ?? [];
+      totalSubjects += subjects.length;
+
+      const mandatorySubjects = subjects.filter((s) => s.tag === 'MANDATORY');
+      const scoreSources = mandatorySubjects.length ? mandatorySubjects : subjects;
+      const readinessScore = scoreSources.length
+        ? +((scoreSources.reduce((sum, s) => sum + s.score, 0) / scoreSources.length)).toFixed(0)
+        : 0;
+      allReadinessScores.push(...scoreSources.map((s) => s.score));
+
+      const certMap = certByJobRole.get(+jr.id) ?? new Map();
+      const certificationTracks = [...certMap.values()].map(({ meta: ct, tracks }) => {
+        const subjectTracks = [...tracks.values()].map(({ meta: st, topicIds }) => {
+
+          // Topic-level stats
+          const topics = topicIds.map((tid) => {
+            const ts = topicStatsMap.get(tid) ?? {};
+            const numTrivia = +ts.numTrivia || 0;
+            const myUniqueAttempted = +ts.myUniqueAttempts || 0;
+            const myAllAttempts = +ts.myAllAttempts || 0;
+            const correct = +ts.correct || 0;
+            const wrong = +ts.wrong || 0;
+            const coverage = numTrivia > 0 ? +((myUniqueAttempted / numTrivia) * 100).toFixed(1) : 0;
+            const accuracy = myAllAttempts > 0 ? +(correct * 100 / myAllAttempts).toFixed(1) : 0;
+            const score = +generateScore(myAllAttempts, correct, wrong).toFixed(0);
+            const isCompleted = coverage >= SubjectAnalysisService.TOPIC_COMPLETION_THRESHOLD;
+            return {
+              id: tid, title: ts.title, slug: ts.slug, label: ts.label,
+              numTrivia, attempted: myUniqueAttempted, correct, wrong,
+              accuracy, coverage, score, isCompleted,
+            };
+          });
+
+          // SubjectTrack aggregate score and progress
+          const stNumTrivia = topics.reduce((sum: number, t: any) => sum + t.numTrivia, 0);
+          const stUniqueAttempted = topics.reduce((sum: number, t: any) => sum + t.attempted, 0);
+          const stAllAttempts = topicIds.reduce((sum: number, tid: number) => sum + (+(topicStatsMap.get(tid)?.myAllAttempts) || 0), 0);
+          const stCorrect = topics.reduce((sum: number, t: any) => sum + t.correct, 0);
+          const stWrong = topics.reduce((sum: number, t: any) => sum + t.wrong, 0);
+          const stCoverage = stNumTrivia > 0 ? +((stUniqueAttempted / stNumTrivia) * 100).toFixed(1) : 0;
+          const stAccuracy = stAllAttempts > 0 ? +(stCorrect * 100 / stAllAttempts).toFixed(1) : 0;
+          const stScore = +generateScore(stAllAttempts, stCorrect, stWrong).toFixed(0);
+
+          const totalTopics = topics.length;
+          const completedTopics = topics.filter((t) => t.isCompleted).length;
+          const progressPercent = totalTopics > 0
+            ? +((completedTopics / totalTopics) * 100).toFixed(0)
+            : 0;
+          const isCompleted = progressPercent >= SubjectAnalysisService.SUBJECTTRACK_COMPLETION_THRESHOLD;
+
+          return {
+            ...st,
+            numTrivia: stNumTrivia,
+            attempted: stUniqueAttempted,
+            correct: stCorrect,
+            wrong: stWrong,
+            coverage: stCoverage,
+            accuracy: stAccuracy,
+            score: stScore,
+            totalTopics,
+            completedTopics,
+            progressPercent,
+            isCompleted,
+            topics,
+          };
+        });
+
+        const totalSubjectTracks = subjectTracks.length;
+        const completedSubjectTracks = subjectTracks.filter((st) => st.isCompleted).length;
+        const progressPercent = totalSubjectTracks > 0
+          ? +((completedSubjectTracks / totalSubjectTracks) * 100).toFixed(0)
+          : 0;
+        const isAchieved = progressPercent >= SubjectAnalysisService.CERT_ACHIEVEMENT_THRESHOLD;
+
+        totalCerts++;
+        if (isAchieved) certsAchieved++;
+        else if (completedSubjectTracks > 0) certsInProgress++;
+
+        return {
+          ...ct,
+          totalSubjectTracks,
+          completedSubjectTracks,
+          progressPercent,
+          isAchieved,
+          achievementThreshold: SubjectAnalysisService.CERT_ACHIEVEMENT_THRESHOLD,
+          subjectTracks,
+        };
+      });
+
+      return {
+        id: +jr.id, title: jr.title, slug: jr.slug,
+        image: jr.image, color: jr.color, description: jr.description,
+        readinessScore, subjects, certificationTracks,
+      };
+    });
+
+    const overallReadiness = allReadinessScores.length
+      ? +((allReadinessScores.reduce((a, b) => a + b, 0) / allReadinessScores.length)).toFixed(0)
+      : 0;
+
+    return {
+      overallSummary: {
+        totalSubjects,
+        overallReadiness,
+        totalCertificationTracks: totalCerts,
+        certTracksAchieved: certsAchieved,
+        certTracksInProgress: certsInProgress,
+        certTracksNotStarted: totalCerts - certsAchieved - certsInProgress,
+      },
+      jobRoles: jobRoleDashboards,
+    };
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────────
 
   async getJobSubjectDashboardsOLD(userId: number, fullData = false) {
     // Step 1: Get the user with designation (job role id)

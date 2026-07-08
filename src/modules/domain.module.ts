@@ -11,7 +11,8 @@ import { LmsModule } from './lms/lms.module';
 import { NotificationModule } from './notification/notification.module';
 import { InterviewModule } from './interview/interview.module';
 import { LessonModule } from './lesson/lesson.module';
-import { ActivityModule } from './activity/activity.module';
+import { SubjectTrackModule } from './subject-track/subject-track.module';
+import { CertificationTrackModule } from './certification-track/certification-track.module';
 
 @Module({
   imports: [
@@ -27,7 +28,8 @@ import { ActivityModule } from './activity/activity.module';
     NotificationModule,
     InterviewModule,
     LessonModule,
-    ActivityModule,
+    SubjectTrackModule,
+    CertificationTrackModule,
   ],
 })
 export class DomainModule {}

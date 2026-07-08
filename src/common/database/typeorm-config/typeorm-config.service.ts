@@ -4,10 +4,15 @@ import { ConfigService } from '@nestjs/config';
 import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm';
 import { ApiUsage } from 'src/common/typeorm/entities/api-usage.entity';
 import { AssessmentSession } from 'src/common/typeorm/entities/assessment-session.entity';
+import { Certificate } from 'src/common/typeorm/entities/certificate.entity';
+import { CertificationTrack } from 'src/common/typeorm/entities/certification-track.entity';
 import { InterviewStatusHistory } from 'src/common/typeorm/entities/interview-status-history.entity';
 import { Interview } from 'src/common/typeorm/entities/interview.entity';
 import { JobRoleSubject } from 'src/common/typeorm/entities/job-role-subject.entity';
 import { JobRole } from 'src/common/typeorm/entities/job-role.entity';
+import { CertificationTrackSubjectTrack } from 'src/common/typeorm/entities/certification-track-subject-track.entity';
+import { SubjectTrackTopic } from 'src/common/typeorm/entities/subject-track-topic.entity';
+import { SubjectTrack } from 'src/common/typeorm/entities/subject-track.entity';
 import { LessonSection } from 'src/common/typeorm/entities/lesson-section.entity';
 import { Lesson } from 'src/common/typeorm/entities/lesson.entity';
 import { Notification } from 'src/common/typeorm/entities/notification.entity';
@@ -44,7 +49,7 @@ export class TypeormConfigService implements TypeOrmOptionsFactory {
     ) as IDatabaseConfig;
 
     return {
-      type: databaseConfig.type,
+      type: databaseConfig.type as 'mysql',
       host: databaseConfig.host,
       port: databaseConfig.port,
       username: databaseConfig.username,
@@ -83,12 +88,15 @@ export class TypeormConfigService implements TypeOrmOptionsFactory {
         SkillMetric,
         Interview,
         InterviewStatusHistory,
+        CertificationTrack,
+        SubjectTrack,
+        CertificationTrackSubjectTrack,
+        SubjectTrackTopic,
+        Certificate,
       ],
       // entities: [__dirname + '/../**/*.entity.{ts,js}'],
       // entities: ['src/**/*.entity.ts'],
       synchronize: true,
-      // logging: true,
-      // logger: 'advanced-console',
     } as TypeOrmModuleOptions;
   }
 }

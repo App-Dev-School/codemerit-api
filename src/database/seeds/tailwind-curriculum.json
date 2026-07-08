@@ -1,0 +1,185 @@
+{
+  "subjectSlug": "tailwind",
+  "topics": [
+    {
+      "title": "Introduction to Tailwind CSS",
+      "shortDesc": "Utility-first philosophy",
+      "label": "Foundation",
+      "order": 1,
+      "weight": 1,
+      "description": "Understand what Tailwind CSS is and why the utility-first approach is a paradigm shift from traditional CSS. Covers the difference between utility classes and component-based CSS frameworks like Bootstrap, and why Tailwind produces smaller, more maintainable stylesheets.",
+      "goal": "Understand the utility-first philosophy and how Tailwind differs from traditional CSS frameworks.",
+      "isPublished": true
+    },
+    {
+      "title": "Setup & Configuration",
+      "shortDesc": "Install, config, PostCSS",
+      "label": "Foundation",
+      "order": 2,
+      "weight": 1,
+      "description": "Set up Tailwind CSS in a project from scratch. Covers installation via npm, the tailwind.config.js file, PostCSS integration, content path configuration, and the three core directives (@tailwind base, components, utilities).",
+      "goal": "Install and configure Tailwind CSS in a new or existing project, understanding what each config option does.",
+      "isPublished": true
+    },
+    {
+      "title": "Core Utility Classes",
+      "shortDesc": "Colors, spacing, sizing",
+      "label": "Foundation",
+      "order": 3,
+      "weight": 1,
+      "description": "Master the essential Tailwind utility classes: background and text colors, margin and padding, width and height, border, opacity, and display utilities. Learn how the default scale system works and how to read the documentation effectively.",
+      "goal": "Apply core utility classes confidently to style any basic HTML element.",
+      "isPublished": true
+    },
+    {
+      "title": "Flexbox & Grid Utilities",
+      "shortDesc": "Layout with flex and grid",
+      "label": "Foundation",
+      "order": 4,
+      "weight": 1,
+      "description": "Build modern layouts using Tailwind's Flexbox and CSS Grid utility classes. Covers flex-direction, justify, align, gap, grid-cols, col-span, and common real-world layout patterns like navbars, card grids, and sidebars.",
+      "goal": "Build complete page layouts using only Tailwind flex and grid utilities.",
+      "isPublished": true
+    },
+    {
+      "title": "Responsive Design",
+      "shortDesc": "sm, md, lg, xl breakpoints",
+      "label": "Foundation",
+      "order": 5,
+      "weight": 1,
+      "description": "Use Tailwind's mobile-first responsive prefixes (sm:, md:, lg:, xl:, 2xl:) to build layouts that adapt to any screen size. Covers how breakpoints work, the mobile-first approach, and practical patterns for responsive navigation, grids, and typography.",
+      "goal": "Build fully responsive layouts using Tailwind's breakpoint prefix system.",
+      "isPublished": true
+    },
+    {
+      "title": "State & Pseudo-class Variants",
+      "shortDesc": "hover, focus, active, group",
+      "label": "Intermediate",
+      "order": 6,
+      "weight": 2,
+      "description": "Style interactive states using Tailwind's variant prefixes: hover:, focus:, active:, disabled:, visited:, and the powerful group- and peer- patterns for parent/sibling-driven state changes. Covers building interactive buttons, form inputs, and dropdown menus.",
+      "goal": "Apply state variants to create interactive, accessible UI components without writing custom CSS.",
+      "isPublished": true
+    },
+    {
+      "title": "Typography & Color System",
+      "shortDesc": "Fonts, text, color palette",
+      "label": "Intermediate",
+      "order": 7,
+      "weight": 2,
+      "description": "Work with Tailwind's complete typography utilities — font size, weight, line height, letter spacing, text transform, and decoration — alongside the full 9-shade color palette system. Learn to use the @tailwindcss/typography plugin for prose content.",
+      "goal": "Build consistent, design-system-quality typography and color usage across an application.",
+      "isPublished": true
+    },
+    {
+      "title": "Spacing, Sizing & Layout Utilities",
+      "shortDesc": "Margin, padding, overflow",
+      "label": "Intermediate",
+      "order": 8,
+      "weight": 2,
+      "description": "Deep dive into Tailwind's spacing scale — margin, padding, space-between, gap — and sizing utilities including min/max width and height, aspect ratio, overflow control, and the container class. Understand how the 4px base unit creates a consistent visual rhythm.",
+      "goal": "Apply precise spacing and sizing to produce pixel-perfect layouts using the Tailwind spacing scale.",
+      "isPublished": true
+    },
+    {
+      "title": "Component Patterns with @apply",
+      "shortDesc": "Reusable component CSS",
+      "label": "Intermediate",
+      "order": 9,
+      "weight": 2,
+      "description": "Use the @apply directive to extract repeated utility combinations into reusable CSS component classes. Covers when to use @apply vs. framework components (React/Angular/Vue), building a button system, form input styles, and badge components.",
+      "goal": "Identify when to extract utilities into components using @apply and build a consistent component library.",
+      "isPublished": true
+    },
+    {
+      "title": "Dark Mode",
+      "shortDesc": "dark: variant, media vs class",
+      "label": "Intermediate",
+      "order": 10,
+      "weight": 2,
+      "description": "Implement dark mode using Tailwind's dark: variant. Covers the difference between media strategy (prefers-color-scheme) and class strategy (manual toggle), toggling with JavaScript, and building a complete UI that looks great in both light and dark themes.",
+      "goal": "Build a complete light/dark theme switch using Tailwind's dark: variant.",
+      "isPublished": true
+    },
+    {
+      "title": "Custom Theme Configuration",
+      "shortDesc": "Extend colors, fonts, spacing",
+      "label": "Advanced",
+      "order": 11,
+      "weight": 3,
+      "description": "Extend and override Tailwind's default theme in tailwind.config.js. Covers adding custom colors, fonts, spacing values, border radii, and breakpoints. Understand the difference between extend (adds to defaults) and override (replaces defaults), and how to use CSS variables as theme values.",
+      "goal": "Configure a fully custom design system in tailwind.config.js that matches a brand style guide.",
+      "isPublished": true
+    },
+    {
+      "title": "Animations & Transitions",
+      "shortDesc": "transition, animate, keyframes",
+      "label": "Advanced",
+      "order": 12,
+      "weight": 3,
+      "description": "Add motion to UIs using Tailwind's transition, duration, ease, and animate utilities. Covers the four built-in animations (spin, ping, pulse, bounce), adding custom keyframe animations via config, and accessibility best practices with prefers-reduced-motion.",
+      "goal": "Build smooth, accessible animations and transitions using Tailwind utilities and custom keyframes.",
+      "isPublished": true
+    },
+    {
+      "title": "Tailwind Plugins & Ecosystem",
+      "shortDesc": "Typography, Forms, official plugins",
+      "label": "Advanced",
+      "order": 13,
+      "weight": 3,
+      "description": "Extend Tailwind with official and community plugins. Covers @tailwindcss/typography (beautiful prose), @tailwindcss/forms (consistent form resets), @tailwindcss/aspect-ratio, and writing a simple custom plugin. Also covers the Headless UI and Radix UI ecosystem.",
+      "goal": "Extend Tailwind with plugins and integrate it with the wider headless component ecosystem.",
+      "isPublished": true
+    },
+    {
+      "title": "Production Optimization",
+      "shortDesc": "Purge, JIT, build size",
+      "label": "Advanced",
+      "order": 14,
+      "weight": 3,
+      "description": "Ship Tailwind-based applications with minimal CSS bundle size. Covers how the JIT engine works, content path configuration for tree-shaking, safelist patterns for dynamic class names, and analysing output CSS size. Compares development vs production build output.",
+      "goal": "Configure Tailwind for production builds that are optimally small and correctly tree-shaken.",
+      "isPublished": true
+    }
+  ],
+  "subjectTracks": [
+    {
+      "title": "Tailwind Foundations",
+      "description": "Everything you need to start using Tailwind CSS productively — the utility-first mindset, core classes, layout, and responsive design.",
+      "sortOrder": 1,
+      "isPublished": true,
+      "topicTitles": [
+        "Introduction to Tailwind CSS",
+        "Setup & Configuration",
+        "Core Utility Classes",
+        "Flexbox & Grid Utilities",
+        "Responsive Design"
+      ]
+    },
+    {
+      "title": "Tailwind UI Developer",
+      "description": "Build polished, interactive UIs with Tailwind — state variants, typography, dark mode, and reusable component patterns.",
+      "sortOrder": 2,
+      "isPublished": true,
+      "topicTitles": [
+        "State & Pseudo-class Variants",
+        "Typography & Color System",
+        "Spacing, Sizing & Layout Utilities",
+        "Component Patterns with @apply",
+        "Dark Mode"
+      ]
+    },
+    {
+      "title": "Tailwind Advanced",
+      "description": "Take full control of Tailwind — custom themes, animations, the plugin ecosystem, and production-ready optimization.",
+      "sortOrder": 3,
+      "isPublished": true,
+      "topicTitles": [
+        "Custom Theme Configuration",
+        "Animations & Transitions",
+        "Tailwind Plugins & Ecosystem",
+        "Production Optimization"
+      ]
+    }
+  ]
+}

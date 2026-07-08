@@ -47,6 +47,7 @@ export class TopicAnalysisService {
       .addSelect('t.title', 'topicTitle')
       .addSelect('t.description', 'topicDesc')
       .addSelect('t.slug', 'slug')
+      .addSelect('t.label', 'label')
       .addSelect('t.subjectId', 'subjectId')
       .addSelect('s.title', 'subjectName')
       .addSelect('t.goal', 'goal')
@@ -147,6 +148,7 @@ export class TopicAnalysisService {
       id: +raw.topicId,
       title: raw.topicTitle,
       slug: raw.slug,
+      label: raw.label,
       description: raw.topicDesc,
       goal: raw.goal,
       subjectId: +raw.subjectId,
@@ -160,6 +162,7 @@ export class TopicAnalysisService {
       myAllAttempts: numMyAttempts,
       myUniqueAttempts: myDistinctQuestions,
       correct: myCorrect,
+      wrong: myWrong,
       avgAccuracy,
       score,
       isStarted,
@@ -245,6 +248,17 @@ export class TopicAnalysisService {
       }
     }
     return topics;
+  }
+
+  /** Get stats for a specific set of topic IDs — used by the career dashboard. */
+  async getTopicStatsByIds(topicIds: number[], userId: number) {
+    if (!topicIds.length) return [];
+    const qb = this.buildTopicStatsBaseQB(userId).where(
+      't.id IN (:...topicIds)',
+      { topicIds },
+    );
+    const raws = await qb.getRawMany();
+    return raws.map((r) => this.mapTopicRow(r));
   }
 
   /** 🏆 Single-topic merit list (all question types in the topic). */

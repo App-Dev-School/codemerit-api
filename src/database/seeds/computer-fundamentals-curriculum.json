@@ -1,0 +1,155 @@
+{
+  "subjectSlug": "computer-fundamentals",
+  "topics": [
+    {
+      "title": "What is a Computer?",
+      "shortDesc": "Hardware vs software, types",
+      "label": "Foundation",
+      "order": 1,
+      "weight": 1,
+      "description": "Understand what a computer is and how it works at a basic level. Covers the difference between hardware and software, the main types of computers (desktop, laptop, tablet, server), and how they are used in everyday life and work.",
+      "goal": "Explain what a computer is, distinguish hardware from software, and identify the main types of computers.",
+      "isPublished": true
+    },
+    {
+      "title": "Hardware Components",
+      "shortDesc": "CPU, RAM, storage, I/O",
+      "label": "Foundation",
+      "order": 2,
+      "weight": 1,
+      "description": "Learn the physical components that make up a computer — the CPU (processor), RAM (memory), storage (HDD/SSD), motherboard, and input/output devices like monitors, keyboards, and mice. Understand what each component does and how they work together.",
+      "goal": "Identify the main hardware components of a computer and describe the role of each.",
+      "isPublished": true
+    },
+    {
+      "title": "Keyboard & Mouse Skills",
+      "shortDesc": "Typing, shortcuts, gestures",
+      "label": "Foundation",
+      "order": 3,
+      "weight": 1,
+      "description": "Build confidence using the keyboard and mouse — key positions, typing basics, essential keyboard shortcuts (Ctrl+C, Ctrl+V, Ctrl+Z, Alt+Tab), and mouse gestures including click, double-click, right-click, scroll, and drag-and-drop.",
+      "goal": "Use a keyboard and mouse competently for everyday computer tasks and common keyboard shortcuts.",
+      "isPublished": true
+    },
+    {
+      "title": "Operating System Basics",
+      "shortDesc": "Windows, taskbar, desktop",
+      "label": "Foundation",
+      "order": 4,
+      "weight": 1,
+      "description": "Understand the role of the operating system and get comfortable with the Windows environment — the desktop, taskbar, Start menu, system tray, and notification area. Learn to open, close, resize, and switch between application windows.",
+      "goal": "Navigate the Windows operating system confidently, managing windows and accessing key system features.",
+      "isPublished": true
+    },
+    {
+      "title": "File & Folder Management",
+      "shortDesc": "Create, move, copy, delete",
+      "label": "Foundation",
+      "order": 5,
+      "weight": 1,
+      "description": "Master the skills of organising files and folders — creating and naming folders, moving and copying files, using cut/copy/paste, deleting files and using the Recycle Bin, and searching for files. Learn good file naming conventions and folder structure habits.",
+      "goal": "Organise files and folders in Windows Explorer using create, move, copy, rename, and delete operations.",
+      "isPublished": true
+    },
+    {
+      "title": "Storage & Memory",
+      "shortDesc": "HDD, SSD, USB, file sizes",
+      "label": "Foundation",
+      "order": 6,
+      "weight": 1,
+      "description": "Understand different types of storage — internal hard drives (HDD and SSD), USB flash drives, memory cards, and cloud storage. Learn about file sizes (KB, MB, GB, TB), how to check available storage space, and how to safely eject removable devices.",
+      "goal": "Understand storage types, file sizes, and manage storage devices safely.",
+      "isPublished": true
+    },
+    {
+      "title": "Working with Applications",
+      "shortDesc": "Install, open, close, windows",
+      "label": "Foundation",
+      "order": 7,
+      "weight": 1,
+      "description": "Learn how to install and uninstall software, open and close applications, manage multiple open windows, and use the taskbar to switch between programs. Covers finding installed apps, using the Windows search bar, and basic app settings.",
+      "goal": "Install, manage, and work with multiple applications in Windows confidently.",
+      "isPublished": true
+    },
+    {
+      "title": "Printing & Peripherals",
+      "shortDesc": "Printers, scanners, devices",
+      "label": "Foundation",
+      "order": 8,
+      "weight": 1,
+      "description": "Set up and use peripheral devices — connecting a printer, sending a document to print, managing the print queue, scanning a document, and connecting other external devices (USB, Bluetooth). Covers basic troubleshooting when a device is not detected.",
+      "goal": "Set up and use printers and common peripherals, and manage print jobs.",
+      "isPublished": true
+    },
+    {
+      "title": "Basic Troubleshooting",
+      "shortDesc": "Common problems, restarts, updates",
+      "label": "Intermediate",
+      "order": 9,
+      "weight": 2,
+      "description": "Learn how to handle everyday computer problems — what to do when a program freezes, how to use Task Manager to end unresponsive applications, why restarting fixes many issues, how to check for and install Windows updates, and how to read basic error messages.",
+      "goal": "Diagnose and resolve common everyday computer problems independently.",
+      "isPublished": true
+    },
+    {
+      "title": "Network & Internet Basics",
+      "shortDesc": "WiFi, connections, IP address",
+      "label": "Intermediate",
+      "order": 10,
+      "weight": 2,
+      "description": "Understand how computers connect to the internet — WiFi vs wired connections, how to connect to a network, what an IP address is, the difference between a LAN and the internet, and basic network troubleshooting like checking your connection status.",
+      "goal": "Connect a computer to a network and understand basic networking concepts.",
+      "isPublished": true
+    },
+    {
+      "title": "Computer Security Basics",
+      "shortDesc": "Passwords, antivirus, safety",
+      "label": "Intermediate",
+      "order": 11,
+      "weight": 2,
+      "description": "Learn the fundamentals of keeping your computer secure — creating strong passwords, understanding why antivirus software matters, recognising suspicious programs, keeping software updated to patch security vulnerabilities, and basic safe computing habits.",
+      "goal": "Apply basic computer security practices to protect your system and data.",
+      "isPublished": true
+    },
+    {
+      "title": "Customising Your Computer",
+      "shortDesc": "Display, accessibility, shortcuts",
+      "label": "Intermediate",
+      "order": 12,
+      "weight": 2,
+      "description": "Personalise and configure your computer for comfort and efficiency — adjusting display settings (brightness, resolution, text size), setting up accessibility features, creating desktop shortcuts, managing startup programs, and basic system settings.",
+      "goal": "Configure Windows settings for personal preferences and productivity.",
+      "isPublished": true
+    }
+  ],
+  "subjectTracks": [
+    {
+      "title": "Computer Basics",
+      "description": "Get started with computers — understand the hardware, navigate the operating system, manage files, and use a keyboard and mouse with confidence.",
+      "sortOrder": 1,
+      "isPublished": true,
+      "topicTitles": [
+        "What is a Computer?",
+        "Hardware Components",
+        "Keyboard & Mouse Skills",
+        "Operating System Basics",
+        "File & Folder Management",
+        "Storage & Memory",
+        "Working with Applications",
+        "Printing & Peripherals"
+      ]
+    },
+    {
+      "title": "PC Operations & Security",
+      "description": "Go beyond the basics — troubleshoot common problems, understand networking, keep your computer secure, and configure it for your needs.",
+      "sortOrder": 2,
+      "isPublished": true,
+      "topicTitles": [
+        "Basic Troubleshooting",
+        "Network & Internet Basics",
+        "Computer Security Basics",
+        "Customising Your Computer"
+      ]
+    }
+  ]
+}

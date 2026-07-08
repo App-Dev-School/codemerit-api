@@ -1,0 +1,89 @@
+{
+  "subjectSlug": "docker",
+  "topics": [
+    {
+      "title": "Container Concepts",
+      "shortDesc": "What is a container?",
+      "label": "Foundation",
+      "order": 1,
+      "weight": 1,
+      "description": "Understand the concept of containers, how they differ from virtual machines, and why containerisation matters for consistent application delivery.",
+      "goal": "Explain the purpose of containers and when to use them.",
+      "isPublished": true
+    },
+    {
+      "title": "Docker Images & Registries",
+      "shortDesc": "Images and registries",
+      "label": "Foundation",
+      "order": 2,
+      "weight": 1,
+      "description": "Learn how Docker images are built, stored, and shared using registries. Covers image layers, tags, and pull/push workflows.",
+      "goal": "Create and publish Docker images for reuse and deployment.",
+      "isPublished": true
+    },
+    {
+      "title": "Dockerfile Authoring",
+      "shortDesc": "Write Dockerfiles",
+      "label": "Intermediate",
+      "order": 3,
+      "weight": 2,
+      "description": "Author effective Dockerfiles using best practices, multi-stage builds, and caching strategies to build lean, secure container images.",
+      "goal": "Build optimized Docker images with reproducible Dockerfiles.",
+      "isPublished": true
+    },
+    {
+      "title": "Networking & Storage",
+      "shortDesc": "Networks and volumes",
+      "label": "Intermediate",
+      "order": 4,
+      "weight": 2,
+      "description": "Understand Docker networking modes, container communication, and how to use volumes and bind mounts for persistent storage.",
+      "goal": "Configure container networking and persistent storage appropriately.",
+      "isPublished": true
+    },
+    {
+      "title": "Docker Compose",
+      "shortDesc": "Multi-container apps",
+      "label": "Intermediate",
+      "order": 5,
+      "weight": 2,
+      "description": "Use Docker Compose to define and run multi-container applications, including service dependencies, environment variables, and volume mounts.",
+      "goal": "Build and run a multi-container application using Docker Compose.",
+      "isPublished": true
+    },
+    {
+      "title": "Docker Security & Best Practices",
+      "shortDesc": "Secure containers",
+      "label": "Advanced",
+      "order": 6,
+      "weight": 3,
+      "description": "Learn container security features and best practices, such as minimal base images, secrets management, image scanning, and runtime isolation.",
+      "goal": "Apply Docker security practices to hardened container deployments.",
+      "isPublished": true
+    }
+  ],
+  "subjectTracks": [
+    {
+      "title": "Docker Foundations",
+      "description": "Core Docker concepts for building and running containers reliably.",
+      "sortOrder": 1,
+      "isPublished": true,
+      "topicTitles": [
+        "Container Concepts",
+        "Docker Images & Registries",
+        "Dockerfile Authoring"
+      ]
+    },
+    {
+      "title": "Docker in Practice",
+      "description": "Operational Docker skills for networking, storage, multi-container apps, and security.",
+      "sortOrder": 2,
+      "isPublished": true,
+      "topicTitles": [
+        "Networking & Storage",
+        "Docker Compose",
+        "Docker Security & Best Practices"
+      ]
+    }
+  ]
+}

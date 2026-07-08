@@ -1,0 +1,499 @@
+{
+  "subjectSlug": "cloud-basics",
+  "questions": [
+    {
+      "slug": "cb-trivia-cloud-definition",
+      "topicTitle": "What is Cloud Computing?",
+      "question": "Which of the following best defines cloud computing?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "On-demand delivery of computing resources over the internet with pay-as-you-go pricing",
+          "correct": true,
+          "comment": "Cloud computing is on-demand delivery of IT resources with flexible pricing models."
+        },
+        {
+          "option": "A local network of computers connected via cables",
+          "correct": false
+        },
+        {
+          "option": "Storage devices connected to the internet",
+          "correct": false
+        },
+        {
+          "option": "Weather data services provided over the internet",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cb-trivia-cloud-elasticity",
+      "topicTitle": "What is Cloud Computing?",
+      "question": "What does elasticity mean in cloud computing?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "The ability to automatically scale resources up or down based on demand",
+          "correct": true,
+          "comment": "Elasticity allows systems to handle traffic spikes and reduce costs during low demand."
+        },
+        {
+          "option": "The ability to physically stretch cables across regions",
+          "correct": false
+        },
+        {
+          "option": "The flexibility to use rubber materials for hardware",
+          "correct": false
+        },
+        {
+          "option": "The speed at which data travels over the network",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cb-trivia-iaas-definition",
+      "topicTitle": "Service Models: IaaS, PaaS, SaaS",
+      "question": "What does IaaS stand for, and what does the provider manage in this model?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Infrastructure as a Service; provider manages hardware, virtualization, and networking",
+          "correct": true,
+          "comment": "IaaS customers manage OS, middleware, runtime, and applications. Providers manage everything below."
+        },
+        {
+          "option": "Internet and Application Service; provider manages user data",
+          "correct": false
+        },
+        {
+          "option": "Integrated Application Stack; provider manages everything except hardware",
+          "correct": false
+        },
+        {
+          "option": "Internet-based Authentication System; provider manages user logins",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cb-trivia-paas-examples",
+      "topicTitle": "Service Models: IaaS, PaaS, SaaS",
+      "question": "Which of the following is an example of PaaS (Platform as a Service)?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Azure App Service or Heroku for deploying web applications",
+          "correct": true,
+          "comment": "PaaS provides a managed platform with runtime, frameworks, and deployment tools pre-configured."
+        },
+        {
+          "option": "Amazon EC2 virtual machines",
+          "correct": false
+        },
+        {
+          "option": "Microsoft Office 365 cloud apps",
+          "correct": false
+        },
+        {
+          "option": "Google Drive file storage",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cb-trivia-saas-definition",
+      "topicTitle": "Service Models: IaaS, PaaS, SaaS",
+      "question": "What is SaaS, and what is a common characteristic?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Software as a Service; accessed via web browser, fully managed by provider",
+          "correct": true,
+          "comment": "SaaS is ready-to-use software hosted in the cloud (Salesforce, Teams, Slack, etc.). Users don't manage infrastructure."
+        },
+        {
+          "option": "Storage as a Service; for storing only backups",
+          "correct": false
+        },
+        {
+          "option": "Server as a Service; you must manage operating systems",
+          "correct": false
+        },
+        {
+          "option": "Security as a Service; only for password management",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cb-trivia-public-cloud-characteristic",
+      "topicTitle": "Deployment Models: Public, Private, Hybrid",
+      "question": "Which statement best describes a public cloud?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Multi-tenant infrastructure shared by many organizations, accessible over the internet",
+          "correct": true,
+          "comment": "Public clouds (AWS, Azure, GCP) serve multiple customers with shared resources and global accessibility."
+        },
+        {
+          "option": "Private infrastructure owned and operated by a single organization",
+          "correct": false
+        },
+        {
+          "option": "Cloud services available only to government agencies",
+          "correct": false
+        },
+        {
+          "option": "Cloud infrastructure restricted to a specific country or region",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cb-trivia-private-cloud-use-case",
+      "topicTitle": "Deployment Models: Public, Private, Hybrid",
+      "question": "When would a company choose a private cloud over a public cloud?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "When they need maximum control, compliance requirements, and data sovereignty",
+          "correct": true,
+          "comment": "Private clouds are ideal for industries with strict regulations (healthcare, finance) and sensitive data requirements."
+        },
+        {
+          "option": "When they want to save the most money",
+          "correct": false
+        },
+        {
+          "option": "When they need to use only open-source software",
+          "correct": false
+        },
+        {
+          "option": "When they want the fastest possible internet speeds",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cb-trivia-hybrid-cloud-definition",
+      "topicTitle": "Deployment Models: Public, Private, Hybrid",
+      "question": "What is the main advantage of a hybrid cloud approach?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Flexibility to keep sensitive workloads private while using public cloud for non-critical tasks",
+          "correct": true,
+          "comment": "Hybrid clouds balance security, cost, and flexibility by using both private and public resources strategically."
+        },
+        {
+          "option": "It eliminates the need for Internet connectivity",
+          "correct": false
+        },
+        {
+          "option": "It doubles the storage capacity automatically",
+          "correct": false
+        },
+        {
+          "option": "It guarantees 100% uptime across all services",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cb-trivia-vnet-purpose",
+      "topicTitle": "Cloud Networking Basics",
+      "question": "What is the primary purpose of a Virtual Network (VNet) in cloud computing?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "To create an isolated network environment for cloud resources with custom IP ranges and subnets",
+          "correct": true,
+          "comment": "VNets (Virtual Networks) allow you to segment resources, control routing, and implement security boundaries."
+        },
+        {
+          "option": "To connect only to the internet backbone",
+          "correct": false
+        },
+        {
+          "option": "To provide unlimited storage space",
+          "correct": false
+        },
+        {
+          "option": "To automatically encrypt all data",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cb-trivia-security-group-function",
+      "topicTitle": "Cloud Networking Basics",
+      "question": "What does a Security Group do in cloud networking?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Acts as a firewall to control inbound and outbound traffic to cloud resources",
+          "correct": true,
+          "comment": "Security Groups are stateful firewalls that allow/deny traffic based on rules you define."
+        },
+        {
+          "option": "Encrypts all data stored on the hard drive",
+          "correct": false
+        },
+        {
+          "option": "Monitors employee activity and generates reports",
+          "correct": false
+        },
+        {
+          "option": "Creates physical barriers around data centers",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cb-trivia-object-storage-use",
+      "topicTitle": "Cloud Storage & Data Services",
+      "question": "What type of data is object storage best suited for?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Unstructured data like photos, videos, documents, and backups",
+          "correct": true,
+          "comment": "Object storage is designed for massive amounts of unstructured data accessed via HTTP APIs."
+        },
+        {
+          "option": "Only structured data in SQL tables",
+          "correct": false
+        },
+        {
+          "option": "Real-time transactional databases only",
+          "correct": false
+        },
+        {
+          "option": "Operating system files exclusively",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cb-trivia-block-storage-characteristic",
+      "topicTitle": "Cloud Storage & Data Services",
+      "question": "What is a key characteristic of block storage?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Attached to VMs as virtual disks, providing low-latency storage for OS and databases",
+          "correct": true,
+          "comment": "Block storage provides persistent volume storage with high IOPS for transactional workloads."
+        },
+        {
+          "option": "Stored only in memory and is temporary",
+          "correct": false
+        },
+        {
+          "option": "Can only be accessed over the internet",
+          "correct": false
+        },
+        {
+          "option": "Is always encrypted at the hardware level automatically",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cb-trivia-iam-purpose",
+      "topicTitle": "Identity, Access & Security",
+      "question": "What is the primary purpose of Identity and Access Management (IAM) in the cloud?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "To control who has access to cloud resources and what actions they can perform",
+          "correct": true,
+          "comment": "IAM enables fine-grained access control through users, roles, policies, and permissions."
+        },
+        {
+          "option": "To encrypt all data in the cloud",
+          "correct": false
+        },
+        {
+          "option": "To monitor internet speeds only",
+          "correct": false
+        },
+        {
+          "option": "To automatically delete unused resources",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cb-trivia-least-privilege-principle",
+      "topicTitle": "Identity, Access & Security",
+      "question": "What does the 'Principle of Least Privilege' mean in cloud security?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Grant users only the minimum permissions needed to perform their job",
+          "correct": true,
+          "comment": "Least Privilege minimizes risk by ensuring users have just enough access, reducing attack surface."
+        },
+        {
+          "option": "Give all users full administrator access for convenience",
+          "correct": false
+        },
+        {
+          "option": "Restrict cloud access only to C-level executives",
+          "correct": false
+        },
+        {
+          "option": "Remove all passwords and use only biometric authentication",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cb-trivia-shared-responsibility-model",
+      "topicTitle": "Identity, Access & Security",
+      "question": "In the cloud's shared responsibility model, who is responsible for securing the hypervisor and physical infrastructure?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "The cloud provider",
+          "correct": true,
+          "comment": "Providers secure the underlying infrastructure; customers secure their data, applications, and configurations."
+        },
+        {
+          "option": "The customer organization",
+          "correct": false
+        },
+        {
+          "option": "Both equally share the responsibility",
+          "correct": false
+        },
+        {
+          "option": "A third-party security firm is always responsible",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cb-trivia-cost-optimization-method",
+      "topicTitle": "Cost Management & Optimization",
+      "question": "Which of the following is an effective cost optimization strategy in the cloud?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Right-sizing resources, using reserved instances, and removing unused resources",
+          "correct": true,
+          "comment": "Cost optimization includes matching resource size to actual needs and committing to reserved capacity for predictable workloads."
+        },
+        {
+          "option": "Purchasing the largest VM available",
+          "correct": false
+        },
+        {
+          "option": "Storing all backups in the most expensive tier",
+          "correct": false
+        },
+        {
+          "option": "Running all workloads in multiple regions simultaneously",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cb-trivia-spot-instances",
+      "topicTitle": "Cost Management & Optimization",
+      "question": "What are spot instances, and when should they be used?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "Discounted unused capacity, ideal for fault-tolerant and flexible workloads like batch processing",
+          "correct": true,
+          "comment": "Spot instances offer up to 90% savings but can be interrupted. Perfect for non-critical tasks."
+        },
+        {
+          "option": "Premium instances with guaranteed uptime for critical workloads",
+          "correct": false
+        },
+        {
+          "option": "Instances that are always stored in the same physical location",
+          "correct": false
+        },
+        {
+          "option": "Only available during nighttime hours",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cb-trivia-cloud-governance",
+      "topicTitle": "Cloud Compliance & Governance",
+      "question": "What is the purpose of cloud governance?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "To ensure resources are used safely, efficiently, and in compliance with policies",
+          "correct": true,
+          "comment": "Governance includes policies, controls, auditing, and tagging to maintain security and compliance standards."
+        },
+        {
+          "option": "To limit cloud adoption within organizations",
+          "correct": false
+        },
+        {
+          "option": "To eliminate the need for security measures",
+          "correct": false
+        },
+        {
+          "option": "To monitor only internet traffic speeds",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "slug": "cb-trivia-resource-tagging",
+      "topicTitle": "Cloud Compliance & Governance",
+      "question": "Why is resource tagging important in cloud governance?",
+      "level": 1,
+      "timeAllowed": 60,
+      "options": [
+        {
+          "option": "It enables tracking of ownership, environment, cost allocation, and compliance status of resources",
+          "correct": true,
+          "comment": "Tags organize resources for billing, compliance audits, automated management, and policy enforcement."
+        },
+        {
+          "option": "It automatically encrypts all resources",
+          "correct": false
+        },
+        {
+          "option": "It increases the storage capacity of the cloud",
+          "correct": false
+        },
+        {
+          "option": "It restricts all external internet access",
+          "correct": false
+        }
+      ]
+    }
+  ]
+}
