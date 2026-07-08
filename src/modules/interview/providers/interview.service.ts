@@ -1,5 +1,6 @@
 import {
   Injectable,
+  Logger,
   BadRequestException,
   NotFoundException,
   ConflictException,
@@ -16,10 +17,12 @@ import { UpdateInterviewDto } from '../dtos/update-interview.dto';
 import { SubmitInterviewDto } from '../dtos/submit-interview.dto';
 import { AssessmentSession } from 'src/common/typeorm/entities/assessment-session.entity';
 import { SkillRating } from 'src/common/typeorm/entities/skill-rating.entity';
+import { ActivityService } from 'src/modules/activity/providers/activity/activity.service';
 import * as crypto from 'crypto';
 
 @Injectable()
 export class InterviewService {
+  private readonly logger = new Logger(InterviewService.name);
   constructor(
     @InjectRepository(Interview)
     private readonly interviewRepo: Repository<Interview>,
@@ -27,6 +30,7 @@ export class InterviewService {
     private readonly jobRoleRepo: Repository<JobRole>,
     private readonly userService: UserService,
     private readonly dataSource: DataSource,
+    private readonly activityService: ActivityService,
   ) {}
 
   async createInterview(dto: CreateInterviewDto) {
@@ -64,55 +68,81 @@ export class InterviewService {
       throw new ConflictException('Failed to generate a unique interview code');
     }
 
-    return await this.dataSource.transaction(async (manager) => {
-      let userId: number;
+    let targetEmail = '';
 
-      if (dto.userId) {
-        const user = await this.userService.findOne(dto.userId);
-        if (!user) {
-          throw new NotFoundException('User not found');
-        }
-        userId = user.id;
-      } else {
-        if (!dto.email || !dto.firstName) {
-          throw new BadRequestException(
-            'First name and email are required for new registrations',
-          );
+    const savedInterview = await this.dataSource.transaction(
+      async (manager) => {
+        let userId: number;
+
+        if (dto.userId) {
+          const user = await this.userService.findOne(dto.userId);
+          if (!user) {
+            throw new NotFoundException('User not found');
+          }
+          userId = user.id;
+          targetEmail = user.email;
+        } else {
+          if (!dto.email || !dto.firstName) {
+            throw new BadRequestException(
+              'First name and email are required for new registrations',
+            );
+          }
+
+          const newUser = await this.userService.create({
+            firstName: dto.firstName,
+            lastName: dto.lastName,
+            email: dto.email,
+            mobile: dto.mobile,
+          });
+
+          userId = newUser.id;
+          targetEmail = newUser.email;
         }
 
-        const newUser = await this.userService.create({
-          firstName: dto.firstName,
-          lastName: dto.lastName,
-          email: dto.email,
-          mobile: dto.mobile,
+        const interview = manager.create(Interview, {
+          title: dto.title,
+          jobRoleId: dto.jobRoleId,
+          scheduledAt,
+          status: InterviewStatusEnum.SCHEDULED,
+          interviewCode,
+          userId,
         });
 
-        userId = newUser.id;
-      }
+        const dbSavedInterview = await manager.save(Interview, interview);
 
-      const interview = manager.create(Interview, {
-        title: dto.title,
-        jobRoleId: dto.jobRoleId,
-        scheduledAt,
-        status: InterviewStatusEnum.SCHEDULED,
-        interviewCode,
-        userId,
-      });
+        const historyLog = manager.create(InterviewStatusHistory, {
+          interviewId: dbSavedInterview.id,
+          oldStatus: dbSavedInterview.status,
+          newStatus: dbSavedInterview.status,
+          changedBy: userId,
+          remarks: 'Interview scheduled successfully.',
+        });
 
-      const savedInterview = await manager.save(Interview, interview);
+        await manager.save(InterviewStatusHistory, historyLog);
 
-      const historyLog = manager.create(InterviewStatusHistory, {
-        interviewId: savedInterview.id,
-        oldStatus: savedInterview.status,
-        newStatus: savedInterview.status,
-        changedBy: userId,
-        remarks: 'Interview scheduled successfully.',
-      });
+        return dbSavedInterview;
+      },
+    );
 
-      await manager.save(InterviewStatusHistory, historyLog);
+    try {
+      await this.activityService.createActivity(
+        savedInterview.userId,
+        'Interview Scheduled',
+        `Your interview "${savedInterview.title}" has been scheduled for ${savedInterview.scheduledAt.toLocaleString()}.`,
+        targetEmail,
+        savedInterview.id,
+        'INTERVIEW',
+      );
+    } catch (activityError) {
+      this.logger.error(
+        'Failed to create interview activity / send email',
+        activityError instanceof Error
+          ? activityError.stack
+          : String(activityError),
+      );
+    }
 
-      return savedInterview;
-    });
+    return savedInterview;
   }
 
   async updateInterview(interviewId: number, dto: UpdateInterviewDto) {
@@ -196,7 +226,14 @@ export class InterviewService {
       );
     }
 
-    return await this.dataSource.transaction(async (manager) => {
+    const user = await this.userService.findOne(interview.userId);
+    if (!user) {
+      throw new NotFoundException(
+        'User associated with this interview not found',
+      );
+    }
+
+    const result = await this.dataSource.transaction(async (manager) => {
       const assessmentSession = new AssessmentSession();
       assessmentSession.userId = interview.userId;
       assessmentSession.interviewId = interview.id;
@@ -246,6 +283,35 @@ export class InterviewService {
         assessmentSession: savedAssessment,
       };
     });
+
+    try {
+      const isCompleted =
+        result.interview.status === InterviewStatusEnum.COMPLETED;
+      const activityTitle = isCompleted
+        ? 'Interview Completed'
+        : 'Interview Declined';
+      const activityMessage = isCompleted
+        ? `Your interview "${result.interview.title}" has been successfully completed and reviewed.`
+        : `Your interview "${result.interview.title}" was marked as declined. Reason: ${result.interview.declineReason}`;
+
+      await this.activityService.createActivity(
+        result.interview.userId,
+        activityTitle,
+        activityMessage,
+        user.email,
+        result.interview.id,
+        'INTERVIEW',
+      );
+    } catch (activityError) {
+      this.logger.error(
+        'Failed to create interview submission activity / send email',
+        activityError instanceof Error
+          ? activityError.stack
+          : String(activityError),
+      );
+    }
+
+    return result;
   }
 
   async getInterviewDetails(interviewCode: string) {

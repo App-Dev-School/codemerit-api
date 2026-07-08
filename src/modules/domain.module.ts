@@ -11,6 +11,7 @@ import { LmsModule } from './lms/lms.module';
 import { NotificationModule } from './notification/notification.module';
 import { InterviewModule } from './interview/interview.module';
 import { LessonModule } from './lesson/lesson.module';
+import { ActivityModule } from './activity/activity.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { LessonModule } from './lesson/lesson.module';
     NotificationModule,
     InterviewModule,
     LessonModule,
+    ActivityModule,
   ],
 })
 export class DomainModule {}
