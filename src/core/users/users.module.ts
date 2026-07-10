@@ -16,6 +16,7 @@ import { NotificationModule } from 'src/modules/notification/notification.module
 import { MasterModule } from 'src/modules/master/master.module';
 import { MailModule } from 'src/common/mail/mail.module';
 import { UserPermissionModule } from 'src/modules/user-permission/user-permission.module';
+import { ActivityModule } from 'src/modules/activity/activity.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { UserPermissionModule } from 'src/modules/user-permission/user-permissio
     MasterModule,
     MailModule,
     UserPermissionModule,
+    ActivityModule,
   ],
   providers: [
     UserService,

@@ -1,4 +1,5 @@
 import {
+  Logger,
   HttpStatus,
   Injectable,
   InternalServerErrorException,
@@ -30,9 +31,11 @@ import { ApiUsageService } from 'src/common/services/api-usage.service';
 import { NotificationService } from 'src/modules/notification/providers/notification.service';
 import { JobRole } from 'src/common/typeorm/entities/job-role.entity';
 import { MailService } from 'src/common/mail/providers/mail.service';
+import { ActivityService } from 'src/modules/activity/providers/activity/activity.service';
 
 @Injectable()
 export class UserService {
+  private readonly logger = new Logger(UserService.name);
   constructor(
     @InjectRepository(User)
     private userRepo: Repository<User>,
@@ -48,6 +51,7 @@ export class UserService {
     private readonly apiUsageService: ApiUsageService,
     private readonly notificationService: NotificationService,
     private readonly dataSource: DataSource,
+    private readonly activityService: ActivityService,
   ) {}
 
   async create(data: Partial<CreateUserDto>): Promise<User> {
@@ -97,7 +101,13 @@ export class UserService {
       const savedUser = await queryRunner.manager.save(user);
       //Send e-mail
       try {
-        this.mailService.sendMail(savedUser?.email, "CodeMerit Registration Successful", "You are registered successfully with CodeMerit. Use "+pass+" as the OTP to activate your account.");
+        this.mailService.sendMail(
+          savedUser?.email,
+          'CodeMerit Registration Successful',
+          'You are registered successfully with CodeMerit. Use ' +
+            pass +
+            ' as the OTP to activate your account.',
+        );
       } catch (error) {
         console.log('CMRegistration Error sending e-mail => ', error);
       }
@@ -298,9 +308,10 @@ export class UserService {
   }
 
   async updateUserPassword(id: number, password: string): Promise<boolean> {
+    const hashedPassword = await bcrypt.hash(password, 10);
     const result = await this.userRepo.update(
       { id: id },
-      { password: password },
+      { password: hashedPassword },
     );
     if (result.affected && result.affected > 0) {
       return true;
@@ -336,10 +347,14 @@ export class UserService {
     const result = await this.userOtpService.create(userOtp);
     //check if limit not exceeded for sending OTP. If exceeded, do not send e-mail and return error message
     try {
-        this.mailService.sendMail(email, "OTP received from CodeMerit", "Use "+pass+" as the OTP from CodeMerit.");
-      } catch (error) {
-        console.log('CMRegistration Error sending e-mail => ', error);
-      }
+      this.mailService.sendMail(
+        email,
+        'OTP received from CodeMerit',
+        'Use ' + pass + ' as the OTP from CodeMerit.',
+      );
+    } catch (error) {
+      console.log('CMRegistration Error sending e-mail => ', error);
+    }
 
     if (result) {
       return 'OTP sent Successfully.';
@@ -372,6 +387,9 @@ export class UserService {
       const result = await this.userOtpService.updateIsUsed(userOtp?.id);
       let userRs: boolean = false;
       let msg: string = '';
+      let isPasswordChange = false;
+      let isAccountVerify = false;
+
       if (accountVerificationDto.tag == UserOtpTagsEnum.ACC_VERIFY) {
         userRs = await this.updateUserAccountStatus(
           user?.id,
@@ -379,6 +397,7 @@ export class UserService {
         );
         msg = 'Your account is now verified.';
         if (userRs) {
+          isAccountVerify = true;
           await this.notificationService.notifyAccountVerified(
             user.id,
             user.firstName,
@@ -391,8 +410,59 @@ export class UserService {
           accountVerificationDto?.password,
         );
         msg = 'Successfully change your password.';
+        if (userRs) {
+          isPasswordChange = true;
+        }
       }
+
       if (result && userRs) {
+        // Safe Background Activity Logging Hooks
+        if (isAccountVerify) {
+          try {
+            await this.activityService.createActivity(
+              user.id,
+              'User Registration',
+              'Your account has been verified and created successfully.',
+              user.id,
+              'USER',
+            );
+          } catch (err) {
+            if (err instanceof Error) {
+              this.logger.error(
+                `Failed to log registration activity: ${err.message}`,
+                err.stack,
+              );
+            } else {
+              this.logger.error(
+                `Failed to log registration activity: ${String(err)}`,
+              );
+            }
+          }
+        }
+
+        if (isPasswordChange) {
+          try {
+            await this.activityService.createActivity(
+              user.id,
+              'Password Changed',
+              'Your account password was updated successfully.',
+              user.id,
+              'USER',
+            );
+          } catch (err) {
+            if (err instanceof Error) {
+              this.logger.error(
+                `Failed to log password change activity: ${err.message}`,
+                err.stack,
+              );
+            } else {
+              this.logger.error(
+                `Failed to log password change activity: ${String(err)}`,
+              );
+            }
+          }
+        }
+
         return msg;
       } else {
         throw new AppCustomException(
@@ -401,7 +471,6 @@ export class UserService {
         );
       }
     } else {
-      // throw new HttpException('OTP Mismatch', HttpStatus.NOT_ACCEPTABLE);
       throw new AppCustomException(
         HttpStatus.BAD_REQUEST,
         'OTP mismatch. Please try again.',

@@ -16,6 +16,7 @@ import { QuizResultService } from './providers/quiz-result.service';
 import { QuizService } from './providers/quiz.service';
 import { QuizController } from './quiz.controller';
 import { Subject } from 'src/common/typeorm/entities/subject.entity';
+import { ActivityModule } from '../activity/activity.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { Subject } from 'src/common/typeorm/entities/subject.entity';
     QuestionModule,
     MasterModule,
     NotificationModule,
+    ActivityModule,
   ],
   providers: [QuizService, QuestionAttemptService, QuizResultService],
   controllers: [QuizController],

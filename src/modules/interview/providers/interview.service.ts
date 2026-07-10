@@ -129,7 +129,6 @@ export class InterviewService {
         savedInterview.userId,
         'Interview Scheduled',
         `Your interview "${savedInterview.title}" has been scheduled for ${savedInterview.scheduledAt.toLocaleString()}.`,
-        targetEmail,
         savedInterview.id,
         'INTERVIEW',
       );
@@ -298,7 +297,6 @@ export class InterviewService {
         result.interview.userId,
         activityTitle,
         activityMessage,
-        user.email,
         result.interview.id,
         'INTERVIEW',
       );

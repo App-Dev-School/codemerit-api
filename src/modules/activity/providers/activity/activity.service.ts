@@ -19,7 +19,6 @@ export class ActivityService {
     userId: number,
     title: string,
     message: string,
-    email: string,
     dataId?: number,
     dataType?: string,
   ): Promise<Activity> {
@@ -34,30 +33,14 @@ export class ActivityService {
 
       const savedActivity = await this.activityRepository.save(activity);
 
-      try {
-        await this.mailService.sendMail(email, title, `<p>${message}</p>`);
-      } catch (mailError) {
-        this.logger.error(
-          `Activity logged but email failed to send to ${email}`,
-          mailError instanceof Error ? mailError.stack : String(mailError),
-        );
-      }
-
       this.logger.log(`Activity created successfully for userId=${userId}`);
 
       return savedActivity;
     } catch (error) {
-      if (error instanceof Error) {
-        this.logger.error(
-          `Failed to create activity for userId=${userId}`,
-          error.stack,
-        );
-      } else {
-        this.logger.error(
-          `Failed to create activity for userId=${userId}`,
-          String(error),
-        );
-      }
+      this.logger.error(
+        `Failed to create activity for userId=${userId}`,
+        error instanceof Error ? error.stack : String(error),
+      );
 
       throw error;
     }
