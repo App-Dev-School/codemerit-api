@@ -251,7 +251,7 @@ export class TopicAnalysisService {
   }
 
   /** Get stats for a specific set of topic IDs — used by the career dashboard. */
-  async getTopicStatsByIds(topicIds: number[], userId: number) {
+  async getTopicStatsByIds(topicIds: number[], userId?: number) {
     if (!topicIds.length) return [];
     const qb = this.buildTopicStatsBaseQB(userId).where(
       't.id IN (:...topicIds)',

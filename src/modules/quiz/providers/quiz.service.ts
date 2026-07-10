@@ -387,6 +387,12 @@ export class QuizService {
             String(activityError),
           );
         }
+        //Send a temp mail
+        console.log('QuizBuilder sending email');
+        try {
+        this.mailService.sendMail('javacheartofmine@gmail.com', "Quiz Attempted from CodeMerit", "Quiz Attempted by userId: "+submitQuizDto?.userId+" with score: "+submitQuizDto?.score);
+      } catch (error) {
+        console.log('CMRegistration Error sending e-mail2 => ', error);
       }
 
       return questionResult;

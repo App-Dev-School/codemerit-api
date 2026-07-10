@@ -8,10 +8,9 @@ import { DataSource, Repository } from 'typeorm';
 import { MeritService } from './merit.service';
 import { SubjectStatsService } from './subject-stats.service';
 import { TopicAnalysisService } from './topic-analysis.service';
+import { SubjectTrackAnalysisService } from './subject-track-analysis.service';
 
 // ─── Completion thresholds ────────────────────────────────────────────────────
-const TOPIC_DONE = 70;        // coverage % to mark topic complete
-const TRACK_DONE = 70;        // % of topics done to mark subject track complete
 const CERT_ACHIEVED = 80;     // % of subject tracks done to achieve a cert
 
 @Injectable()
@@ -27,6 +26,7 @@ export class ProgramService {
     private readonly subjectStats: SubjectStatsService,
     private readonly topicAnalyzer: TopicAnalysisService,
     private readonly meritService: MeritService,
+    private readonly subjectTrackAnalyzer: SubjectTrackAnalysisService,
   ) {}
 
   // ─── Shared Private Fetchers ──────────────────────────────────────────────────
@@ -78,33 +78,6 @@ export class ProgramService {
       .getRawMany();
   }
 
-  /** All subject tracks for the given subjects, each row = one (track, topic) pair. */
-  private async fetchSubjectTracksWithTopics(subjectIds: number[]) {
-    if (!subjectIds.length) return [];
-    return this.dataSource
-      .createQueryBuilder()
-      .select('st.id', 'stId')
-      .addSelect('st.title', 'stTitle')
-      .addSelect('st.slug', 'stSlug')
-      .addSelect('st.description', 'stDesc')
-      .addSelect('st.sortOrder', 'stSortOrder')
-      .addSelect('st.subjectId', 'stSubjectId')
-      .addSelect('t.id', 'topicId')
-      .addSelect('t.title', 'topicTitle')
-      .addSelect('t.slug', 'topicSlug')
-      .addSelect('t.label', 'topicLabel')
-      .addSelect('t.order', 'topicOrder')
-      .from('subject_track', 'st')
-      .innerJoin('subject_track_topic', 'stt', 'stt.subjectTrackId = st.id')
-      .innerJoin('topic', 't', 't.id = stt.topicId AND t.isPublished = 1')
-      .where('st.subjectId IN (:...subjectIds)', { subjectIds })
-      .andWhere('st.isPublished = 1')
-      .orderBy('st.subjectId', 'ASC')
-      .addOrderBy('st.sortOrder', 'ASC')
-      .addOrderBy('t.order', 'ASC')
-      .getRawMany();
-  }
-
   /** Cert tracks for the given job role IDs, each row = one (cert, subjectTrack) pair. */
   private async fetchCertTrackHierarchy(jobRoleIds: number[]) {
     if (!jobRoleIds.length) return [];
@@ -132,101 +105,6 @@ export class ProgramService {
       .addOrderBy('ct.sortOrder', 'ASC')
       .addOrderBy('st.sortOrder', 'ASC')
       .getRawMany();
-  }
-
-  // ─── Shared Assembly Helpers ──────────────────────────────────────────────────
-
-  /**
-   * Builds a Map<subjectTrackId, computedTrack> from the raw (track, topic) rows
-   * and topic stats. Used by both getProgramDetails and getCareerDashboard.
-   */
-  private buildSubjectTrackMap(
-    stRows: any[],
-    topicStatsMap: Map<number, any>,
-    stMerits: { meritLists: Map<number, any[]>; userRanks: Map<number, number | null> },
-    userId?: number,
-  ): Map<number, any> {
-    // Group rows by subjectTrackId
-    type StEntry = { meta: any; topicIds: number[] };
-    const stIndex = new Map<number, StEntry>();
-
-    for (const row of stRows) {
-      const stId = +row.stId;
-      if (!stIndex.has(stId)) {
-        stIndex.set(stId, {
-          meta: {
-            id: stId, title: row.stTitle, slug: row.stSlug,
-            description: row.stDesc, sortOrder: +row.stSortOrder,
-            subjectId: +row.stSubjectId,
-          },
-          topicIds: [],
-        });
-      }
-      stIndex.get(stId)!.topicIds.push(+row.topicId);
-    }
-
-    const result = new Map<number, any>();
-
-    for (const [stId, { meta, topicIds }] of stIndex) {
-      // Build topic cards
-      const topics = topicIds.map((tid) => {
-        const ts = topicStatsMap.get(tid) ?? {};
-        const numTrivia = +ts.numTrivia || 0;
-        const attempted = +ts.myUniqueAttempts || 0;
-        const allAttempts = +ts.myAllAttempts || 0;
-        const correct = +ts.correct || 0;
-        const wrong = +ts.wrong || 0;
-        const coverage = numTrivia > 0 ? +((attempted / numTrivia) * 100).toFixed(1) : 0;
-        const accuracy = allAttempts > 0 ? +(correct * 100 / allAttempts).toFixed(1) : 0;
-        const score = +generateScore(allAttempts, correct, wrong).toFixed(0);
-        const isCompleted = coverage >= TOPIC_DONE;
-
-        const base: any = {
-          id: tid,
-          title: ts.title,
-          slug: ts.slug,
-          label: ts.label,
-          numTrivia,
-        };
-        if (userId) Object.assign(base, { attempted, correct, wrong, accuracy, coverage, score, isCompleted });
-        return base;
-      });
-
-      // Aggregate subjectTrack stats
-      const stNumTrivia = topics.reduce((s: number, t: any) => s + (t.numTrivia || 0), 0);
-      const stAttempted = userId ? topics.reduce((s: number, t: any) => s + (t.attempted || 0), 0) : 0;
-      const stAllAttempts = userId ? topicIds.reduce((s: number, tid: number) => s + (+(topicStatsMap.get(tid)?.myAllAttempts) || 0), 0) : 0;
-      const stCorrect = userId ? topics.reduce((s: number, t: any) => s + (t.correct || 0), 0) : 0;
-      const stWrong = userId ? topics.reduce((s: number, t: any) => s + (t.wrong || 0), 0) : 0;
-      const stCoverage = stNumTrivia > 0 ? +((stAttempted / stNumTrivia) * 100).toFixed(1) : 0;
-      const stAccuracy = stAllAttempts > 0 ? +(stCorrect * 100 / stAllAttempts).toFixed(1) : 0;
-      const stScore = +generateScore(stAllAttempts, stCorrect, stWrong).toFixed(0);
-      const totalTopics = topics.length;
-      const completedTopics = userId ? topics.filter((t: any) => t.isCompleted).length : 0;
-      const progressPercent = totalTopics > 0 ? +((completedTopics / totalTopics) * 100).toFixed(0) : 0;
-      const isCompleted = progressPercent >= TRACK_DONE;
-
-      const card: any = {
-        ...meta,
-        totalTopics,
-        numTrivia: stNumTrivia,
-        meritList: stMerits.meritLists.get(stId) ?? [],
-        topics,
-      };
-
-      if (userId) {
-        Object.assign(card, {
-          attempted: stAttempted, correct: stCorrect, wrong: stWrong,
-          coverage: stCoverage, accuracy: stAccuracy, score: stScore,
-          completedTopics, progressPercent, isCompleted,
-          userRank: stMerits.userRanks.get(stId) ?? null,
-        });
-      }
-
-      result.set(stId, card);
-    }
-
-    return result;
   }
 
   // ─── Job Roles With Subjects (master data) ────────────────────────────────────
@@ -324,21 +202,7 @@ export class ProgramService {
 
     // Fetch cert track topics (certRows don't have topicIds — need separate fetch)
     const certStIds = [...new Set(certRows.map((r) => +r.stId))];
-    const stRowsForCerts = certStIds.length
-      ? await this.dataSource
-          .createQueryBuilder()
-          .select('st.id', 'stId').addSelect('st.title', 'stTitle').addSelect('st.slug', 'stSlug')
-          .addSelect('st.description', 'stDesc').addSelect('st.sortOrder', 'stSortOrder')
-          .addSelect('st.subjectId', 'stSubjectId')
-          .addSelect('t.id', 'topicId').addSelect('t.title', 'topicTitle').addSelect('t.slug', 'topicSlug')
-          .addSelect('t.label', 'topicLabel').addSelect('t.order', 'topicOrder')
-          .from('subject_track', 'st')
-          .innerJoin('subject_track_topic', 'stt', 'stt.subjectTrackId = st.id')
-          .innerJoin('topic', 't', 't.id = stt.topicId AND t.isPublished = 1')
-          .where('st.id IN (:...certStIds)', { certStIds })
-          .orderBy('st.sortOrder').addOrderBy('t.order')
-          .getRawMany()
-      : [];
+    const stRowsForCerts = await this.subjectTrackAnalyzer.fetchSubjectTracksWithTopicsByIds(certStIds);
 
     const allCertTopicIds = [...new Set(stRowsForCerts.map((r) => +r.topicId))];
     const topicStatsList = allCertTopicIds.length
@@ -347,7 +211,7 @@ export class ProgramService {
     const topicStatsMap = new Map<number, any>(topicStatsList.map((t) => [t.id, t]));
 
     const stMerits = await this.meritService.getSubjectTrackMeritsWithRanks(certStIds, userId);
-    const stMap = this.buildSubjectTrackMap(stRowsForCerts, topicStatsMap, stMerits, userId);
+    const stMap = this.subjectTrackAnalyzer.buildSubjectTrackMap(stRowsForCerts, topicStatsMap, stMerits, userId);
 
     // Index certRows by jobRole
     type CertEntry = { meta: any; stIds: number[] };
@@ -465,16 +329,17 @@ export class ProgramService {
     }
 
     const [stRows, certRows, subjectStatsMap, subjectMerits, popularTopicsMap] = await Promise.all([
-      this.fetchSubjectTracksWithTopics(subjectIds),
+      this.subjectTrackAnalyzer.fetchSubjectTracksWithTopics(subjectIds),
       this.fetchCertTrackHierarchy([jobRoleId]),
       this.subjectStats.getSubjectStatsMap(userId),
       this.meritService.getSubjectMeritsWithRanks(subjectIds, userId),
       this.meritService.getPopularTopicsBySubject(subjectIds),
     ]);
 
-    // Topic stats (if authenticated)
+    // Topic stats — fetched regardless of auth so title/slug/numTrivia are always populated;
+    // attempt-derived fields simply come back zeroed for anonymous users.
     const allTopicIds = [...new Set(stRows.map((r) => +r.topicId))];
-    const topicStatsList = userId && allTopicIds.length
+    const topicStatsList = allTopicIds.length
       ? await this.topicAnalyzer.getTopicStatsByIds(allTopicIds, userId)
       : [];
     const topicStatsMap = new Map<number, any>(topicStatsList.map((t) => [t.id, t]));
@@ -484,7 +349,7 @@ export class ProgramService {
     const stMerits = await this.meritService.getSubjectTrackMeritsWithRanks(allStIds, userId);
 
     // Build the central subjectTrack map (shared by subjects and cert views)
-    const stMap = this.buildSubjectTrackMap(stRows, topicStatsMap, stMerits, userId);
+    const stMap = this.subjectTrackAnalyzer.buildSubjectTrackMap(stRows, topicStatsMap, stMerits, userId);
 
     // ── Subjects view ──────────────────────────────────────────────────────────
     // Group subject tracks by subjectId

@@ -2,6 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Index,
   JoinColumn,
   ManyToOne,
   UpdateDateColumn
@@ -13,6 +14,10 @@ import { Question } from './question.entity';
 import { User } from './user.entity';
 import { Quiz } from './quiz.entity';
 
+// Speeds up the "latest attempt per question for a user" queries used throughout
+// subject/topic/subject-track stats (WHERE userId = ? GROUP BY questionId) —
+// without it MySQL falls back to a filesort/temp table for the GROUP BY.
+@Index(['userId', 'questionId'])
 @Entity()
 export class QuestionAttempt extends AbstractEntity implements IQuestionAttempt {
 
