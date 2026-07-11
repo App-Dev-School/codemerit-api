@@ -1,0 +1,753 @@
+{
+  "jobRoles": [
+    {
+      "title": "AI/ML Engineer",
+      "slug": "ai-ml-engineer",
+      "description": "Design and build end-to-end AI and machine learning systems from data to deployment.",
+      "body": "AI/ML engineers work across the full intelligence stack — data preprocessing, model selection and training, evaluation, and production deployment. They bridge data science research and scalable engineering.",
+      "scope": "AI & Machine Learning",
+      "orderId": 21,
+      "image": "",
+      "color": "#9333EA",
+      "isPublished": true
+    },
+    {
+      "title": "All Developer Roles",
+      "slug": "all-devs",
+      "description": "System-level role covering foundational skills shared across every developer track.",
+      "body": "This role is not a learner selection — it is used internally to associate content that applies universally across all job roles, such as version control and core programming fundamentals.",
+      "scope": "Cross-Role",
+      "orderId": 99,
+      "image": "",
+      "color": "#374151",
+      "isPublished": false
+    },
+    {
+      "title": "Android Developer",
+      "slug": "android-developer",
+      "description": "Develop native Android applications using Kotlin and the Android SDK.",
+      "body": "Android developers build high-quality native apps for the Android platform using Kotlin (or Java), Jetpack libraries, Android SDK, and the Google Play publishing workflow.",
+      "scope": "Mobile Development",
+      "orderId": 15,
+      "image": "",
+      "color": "#3DDC84",
+      "isPublished": true
+    },
+    {
+      "title": "Angular Developer",
+      "slug": "angular-developer",
+      "description": "Build enterprise-scale web applications using Angular, TypeScript, and RxJS.",
+      "body": "Angular developers work within Angular's opinionated framework, using TypeScript, dependency injection, RxJS observables, and the Angular CLI to build structured, maintainable large-scale apps.",
+      "scope": "JavaScript Ecosystem",
+      "orderId": 11,
+      "image": "",
+      "color": "#DD0031",
+      "isPublished": true
+    },
+    {
+      "title": "Backend Developer",
+      "slug": "backend-developer",
+      "description": "Build the server-side logic, APIs, and data layers that power web and mobile applications.",
+      "body": "Backend developers design and implement the server side of applications — RESTful and GraphQL APIs, database schemas, authentication, business logic, and infrastructure integration.",
+      "scope": "Web Development",
+      "orderId": 7,
+      "image": "",
+      "color": "#68A063",
+      "isPublished": true
+    },
+    {
+      "title": "Cloud Engineer",
+      "slug": "cloud-engineer",
+      "description": "Design and manage provider-agnostic cloud infrastructure for scalable, secure systems. Not aligned to AWS, Azure, or GCP.",
+      "body": "Cloud engineers architect and operate vendor-neutral cloud environments — provisioning compute, storage, and networking resources, designing for high availability, and optimising cost and security across major cloud platforms.",
+      "scope": "Cloud & Infrastructure",
+      "orderId": 19,
+      "image": "",
+      "color": "#FF9900",
+      "isPublished": true
+    },
+    {
+      "title": "Data Engineer",
+      "slug": "data-engineer",
+      "description": "Build and maintain data pipelines, warehouses, and infrastructure that power analytics and ML.",
+      "body": "Data engineers design and operate the infrastructure for data ingestion, transformation, and serving — ETL pipelines, data lakes, data warehouses (BigQuery, Snowflake, Redshift), and orchestration tools like Airflow.",
+      "scope": "Data Engineering",
+      "orderId": 20,
+      "image": "",
+      "color": "#FF6B35",
+      "isPublished": true
+    },
+    {
+      "title": "DevOps Engineer",
+      "slug": "devops-engineer",
+      "description": "Automate software delivery pipelines, manage infrastructure, and ensure production reliability.",
+      "body": "DevOps engineers bridge development and operations — building CI/CD pipelines, managing infrastructure as code (Terraform, Ansible), containerising workloads with Docker and Kubernetes, and running reliable production systems.",
+      "scope": "Infrastructure & DevOps",
+      "orderId": 18,
+      "image": "",
+      "color": "#EE0000",
+      "isPublished": true
+    },
+    {
+      "title": "Frontend Developer",
+      "slug": "frontend-developer",
+      "description": "Build the user-facing layer of web applications using HTML, CSS, JavaScript, and modern frameworks.",
+      "body": "Frontend developers translate designs into interactive web interfaces. They work with HTML, CSS, and JavaScript frameworks (React, Angular, Vue), focusing on performance, accessibility, and user experience.",
+      "scope": "Web Development",
+      "orderId": 6,
+      "image": "",
+      "color": "#61DAFB",
+      "isPublished": true
+    },
+    {
+      "title": "Full Stack Developer",
+      "slug": "full-stack-developer",
+      "description": "Work across the entire web stack — from UI and APIs to databases and deployment.",
+      "body": "Full stack developers own the complete application lifecycle, building both client-side interfaces and server-side services. They bridge frontend and backend to deliver end-to-end product features.",
+      "scope": "Web Development",
+      "orderId": 8,
+      "image": "",
+      "color": "#7B68EE",
+      "isPublished": true
+    },
+    {
+      "title": "Full Stack Developer (AI-enabled Apps)",
+      "slug": "full-stack-dev-ai",
+      "description": "Build intelligent full-stack applications that integrate LLMs, embeddings, and AI APIs.",
+      "body": "AI-enabled full stack developers combine traditional web engineering with LLM integration, RAG pipelines, vector databases, and AI SDK tooling to build context-aware, intelligent applications.",
+      "scope": "AI & Machine Learning",
+      "orderId": 23,
+      "image": "",
+      "color": "#8B5CF6",
+      "isPublished": true
+    },
+    {
+      "title": "iOS Developer",
+      "slug": "ios-developer",
+      "description": "Develop native iOS applications using Swift and Apple's development frameworks.",
+      "body": "iOS developers build polished, performant apps for iPhone and iPad using Swift, UIKit or SwiftUI, and Apple's frameworks, following the Human Interface Guidelines and App Store requirements.",
+      "scope": "Mobile Development",
+      "orderId": 16,
+      "image": "",
+      "color": "#147EFB",
+      "isPublished": true
+    },
+    {
+      "title": "Java / Spring Boot Developer",
+      "slug": "java-springboot-developer",
+      "description": "Design and build enterprise-grade Java applications using the Spring Boot framework.",
+      "body": "Java Spring Boot developers build scalable enterprise systems and microservices — RESTful APIs, database integration with Spring Data, security with Spring Security, and deployment via containerisation.",
+      "scope": "Enterprise Development",
+      "orderId": 14,
+      "image": "",
+      "color": "#F89820",
+      "isPublished": true
+    },
+    {
+      "title": "ML Engineer",
+      "slug": "ml-engineer",
+      "description": "Productionise machine learning models and build the infrastructure to serve them at scale.",
+      "body": "ML engineers focus on the engineering side of machine learning — model serving, monitoring, feature stores, A/B testing pipelines, and scalable ML infrastructure. Distinct from data scientists who focus on experimentation.",
+      "scope": "AI & Machine Learning",
+      "orderId": 22,
+      "image": "",
+      "color": "#7C3AED",
+      "isPublished": true
+    },
+    {
+      "title": "Mobile App Developer",
+      "slug": "mobile-app-developer",
+      "description": "Build cross-platform mobile applications that run on both iOS and Android.",
+      "body": "Mobile app developers create apps using cross-platform frameworks like Flutter or React Native, delivering consistent experiences across Android and iOS from a shared codebase.",
+      "scope": "Mobile Development",
+      "orderId": 17,
+      "image": "",
+      "color": "#5856D6",
+      "isPublished": true
+    },
+    {
+      "title": "Program Manager",
+      "slug": "program-manager",
+      "description": "Lead complex software programmes, coordinating engineering teams, timelines, and stakeholder delivery.",
+      "body": "Program managers ensure large software initiatives are delivered on time and within scope. They manage cross-team dependencies, track milestones, communicate status to stakeholders, and unblock engineering teams.",
+      "scope": "Management",
+      "orderId": 26,
+      "image": "",
+      "color": "#6B7280",
+      "isPublished": true
+    },
+    {
+      "title": "Programmer Level 1",
+      "slug": "programmer-1",
+      "description": "Develop core programming skills across syntax, logic, and data structures in a primary language.",
+      "body": "Level 1 programmers build the fundamental skills needed for any software role — variables, control flow, functions, basic data structures, and applying logic to solve real problems.",
+      "scope": "Entry Level",
+      "orderId": 4,
+      "image": "",
+      "color": "#FBBF24",
+      "isPublished": true
+    },
+    {
+      "title": "Python Developer",
+      "slug": "python-developer",
+      "description": "Build web backends, APIs, automation tools, and data pipelines using Python.",
+      "body": "Python developers leverage Python's versatility across web frameworks (Django, FastAPI, Flask), scripting, data processing, and automation. Python is the dominant language in data science and AI tooling.",
+      "scope": "Python & Data",
+      "orderId": 13,
+      "image": "",
+      "color": "#3776AB",
+      "isPublished": true
+    },
+    {
+      "title": "QA Engineer",
+      "slug": "qa-engineer",
+      "description": "Own the quality strategy — from test planning and automation to CI integration and defect management.",
+      "body": "QA engineers design comprehensive test strategies, write automated test suites (Selenium, Playwright, Cypress), manage regression pipelines, and collaborate closely with developers to catch defects before release.",
+      "scope": "Quality Assurance",
+      "orderId": 24,
+      "image": "",
+      "color": "#10B981",
+      "isPublished": true
+    },
+    {
+      "title": "Software Tester",
+      "slug": "software-tester",
+      "description": "Verify software quality through structured manual and exploratory testing.",
+      "body": "Software testers ensure applications meet requirements and behave correctly, using functional testing, exploratory testing, regression testing, and basic automation to surface bugs and regressions.",
+      "scope": "Quality Assurance",
+      "orderId": 25,
+      "image": "",
+      "color": "#059669",
+      "isPublished": true
+    },
+    {
+      "title": "Trainee Software Engineer",
+      "slug": "trainee-software-engineer",
+      "description": "Start your journey into software engineering by building solid programming and problem-solving foundations.",
+      "body": "Trainee software engineers are at the start of their career. They focus on writing clean code, understanding version control, debugging, and working within a collaborative development team.",
+      "scope": "Entry Level",
+      "orderId": 3,
+      "image": "",
+      "color": "#F59E0B",
+      "isPublished": true
+    },
+    {
+      "title": "Web Developer",
+      "slug": "web-developer",
+      "description": "Create websites and web applications with a strong grasp of core web standards and technologies.",
+      "body": "Web developers build everything from marketing sites to dynamic web apps, working with HTML, CSS, JavaScript, and a CMS or web framework. They may work frontend-only or across the stack.",
+      "scope": "Web Development",
+      "orderId": 9,
+      "image": "",
+      "color": "#4A90D9",
+      "isPublished": true
+    },
+    {
+      "title": "React Developer",
+      "slug": "react-developer",
+      "description": "Build fast, component-based UIs and single-page applications using React and its ecosystem.",
+      "body": "React developers specialise in building UI components with React.js, using hooks, state management libraries (Redux, Zustand), and integration patterns with REST or GraphQL APIs.",
+      "scope": "JavaScript Ecosystem",
+      "orderId": 10,
+      "image": null,
+      "color": "#00D8FF",
+      "isPublished": true
+    },
+    {
+      "title": "Node.js Developer",
+      "slug": "nodejs-developer",
+      "description": "Build server-side services and APIs using Node.js and the JavaScript/TypeScript backend ecosystem.",
+      "body": "Node.js developers build performant backend services, REST APIs, and microservices using Node.js with frameworks like Express, Fastify, and NestJS, often in a TypeScript-first environment.",
+      "scope": "JavaScript Ecosystem",
+      "orderId": 12,
+      "image": null,
+      "color": "#5FA04E",
+      "isPublished": true
+    },
+    {
+      "title": "Software Engineer",
+      "slug": "software-engineer",
+      "description": "Design, build, and maintain software systems across the full engineering lifecycle.",
+      "body": "Software engineers apply computer science principles to design and build reliable, scalable software. The role spans requirements analysis, system design, coding, testing, and deployment across any domain or stack.",
+      "scope": "Software Engineering",
+      "orderId": 5,
+      "image": null,
+      "color": "#6366F1",
+      "isPublished": true
+    },
+    {
+      "title": "Digital Literacy",
+      "slug": "digital-literacy",
+      "description": "Learn how to use a computer confidently — from operating systems and file management to browsing the web, email, and staying safe online.",
+      "body": "Digital literacy learners build the foundational skills needed to use technology in everyday life and work. Topics include computer hardware, operating systems, file management, internet browsing, email, and digital safety.",
+      "scope": "Digital Skills",
+      "orderId": 1,
+      "image": null,
+      "color": "#06B6D4",
+      "isPublished": true
+    },
+    {
+      "title": "Office Professional",
+      "slug": "office-professional",
+      "description": "Master the tools of the modern office — Microsoft Office, data entry, spreadsheets, and digital productivity at a professional level.",
+      "body": "Office professionals are the backbone of every organisation. They produce documents with Word, manage data with Excel, create presentations with PowerPoint, and handle digital communication efficiently. This path is equivalent to a DCA (Diploma in Computer Applications) qualification.",
+      "scope": "Digital Skills",
+      "orderId": 2,
+      "image": null,
+      "color": "#0EA5E9",
+      "isPublished": true
+    }
+  ],
+  "subjects": [
+    {
+      "title": "HTML",
+      "slug": "html",
+      "description": "Markup language for creating web pages",
+      "body": "This subject covers markup language for creating web pages.",
+      "scope": "",
+      "image": "assets/images/tech/html.png",
+      "color": "#E44D26",
+      "isPublished": true
+    },
+    {
+      "title": "CSS",
+      "slug": "css",
+      "description": "Styles and layouts for web pages",
+      "body": "This subject covers styles and layouts for web pages.",
+      "scope": "",
+      "image": "assets/images/tech/css.png",
+      "color": "#212529",
+      "isPublished": true
+    },
+    {
+      "title": "JavaScript",
+      "slug": "javascript",
+      "description": "Scripting language for web interactivity",
+      "body": "This subject covers scripting language for web interactivity.",
+      "scope": "",
+      "image": "assets/images/tech/javascript.png",
+      "color": "#212529",
+      "isPublished": true
+    },
+    {
+      "title": "TypeScript",
+      "slug": "typescript",
+      "description": "Typed superset of JavaScript",
+      "body": "This subject covers typed superset of javascript.",
+      "scope": "",
+      "image": "assets/images/tech/typescript.png",
+      "color": "#3178C6",
+      "isPublished": true
+    },
+    {
+      "title": "Angular",
+      "slug": "angular",
+      "description": "Framework for scalable web apps",
+      "body": "This subject covers framework for scalable web apps.",
+      "scope": "",
+      "image": "assets/images/tech/angular.png",
+      "color": "#DD0031",
+      "isPublished": true
+    },
+    {
+      "title": "React",
+      "slug": "react",
+      "description": "JavaScript library for UIs",
+      "body": "This subject covers javascript library for uis.",
+      "scope": "",
+      "image": "assets/images/tech/react.png",
+      "color": "#61DAFB",
+      "isPublished": true
+    },
+    {
+      "title": "Express.js",
+      "slug": "expressjs",
+      "description": "Web framework for Node.js",
+      "body": "This subject covers web framework for node.js.",
+      "scope": "",
+      "image": "assets/images/tech/rest-api.png",
+      "color": "#000000",
+      "isPublished": true
+    },
+    {
+      "title": "NestJS",
+      "slug": "nest-js",
+      "description": "Efficient Node.js server framework",
+      "body": "This subject covers efficient node.js server framework.",
+      "scope": "",
+      "image": "assets/images/tech/nest.png",
+      "color": "#E0234E",
+      "isPublished": true
+    },
+    {
+      "title": "Java",
+      "slug": "java",
+      "description": "Object-oriented programming language",
+      "body": "This subject covers object-oriented programming language.",
+      "scope": "",
+      "image": "assets/images/tech/java.png",
+      "color": "#007396",
+      "isPublished": true
+    },
+    {
+      "title": "Spring Boot",
+      "slug": "spring-boot",
+      "description": "Java framework for backend APIs",
+      "body": "This subject covers java framework for backend apis.",
+      "scope": "",
+      "image": "assets/images/tech/spring.png",
+      "color": "#6DB33F",
+      "isPublished": true
+    },
+    {
+      "title": "DevOps",
+      "slug": "devops",
+      "description": "Dev and ops collaboration practice",
+      "body": "This subject covers dev and ops collaboration practice.",
+      "scope": "",
+      "image": "assets/images/tech/devops.png",
+      "color": "#FF6C37",
+      "isPublished": true
+    },
+    {
+      "title": "Docker",
+      "slug": "docker",
+      "description": "App containerization platform",
+      "body": "This subject covers app containerization platform.",
+      "scope": "",
+      "image": "assets/images/tech/docker.png",
+      "color": "#0db7ed",
+      "isPublished": true
+    },
+    {
+      "title": "Kubernetes",
+      "slug": "kubernetes",
+      "description": "Container orchestration system",
+      "body": "This subject covers container orchestration system.",
+      "scope": "",
+      "image": "assets/images/tech/kubernetes.png",
+      "color": "#326CE5",
+      "isPublished": true
+    },
+    {
+      "title": "CI/CD",
+      "slug": "ci-cd",
+      "description": "Automated app integration and delivery",
+      "body": "This subject covers automated app integration and delivery.",
+      "scope": "",
+      "image": "assets/images/tech/cicd.png",
+      "color": "#FF5722",
+      "isPublished": true
+    },
+    {
+      "title": "Relational Databases",
+      "slug": "relational-databases",
+      "description": "Relational open-source database",
+      "body": "This subject covers relational open-source database.",
+      "scope": "",
+      "image": "assets/images/tech/rdbms.png",
+      "color": "#336791",
+      "isPublished": true
+    },
+    {
+      "title": "MongoDB",
+      "slug": "mongodb",
+      "description": "Scalable NoSQL document database",
+      "body": "This subject covers scalable nosql document database.",
+      "scope": "",
+      "image": "assets/images/tech/mongodb.png",
+      "color": "#47A248",
+      "isPublished": true
+    },
+    {
+      "title": "GraphQL",
+      "slug": "graphql",
+      "description": "Flexible query language for APIs",
+      "body": "This subject covers flexible query language for apis.",
+      "scope": "",
+      "image": "",
+      "color": "#E10098",
+      "isPublished": true
+    },
+    {
+      "title": "Next.js",
+      "slug": "nextjs",
+      "description": "React framework with SSR support",
+      "body": "This subject covers react framework with ssr support.",
+      "scope": "",
+      "image": "",
+      "color": "#000000",
+      "isPublished": true
+    },
+    {
+      "title": "Redux",
+      "slug": "redux",
+      "description": "State management for React apps",
+      "body": "This subject covers state management for react apps.",
+      "scope": "",
+      "image": "assets/images/tech/redux.png",
+      "color": "#764ABC",
+      "isPublished": true
+    },
+    {
+      "title": "REST APIs",
+      "slug": "rest-apis",
+      "description": "Standard interface for backend services",
+      "body": "This subject covers standard interface for backend services.",
+      "scope": "",
+      "image": "assets/images/tech/server.png",
+      "color": "#2196F3",
+      "isPublished": true
+    },
+    {
+      "title": "Python",
+      "slug": "python",
+      "description": "High-level, general-purpose language",
+      "body": "This subject covers high-level, general-purpose language.",
+      "scope": "",
+      "image": "assets/images/tech/python.png",
+      "color": "#3776AB",
+      "isPublished": true
+    },
+    {
+      "title": "AI Fundamentals",
+      "slug": "ai-fundamentals",
+      "description": "Basics of AI and reasoning",
+      "body": "This subject covers basics of ai and reasoning.",
+      "scope": null,
+      "image": "assets/images/tech/ai.png",
+      "color": "#A9A9A9",
+      "isPublished": true
+    },
+    {
+      "title": "Machine Learning",
+      "slug": "machine-learning",
+      "description": "Training models with data",
+      "body": "This subject covers training models with data.",
+      "scope": null,
+      "image": "assets/images/tech/analytics.png",
+      "color": "#FFB74D",
+      "isPublished": true
+    },
+    {
+      "title": "Git",
+      "slug": "git",
+      "description": "Version control for codebases",
+      "body": "This subject covers version control for codebases.",
+      "scope": "",
+      "image": "assets/images/tech/git.png",
+      "color": "#F1502F",
+      "isPublished": true
+    },
+    {
+      "title": "Jira",
+      "slug": "jira",
+      "description": "Project and issue management tool",
+      "body": "This subject covers project and issue management tool.",
+      "scope": "",
+      "image": "assets/images/tech/jira.png",
+      "color": "#0052CC",
+      "isPublished": true
+    },
+    {
+      "title": "Jenkins",
+      "slug": "jenkins",
+      "description": "CI/CD automation server",
+      "body": "This subject covers ci/cd automation server.",
+      "scope": "",
+      "image": "assets/images/tech/jenkins.png",
+      "color": "#D24939",
+      "isPublished": true
+    },
+    {
+      "title": "Software Testing",
+      "slug": "software-testing",
+      "description": "Testing strategies and types",
+      "body": "This subject covers testing strategies and types.",
+      "scope": "",
+      "image": "assets/images/tech/tester.png",
+      "color": "#607D8B",
+      "isPublished": true
+    },
+    {
+      "title": "Java Selenium",
+      "slug": "java-selenium",
+      "description": "Browser testing using Selenium",
+      "body": "This subject covers browser testing using selenium.",
+      "scope": "",
+      "image": "assets/images/tech/placeholder.png",
+      "color": "#43B02A",
+      "isPublished": false
+    },
+    {
+      "title": "Android",
+      "slug": "android",
+      "description": "Android apps using Kotlin or Java",
+      "body": "This subject covers android apps using kotlin or java.",
+      "scope": "",
+      "image": "assets/images/tech/android.png",
+      "color": "#3DDC84",
+      "isPublished": true
+    },
+    {
+      "title": "iOS",
+      "slug": "ios",
+      "description": "Build iOS apps using Swift",
+      "body": "This subject covers build ios apps using swift.",
+      "scope": "",
+      "image": "",
+      "color": "#FA7343",
+      "isPublished": true
+    },
+    {
+      "title": "Cloud Basics",
+      "slug": "cloud-basics",
+      "description": "Intro to cloud platforms",
+      "body": "This subject covers intro to cloud platforms.",
+      "scope": "",
+      "image": "assets/images/tech/cloud.png",
+      "color": "#4285F4",
+      "isPublished": true
+    },
+    {
+      "title": "RxJS",
+      "slug": "rxjs",
+      "description": "Reactive programming with streams",
+      "body": "This subject covers reactive programming with streams.",
+      "scope": "",
+      "image": "assets/images/tech/rxjs.png",
+      "color": "#B7178C",
+      "isPublished": true
+    },
+    {
+      "title": "Node.js",
+      "slug": "nodejs",
+      "description": "JavaScript for server‑side programming",
+      "body": "This subject covers javascript for server‑side programming.",
+      "scope": "",
+      "image": "assets/images/tech/node.png",
+      "color": "#68A063",
+      "isPublished": true
+    },
+    {
+      "title": "Tailwind CSS",
+      "slug": "tailwind",
+      "description": "Utility-first CSS framework for rapidly building custom user interfaces directly in your markup.",
+      "body": "This subject covers cross-platform ui framework.",
+      "scope": "",
+      "image": "assets/images/tech/tailwind.png",
+      "color": "#3880FF",
+      "isPublished": true
+    },
+    {
+      "title": "Capacitor",
+      "slug": "capacitor",
+      "description": "Bridge native with web apps",
+      "body": "This subject covers bridge native with web apps.",
+      "scope": "",
+      "image": "assets/images/tech/capacitor.png",
+      "color": "#2C2C2E",
+      "isPublished": true
+    },
+    {
+      "title": "Cypress",
+      "slug": "cypress",
+      "description": "Web testing automation tool",
+      "body": "This subject covers web testing automation tool.",
+      "scope": "",
+      "image": "assets/images/tech/cypress.png",
+      "color": "#17202C",
+      "isPublished": true
+    },
+    {
+      "title": "NgRX",
+      "slug": "ngrx",
+      "description": "A framework for building reactive applications in Angular",
+      "body": "NgRx provides state management, isolation of side effects, entity collection management, router bindings, code generation, and developer tools that enhance developers experience when building many different types of applications.",
+      "scope": "",
+      "image": "",
+      "color": "#0052CC",
+      "isPublished": true
+    },
+    {
+      "title": "UI Engineering",
+      "slug": "ui-engineering",
+      "description": "Enterprise UI Engineering practices, libraries and tools",
+      "body": "This subject covers enterprise level UI Engineering practices, libraries and tools like Architecture patterns, AEM, Storybook etc.",
+      "scope": "",
+      "image": "assets/images/tech/placeholder.png",
+      "color": "#0052CC",
+      "isPublished": false
+    },
+    {
+      "title": "Nx",
+      "slug": "nx-monorepo",
+      "description": "Smart Monorepo tool for node projects",
+      "body": "Learn what Nx is and how it helps manage the continuos integration of growing node repository, keeping things fast and organized.",
+      "scope": "",
+      "image": "assets/images/tech/placeholder.png",
+      "color": "#0052CC",
+      "isPublished": true
+    },
+    {
+      "title": "Vue.js",
+      "slug": "vuejs",
+      "description": "Progressive JavaScript framework for building reactive user interfaces and single-page applications.",
+      "body": null,
+      "scope": null,
+      "image": null,
+      "color": null,
+      "isPublished": true
+    },
+    {
+      "title": "React Native",
+      "slug": "react-native",
+      "description": "Cross-platform mobile app development using React ? one codebase for iOS and Android.",
+      "body": null,
+      "scope": null,
+      "image": null,
+      "color": null,
+      "isPublished": true
+    },
+    {
+      "title": "Computer Fundamentals",
+      "slug": "computer-fundamentals",
+      "description": "Hardware, operating systems, file management, and basic computer operations for everyday use.",
+      "body": null,
+      "scope": null,
+      "image": null,
+      "color": null,
+      "isPublished": true
+    },
+    {
+      "title": "Internet & Digital Skills",
+      "slug": "internet-digital",
+      "description": "Web browsing, email, cloud storage, video conferencing, and staying safe online.",
+      "body": null,
+      "scope": null,
+      "image": null,
+      "color": null,
+      "isPublished": true
+    },
+    {
+      "title": "Microsoft Office",
+      "slug": "microsoft-office",
+      "description": "Word, Excel, and PowerPoint ? the core productivity tools of the modern workplace.",
+      "body": null,
+      "scope": null,
+      "image": null,
+      "color": null,
+      "isPublished": true
+    },
+    {
+      "title": "Data Entry & Productivity",
+      "slug": "data-entry",
+      "description": "Touch typing, data accuracy, keyboard shortcuts, and managing data efficiently in the workplace.",
+      "body": null,
+      "scope": null,
+      "image": null,
+      "color": null,
+      "isPublished": true
+    }
+  ]
+}

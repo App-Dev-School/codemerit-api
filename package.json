@@ -19,12 +19,8 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "seed": "ts-node -r tsconfig-paths/register src/database/seeds/seed.ts",
-    "import:curriculum": "ts-node -r tsconfig-paths/register src/database/scripts/import-curriculum.ts",
-    "import:questions": "ts-node -r tsconfig-paths/register src/database/scripts/import-questions.ts",
-    "export:questions": "ts-node -r tsconfig-paths/register src/database/scripts/export-questions.ts",
-    "migrate:css-curriculum": "ts-node -r tsconfig-paths/register src/database/scripts/migrate-css-curriculum.ts",
-    "clean:js-questions": "ts-node -r tsconfig-paths/register src/database/scripts/clean-javascript-questions.ts",
-    "migrate:typescript-curriculum": "ts-node -r tsconfig-paths/register src/database/scripts/migrate-typescript-curriculum.ts"
+    "seed:snapshot": "ts-node -r tsconfig-paths/register src/database/scripts/export-seed-snapshot.ts",
+    "seed:quizzes": "ts-node -r tsconfig-paths/register src/database/scripts/seed-standard-quizzes.ts"
   },
   "dependencies": {
     "@nestjs-modules/mailer": "^2.0.2",

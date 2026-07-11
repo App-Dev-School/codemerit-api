@@ -1,0 +1,3078 @@
+{
+  "jobRoleSubjects": [
+    {
+      "jobRoleSlug": "digital-literacy",
+      "subjectSlug": "computer-fundamentals",
+      "sortOrder": 1,
+      "tag": "MANDATORY",
+      "note": "Core computer skills for any d"
+    },
+    {
+      "jobRoleSlug": "digital-literacy",
+      "subjectSlug": "internet-digital",
+      "sortOrder": 2,
+      "tag": "MANDATORY",
+      "note": "Essential internet and digital"
+    },
+    {
+      "jobRoleSlug": "digital-literacy",
+      "subjectSlug": "microsoft-office",
+      "sortOrder": 3,
+      "tag": "RECOMMENDED",
+      "note": "Office tools used in virtually"
+    },
+    {
+      "jobRoleSlug": "digital-literacy",
+      "subjectSlug": "data-entry",
+      "sortOrder": 4,
+      "tag": "OPTIONAL",
+      "note": "Practical productivity and typ"
+    },
+    {
+      "jobRoleSlug": "office-professional",
+      "subjectSlug": "computer-fundamentals",
+      "sortOrder": 1,
+      "tag": "MANDATORY",
+      "note": "Foundation for all office comp"
+    },
+    {
+      "jobRoleSlug": "office-professional",
+      "subjectSlug": "microsoft-office",
+      "sortOrder": 2,
+      "tag": "MANDATORY",
+      "note": "Core office productivity suite"
+    },
+    {
+      "jobRoleSlug": "office-professional",
+      "subjectSlug": "data-entry",
+      "sortOrder": 3,
+      "tag": "MANDATORY",
+      "note": "Speed, accuracy, and data mana"
+    },
+    {
+      "jobRoleSlug": "office-professional",
+      "subjectSlug": "internet-digital",
+      "sortOrder": 4,
+      "tag": "RECOMMENDED",
+      "note": "Digital communication for work"
+    },
+    {
+      "jobRoleSlug": "office-professional",
+      "subjectSlug": "jira",
+      "sortOrder": 5,
+      "tag": "OPTIONAL",
+      "note": "Workplace task and project tra"
+    },
+    {
+      "jobRoleSlug": "office-professional",
+      "subjectSlug": "relational-databases",
+      "sortOrder": 6,
+      "tag": "OPTIONAL",
+      "note": "Bridging Excel data work with "
+    },
+    {
+      "jobRoleSlug": "trainee-software-engineer",
+      "subjectSlug": "html",
+      "sortOrder": 1,
+      "tag": "MANDATORY",
+      "note": "The building block of every we"
+    },
+    {
+      "jobRoleSlug": "trainee-software-engineer",
+      "subjectSlug": "css",
+      "sortOrder": 2,
+      "tag": "MANDATORY",
+      "note": "Visual styling and layout fund"
+    },
+    {
+      "jobRoleSlug": "trainee-software-engineer",
+      "subjectSlug": "javascript",
+      "sortOrder": 3,
+      "tag": "MANDATORY",
+      "note": "Core programming language of t"
+    },
+    {
+      "jobRoleSlug": "trainee-software-engineer",
+      "subjectSlug": "git",
+      "sortOrder": 4,
+      "tag": "MANDATORY",
+      "note": "Version control for every deve"
+    },
+    {
+      "jobRoleSlug": "trainee-software-engineer",
+      "subjectSlug": "typescript",
+      "sortOrder": 5,
+      "tag": "RECOMMENDED",
+      "note": "Industry standard in modern te"
+    },
+    {
+      "jobRoleSlug": "trainee-software-engineer",
+      "subjectSlug": "rest-apis",
+      "sortOrder": 6,
+      "tag": "RECOMMENDED",
+      "note": "How services communicate"
+    },
+    {
+      "jobRoleSlug": "trainee-software-engineer",
+      "subjectSlug": "python",
+      "sortOrder": 7,
+      "tag": "OPTIONAL",
+      "note": "Great second language for scri"
+    },
+    {
+      "jobRoleSlug": "trainee-software-engineer",
+      "subjectSlug": "relational-databases",
+      "sortOrder": 8,
+      "tag": "OPTIONAL",
+      "note": "Basic SQL for data understandi"
+    },
+    {
+      "jobRoleSlug": "programmer-1",
+      "subjectSlug": "javascript",
+      "sortOrder": 1,
+      "tag": "MANDATORY",
+      "note": "Primary language for web devel"
+    },
+    {
+      "jobRoleSlug": "programmer-1",
+      "subjectSlug": "typescript",
+      "sortOrder": 2,
+      "tag": "MANDATORY",
+      "note": "Typed JavaScript for professio"
+    },
+    {
+      "jobRoleSlug": "programmer-1",
+      "subjectSlug": "html",
+      "sortOrder": 3,
+      "tag": "MANDATORY",
+      "note": "Essential for any web-facing w"
+    },
+    {
+      "jobRoleSlug": "programmer-1",
+      "subjectSlug": "css",
+      "sortOrder": 4,
+      "tag": "MANDATORY",
+      "note": "Essential for any web-facing w"
+    },
+    {
+      "jobRoleSlug": "programmer-1",
+      "subjectSlug": "git",
+      "sortOrder": 5,
+      "tag": "MANDATORY",
+      "note": "Team collaboration requires ve"
+    },
+    {
+      "jobRoleSlug": "programmer-1",
+      "subjectSlug": "rest-apis",
+      "sortOrder": 6,
+      "tag": "RECOMMENDED",
+      "note": "Consuming and building APIs"
+    },
+    {
+      "jobRoleSlug": "programmer-1",
+      "subjectSlug": "relational-databases",
+      "sortOrder": 7,
+      "tag": "RECOMMENDED",
+      "note": "Basic data persistence skills"
+    },
+    {
+      "jobRoleSlug": "programmer-1",
+      "subjectSlug": "nodejs",
+      "sortOrder": 8,
+      "tag": "RECOMMENDED",
+      "note": "Server-side JavaScript runtime"
+    },
+    {
+      "jobRoleSlug": "programmer-1",
+      "subjectSlug": "react",
+      "sortOrder": 9,
+      "tag": "OPTIONAL",
+      "note": "Most common UI library in the "
+    },
+    {
+      "jobRoleSlug": "programmer-1",
+      "subjectSlug": "python",
+      "sortOrder": 10,
+      "tag": "OPTIONAL",
+      "note": "Popular alternative language"
+    },
+    {
+      "jobRoleSlug": "software-engineer",
+      "subjectSlug": "javascript",
+      "sortOrder": 1,
+      "tag": "MANDATORY",
+      "note": "Lingua franca for web and APIs"
+    },
+    {
+      "jobRoleSlug": "software-engineer",
+      "subjectSlug": "typescript",
+      "sortOrder": 2,
+      "tag": "MANDATORY",
+      "note": "Industry standard for typed JS"
+    },
+    {
+      "jobRoleSlug": "software-engineer",
+      "subjectSlug": "git",
+      "sortOrder": 3,
+      "tag": "MANDATORY",
+      "note": "Baseline skill for every engin"
+    },
+    {
+      "jobRoleSlug": "software-engineer",
+      "subjectSlug": "rest-apis",
+      "sortOrder": 4,
+      "tag": "MANDATORY",
+      "note": "Designing and consuming HTTP s"
+    },
+    {
+      "jobRoleSlug": "software-engineer",
+      "subjectSlug": "relational-databases",
+      "sortOrder": 5,
+      "tag": "MANDATORY",
+      "note": "Core data layer skill"
+    },
+    {
+      "jobRoleSlug": "software-engineer",
+      "subjectSlug": "nodejs",
+      "sortOrder": 6,
+      "tag": "RECOMMENDED",
+      "note": "Server-side JavaScript executi"
+    },
+    {
+      "jobRoleSlug": "software-engineer",
+      "subjectSlug": "docker",
+      "sortOrder": 7,
+      "tag": "RECOMMENDED",
+      "note": "Containerisation is now baseli"
+    },
+    {
+      "jobRoleSlug": "software-engineer",
+      "subjectSlug": "ci-cd",
+      "sortOrder": 8,
+      "tag": "RECOMMENDED",
+      "note": "Automated build and deploy pip"
+    },
+    {
+      "jobRoleSlug": "software-engineer",
+      "subjectSlug": "mongodb",
+      "sortOrder": 9,
+      "tag": "OPTIONAL",
+      "note": "Common NoSQL alternative"
+    },
+    {
+      "jobRoleSlug": "software-engineer",
+      "subjectSlug": "python",
+      "sortOrder": 10,
+      "tag": "OPTIONAL",
+      "note": "Versatile second language"
+    },
+    {
+      "jobRoleSlug": "frontend-developer",
+      "subjectSlug": "html",
+      "sortOrder": 1,
+      "tag": "MANDATORY",
+      "note": "Structural foundation of every"
+    },
+    {
+      "jobRoleSlug": "frontend-developer",
+      "subjectSlug": "css",
+      "sortOrder": 2,
+      "tag": "MANDATORY",
+      "note": "Visual presentation and respon"
+    },
+    {
+      "jobRoleSlug": "frontend-developer",
+      "subjectSlug": "javascript",
+      "sortOrder": 3,
+      "tag": "MANDATORY",
+      "note": "Core language of the browser"
+    },
+    {
+      "jobRoleSlug": "frontend-developer",
+      "subjectSlug": "typescript",
+      "sortOrder": 4,
+      "tag": "MANDATORY",
+      "note": "Required in virtually all mode"
+    },
+    {
+      "jobRoleSlug": "frontend-developer",
+      "subjectSlug": "git",
+      "sortOrder": 5,
+      "tag": "MANDATORY",
+      "note": "Version control for team deliv"
+    },
+    {
+      "jobRoleSlug": "frontend-developer",
+      "subjectSlug": "react",
+      "sortOrder": 6,
+      "tag": "RECOMMENDED",
+      "note": "Most in-demand frontend librar"
+    },
+    {
+      "jobRoleSlug": "frontend-developer",
+      "subjectSlug": "tailwind",
+      "sortOrder": 7,
+      "tag": "RECOMMENDED",
+      "note": "Dominant utility-first CSS fra"
+    },
+    {
+      "jobRoleSlug": "frontend-developer",
+      "subjectSlug": "rest-apis",
+      "sortOrder": 8,
+      "tag": "RECOMMENDED",
+      "note": "Consuming backend APIs"
+    },
+    {
+      "jobRoleSlug": "frontend-developer",
+      "subjectSlug": "graphql",
+      "sortOrder": 9,
+      "tag": "OPTIONAL",
+      "note": "Increasingly common in fronten"
+    },
+    {
+      "jobRoleSlug": "frontend-developer",
+      "subjectSlug": "nextjs",
+      "sortOrder": 10,
+      "tag": "OPTIONAL",
+      "note": "React framework with SSR/SSG c"
+    },
+    {
+      "jobRoleSlug": "frontend-developer",
+      "subjectSlug": "redux",
+      "sortOrder": 11,
+      "tag": "OPTIONAL",
+      "note": "State management for complex a"
+    },
+    {
+      "jobRoleSlug": "backend-developer",
+      "subjectSlug": "javascript",
+      "sortOrder": 1,
+      "tag": "MANDATORY",
+      "note": "Core language for Node.js back"
+    },
+    {
+      "jobRoleSlug": "backend-developer",
+      "subjectSlug": "typescript",
+      "sortOrder": 2,
+      "tag": "MANDATORY",
+      "note": "Standard in professional backe"
+    },
+    {
+      "jobRoleSlug": "backend-developer",
+      "subjectSlug": "nodejs",
+      "sortOrder": 3,
+      "tag": "MANDATORY",
+      "note": "Server-side JS runtime"
+    },
+    {
+      "jobRoleSlug": "backend-developer",
+      "subjectSlug": "rest-apis",
+      "sortOrder": 4,
+      "tag": "MANDATORY",
+      "note": "Designing and implementing HTT"
+    },
+    {
+      "jobRoleSlug": "backend-developer",
+      "subjectSlug": "relational-databases",
+      "sortOrder": 5,
+      "tag": "MANDATORY",
+      "note": "Data modelling and SQL queryin"
+    },
+    {
+      "jobRoleSlug": "backend-developer",
+      "subjectSlug": "git",
+      "sortOrder": 6,
+      "tag": "MANDATORY",
+      "note": "Version control"
+    },
+    {
+      "jobRoleSlug": "backend-developer",
+      "subjectSlug": "expressjs",
+      "sortOrder": 7,
+      "tag": "RECOMMENDED",
+      "note": "Most widely used Node.js web f"
+    },
+    {
+      "jobRoleSlug": "backend-developer",
+      "subjectSlug": "nest-js",
+      "sortOrder": 8,
+      "tag": "RECOMMENDED",
+      "note": "Enterprise-grade structured No"
+    },
+    {
+      "jobRoleSlug": "backend-developer",
+      "subjectSlug": "mongodb",
+      "sortOrder": 9,
+      "tag": "RECOMMENDED",
+      "note": "NoSQL for flexible schemas"
+    },
+    {
+      "jobRoleSlug": "backend-developer",
+      "subjectSlug": "docker",
+      "sortOrder": 10,
+      "tag": "RECOMMENDED",
+      "note": "Containerisation is industry s"
+    },
+    {
+      "jobRoleSlug": "backend-developer",
+      "subjectSlug": "ci-cd",
+      "sortOrder": 11,
+      "tag": "RECOMMENDED",
+      "note": "Automated delivery pipelines"
+    },
+    {
+      "jobRoleSlug": "backend-developer",
+      "subjectSlug": "graphql",
+      "sortOrder": 12,
+      "tag": "OPTIONAL",
+      "note": "Alternative to REST for API de"
+    },
+    {
+      "jobRoleSlug": "backend-developer",
+      "subjectSlug": "python",
+      "sortOrder": 13,
+      "tag": "OPTIONAL",
+      "note": "Versatile backend language"
+    },
+    {
+      "jobRoleSlug": "full-stack-developer",
+      "subjectSlug": "html",
+      "sortOrder": 1,
+      "tag": "MANDATORY",
+      "note": "Frontend foundation"
+    },
+    {
+      "jobRoleSlug": "full-stack-developer",
+      "subjectSlug": "css",
+      "sortOrder": 2,
+      "tag": "MANDATORY",
+      "note": "Frontend styling"
+    },
+    {
+      "jobRoleSlug": "full-stack-developer",
+      "subjectSlug": "javascript",
+      "sortOrder": 3,
+      "tag": "MANDATORY",
+      "note": "Both frontend and backend"
+    },
+    {
+      "jobRoleSlug": "full-stack-developer",
+      "subjectSlug": "typescript",
+      "sortOrder": 4,
+      "tag": "MANDATORY",
+      "note": "Standard in modern full-stack "
+    },
+    {
+      "jobRoleSlug": "full-stack-developer",
+      "subjectSlug": "nodejs",
+      "sortOrder": 5,
+      "tag": "MANDATORY",
+      "note": "Server-side JavaScript"
+    },
+    {
+      "jobRoleSlug": "full-stack-developer",
+      "subjectSlug": "relational-databases",
+      "sortOrder": 6,
+      "tag": "MANDATORY",
+      "note": "Data layer proficiency"
+    },
+    {
+      "jobRoleSlug": "full-stack-developer",
+      "subjectSlug": "git",
+      "sortOrder": 7,
+      "tag": "MANDATORY",
+      "note": "Version control"
+    },
+    {
+      "jobRoleSlug": "full-stack-developer",
+      "subjectSlug": "react",
+      "sortOrder": 8,
+      "tag": "RECOMMENDED",
+      "note": "Most common full-stack fronten"
+    },
+    {
+      "jobRoleSlug": "full-stack-developer",
+      "subjectSlug": "rest-apis",
+      "sortOrder": 9,
+      "tag": "RECOMMENDED",
+      "note": "API design from frontend to ba"
+    },
+    {
+      "jobRoleSlug": "full-stack-developer",
+      "subjectSlug": "mongodb",
+      "sortOrder": 10,
+      "tag": "RECOMMENDED",
+      "note": "NoSQL for flexible data models"
+    },
+    {
+      "jobRoleSlug": "full-stack-developer",
+      "subjectSlug": "docker",
+      "sortOrder": 11,
+      "tag": "RECOMMENDED",
+      "note": "Containerised local and produc"
+    },
+    {
+      "jobRoleSlug": "full-stack-developer",
+      "subjectSlug": "tailwind",
+      "sortOrder": 12,
+      "tag": "RECOMMENDED",
+      "note": "Efficient styling in JS framew"
+    },
+    {
+      "jobRoleSlug": "full-stack-developer",
+      "subjectSlug": "graphql",
+      "sortOrder": 13,
+      "tag": "OPTIONAL",
+      "note": "Efficient data fetching across"
+    },
+    {
+      "jobRoleSlug": "full-stack-developer",
+      "subjectSlug": "nextjs",
+      "sortOrder": 14,
+      "tag": "OPTIONAL",
+      "note": "Full-stack React framework"
+    },
+    {
+      "jobRoleSlug": "full-stack-developer",
+      "subjectSlug": "ci-cd",
+      "sortOrder": 15,
+      "tag": "OPTIONAL",
+      "note": "Delivery automation"
+    },
+    {
+      "jobRoleSlug": "web-developer",
+      "subjectSlug": "html",
+      "sortOrder": 1,
+      "tag": "MANDATORY",
+      "note": "Foundation of every web page"
+    },
+    {
+      "jobRoleSlug": "web-developer",
+      "subjectSlug": "css",
+      "sortOrder": 2,
+      "tag": "MANDATORY",
+      "note": "Styling and responsive layouts"
+    },
+    {
+      "jobRoleSlug": "web-developer",
+      "subjectSlug": "javascript",
+      "sortOrder": 3,
+      "tag": "MANDATORY",
+      "note": "Interactive web behaviour"
+    },
+    {
+      "jobRoleSlug": "web-developer",
+      "subjectSlug": "git",
+      "sortOrder": 4,
+      "tag": "MANDATORY",
+      "note": "Version control"
+    },
+    {
+      "jobRoleSlug": "web-developer",
+      "subjectSlug": "typescript",
+      "sortOrder": 5,
+      "tag": "RECOMMENDED",
+      "note": "Increasingly expected even for"
+    },
+    {
+      "jobRoleSlug": "web-developer",
+      "subjectSlug": "react",
+      "sortOrder": 6,
+      "tag": "RECOMMENDED",
+      "note": "Most in-demand web UI library"
+    },
+    {
+      "jobRoleSlug": "web-developer",
+      "subjectSlug": "nextjs",
+      "sortOrder": 7,
+      "tag": "RECOMMENDED",
+      "note": "Full-featured web framework"
+    },
+    {
+      "jobRoleSlug": "web-developer",
+      "subjectSlug": "tailwind",
+      "sortOrder": 8,
+      "tag": "RECOMMENDED",
+      "note": "Efficient CSS utility framewor"
+    },
+    {
+      "jobRoleSlug": "web-developer",
+      "subjectSlug": "rest-apis",
+      "sortOrder": 9,
+      "tag": "RECOMMENDED",
+      "note": "Working with backend data"
+    },
+    {
+      "jobRoleSlug": "web-developer",
+      "subjectSlug": "graphql",
+      "sortOrder": 10,
+      "tag": "OPTIONAL",
+      "note": "Modern data-fetching alternati"
+    },
+    {
+      "jobRoleSlug": "web-developer",
+      "subjectSlug": "redux",
+      "sortOrder": 11,
+      "tag": "OPTIONAL",
+      "note": "State management for larger ap"
+    },
+    {
+      "jobRoleSlug": "web-developer",
+      "subjectSlug": "vuejs",
+      "sortOrder": 12,
+      "tag": "OPTIONAL",
+      "note": "Popular alternative to React"
+    },
+    {
+      "jobRoleSlug": "react-developer",
+      "subjectSlug": "javascript",
+      "sortOrder": 1,
+      "tag": "MANDATORY",
+      "note": "React is a JS library — JS exp"
+    },
+    {
+      "jobRoleSlug": "react-developer",
+      "subjectSlug": "typescript",
+      "sortOrder": 2,
+      "tag": "MANDATORY",
+      "note": "Standard in all React job post"
+    },
+    {
+      "jobRoleSlug": "react-developer",
+      "subjectSlug": "react",
+      "sortOrder": 3,
+      "tag": "MANDATORY",
+      "note": "Core framework proficiency"
+    },
+    {
+      "jobRoleSlug": "react-developer",
+      "subjectSlug": "redux",
+      "sortOrder": 4,
+      "tag": "MANDATORY",
+      "note": "State management at scale"
+    },
+    {
+      "jobRoleSlug": "react-developer",
+      "subjectSlug": "git",
+      "sortOrder": 5,
+      "tag": "MANDATORY",
+      "note": "Version control"
+    },
+    {
+      "jobRoleSlug": "react-developer",
+      "subjectSlug": "nextjs",
+      "sortOrder": 6,
+      "tag": "RECOMMENDED",
+      "note": "React framework for production"
+    },
+    {
+      "jobRoleSlug": "react-developer",
+      "subjectSlug": "rest-apis",
+      "sortOrder": 7,
+      "tag": "RECOMMENDED",
+      "note": "Fetching data from APIs"
+    },
+    {
+      "jobRoleSlug": "react-developer",
+      "subjectSlug": "tailwind",
+      "sortOrder": 8,
+      "tag": "RECOMMENDED",
+      "note": "Dominant styling choice in Rea"
+    },
+    {
+      "jobRoleSlug": "react-developer",
+      "subjectSlug": "graphql",
+      "sortOrder": 9,
+      "tag": "OPTIONAL",
+      "note": "Used alongside React in many p"
+    },
+    {
+      "jobRoleSlug": "react-developer",
+      "subjectSlug": "nodejs",
+      "sortOrder": 10,
+      "tag": "OPTIONAL",
+      "note": "Understanding the backend side"
+    },
+    {
+      "jobRoleSlug": "angular-developer",
+      "subjectSlug": "javascript",
+      "sortOrder": 1,
+      "tag": "MANDATORY",
+      "note": "Angular builds on JavaScript f"
+    },
+    {
+      "jobRoleSlug": "angular-developer",
+      "subjectSlug": "typescript",
+      "sortOrder": 2,
+      "tag": "MANDATORY",
+      "note": "Angular is TypeScript-first by"
+    },
+    {
+      "jobRoleSlug": "angular-developer",
+      "subjectSlug": "angular",
+      "sortOrder": 3,
+      "tag": "MANDATORY",
+      "note": "Core framework expertise"
+    },
+    {
+      "jobRoleSlug": "angular-developer",
+      "subjectSlug": "rxjs",
+      "sortOrder": 4,
+      "tag": "MANDATORY",
+      "note": "Angular reactive programming l"
+    },
+    {
+      "jobRoleSlug": "angular-developer",
+      "subjectSlug": "git",
+      "sortOrder": 5,
+      "tag": "MANDATORY",
+      "note": "Version control"
+    },
+    {
+      "jobRoleSlug": "angular-developer",
+      "subjectSlug": "ngrx",
+      "sortOrder": 6,
+      "tag": "RECOMMENDED",
+      "note": "State management for enterpris"
+    },
+    {
+      "jobRoleSlug": "angular-developer",
+      "subjectSlug": "tailwind",
+      "sortOrder": 7,
+      "tag": "RECOMMENDED",
+      "note": "Modern styling in Angular proj"
+    },
+    {
+      "jobRoleSlug": "angular-developer",
+      "subjectSlug": "rest-apis",
+      "sortOrder": 8,
+      "tag": "RECOMMENDED",
+      "note": "Backend communication"
+    },
+    {
+      "jobRoleSlug": "angular-developer",
+      "subjectSlug": "nodejs",
+      "sortOrder": 9,
+      "tag": "OPTIONAL",
+      "note": "Understanding the backend"
+    },
+    {
+      "jobRoleSlug": "angular-developer",
+      "subjectSlug": "nx-monorepo",
+      "sortOrder": 10,
+      "tag": "OPTIONAL",
+      "note": "Monorepo tooling common in Ang"
+    },
+    {
+      "jobRoleSlug": "nodejs-developer",
+      "subjectSlug": "javascript",
+      "sortOrder": 1,
+      "tag": "MANDATORY",
+      "note": "Node.js is JavaScript on the s"
+    },
+    {
+      "jobRoleSlug": "nodejs-developer",
+      "subjectSlug": "typescript",
+      "sortOrder": 2,
+      "tag": "MANDATORY",
+      "note": "Standard in Node.js projects"
+    },
+    {
+      "jobRoleSlug": "nodejs-developer",
+      "subjectSlug": "nodejs",
+      "sortOrder": 3,
+      "tag": "MANDATORY",
+      "note": "Core runtime proficiency"
+    },
+    {
+      "jobRoleSlug": "nodejs-developer",
+      "subjectSlug": "rest-apis",
+      "sortOrder": 4,
+      "tag": "MANDATORY",
+      "note": "Building HTTP services"
+    },
+    {
+      "jobRoleSlug": "nodejs-developer",
+      "subjectSlug": "relational-databases",
+      "sortOrder": 5,
+      "tag": "MANDATORY",
+      "note": "Data persistence with SQL"
+    },
+    {
+      "jobRoleSlug": "nodejs-developer",
+      "subjectSlug": "git",
+      "sortOrder": 6,
+      "tag": "MANDATORY",
+      "note": "Version control"
+    },
+    {
+      "jobRoleSlug": "nodejs-developer",
+      "subjectSlug": "expressjs",
+      "sortOrder": 7,
+      "tag": "RECOMMENDED",
+      "note": "Lightweight Node.js web framew"
+    },
+    {
+      "jobRoleSlug": "nodejs-developer",
+      "subjectSlug": "nest-js",
+      "sortOrder": 8,
+      "tag": "RECOMMENDED",
+      "note": "Enterprise-grade Node.js frame"
+    },
+    {
+      "jobRoleSlug": "nodejs-developer",
+      "subjectSlug": "mongodb",
+      "sortOrder": 9,
+      "tag": "RECOMMENDED",
+      "note": "NoSQL option common in Node.js"
+    },
+    {
+      "jobRoleSlug": "nodejs-developer",
+      "subjectSlug": "docker",
+      "sortOrder": 10,
+      "tag": "RECOMMENDED",
+      "note": "Containerised Node.js apps"
+    },
+    {
+      "jobRoleSlug": "nodejs-developer",
+      "subjectSlug": "graphql",
+      "sortOrder": 11,
+      "tag": "OPTIONAL",
+      "note": "API design alternative"
+    },
+    {
+      "jobRoleSlug": "nodejs-developer",
+      "subjectSlug": "ci-cd",
+      "sortOrder": 12,
+      "tag": "OPTIONAL",
+      "note": "Automated deployment pipelines"
+    },
+    {
+      "jobRoleSlug": "python-developer",
+      "subjectSlug": "python",
+      "sortOrder": 1,
+      "tag": "MANDATORY",
+      "note": "Core language expertise"
+    },
+    {
+      "jobRoleSlug": "python-developer",
+      "subjectSlug": "rest-apis",
+      "sortOrder": 2,
+      "tag": "MANDATORY",
+      "note": "Python is used heavily for API"
+    },
+    {
+      "jobRoleSlug": "python-developer",
+      "subjectSlug": "git",
+      "sortOrder": 3,
+      "tag": "MANDATORY",
+      "note": "Version control"
+    },
+    {
+      "jobRoleSlug": "python-developer",
+      "subjectSlug": "relational-databases",
+      "sortOrder": 4,
+      "tag": "RECOMMENDED",
+      "note": "Data persistence and SQL queri"
+    },
+    {
+      "jobRoleSlug": "python-developer",
+      "subjectSlug": "mongodb",
+      "sortOrder": 5,
+      "tag": "RECOMMENDED",
+      "note": "NoSQL alternative"
+    },
+    {
+      "jobRoleSlug": "python-developer",
+      "subjectSlug": "docker",
+      "sortOrder": 6,
+      "tag": "RECOMMENDED",
+      "note": "Containerised Python services"
+    },
+    {
+      "jobRoleSlug": "python-developer",
+      "subjectSlug": "ai-fundamentals",
+      "sortOrder": 7,
+      "tag": "OPTIONAL",
+      "note": "Python is the dominant AI lang"
+    },
+    {
+      "jobRoleSlug": "python-developer",
+      "subjectSlug": "machine-learning",
+      "sortOrder": 8,
+      "tag": "OPTIONAL",
+      "note": "Common Python developer growth"
+    },
+    {
+      "jobRoleSlug": "python-developer",
+      "subjectSlug": "ci-cd",
+      "sortOrder": 9,
+      "tag": "OPTIONAL",
+      "note": "Deployment automation"
+    },
+    {
+      "jobRoleSlug": "java-springboot-developer",
+      "subjectSlug": "java",
+      "sortOrder": 1,
+      "tag": "MANDATORY",
+      "note": "Primary language"
+    },
+    {
+      "jobRoleSlug": "java-springboot-developer",
+      "subjectSlug": "spring-boot",
+      "sortOrder": 2,
+      "tag": "MANDATORY",
+      "note": "Core framework for Java micros"
+    },
+    {
+      "jobRoleSlug": "java-springboot-developer",
+      "subjectSlug": "relational-databases",
+      "sortOrder": 3,
+      "tag": "MANDATORY",
+      "note": "JPA and SQL are fundamental to"
+    },
+    {
+      "jobRoleSlug": "java-springboot-developer",
+      "subjectSlug": "rest-apis",
+      "sortOrder": 4,
+      "tag": "MANDATORY",
+      "note": "Spring Boot is primarily used "
+    },
+    {
+      "jobRoleSlug": "java-springboot-developer",
+      "subjectSlug": "git",
+      "sortOrder": 5,
+      "tag": "MANDATORY",
+      "note": "Version control"
+    },
+    {
+      "jobRoleSlug": "java-springboot-developer",
+      "subjectSlug": "docker",
+      "sortOrder": 6,
+      "tag": "RECOMMENDED",
+      "note": "Containerised Java services"
+    },
+    {
+      "jobRoleSlug": "java-springboot-developer",
+      "subjectSlug": "ci-cd",
+      "sortOrder": 7,
+      "tag": "RECOMMENDED",
+      "note": "Automated build and release pi"
+    },
+    {
+      "jobRoleSlug": "java-springboot-developer",
+      "subjectSlug": "mongodb",
+      "sortOrder": 8,
+      "tag": "OPTIONAL",
+      "note": "NoSQL alternative in Spring ec"
+    },
+    {
+      "jobRoleSlug": "java-springboot-developer",
+      "subjectSlug": "kubernetes",
+      "sortOrder": 9,
+      "tag": "OPTIONAL",
+      "note": "Orchestrating Java microservic"
+    },
+    {
+      "jobRoleSlug": "android-developer",
+      "subjectSlug": "android",
+      "sortOrder": 1,
+      "tag": "MANDATORY",
+      "note": "Native Android development"
+    },
+    {
+      "jobRoleSlug": "android-developer",
+      "subjectSlug": "java",
+      "sortOrder": 2,
+      "tag": "MANDATORY",
+      "note": "Traditional Android language"
+    },
+    {
+      "jobRoleSlug": "android-developer",
+      "subjectSlug": "git",
+      "sortOrder": 3,
+      "tag": "MANDATORY",
+      "note": "Version control"
+    },
+    {
+      "jobRoleSlug": "android-developer",
+      "subjectSlug": "rest-apis",
+      "sortOrder": 4,
+      "tag": "RECOMMENDED",
+      "note": "Mobile apps rely on backend AP"
+    },
+    {
+      "jobRoleSlug": "android-developer",
+      "subjectSlug": "relational-databases",
+      "sortOrder": 5,
+      "tag": "RECOMMENDED",
+      "note": "Local storage with SQLite/Room"
+    },
+    {
+      "jobRoleSlug": "android-developer",
+      "subjectSlug": "react-native",
+      "sortOrder": 6,
+      "tag": "OPTIONAL",
+      "note": "Cross-platform broadens employ"
+    },
+    {
+      "jobRoleSlug": "android-developer",
+      "subjectSlug": "ci-cd",
+      "sortOrder": 7,
+      "tag": "OPTIONAL",
+      "note": "Mobile CI for automated app bu"
+    },
+    {
+      "jobRoleSlug": "ios-developer",
+      "subjectSlug": "ios",
+      "sortOrder": 1,
+      "tag": "MANDATORY",
+      "note": "Native iOS/Swift/SwiftUI devel"
+    },
+    {
+      "jobRoleSlug": "ios-developer",
+      "subjectSlug": "git",
+      "sortOrder": 2,
+      "tag": "MANDATORY",
+      "note": "Version control"
+    },
+    {
+      "jobRoleSlug": "ios-developer",
+      "subjectSlug": "rest-apis",
+      "sortOrder": 3,
+      "tag": "RECOMMENDED",
+      "note": "iOS apps consume backend APIs"
+    },
+    {
+      "jobRoleSlug": "ios-developer",
+      "subjectSlug": "relational-databases",
+      "sortOrder": 4,
+      "tag": "RECOMMENDED",
+      "note": "Core Data and local storage"
+    },
+    {
+      "jobRoleSlug": "ios-developer",
+      "subjectSlug": "react-native",
+      "sortOrder": 5,
+      "tag": "OPTIONAL",
+      "note": "Cross-platform skill for broad"
+    },
+    {
+      "jobRoleSlug": "ios-developer",
+      "subjectSlug": "ci-cd",
+      "sortOrder": 6,
+      "tag": "OPTIONAL",
+      "note": "Automated App Store delivery p"
+    },
+    {
+      "jobRoleSlug": "mobile-app-developer",
+      "subjectSlug": "javascript",
+      "sortOrder": 1,
+      "tag": "MANDATORY",
+      "note": "Core language for cross-platfo"
+    },
+    {
+      "jobRoleSlug": "mobile-app-developer",
+      "subjectSlug": "typescript",
+      "sortOrder": 2,
+      "tag": "MANDATORY",
+      "note": "Standard in React Native proje"
+    },
+    {
+      "jobRoleSlug": "mobile-app-developer",
+      "subjectSlug": "react-native",
+      "sortOrder": 3,
+      "tag": "MANDATORY",
+      "note": "Primary cross-platform mobile "
+    },
+    {
+      "jobRoleSlug": "mobile-app-developer",
+      "subjectSlug": "git",
+      "sortOrder": 4,
+      "tag": "MANDATORY",
+      "note": "Version control"
+    },
+    {
+      "jobRoleSlug": "mobile-app-developer",
+      "subjectSlug": "rest-apis",
+      "sortOrder": 5,
+      "tag": "RECOMMENDED",
+      "note": "Mobile apps rely on backend se"
+    },
+    {
+      "jobRoleSlug": "mobile-app-developer",
+      "subjectSlug": "capacitor",
+      "sortOrder": 6,
+      "tag": "RECOMMENDED",
+      "note": "Hybrid mobile app runtime"
+    },
+    {
+      "jobRoleSlug": "mobile-app-developer",
+      "subjectSlug": "mongodb",
+      "sortOrder": 7,
+      "tag": "RECOMMENDED",
+      "note": "Flexible backend storage"
+    },
+    {
+      "jobRoleSlug": "mobile-app-developer",
+      "subjectSlug": "android",
+      "sortOrder": 8,
+      "tag": "OPTIONAL",
+      "note": "Native Android deepdive"
+    },
+    {
+      "jobRoleSlug": "mobile-app-developer",
+      "subjectSlug": "ios",
+      "sortOrder": 9,
+      "tag": "OPTIONAL",
+      "note": "Native iOS deepdive"
+    },
+    {
+      "jobRoleSlug": "mobile-app-developer",
+      "subjectSlug": "tailwind",
+      "sortOrder": 10,
+      "tag": "OPTIONAL",
+      "note": "CSS utility knowledge for hybr"
+    },
+    {
+      "jobRoleSlug": "devops-engineer",
+      "subjectSlug": "devops",
+      "sortOrder": 1,
+      "tag": "MANDATORY",
+      "note": "Core DevOps principles and pra"
+    },
+    {
+      "jobRoleSlug": "devops-engineer",
+      "subjectSlug": "docker",
+      "sortOrder": 2,
+      "tag": "MANDATORY",
+      "note": "Container fundamentals"
+    },
+    {
+      "jobRoleSlug": "devops-engineer",
+      "subjectSlug": "kubernetes",
+      "sortOrder": 3,
+      "tag": "MANDATORY",
+      "note": "Container orchestration at sca"
+    },
+    {
+      "jobRoleSlug": "devops-engineer",
+      "subjectSlug": "ci-cd",
+      "sortOrder": 4,
+      "tag": "MANDATORY",
+      "note": "Automated build/test/deploy pi"
+    },
+    {
+      "jobRoleSlug": "devops-engineer",
+      "subjectSlug": "git",
+      "sortOrder": 5,
+      "tag": "MANDATORY",
+      "note": "Infrastructure as code lives i"
+    },
+    {
+      "jobRoleSlug": "devops-engineer",
+      "subjectSlug": "jenkins",
+      "sortOrder": 6,
+      "tag": "RECOMMENDED",
+      "note": "Widely used CI server"
+    },
+    {
+      "jobRoleSlug": "devops-engineer",
+      "subjectSlug": "cloud-basics",
+      "sortOrder": 7,
+      "tag": "RECOMMENDED",
+      "note": "Most DevOps work is cloud-base"
+    },
+    {
+      "jobRoleSlug": "devops-engineer",
+      "subjectSlug": "relational-databases",
+      "sortOrder": 8,
+      "tag": "OPTIONAL",
+      "note": "Database admin tasks in DevOps"
+    },
+    {
+      "jobRoleSlug": "devops-engineer",
+      "subjectSlug": "python",
+      "sortOrder": 9,
+      "tag": "OPTIONAL",
+      "note": "Scripting and automation"
+    },
+    {
+      "jobRoleSlug": "cloud-engineer",
+      "subjectSlug": "cloud-basics",
+      "sortOrder": 1,
+      "tag": "MANDATORY",
+      "note": "Cloud infrastructure fundament"
+    },
+    {
+      "jobRoleSlug": "cloud-engineer",
+      "subjectSlug": "docker",
+      "sortOrder": 2,
+      "tag": "MANDATORY",
+      "note": "Container fundamentals"
+    },
+    {
+      "jobRoleSlug": "cloud-engineer",
+      "subjectSlug": "kubernetes",
+      "sortOrder": 3,
+      "tag": "MANDATORY",
+      "note": "Orchestration on cloud cluster"
+    },
+    {
+      "jobRoleSlug": "cloud-engineer",
+      "subjectSlug": "ci-cd",
+      "sortOrder": 4,
+      "tag": "MANDATORY",
+      "note": "Cloud delivery pipelines"
+    },
+    {
+      "jobRoleSlug": "cloud-engineer",
+      "subjectSlug": "git",
+      "sortOrder": 5,
+      "tag": "MANDATORY",
+      "note": "Infrastructure as code"
+    },
+    {
+      "jobRoleSlug": "cloud-engineer",
+      "subjectSlug": "devops",
+      "sortOrder": 6,
+      "tag": "RECOMMENDED",
+      "note": "DevOps practices underpin clou"
+    },
+    {
+      "jobRoleSlug": "cloud-engineer",
+      "subjectSlug": "relational-databases",
+      "sortOrder": 7,
+      "tag": "RECOMMENDED",
+      "note": "Managed database services"
+    },
+    {
+      "jobRoleSlug": "cloud-engineer",
+      "subjectSlug": "python",
+      "sortOrder": 8,
+      "tag": "OPTIONAL",
+      "note": "Automation and infrastructure "
+    },
+    {
+      "jobRoleSlug": "cloud-engineer",
+      "subjectSlug": "jenkins",
+      "sortOrder": 9,
+      "tag": "OPTIONAL",
+      "note": "CI server management"
+    },
+    {
+      "jobRoleSlug": "cloud-engineer",
+      "subjectSlug": "mongodb",
+      "sortOrder": 10,
+      "tag": "OPTIONAL",
+      "note": "Cloud NoSQL deployments"
+    },
+    {
+      "jobRoleSlug": "data-engineer",
+      "subjectSlug": "python",
+      "sortOrder": 1,
+      "tag": "MANDATORY",
+      "note": "Primary language for data pipe"
+    },
+    {
+      "jobRoleSlug": "data-engineer",
+      "subjectSlug": "relational-databases",
+      "sortOrder": 2,
+      "tag": "MANDATORY",
+      "note": "SQL and data warehouse design"
+    },
+    {
+      "jobRoleSlug": "data-engineer",
+      "subjectSlug": "mongodb",
+      "sortOrder": 3,
+      "tag": "MANDATORY",
+      "note": "NoSQL for unstructured data in"
+    },
+    {
+      "jobRoleSlug": "data-engineer",
+      "subjectSlug": "git",
+      "sortOrder": 4,
+      "tag": "MANDATORY",
+      "note": "Version control for pipeline c"
+    },
+    {
+      "jobRoleSlug": "data-engineer",
+      "subjectSlug": "cloud-basics",
+      "sortOrder": 5,
+      "tag": "RECOMMENDED",
+      "note": "Data pipelines are cloud-hoste"
+    },
+    {
+      "jobRoleSlug": "data-engineer",
+      "subjectSlug": "rest-apis",
+      "sortOrder": 6,
+      "tag": "RECOMMENDED",
+      "note": "Ingesting data from external A"
+    },
+    {
+      "jobRoleSlug": "data-engineer",
+      "subjectSlug": "docker",
+      "sortOrder": 7,
+      "tag": "RECOMMENDED",
+      "note": "Containerised data services"
+    },
+    {
+      "jobRoleSlug": "data-engineer",
+      "subjectSlug": "machine-learning",
+      "sortOrder": 8,
+      "tag": "OPTIONAL",
+      "note": "Data engineers often collabora"
+    },
+    {
+      "jobRoleSlug": "data-engineer",
+      "subjectSlug": "ci-cd",
+      "sortOrder": 9,
+      "tag": "OPTIONAL",
+      "note": "Pipeline deployment automation"
+    },
+    {
+      "jobRoleSlug": "ai-ml-engineer",
+      "subjectSlug": "python",
+      "sortOrder": 1,
+      "tag": "MANDATORY",
+      "note": "Dominant language in AI/ML"
+    },
+    {
+      "jobRoleSlug": "ai-ml-engineer",
+      "subjectSlug": "ai-fundamentals",
+      "sortOrder": 2,
+      "tag": "MANDATORY",
+      "note": "Foundations of AI concepts and"
+    },
+    {
+      "jobRoleSlug": "ai-ml-engineer",
+      "subjectSlug": "machine-learning",
+      "sortOrder": 3,
+      "tag": "MANDATORY",
+      "note": "Core discipline"
+    },
+    {
+      "jobRoleSlug": "ai-ml-engineer",
+      "subjectSlug": "git",
+      "sortOrder": 4,
+      "tag": "MANDATORY",
+      "note": "Version control for models and"
+    },
+    {
+      "jobRoleSlug": "ai-ml-engineer",
+      "subjectSlug": "relational-databases",
+      "sortOrder": 5,
+      "tag": "RECOMMENDED",
+      "note": "Training data storage and retr"
+    },
+    {
+      "jobRoleSlug": "ai-ml-engineer",
+      "subjectSlug": "mongodb",
+      "sortOrder": 6,
+      "tag": "RECOMMENDED",
+      "note": "Unstructured training data"
+    },
+    {
+      "jobRoleSlug": "ai-ml-engineer",
+      "subjectSlug": "rest-apis",
+      "sortOrder": 7,
+      "tag": "RECOMMENDED",
+      "note": "Serving models via APIs"
+    },
+    {
+      "jobRoleSlug": "ai-ml-engineer",
+      "subjectSlug": "cloud-basics",
+      "sortOrder": 8,
+      "tag": "OPTIONAL",
+      "note": "Cloud GPU compute for training"
+    },
+    {
+      "jobRoleSlug": "ai-ml-engineer",
+      "subjectSlug": "docker",
+      "sortOrder": 9,
+      "tag": "OPTIONAL",
+      "note": "Containerised model serving"
+    },
+    {
+      "jobRoleSlug": "ml-engineer",
+      "subjectSlug": "python",
+      "sortOrder": 1,
+      "tag": "MANDATORY",
+      "note": "Primary language for ML"
+    },
+    {
+      "jobRoleSlug": "ml-engineer",
+      "subjectSlug": "machine-learning",
+      "sortOrder": 2,
+      "tag": "MANDATORY",
+      "note": "Core specialisation"
+    },
+    {
+      "jobRoleSlug": "ml-engineer",
+      "subjectSlug": "git",
+      "sortOrder": 3,
+      "tag": "MANDATORY",
+      "note": "Experiment tracking and model "
+    },
+    {
+      "jobRoleSlug": "ml-engineer",
+      "subjectSlug": "ai-fundamentals",
+      "sortOrder": 4,
+      "tag": "RECOMMENDED",
+      "note": "Broad AI context for ML practi"
+    },
+    {
+      "jobRoleSlug": "ml-engineer",
+      "subjectSlug": "relational-databases",
+      "sortOrder": 5,
+      "tag": "RECOMMENDED",
+      "note": "Structured datasets and featur"
+    },
+    {
+      "jobRoleSlug": "ml-engineer",
+      "subjectSlug": "cloud-basics",
+      "sortOrder": 6,
+      "tag": "RECOMMENDED",
+      "note": "Cloud-based model training and"
+    },
+    {
+      "jobRoleSlug": "ml-engineer",
+      "subjectSlug": "docker",
+      "sortOrder": 7,
+      "tag": "OPTIONAL",
+      "note": "Containerised model pipelines"
+    },
+    {
+      "jobRoleSlug": "ml-engineer",
+      "subjectSlug": "mongodb",
+      "sortOrder": 8,
+      "tag": "OPTIONAL",
+      "note": "Unstructured data for training"
+    },
+    {
+      "jobRoleSlug": "full-stack-dev-ai",
+      "subjectSlug": "javascript",
+      "sortOrder": 1,
+      "tag": "MANDATORY",
+      "note": "Frontend and Node.js backend"
+    },
+    {
+      "jobRoleSlug": "full-stack-dev-ai",
+      "subjectSlug": "typescript",
+      "sortOrder": 2,
+      "tag": "MANDATORY",
+      "note": "Modern full-stack standard"
+    },
+    {
+      "jobRoleSlug": "full-stack-dev-ai",
+      "subjectSlug": "nodejs",
+      "sortOrder": 3,
+      "tag": "MANDATORY",
+      "note": "Backend runtime for AI-enabled"
+    },
+    {
+      "jobRoleSlug": "full-stack-dev-ai",
+      "subjectSlug": "ai-fundamentals",
+      "sortOrder": 4,
+      "tag": "MANDATORY",
+      "note": "AI concepts for integrating LL"
+    },
+    {
+      "jobRoleSlug": "full-stack-dev-ai",
+      "subjectSlug": "git",
+      "sortOrder": 5,
+      "tag": "MANDATORY",
+      "note": "Version control"
+    },
+    {
+      "jobRoleSlug": "full-stack-dev-ai",
+      "subjectSlug": "react",
+      "sortOrder": 6,
+      "tag": "RECOMMENDED",
+      "note": "Most common full-stack fronten"
+    },
+    {
+      "jobRoleSlug": "full-stack-dev-ai",
+      "subjectSlug": "relational-databases",
+      "sortOrder": 7,
+      "tag": "RECOMMENDED",
+      "note": "Data persistence for AI-enrich"
+    },
+    {
+      "jobRoleSlug": "full-stack-dev-ai",
+      "subjectSlug": "python",
+      "sortOrder": 8,
+      "tag": "RECOMMENDED",
+      "note": "AI/ML scripting and model inte"
+    },
+    {
+      "jobRoleSlug": "full-stack-dev-ai",
+      "subjectSlug": "rest-apis",
+      "sortOrder": 9,
+      "tag": "RECOMMENDED",
+      "note": "Consuming AI model APIs"
+    },
+    {
+      "jobRoleSlug": "full-stack-dev-ai",
+      "subjectSlug": "machine-learning",
+      "sortOrder": 10,
+      "tag": "OPTIONAL",
+      "note": "ML concepts for building smart"
+    },
+    {
+      "jobRoleSlug": "full-stack-dev-ai",
+      "subjectSlug": "mongodb",
+      "sortOrder": 11,
+      "tag": "OPTIONAL",
+      "note": "Document store for AI app data"
+    },
+    {
+      "jobRoleSlug": "full-stack-dev-ai",
+      "subjectSlug": "docker",
+      "sortOrder": 12,
+      "tag": "OPTIONAL",
+      "note": "Containerised AI services"
+    },
+    {
+      "jobRoleSlug": "qa-engineer",
+      "subjectSlug": "software-testing",
+      "sortOrder": 1,
+      "tag": "MANDATORY",
+      "note": "Core testing theory and method"
+    },
+    {
+      "jobRoleSlug": "qa-engineer",
+      "subjectSlug": "javascript",
+      "sortOrder": 2,
+      "tag": "MANDATORY",
+      "note": "Cypress and most modern test f"
+    },
+    {
+      "jobRoleSlug": "qa-engineer",
+      "subjectSlug": "cypress",
+      "sortOrder": 3,
+      "tag": "MANDATORY",
+      "note": "Leading E2E testing framework"
+    },
+    {
+      "jobRoleSlug": "qa-engineer",
+      "subjectSlug": "git",
+      "sortOrder": 4,
+      "tag": "MANDATORY",
+      "note": "Managing test suites in versio"
+    },
+    {
+      "jobRoleSlug": "qa-engineer",
+      "subjectSlug": "java-selenium",
+      "sortOrder": 5,
+      "tag": "RECOMMENDED",
+      "note": "Traditional automation testing"
+    },
+    {
+      "jobRoleSlug": "qa-engineer",
+      "subjectSlug": "jira",
+      "sortOrder": 6,
+      "tag": "RECOMMENDED",
+      "note": "Bug tracking and test case man"
+    },
+    {
+      "jobRoleSlug": "qa-engineer",
+      "subjectSlug": "rest-apis",
+      "sortOrder": 7,
+      "tag": "RECOMMENDED",
+      "note": "API testing with tools like Po"
+    },
+    {
+      "jobRoleSlug": "qa-engineer",
+      "subjectSlug": "python",
+      "sortOrder": 8,
+      "tag": "OPTIONAL",
+      "note": "Python-based test automation ("
+    },
+    {
+      "jobRoleSlug": "qa-engineer",
+      "subjectSlug": "ci-cd",
+      "sortOrder": 9,
+      "tag": "OPTIONAL",
+      "note": "Integrating tests in build pip"
+    },
+    {
+      "jobRoleSlug": "software-tester",
+      "subjectSlug": "software-testing",
+      "sortOrder": 1,
+      "tag": "MANDATORY",
+      "note": "Testing fundamentals and metho"
+    },
+    {
+      "jobRoleSlug": "software-tester",
+      "subjectSlug": "git",
+      "sortOrder": 2,
+      "tag": "MANDATORY",
+      "note": "Version control for test scrip"
+    },
+    {
+      "jobRoleSlug": "software-tester",
+      "subjectSlug": "java-selenium",
+      "sortOrder": 3,
+      "tag": "RECOMMENDED",
+      "note": "Selenium WebDriver with Java"
+    },
+    {
+      "jobRoleSlug": "software-tester",
+      "subjectSlug": "cypress",
+      "sortOrder": 4,
+      "tag": "RECOMMENDED",
+      "note": "Modern browser automation"
+    },
+    {
+      "jobRoleSlug": "software-tester",
+      "subjectSlug": "jira",
+      "sortOrder": 5,
+      "tag": "RECOMMENDED",
+      "note": "Bug and test case tracking"
+    },
+    {
+      "jobRoleSlug": "software-tester",
+      "subjectSlug": "javascript",
+      "sortOrder": 6,
+      "tag": "RECOMMENDED",
+      "note": "Required for Cypress test scri"
+    },
+    {
+      "jobRoleSlug": "software-tester",
+      "subjectSlug": "rest-apis",
+      "sortOrder": 7,
+      "tag": "OPTIONAL",
+      "note": "API testing skills"
+    },
+    {
+      "jobRoleSlug": "software-tester",
+      "subjectSlug": "ci-cd",
+      "sortOrder": 8,
+      "tag": "OPTIONAL",
+      "note": "Running tests in pipelines"
+    },
+    {
+      "jobRoleSlug": "program-manager",
+      "subjectSlug": "jira",
+      "sortOrder": 1,
+      "tag": "MANDATORY",
+      "note": "Project tracking and sprint ma"
+    },
+    {
+      "jobRoleSlug": "program-manager",
+      "subjectSlug": "git",
+      "sortOrder": 2,
+      "tag": "MANDATORY",
+      "note": "Understanding version control "
+    },
+    {
+      "jobRoleSlug": "program-manager",
+      "subjectSlug": "rest-apis",
+      "sortOrder": 3,
+      "tag": "RECOMMENDED",
+      "note": "Understanding how APIs work ai"
+    },
+    {
+      "jobRoleSlug": "program-manager",
+      "subjectSlug": "software-testing",
+      "sortOrder": 4,
+      "tag": "RECOMMENDED",
+      "note": "Understanding QA processes"
+    },
+    {
+      "jobRoleSlug": "program-manager",
+      "subjectSlug": "ci-cd",
+      "sortOrder": 5,
+      "tag": "OPTIONAL",
+      "note": "Familiarity with delivery pipe"
+    },
+    {
+      "jobRoleSlug": "all-devs",
+      "subjectSlug": "git",
+      "sortOrder": 1,
+      "tag": "MANDATORY",
+      "note": "Universal developer baseline"
+    },
+    {
+      "jobRoleSlug": "all-devs",
+      "subjectSlug": "jira",
+      "sortOrder": 2,
+      "tag": "MANDATORY",
+      "note": "Universal project tracking bas"
+    }
+  ],
+  "certificationTracks": [
+    {
+      "jobRoleSlug": "digital-literacy",
+      "title": "Computer Ready",
+      "description": "You can use a computer independently. You know your way around the operating system, manage files and folders with confidence, handle hardware basics, and solve everyday problems without needing help.",
+      "sortOrder": 1,
+      "isPublished": true
+    },
+    {
+      "jobRoleSlug": "digital-literacy",
+      "title": "Digitally Connected",
+      "description": "You are at home on the internet. You browse with confidence, manage email professionally, store and share files in the cloud, and communicate safely across digital channels.",
+      "sortOrder": 2,
+      "isPublished": true
+    },
+    {
+      "jobRoleSlug": "office-professional",
+      "title": "Office Starter",
+      "description": "You produce professional documents and basic spreadsheets. Word lets you create formatted reports and letters; Excel handles your numbers with basic formulas. You are ready for the modern office.",
+      "sortOrder": 1,
+      "isPublished": true
+    },
+    {
+      "jobRoleSlug": "office-professional",
+      "title": "Office Proficient",
+      "description": "Microsoft Office is your toolkit. You write polished Word documents, build data-driven Excel spreadsheets with formulas, functions, and charts, and present ideas compellingly with PowerPoint. You work at a professional level.",
+      "sortOrder": 2,
+      "isPublished": true
+    },
+    {
+      "jobRoleSlug": "office-professional",
+      "title": "Data Entry Specialist",
+      "description": "Speed and accuracy are your strengths. You enter, clean, and manage data efficiently — keyboard shortcuts, Excel formulas, data validation, and consistent formatting standards — all without missing a beat.",
+      "sortOrder": 3,
+      "isPublished": true
+    },
+    {
+      "jobRoleSlug": "office-professional",
+      "title": "Digital Office Expert",
+      "description": "You are the complete digital office professional. Office tools, internet productivity, email management, digital communication, and data accuracy — you handle every computer task a modern workplace needs.",
+      "sortOrder": 4,
+      "isPublished": true
+    },
+    {
+      "jobRoleSlug": "office-professional",
+      "title": "Computer Applications Professional",
+      "description": "This is your DCA-equivalent credential. You have mastered everything a Computer Applications Professional needs — computer operations, office productivity, internet skills, and data management. You are ready for any office computing role.",
+      "sortOrder": 5,
+      "isPublished": true
+    },
+    {
+      "jobRoleSlug": "programmer-1",
+      "title": "HTML Aware",
+      "description": "You know how the web is built. You write clean, structured HTML — semantic elements, forms, tables, images, links — and you understand why well-formed markup matters for browsers, search engines, and accessibility.",
+      "sortOrder": 1,
+      "isPublished": true
+    },
+    {
+      "jobRoleSlug": "programmer-1",
+      "title": "CSS Aware",
+      "description": "You can style a web page. Selectors, the box model, colours, typography, and basic layout — you understand how CSS transforms plain HTML into something visual and presentable.",
+      "sortOrder": 2,
+      "isPublished": true
+    },
+    {
+      "jobRoleSlug": "programmer-1",
+      "title": "JavaScript Starter",
+      "description": "You've written real JavaScript. Variables, functions, control flow, arrays, objects, and basic DOM manipulation — you can make a web page respond to user actions and think programmatically.",
+      "sortOrder": 3,
+      "isPublished": true
+    },
+    {
+      "jobRoleSlug": "programmer-1",
+      "title": "Junior Web Programmer",
+      "description": "Your first complete web credential. You build structured pages with HTML, style them with CSS, and add logic and interactivity with JavaScript. You are ready to grow into a professional developer.",
+      "sortOrder": 4,
+      "isPublished": true
+    },
+    {
+      "jobRoleSlug": "trainee-software-engineer",
+      "title": "Git Fluent",
+      "description": "You collaborate with Git the way professionals do. Branching, merging, resolving conflicts, working with remotes, and writing meaningful commit messages are second nature to you.",
+      "sortOrder": 1,
+      "isPublished": true
+    },
+    {
+      "jobRoleSlug": "trainee-software-engineer",
+      "title": "HTML Aware",
+      "description": "You know how web content is structured. You write semantic, accessible HTML and understand how markup connects to CSS and JavaScript to form a complete web page.",
+      "sortOrder": 2,
+      "isPublished": true
+    },
+    {
+      "jobRoleSlug": "trainee-software-engineer",
+      "title": "JavaScript Starter",
+      "description": "You think like a programmer. Variables, functions, loops, conditionals, and basic data structures in JavaScript — you write code that solves problems, not just code that runs.",
+      "sortOrder": 3,
+      "isPublished": true
+    },
+    {
+      "jobRoleSlug": "trainee-software-engineer",
+      "title": "Tech Foundations",
+      "description": "You have the core toolkit every engineer starts with: professional version control, web structure, and programming logic. You are ready to specialise and grow into any software engineering path.",
+      "sortOrder": 4,
+      "isPublished": true
+    },
+    {
+      "jobRoleSlug": "software-engineer",
+      "title": "Git Fluent",
+      "description": "Version control is non-negotiable in professional software engineering. You use Git fluently — branching strategies, rebasing, pull requests, and remote collaboration are all part of your workflow.",
+      "sortOrder": 1,
+      "isPublished": true
+    },
+    {
+      "jobRoleSlug": "software-engineer",
+      "title": "JavaScript Programmer",
+      "description": "JavaScript is the lingua franca of modern software. You write clean, well-structured JavaScript — closures, async/await, array methods, modules — and you understand why the code behaves the way it does.",
+      "sortOrder": 2,
+      "isPublished": true
+    },
+    {
+      "jobRoleSlug": "software-engineer",
+      "title": "Software Engineering Foundations",
+      "description": "You have the core competencies that all software engineers share — professional version control, programming fundamentals, and an understanding of how web systems are built. A solid base for any specialisation.",
+      "sortOrder": 3,
+      "isPublished": true
+    },
+    {
+      "jobRoleSlug": "web-developer",
+      "title": "HTML Developer",
+      "description": "You write production-quality HTML. Semantic structure, ARIA attributes, accessible forms, multimedia embedding, SEO-friendly markup — you know how to build web content that works for everyone.",
+      "sortOrder": 1,
+      "isPublished": true
+    },
+    {
+      "jobRoleSlug": "web-developer",
+      "title": "CSS Stylist",
+      "description": "You style pages like a professional. Flexbox, Grid, responsive design, media queries, custom properties, and scalable CSS architecture — you turn designs into living, breathing web experiences.",
+      "sortOrder": 2,
+      "isPublished": true
+    },
+    {
+      "jobRoleSlug": "web-developer",
+      "title": "JavaScript Programmer",
+      "description": "JavaScript is your tool for bringing web pages to life. You handle DOM manipulation, events, async data fetching, local storage, and ES6+ patterns with confidence.",
+      "sortOrder": 3,
+      "isPublished": true
+    },
+    {
+      "jobRoleSlug": "web-developer",
+      "title": "Certified Web Developer",
+      "description": "You are a web developer. You design page structure, apply professional CSS, and implement dynamic features with JavaScript. You build complete web experiences that are functional, styled, and interactive.",
+      "sortOrder": 4,
+      "isPublished": true
+    },
+    {
+      "jobRoleSlug": "frontend-developer",
+      "title": "HTML Intermediate",
+      "description": "Your HTML goes beyond the basics. You write semantic, accessible markup — ARIA roles, advanced form patterns, metadata, and the full HTML5 feature set — and you understand how it impacts SEO and assistive technology.",
+      "sortOrder": 1,
+      "isPublished": true
+    },
+    {
+      "jobRoleSlug": "frontend-developer",
+      "title": "CSS Intermediate",
+      "description": "You're past copy-paste CSS. Flexbox and Grid layouts, responsive breakpoints, CSS custom properties, animations, and scalable architecture patterns like BEM — you write CSS that is consistent, maintainable, and precise.",
+      "sortOrder": 2,
+      "isPublished": true
+    },
+    {
+      "jobRoleSlug": "frontend-developer",
+      "title": "JavaScript Programmer",
+      "description": "Interactive UIs are your domain. You write clean JavaScript — closures, event handling, async patterns, module imports, and robust DOM interaction — and you know how it all fits together in a browser environment.",
+      "sortOrder": 3,
+      "isPublished": true
+    },
+    {
+      "jobRoleSlug": "frontend-developer",
+      "title": "Expert UI Developer",
+      "description": "You build polished, complete user interfaces from scratch. Semantic HTML, precision CSS, and expressive JavaScript — working together. You think in components, care about accessibility, and deliver UIs that work for real users.",
+      "sortOrder": 4,
+      "isPublished": true
+    },
+    {
+      "jobRoleSlug": "react-developer",
+      "title": "JavaScript Programmer",
+      "description": "React is JavaScript — and you know JavaScript well. Closures, the event loop, promises, array methods, modules, and ES6+ syntax are all familiar. You are ready to move into React with a real foundation.",
+      "sortOrder": 1,
+      "isPublished": true
+    },
+    {
+      "jobRoleSlug": "react-developer",
+      "title": "React Starter",
+      "description": "You have built your first React applications. You understand the component model, JSX, props, state with useState, and side effects with useEffect. You can render lists, handle forms, and navigate between pages.",
+      "sortOrder": 2,
+      "isPublished": true
+    },
+    {
+      "jobRoleSlug": "react-developer",
+      "title": "React Developer",
+      "description": "React is your framework. You build full applications — custom hooks, context API, React Router, API integration with fetch or Axios, and controlled vs uncontrolled components. Your code is clean and predictable.",
+      "sortOrder": 3,
+      "isPublished": true
+    },
+    {
+      "jobRoleSlug": "react-developer",
+      "title": "React Expert",
+      "description": "You write production-grade React. Performance patterns (memo, useMemo, useCallback), global state with Redux or Zustand, code splitting, error boundaries, and testing with React Testing Library — you ship React apps that scale.",
+      "sortOrder": 4,
+      "isPublished": true
+    },
+    {
+      "jobRoleSlug": "angular-developer",
+      "title": "JavaScript Programmer",
+      "description": "Angular is built on TypeScript and JavaScript — and you understand both. You write clean, modern JavaScript and you are comfortable with async programming, modules, and object-oriented patterns.",
+      "sortOrder": 1,
+      "isPublished": true
+    },
+    {
+      "jobRoleSlug": "angular-developer",
+      "title": "Angular Starter",
+      "description": "You have taken your first real steps in Angular. You understand how Angular applications are structured, build components with templates, use property and event binding, and navigate between routes.",
+      "sortOrder": 2,
+      "isPublished": true
+    },
+    {
+      "jobRoleSlug": "angular-developer",
+      "title": "Angular Developer",
+      "description": "Angular is your framework. You build modular applications with components, injectable services, reactive forms, HTTP client integration, and clean routing architectures. You are productive in the Angular ecosystem.",
+      "sortOrder": 3,
+      "isPublished": true
+    },
+    {
+      "jobRoleSlug": "angular-developer",
+      "title": "Angular Expert",
+      "description": "You architect Angular applications at scale. Change detection strategies, lazy loading, custom directives, advanced RxJS patterns, performance optimisation, and NgRx state management — Angular holds no secrets from you.",
+      "sortOrder": 4,
+      "isPublished": true
+    },
+    {
+      "jobRoleSlug": "nodejs-developer",
+      "title": "JavaScript Programmer",
+      "description": "Node.js is JavaScript on the server — and your JavaScript is solid. Closures, async/await, Promises, modules, and the event-driven model are things you understand deeply, not just use.",
+      "sortOrder": 1,
+      "isPublished": true
+    },
+    {
+      "jobRoleSlug": "nodejs-developer",
+      "title": "Node.js Developer",
+      "description": "You build server-side applications with Node.js. RESTful APIs, middleware patterns, error handling, async processing, npm package management, and connecting to databases — you write backends that work.",
+      "sortOrder": 2,
+      "isPublished": true
+    },
+    {
+      "jobRoleSlug": "nodejs-developer",
+      "title": "Backend JavaScript Expert",
+      "description": "You are a Node.js professional. You design scalable APIs, handle authentication and security, understand the async model deeply, write structured TypeScript backends, and ship services that go to production.",
+      "sortOrder": 3,
+      "isPublished": true
+    },
+    {
+      "jobRoleSlug": "full-stack-developer",
+      "title": "The Web Essentials",
+      "description": "You have the three pillars of the web working together. Clean HTML structure, styled with CSS, made interactive with JavaScript — you understand how they interconnect and can build real web pages from scratch.",
+      "sortOrder": 1,
+      "isPublished": true
+    },
+    {
+      "jobRoleSlug": "full-stack-developer",
+      "title": "JavaScript Programmer",
+      "description": "JavaScript runs everywhere in full-stack development — in the browser and on the server. You write proficient, modern JavaScript and are ready to use it across the entire application stack.",
+      "sortOrder": 2,
+      "isPublished": true
+    },
+    {
+      "jobRoleSlug": "full-stack-developer",
+      "title": "Full Stack JavaScript Developer",
+      "description": "You build complete web applications. Your JavaScript runs on both the browser and the server, you connect frontend to backend, handle data persistence, and understand the complete request-response lifecycle.",
+      "sortOrder": 3,
+      "isPublished": true
+    },
+    {
+      "jobRoleSlug": "full-stack-developer",
+      "title": "Certified Full Stack Developer",
+      "description": "You are a certified full stack developer. From database schema design to RESTful APIs to polished frontends — you deliver complete, production-ready web applications and own the full engineering process.",
+      "sortOrder": 4,
+      "isPublished": true
+    },
+    {
+      "jobRoleSlug": "java-springboot-developer",
+      "title": "Java Programmer",
+      "description": "Java is your language. You write object-oriented programs, understand classes, interfaces, inheritance, generics, collections, and the Java standard library. You solve problems with Java the way it was designed to be used.",
+      "sortOrder": 1,
+      "isPublished": true
+    },
+    {
+      "jobRoleSlug": "java-springboot-developer",
+      "title": "Java Developer",
+      "description": "You are an intermediate Java developer. Exception handling, multithreading, file I/O, advanced OOP design patterns, JVM internals, and the broader Java ecosystem are part of your professional toolkit.",
+      "sortOrder": 2,
+      "isPublished": true
+    },
+    {
+      "jobRoleSlug": "java-springboot-developer",
+      "title": "Java Backend Developer",
+      "description": "You build enterprise-grade Java backends. Spring Boot, RESTful API design, Spring Data JPA for database access, Spring Security for authentication and authorisation — you write Java applications that are ready for production at scale.",
+      "sortOrder": 3,
+      "isPublished": true
+    },
+    {
+      "jobRoleSlug": "java-springboot-developer",
+      "title": "Spring Boot Developer",
+      "description": "Spring Boot is your framework. You bootstrap production-ready applications with auto-configuration, build RESTful APIs with Spring MVC, validate request data, handle exceptions globally, and wire services together with dependency injection.",
+      "sortOrder": 4,
+      "isPublished": true
+    },
+    {
+      "jobRoleSlug": "java-springboot-developer",
+      "title": "Spring Boot Professional",
+      "description": "You ship complete Spring Boot applications. Spring Data JPA, Spring Security with JWT, testing with JUnit 5 and MockMvc, microservice patterns, Kubernetes deployment, and production-ready features — you own the full backend lifecycle.",
+      "sortOrder": 5,
+      "isPublished": true
+    },
+    {
+      "jobRoleSlug": "frontend-developer",
+      "title": "Tailwind Aware",
+      "description": "You know Tailwind. You understand the utility-first approach, can set up a project, apply core layout and spacing utilities, and build responsive interfaces without writing a line of custom CSS.",
+      "sortOrder": 5,
+      "isPublished": true
+    },
+    {
+      "jobRoleSlug": "frontend-developer",
+      "title": "Tailwind UI Developer",
+      "description": "Tailwind is your styling system. You compose interactive, dark-mode-ready UIs with state variants, a consistent typography system, and reusable component patterns — all without leaving your markup.",
+      "sortOrder": 6,
+      "isPublished": true
+    },
+    {
+      "jobRoleSlug": "web-developer",
+      "title": "Tailwind Aware",
+      "description": "You can build websites with Tailwind CSS. The utility-first model, responsive prefixes, and core layout classes are second nature — you ship styled, responsive pages faster than with any traditional stylesheet.",
+      "sortOrder": 5,
+      "isPublished": true
+    },
+    {
+      "jobRoleSlug": "web-developer",
+      "title": "Tailwind UI Developer",
+      "description": "You build complete, polished web UIs with Tailwind. State-driven styles, dark mode, typography tuning, and @apply-based component extraction — you use Tailwind at a professional, production level.",
+      "sortOrder": 6,
+      "isPublished": true
+    },
+    {
+      "jobRoleSlug": "react-developer",
+      "title": "Tailwind Aware",
+      "description": "You pair Tailwind with React effectively. Utility classes in JSX, responsive component design, and dark mode toggling via class strategy — you style React applications the modern, productive way.",
+      "sortOrder": 5,
+      "isPublished": true
+    },
+    {
+      "jobRoleSlug": "angular-developer",
+      "title": "Angular Beginner",
+      "description": "You build real Angular applications. Components, data binding, services, dependency injection, routing, forms, and HTTP — you understand the framework and can create functional apps from scratch.",
+      "sortOrder": 6,
+      "isPublished": true
+    },
+    {
+      "jobRoleSlug": "angular-developer",
+      "title": "Angular Intermediate Developer",
+      "description": "You write production-quality Angular. Custom directives, advanced forms, lazy loading, content projection, animations, NgRx, and Angular Signals — you build scalable, well-structured Angular applications.",
+      "sortOrder": 7,
+      "isPublished": true
+    },
+    {
+      "jobRoleSlug": "angular-developer",
+      "title": "Angular Pro Developer",
+      "description": "Angular is your expertise. SSR, performance optimisation, security, testing, dynamic components, PWA, i18n, CDK, and advanced RxJS — you architect Angular at enterprise scale.",
+      "sortOrder": 8,
+      "isPublished": true
+    },
+    {
+      "jobRoleSlug": "angular-developer",
+      "title": "Tailwind Aware",
+      "description": "You integrate Tailwind CSS with Angular projects. You configure Tailwind alongside Angular's style encapsulation and build responsive, utility-driven Angular component templates.",
+      "sortOrder": 5,
+      "isPublished": true
+    },
+    {
+      "jobRoleSlug": "full-stack-developer",
+      "title": "Tailwind Aware",
+      "description": "You use Tailwind across your full-stack projects. Fast, responsive, utility-first frontend styling is part of your complete application development workflow.",
+      "sortOrder": 5,
+      "isPublished": true
+    },
+    {
+      "jobRoleSlug": "devops-engineer",
+      "title": "Git Fluent",
+      "description": "Git is the gateway to DevOps. You use it like a professional — branching strategies, tagging releases, automation via hooks, resolving complex merge conflicts, and maintaining a clean, auditable repository history.",
+      "sortOrder": 1,
+      "isPublished": true
+    },
+    {
+      "jobRoleSlug": "devops-engineer",
+      "title": "Git Power User",
+      "description": "You push Git to its limits. Interactive rebasing, bisect, reflog, stash workflows, custom aliases, and repository automation — you are the person the team calls when Git gets complicated.",
+      "sortOrder": 2,
+      "isPublished": true
+    },
+    {
+      "jobRoleSlug": "devops-engineer",
+      "title": "DevOps Foundations",
+      "description": "You understand the engineering side of operations. From version control workflows and branching strategies to CI/CD pipeline concepts and infrastructure automation — you know how reliable software gets shipped.",
+      "sortOrder": 3,
+      "isPublished": true
+    },
+    {
+      "jobRoleSlug": "cloud-engineer",
+      "title": "Cloud Foundations",
+      "description": "You understand cloud concepts without being tied to a single vendor. You can design provider-neutral infrastructure using service models, networking, storage, security, and operational best practices.",
+      "sortOrder": 4,
+      "isPublished": true
+    },
+    {
+      "jobRoleSlug": "cloud-engineer",
+      "title": "Cloud Operations",
+      "description": "You can operate cloud systems reliably with CI/CD delivery, monitoring, cost control, and incident-aware practices that work across provider-agnostic environments.",
+      "sortOrder": 5,
+      "isPublished": true
+    },
+    {
+      "jobRoleSlug": "cloud-engineer",
+      "title": "Cloud Infrastructure Specialist",
+      "description": "You design and manage production-grade cloud platforms, with container orchestration, infrastructure as code, and resilient operational workflows.",
+      "sortOrder": 6,
+      "isPublished": true
+    }
+  ],
+  "certificationTrackSubjectTracks": [
+    {
+      "certTrackJobRoleSlug": "digital-literacy",
+      "certTrackTitle": "Computer Ready",
+      "subjectTrackSlug": "computer-basics"
+    },
+    {
+      "certTrackJobRoleSlug": "digital-literacy",
+      "certTrackTitle": "Digitally Connected",
+      "subjectTrackSlug": "computer-basics"
+    },
+    {
+      "certTrackJobRoleSlug": "digital-literacy",
+      "certTrackTitle": "Digitally Connected",
+      "subjectTrackSlug": "internet-essentials"
+    },
+    {
+      "certTrackJobRoleSlug": "office-professional",
+      "certTrackTitle": "Office Starter",
+      "subjectTrackSlug": "word-essentials"
+    },
+    {
+      "certTrackJobRoleSlug": "office-professional",
+      "certTrackTitle": "Office Starter",
+      "subjectTrackSlug": "excel-foundations"
+    },
+    {
+      "certTrackJobRoleSlug": "office-professional",
+      "certTrackTitle": "Office Proficient",
+      "subjectTrackSlug": "word-essentials"
+    },
+    {
+      "certTrackJobRoleSlug": "office-professional",
+      "certTrackTitle": "Office Proficient",
+      "subjectTrackSlug": "excel-foundations"
+    },
+    {
+      "certTrackJobRoleSlug": "office-professional",
+      "certTrackTitle": "Office Proficient",
+      "subjectTrackSlug": "excel-intermediate"
+    },
+    {
+      "certTrackJobRoleSlug": "office-professional",
+      "certTrackTitle": "Office Proficient",
+      "subjectTrackSlug": "powerpoint-skills"
+    },
+    {
+      "certTrackJobRoleSlug": "office-professional",
+      "certTrackTitle": "Data Entry Specialist",
+      "subjectTrackSlug": "typing-data-entry"
+    },
+    {
+      "certTrackJobRoleSlug": "office-professional",
+      "certTrackTitle": "Data Entry Specialist",
+      "subjectTrackSlug": "data-management-productivity"
+    },
+    {
+      "certTrackJobRoleSlug": "office-professional",
+      "certTrackTitle": "Data Entry Specialist",
+      "subjectTrackSlug": "excel-foundations"
+    },
+    {
+      "certTrackJobRoleSlug": "office-professional",
+      "certTrackTitle": "Digital Office Expert",
+      "subjectTrackSlug": "word-essentials"
+    },
+    {
+      "certTrackJobRoleSlug": "office-professional",
+      "certTrackTitle": "Digital Office Expert",
+      "subjectTrackSlug": "excel-foundations"
+    },
+    {
+      "certTrackJobRoleSlug": "office-professional",
+      "certTrackTitle": "Digital Office Expert",
+      "subjectTrackSlug": "internet-essentials"
+    },
+    {
+      "certTrackJobRoleSlug": "office-professional",
+      "certTrackTitle": "Digital Office Expert",
+      "subjectTrackSlug": "digital-safety-productivity"
+    },
+    {
+      "certTrackJobRoleSlug": "office-professional",
+      "certTrackTitle": "Digital Office Expert",
+      "subjectTrackSlug": "typing-data-entry"
+    },
+    {
+      "certTrackJobRoleSlug": "office-professional",
+      "certTrackTitle": "Computer Applications Professional",
+      "subjectTrackSlug": "computer-basics"
+    },
+    {
+      "certTrackJobRoleSlug": "office-professional",
+      "certTrackTitle": "Computer Applications Professional",
+      "subjectTrackSlug": "pc-operations-security"
+    },
+    {
+      "certTrackJobRoleSlug": "office-professional",
+      "certTrackTitle": "Computer Applications Professional",
+      "subjectTrackSlug": "internet-essentials"
+    },
+    {
+      "certTrackJobRoleSlug": "office-professional",
+      "certTrackTitle": "Computer Applications Professional",
+      "subjectTrackSlug": "digital-safety-productivity"
+    },
+    {
+      "certTrackJobRoleSlug": "office-professional",
+      "certTrackTitle": "Computer Applications Professional",
+      "subjectTrackSlug": "word-essentials"
+    },
+    {
+      "certTrackJobRoleSlug": "office-professional",
+      "certTrackTitle": "Computer Applications Professional",
+      "subjectTrackSlug": "excel-foundations"
+    },
+    {
+      "certTrackJobRoleSlug": "office-professional",
+      "certTrackTitle": "Computer Applications Professional",
+      "subjectTrackSlug": "excel-intermediate"
+    },
+    {
+      "certTrackJobRoleSlug": "office-professional",
+      "certTrackTitle": "Computer Applications Professional",
+      "subjectTrackSlug": "powerpoint-skills"
+    },
+    {
+      "certTrackJobRoleSlug": "office-professional",
+      "certTrackTitle": "Computer Applications Professional",
+      "subjectTrackSlug": "typing-data-entry"
+    },
+    {
+      "certTrackJobRoleSlug": "office-professional",
+      "certTrackTitle": "Computer Applications Professional",
+      "subjectTrackSlug": "data-management-productivity"
+    },
+    {
+      "certTrackJobRoleSlug": "programmer-1",
+      "certTrackTitle": "HTML Aware",
+      "subjectTrackSlug": "html-essentials"
+    },
+    {
+      "certTrackJobRoleSlug": "programmer-1",
+      "certTrackTitle": "CSS Aware",
+      "subjectTrackSlug": "css-foundations"
+    },
+    {
+      "certTrackJobRoleSlug": "programmer-1",
+      "certTrackTitle": "JavaScript Starter",
+      "subjectTrackSlug": "js-foundations"
+    },
+    {
+      "certTrackJobRoleSlug": "programmer-1",
+      "certTrackTitle": "Junior Web Programmer",
+      "subjectTrackSlug": "html-essentials"
+    },
+    {
+      "certTrackJobRoleSlug": "programmer-1",
+      "certTrackTitle": "Junior Web Programmer",
+      "subjectTrackSlug": "css-foundations"
+    },
+    {
+      "certTrackJobRoleSlug": "programmer-1",
+      "certTrackTitle": "Junior Web Programmer",
+      "subjectTrackSlug": "js-foundations"
+    },
+    {
+      "certTrackJobRoleSlug": "trainee-software-engineer",
+      "certTrackTitle": "HTML Aware",
+      "subjectTrackSlug": "html-essentials"
+    },
+    {
+      "certTrackJobRoleSlug": "trainee-software-engineer",
+      "certTrackTitle": "JavaScript Starter",
+      "subjectTrackSlug": "js-foundations"
+    },
+    {
+      "certTrackJobRoleSlug": "trainee-software-engineer",
+      "certTrackTitle": "Tech Foundations",
+      "subjectTrackSlug": "js-foundations"
+    },
+    {
+      "certTrackJobRoleSlug": "trainee-software-engineer",
+      "certTrackTitle": "Tech Foundations",
+      "subjectTrackSlug": "typescript-essentials"
+    },
+    {
+      "certTrackJobRoleSlug": "software-engineer",
+      "certTrackTitle": "JavaScript Programmer",
+      "subjectTrackSlug": "js-foundations"
+    },
+    {
+      "certTrackJobRoleSlug": "software-engineer",
+      "certTrackTitle": "JavaScript Programmer",
+      "subjectTrackSlug": "js-advanced"
+    },
+    {
+      "certTrackJobRoleSlug": "software-engineer",
+      "certTrackTitle": "Software Engineering Foundations",
+      "subjectTrackSlug": "js-foundations"
+    },
+    {
+      "certTrackJobRoleSlug": "software-engineer",
+      "certTrackTitle": "Software Engineering Foundations",
+      "subjectTrackSlug": "typescript-essentials"
+    },
+    {
+      "certTrackJobRoleSlug": "web-developer",
+      "certTrackTitle": "HTML Developer",
+      "subjectTrackSlug": "html-essentials"
+    },
+    {
+      "certTrackJobRoleSlug": "web-developer",
+      "certTrackTitle": "HTML Developer",
+      "subjectTrackSlug": "html-professional"
+    },
+    {
+      "certTrackJobRoleSlug": "web-developer",
+      "certTrackTitle": "CSS Stylist",
+      "subjectTrackSlug": "css-foundations"
+    },
+    {
+      "certTrackJobRoleSlug": "web-developer",
+      "certTrackTitle": "CSS Stylist",
+      "subjectTrackSlug": "responsive-ui"
+    },
+    {
+      "certTrackJobRoleSlug": "web-developer",
+      "certTrackTitle": "JavaScript Programmer",
+      "subjectTrackSlug": "js-foundations"
+    },
+    {
+      "certTrackJobRoleSlug": "web-developer",
+      "certTrackTitle": "JavaScript Programmer",
+      "subjectTrackSlug": "js-advanced"
+    },
+    {
+      "certTrackJobRoleSlug": "web-developer",
+      "certTrackTitle": "Certified Web Developer",
+      "subjectTrackSlug": "html-essentials"
+    },
+    {
+      "certTrackJobRoleSlug": "web-developer",
+      "certTrackTitle": "Certified Web Developer",
+      "subjectTrackSlug": "html-professional"
+    },
+    {
+      "certTrackJobRoleSlug": "web-developer",
+      "certTrackTitle": "Certified Web Developer",
+      "subjectTrackSlug": "css-foundations"
+    },
+    {
+      "certTrackJobRoleSlug": "web-developer",
+      "certTrackTitle": "Certified Web Developer",
+      "subjectTrackSlug": "responsive-ui"
+    },
+    {
+      "certTrackJobRoleSlug": "web-developer",
+      "certTrackTitle": "Certified Web Developer",
+      "subjectTrackSlug": "advanced-css"
+    },
+    {
+      "certTrackJobRoleSlug": "web-developer",
+      "certTrackTitle": "Certified Web Developer",
+      "subjectTrackSlug": "js-foundations"
+    },
+    {
+      "certTrackJobRoleSlug": "web-developer",
+      "certTrackTitle": "Certified Web Developer",
+      "subjectTrackSlug": "js-advanced"
+    },
+    {
+      "certTrackJobRoleSlug": "web-developer",
+      "certTrackTitle": "Tailwind Aware",
+      "subjectTrackSlug": "tailwind-foundations"
+    },
+    {
+      "certTrackJobRoleSlug": "web-developer",
+      "certTrackTitle": "Tailwind UI Developer",
+      "subjectTrackSlug": "tailwind-foundations"
+    },
+    {
+      "certTrackJobRoleSlug": "web-developer",
+      "certTrackTitle": "Tailwind UI Developer",
+      "subjectTrackSlug": "tailwind-ui-developer"
+    },
+    {
+      "certTrackJobRoleSlug": "web-developer",
+      "certTrackTitle": "Tailwind UI Developer",
+      "subjectTrackSlug": "tailwind-advanced"
+    },
+    {
+      "certTrackJobRoleSlug": "frontend-developer",
+      "certTrackTitle": "HTML Intermediate",
+      "subjectTrackSlug": "html-essentials"
+    },
+    {
+      "certTrackJobRoleSlug": "frontend-developer",
+      "certTrackTitle": "HTML Intermediate",
+      "subjectTrackSlug": "html-professional"
+    },
+    {
+      "certTrackJobRoleSlug": "frontend-developer",
+      "certTrackTitle": "CSS Intermediate",
+      "subjectTrackSlug": "css-foundations"
+    },
+    {
+      "certTrackJobRoleSlug": "frontend-developer",
+      "certTrackTitle": "CSS Intermediate",
+      "subjectTrackSlug": "responsive-ui"
+    },
+    {
+      "certTrackJobRoleSlug": "frontend-developer",
+      "certTrackTitle": "JavaScript Programmer",
+      "subjectTrackSlug": "js-foundations"
+    },
+    {
+      "certTrackJobRoleSlug": "frontend-developer",
+      "certTrackTitle": "JavaScript Programmer",
+      "subjectTrackSlug": "js-advanced"
+    },
+    {
+      "certTrackJobRoleSlug": "frontend-developer",
+      "certTrackTitle": "Expert UI Developer",
+      "subjectTrackSlug": "html-essentials"
+    },
+    {
+      "certTrackJobRoleSlug": "frontend-developer",
+      "certTrackTitle": "Expert UI Developer",
+      "subjectTrackSlug": "html-professional"
+    },
+    {
+      "certTrackJobRoleSlug": "frontend-developer",
+      "certTrackTitle": "Expert UI Developer",
+      "subjectTrackSlug": "css-foundations"
+    },
+    {
+      "certTrackJobRoleSlug": "frontend-developer",
+      "certTrackTitle": "Expert UI Developer",
+      "subjectTrackSlug": "responsive-ui"
+    },
+    {
+      "certTrackJobRoleSlug": "frontend-developer",
+      "certTrackTitle": "Expert UI Developer",
+      "subjectTrackSlug": "advanced-css"
+    },
+    {
+      "certTrackJobRoleSlug": "frontend-developer",
+      "certTrackTitle": "Expert UI Developer",
+      "subjectTrackSlug": "js-foundations"
+    },
+    {
+      "certTrackJobRoleSlug": "frontend-developer",
+      "certTrackTitle": "Expert UI Developer",
+      "subjectTrackSlug": "js-advanced"
+    },
+    {
+      "certTrackJobRoleSlug": "frontend-developer",
+      "certTrackTitle": "Tailwind Aware",
+      "subjectTrackSlug": "tailwind-foundations"
+    },
+    {
+      "certTrackJobRoleSlug": "frontend-developer",
+      "certTrackTitle": "Tailwind UI Developer",
+      "subjectTrackSlug": "tailwind-foundations"
+    },
+    {
+      "certTrackJobRoleSlug": "frontend-developer",
+      "certTrackTitle": "Tailwind UI Developer",
+      "subjectTrackSlug": "tailwind-ui-developer"
+    },
+    {
+      "certTrackJobRoleSlug": "frontend-developer",
+      "certTrackTitle": "Tailwind UI Developer",
+      "subjectTrackSlug": "tailwind-advanced"
+    },
+    {
+      "certTrackJobRoleSlug": "react-developer",
+      "certTrackTitle": "JavaScript Programmer",
+      "subjectTrackSlug": "js-foundations"
+    },
+    {
+      "certTrackJobRoleSlug": "react-developer",
+      "certTrackTitle": "JavaScript Programmer",
+      "subjectTrackSlug": "js-advanced"
+    },
+    {
+      "certTrackJobRoleSlug": "react-developer",
+      "certTrackTitle": "React Starter",
+      "subjectTrackSlug": "js-foundations"
+    },
+    {
+      "certTrackJobRoleSlug": "react-developer",
+      "certTrackTitle": "React Starter",
+      "subjectTrackSlug": "react-basics"
+    },
+    {
+      "certTrackJobRoleSlug": "react-developer",
+      "certTrackTitle": "React Developer",
+      "subjectTrackSlug": "js-foundations"
+    },
+    {
+      "certTrackJobRoleSlug": "react-developer",
+      "certTrackTitle": "React Developer",
+      "subjectTrackSlug": "js-advanced"
+    },
+    {
+      "certTrackJobRoleSlug": "react-developer",
+      "certTrackTitle": "React Developer",
+      "subjectTrackSlug": "typescript-essentials"
+    },
+    {
+      "certTrackJobRoleSlug": "react-developer",
+      "certTrackTitle": "React Developer",
+      "subjectTrackSlug": "react-basics"
+    },
+    {
+      "certTrackJobRoleSlug": "react-developer",
+      "certTrackTitle": "React Developer",
+      "subjectTrackSlug": "react-intermediate"
+    },
+    {
+      "certTrackJobRoleSlug": "react-developer",
+      "certTrackTitle": "React Expert",
+      "subjectTrackSlug": "js-foundations"
+    },
+    {
+      "certTrackJobRoleSlug": "react-developer",
+      "certTrackTitle": "React Expert",
+      "subjectTrackSlug": "js-advanced"
+    },
+    {
+      "certTrackJobRoleSlug": "react-developer",
+      "certTrackTitle": "React Expert",
+      "subjectTrackSlug": "typescript-essentials"
+    },
+    {
+      "certTrackJobRoleSlug": "react-developer",
+      "certTrackTitle": "React Expert",
+      "subjectTrackSlug": "advanced-type-system"
+    },
+    {
+      "certTrackJobRoleSlug": "react-developer",
+      "certTrackTitle": "React Expert",
+      "subjectTrackSlug": "typescript-at-scale"
+    },
+    {
+      "certTrackJobRoleSlug": "react-developer",
+      "certTrackTitle": "React Expert",
+      "subjectTrackSlug": "react-basics"
+    },
+    {
+      "certTrackJobRoleSlug": "react-developer",
+      "certTrackTitle": "React Expert",
+      "subjectTrackSlug": "react-intermediate"
+    },
+    {
+      "certTrackJobRoleSlug": "react-developer",
+      "certTrackTitle": "React Expert",
+      "subjectTrackSlug": "react-advanced"
+    },
+    {
+      "certTrackJobRoleSlug": "react-developer",
+      "certTrackTitle": "Tailwind Aware",
+      "subjectTrackSlug": "tailwind-foundations"
+    },
+    {
+      "certTrackJobRoleSlug": "angular-developer",
+      "certTrackTitle": "JavaScript Programmer",
+      "subjectTrackSlug": "js-foundations"
+    },
+    {
+      "certTrackJobRoleSlug": "angular-developer",
+      "certTrackTitle": "JavaScript Programmer",
+      "subjectTrackSlug": "js-advanced"
+    },
+    {
+      "certTrackJobRoleSlug": "angular-developer",
+      "certTrackTitle": "Angular Starter",
+      "subjectTrackSlug": "js-foundations"
+    },
+    {
+      "certTrackJobRoleSlug": "angular-developer",
+      "certTrackTitle": "Angular Starter",
+      "subjectTrackSlug": "typescript-essentials"
+    },
+    {
+      "certTrackJobRoleSlug": "angular-developer",
+      "certTrackTitle": "Angular Developer",
+      "subjectTrackSlug": "js-foundations"
+    },
+    {
+      "certTrackJobRoleSlug": "angular-developer",
+      "certTrackTitle": "Angular Developer",
+      "subjectTrackSlug": "js-advanced"
+    },
+    {
+      "certTrackJobRoleSlug": "angular-developer",
+      "certTrackTitle": "Angular Developer",
+      "subjectTrackSlug": "typescript-essentials"
+    },
+    {
+      "certTrackJobRoleSlug": "angular-developer",
+      "certTrackTitle": "Angular Expert",
+      "subjectTrackSlug": "js-foundations"
+    },
+    {
+      "certTrackJobRoleSlug": "angular-developer",
+      "certTrackTitle": "Angular Expert",
+      "subjectTrackSlug": "js-advanced"
+    },
+    {
+      "certTrackJobRoleSlug": "angular-developer",
+      "certTrackTitle": "Angular Expert",
+      "subjectTrackSlug": "typescript-essentials"
+    },
+    {
+      "certTrackJobRoleSlug": "angular-developer",
+      "certTrackTitle": "Angular Expert",
+      "subjectTrackSlug": "advanced-type-system"
+    },
+    {
+      "certTrackJobRoleSlug": "angular-developer",
+      "certTrackTitle": "Angular Expert",
+      "subjectTrackSlug": "typescript-at-scale"
+    },
+    {
+      "certTrackJobRoleSlug": "angular-developer",
+      "certTrackTitle": "Angular Expert",
+      "subjectTrackSlug": "ngrx-foundations"
+    },
+    {
+      "certTrackJobRoleSlug": "angular-developer",
+      "certTrackTitle": "Tailwind Aware",
+      "subjectTrackSlug": "tailwind-foundations"
+    },
+    {
+      "certTrackJobRoleSlug": "angular-developer",
+      "certTrackTitle": "Angular Beginner",
+      "subjectTrackSlug": "angular-foundations"
+    },
+    {
+      "certTrackJobRoleSlug": "angular-developer",
+      "certTrackTitle": "Angular Beginner",
+      "subjectTrackSlug": "angular-core-framework"
+    },
+    {
+      "certTrackJobRoleSlug": "angular-developer",
+      "certTrackTitle": "Angular Intermediate Developer",
+      "subjectTrackSlug": "angular-foundations"
+    },
+    {
+      "certTrackJobRoleSlug": "angular-developer",
+      "certTrackTitle": "Angular Intermediate Developer",
+      "subjectTrackSlug": "angular-core-framework"
+    },
+    {
+      "certTrackJobRoleSlug": "angular-developer",
+      "certTrackTitle": "Angular Intermediate Developer",
+      "subjectTrackSlug": "angular-component-patterns"
+    },
+    {
+      "certTrackJobRoleSlug": "angular-developer",
+      "certTrackTitle": "Angular Intermediate Developer",
+      "subjectTrackSlug": "angular-intermediate-developer"
+    },
+    {
+      "certTrackJobRoleSlug": "angular-developer",
+      "certTrackTitle": "Angular Pro Developer",
+      "subjectTrackSlug": "angular-foundations"
+    },
+    {
+      "certTrackJobRoleSlug": "angular-developer",
+      "certTrackTitle": "Angular Pro Developer",
+      "subjectTrackSlug": "angular-core-framework"
+    },
+    {
+      "certTrackJobRoleSlug": "angular-developer",
+      "certTrackTitle": "Angular Pro Developer",
+      "subjectTrackSlug": "angular-component-patterns"
+    },
+    {
+      "certTrackJobRoleSlug": "angular-developer",
+      "certTrackTitle": "Angular Pro Developer",
+      "subjectTrackSlug": "angular-intermediate-developer"
+    },
+    {
+      "certTrackJobRoleSlug": "angular-developer",
+      "certTrackTitle": "Angular Pro Developer",
+      "subjectTrackSlug": "advanced-angular"
+    },
+    {
+      "certTrackJobRoleSlug": "angular-developer",
+      "certTrackTitle": "Angular Pro Developer",
+      "subjectTrackSlug": "ngrx-foundations"
+    },
+    {
+      "certTrackJobRoleSlug": "angular-developer",
+      "certTrackTitle": "Angular Pro Developer",
+      "subjectTrackSlug": "effects-data-management"
+    },
+    {
+      "certTrackJobRoleSlug": "angular-developer",
+      "certTrackTitle": "Angular Pro Developer",
+      "subjectTrackSlug": "modern-state-patterns"
+    },
+    {
+      "certTrackJobRoleSlug": "angular-developer",
+      "certTrackTitle": "Angular Pro Developer",
+      "subjectTrackSlug": "nx-foundations"
+    },
+    {
+      "certTrackJobRoleSlug": "angular-developer",
+      "certTrackTitle": "Angular Pro Developer",
+      "subjectTrackSlug": "typescript-at-scale"
+    },
+    {
+      "certTrackJobRoleSlug": "nodejs-developer",
+      "certTrackTitle": "JavaScript Programmer",
+      "subjectTrackSlug": "js-foundations"
+    },
+    {
+      "certTrackJobRoleSlug": "nodejs-developer",
+      "certTrackTitle": "JavaScript Programmer",
+      "subjectTrackSlug": "js-advanced"
+    },
+    {
+      "certTrackJobRoleSlug": "nodejs-developer",
+      "certTrackTitle": "Node.js Developer",
+      "subjectTrackSlug": "js-foundations"
+    },
+    {
+      "certTrackJobRoleSlug": "nodejs-developer",
+      "certTrackTitle": "Node.js Developer",
+      "subjectTrackSlug": "js-advanced"
+    },
+    {
+      "certTrackJobRoleSlug": "nodejs-developer",
+      "certTrackTitle": "Node.js Developer",
+      "subjectTrackSlug": "nodejs-foundations"
+    },
+    {
+      "certTrackJobRoleSlug": "nodejs-developer",
+      "certTrackTitle": "Backend JavaScript Expert",
+      "subjectTrackSlug": "js-foundations"
+    },
+    {
+      "certTrackJobRoleSlug": "nodejs-developer",
+      "certTrackTitle": "Backend JavaScript Expert",
+      "subjectTrackSlug": "js-advanced"
+    },
+    {
+      "certTrackJobRoleSlug": "nodejs-developer",
+      "certTrackTitle": "Backend JavaScript Expert",
+      "subjectTrackSlug": "typescript-essentials"
+    },
+    {
+      "certTrackJobRoleSlug": "nodejs-developer",
+      "certTrackTitle": "Backend JavaScript Expert",
+      "subjectTrackSlug": "advanced-type-system"
+    },
+    {
+      "certTrackJobRoleSlug": "nodejs-developer",
+      "certTrackTitle": "Backend JavaScript Expert",
+      "subjectTrackSlug": "typescript-at-scale"
+    },
+    {
+      "certTrackJobRoleSlug": "nodejs-developer",
+      "certTrackTitle": "Backend JavaScript Expert",
+      "subjectTrackSlug": "nodejs-foundations"
+    },
+    {
+      "certTrackJobRoleSlug": "nodejs-developer",
+      "certTrackTitle": "Backend JavaScript Expert",
+      "subjectTrackSlug": "nodejs-professional"
+    },
+    {
+      "certTrackJobRoleSlug": "nodejs-developer",
+      "certTrackTitle": "Backend JavaScript Expert",
+      "subjectTrackSlug": "mongodb-fundamentals"
+    },
+    {
+      "certTrackJobRoleSlug": "nodejs-developer",
+      "certTrackTitle": "Backend JavaScript Expert",
+      "subjectTrackSlug": "mongodb-operations"
+    },
+    {
+      "certTrackJobRoleSlug": "full-stack-developer",
+      "certTrackTitle": "The Web Essentials",
+      "subjectTrackSlug": "js-foundations"
+    },
+    {
+      "certTrackJobRoleSlug": "full-stack-developer",
+      "certTrackTitle": "JavaScript Programmer",
+      "subjectTrackSlug": "js-foundations"
+    },
+    {
+      "certTrackJobRoleSlug": "full-stack-developer",
+      "certTrackTitle": "JavaScript Programmer",
+      "subjectTrackSlug": "js-advanced"
+    },
+    {
+      "certTrackJobRoleSlug": "full-stack-developer",
+      "certTrackTitle": "Full Stack JavaScript Developer",
+      "subjectTrackSlug": "js-foundations"
+    },
+    {
+      "certTrackJobRoleSlug": "full-stack-developer",
+      "certTrackTitle": "Full Stack JavaScript Developer",
+      "subjectTrackSlug": "js-advanced"
+    },
+    {
+      "certTrackJobRoleSlug": "full-stack-developer",
+      "certTrackTitle": "Full Stack JavaScript Developer",
+      "subjectTrackSlug": "typescript-essentials"
+    },
+    {
+      "certTrackJobRoleSlug": "full-stack-developer",
+      "certTrackTitle": "Certified Full Stack Developer",
+      "subjectTrackSlug": "js-foundations"
+    },
+    {
+      "certTrackJobRoleSlug": "full-stack-developer",
+      "certTrackTitle": "Certified Full Stack Developer",
+      "subjectTrackSlug": "js-advanced"
+    },
+    {
+      "certTrackJobRoleSlug": "full-stack-developer",
+      "certTrackTitle": "Certified Full Stack Developer",
+      "subjectTrackSlug": "typescript-essentials"
+    },
+    {
+      "certTrackJobRoleSlug": "full-stack-developer",
+      "certTrackTitle": "Certified Full Stack Developer",
+      "subjectTrackSlug": "advanced-type-system"
+    },
+    {
+      "certTrackJobRoleSlug": "full-stack-developer",
+      "certTrackTitle": "Tailwind Aware",
+      "subjectTrackSlug": "tailwind-foundations"
+    },
+    {
+      "certTrackJobRoleSlug": "java-springboot-developer",
+      "certTrackTitle": "Java Programmer",
+      "subjectTrackSlug": "java-foundations"
+    },
+    {
+      "certTrackJobRoleSlug": "java-springboot-developer",
+      "certTrackTitle": "Java Developer",
+      "subjectTrackSlug": "java-foundations"
+    },
+    {
+      "certTrackJobRoleSlug": "java-springboot-developer",
+      "certTrackTitle": "Java Developer",
+      "subjectTrackSlug": "java-intermediate"
+    },
+    {
+      "certTrackJobRoleSlug": "java-springboot-developer",
+      "certTrackTitle": "Java Backend Developer",
+      "subjectTrackSlug": "java-foundations"
+    },
+    {
+      "certTrackJobRoleSlug": "java-springboot-developer",
+      "certTrackTitle": "Java Backend Developer",
+      "subjectTrackSlug": "java-intermediate"
+    },
+    {
+      "certTrackJobRoleSlug": "java-springboot-developer",
+      "certTrackTitle": "Java Backend Developer",
+      "subjectTrackSlug": "java-professional"
+    },
+    {
+      "certTrackJobRoleSlug": "java-springboot-developer",
+      "certTrackTitle": "Java Backend Developer",
+      "subjectTrackSlug": "spring-boot-essentials"
+    },
+    {
+      "certTrackJobRoleSlug": "java-springboot-developer",
+      "certTrackTitle": "Java Backend Developer",
+      "subjectTrackSlug": "spring-boot-professional"
+    },
+    {
+      "certTrackJobRoleSlug": "java-springboot-developer",
+      "certTrackTitle": "Spring Boot Developer",
+      "subjectTrackSlug": "spring-boot-essentials"
+    },
+    {
+      "certTrackJobRoleSlug": "java-springboot-developer",
+      "certTrackTitle": "Spring Boot Professional",
+      "subjectTrackSlug": "spring-boot-essentials"
+    },
+    {
+      "certTrackJobRoleSlug": "java-springboot-developer",
+      "certTrackTitle": "Spring Boot Professional",
+      "subjectTrackSlug": "spring-boot-professional"
+    },
+    {
+      "certTrackJobRoleSlug": "cloud-engineer",
+      "certTrackTitle": "Cloud Foundations",
+      "subjectTrackSlug": "cloud-foundations"
+    },
+    {
+      "certTrackJobRoleSlug": "cloud-engineer",
+      "certTrackTitle": "Cloud Foundations",
+      "subjectTrackSlug": "git-foundations"
+    },
+    {
+      "certTrackJobRoleSlug": "cloud-engineer",
+      "certTrackTitle": "Cloud Foundations",
+      "subjectTrackSlug": "relational-db-foundations"
+    },
+    {
+      "certTrackJobRoleSlug": "cloud-engineer",
+      "certTrackTitle": "Cloud Operations",
+      "subjectTrackSlug": "cloud-operations"
+    },
+    {
+      "certTrackJobRoleSlug": "cloud-engineer",
+      "certTrackTitle": "Cloud Operations",
+      "subjectTrackSlug": "cicd-foundations"
+    },
+    {
+      "certTrackJobRoleSlug": "cloud-engineer",
+      "certTrackTitle": "Cloud Operations",
+      "subjectTrackSlug": "delivery-pipelines"
+    },
+    {
+      "certTrackJobRoleSlug": "cloud-engineer",
+      "certTrackTitle": "Cloud Operations",
+      "subjectTrackSlug": "observability-reliability"
+    },
+    {
+      "certTrackJobRoleSlug": "cloud-engineer",
+      "certTrackTitle": "Cloud Operations",
+      "subjectTrackSlug": "jenkins-basics"
+    },
+    {
+      "certTrackJobRoleSlug": "cloud-engineer",
+      "certTrackTitle": "Cloud Operations",
+      "subjectTrackSlug": "relational-db-operations"
+    },
+    {
+      "certTrackJobRoleSlug": "cloud-engineer",
+      "certTrackTitle": "Cloud Infrastructure Specialist",
+      "subjectTrackSlug": "devops-foundations"
+    },
+    {
+      "certTrackJobRoleSlug": "cloud-engineer",
+      "certTrackTitle": "Cloud Infrastructure Specialist",
+      "subjectTrackSlug": "docker-foundations"
+    },
+    {
+      "certTrackJobRoleSlug": "cloud-engineer",
+      "certTrackTitle": "Cloud Infrastructure Specialist",
+      "subjectTrackSlug": "docker-in-practice"
+    },
+    {
+      "certTrackJobRoleSlug": "cloud-engineer",
+      "certTrackTitle": "Cloud Infrastructure Specialist",
+      "subjectTrackSlug": "kubernetes-basics"
+    },
+    {
+      "certTrackJobRoleSlug": "cloud-engineer",
+      "certTrackTitle": "Cloud Infrastructure Specialist",
+      "subjectTrackSlug": "kubernetes-operations"
+    },
+    {
+      "certTrackJobRoleSlug": "cloud-engineer",
+      "certTrackTitle": "Cloud Infrastructure Specialist",
+      "subjectTrackSlug": "jenkins-advanced-operations"
+    },
+    {
+      "certTrackJobRoleSlug": "devops-engineer",
+      "certTrackTitle": "Git Fluent",
+      "subjectTrackSlug": "git-foundations"
+    },
+    {
+      "certTrackJobRoleSlug": "devops-engineer",
+      "certTrackTitle": "Git Power User",
+      "subjectTrackSlug": "git-foundations"
+    },
+    {
+      "certTrackJobRoleSlug": "devops-engineer",
+      "certTrackTitle": "Git Power User",
+      "subjectTrackSlug": "git-advanced"
+    },
+    {
+      "certTrackJobRoleSlug": "devops-engineer",
+      "certTrackTitle": "DevOps Foundations",
+      "subjectTrackSlug": "git-foundations"
+    },
+    {
+      "certTrackJobRoleSlug": "devops-engineer",
+      "certTrackTitle": "DevOps Foundations",
+      "subjectTrackSlug": "git-advanced"
+    },
+    {
+      "certTrackJobRoleSlug": "devops-engineer",
+      "certTrackTitle": "DevOps Foundations",
+      "subjectTrackSlug": "devops-foundations"
+    },
+    {
+      "certTrackJobRoleSlug": "devops-engineer",
+      "certTrackTitle": "DevOps Foundations",
+      "subjectTrackSlug": "observability-reliability"
+    },
+    {
+      "certTrackJobRoleSlug": "devops-engineer",
+      "certTrackTitle": "DevOps Foundations",
+      "subjectTrackSlug": "cicd-foundations"
+    },
+    {
+      "certTrackJobRoleSlug": "devops-engineer",
+      "certTrackTitle": "DevOps Foundations",
+      "subjectTrackSlug": "delivery-pipelines"
+    },
+    {
+      "certTrackJobRoleSlug": "devops-engineer",
+      "certTrackTitle": "DevOps Foundations",
+      "subjectTrackSlug": "jenkins-basics"
+    },
+    {
+      "certTrackJobRoleSlug": "trainee-software-engineer",
+      "certTrackTitle": "Git Fluent",
+      "subjectTrackSlug": "git-foundations"
+    },
+    {
+      "certTrackJobRoleSlug": "software-engineer",
+      "certTrackTitle": "Git Fluent",
+      "subjectTrackSlug": "git-foundations"
+    },
+    {
+      "certTrackJobRoleSlug": "software-engineer",
+      "certTrackTitle": "Git Fluent",
+      "subjectTrackSlug": "git-advanced"
+    }
+  ]
+}

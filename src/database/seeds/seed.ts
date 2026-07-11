@@ -1,21 +1,12 @@
-import { Subject } from 'src/common/typeorm/entities/subject.entity';
-import { SubjectTrack } from 'src/common/typeorm/entities/subject-track.entity';
-import { Topic } from 'src/common/typeorm/entities/topic.entity';
 import { AppDataSource } from '../data-source';
 import { seedPermissions } from './seeders/00-permission.seeder';
-import { seedJobRoles } from './seeders/02-job-role.seeder';
-import { seedSubjectTracks } from './seeders/04-subject-track.seeder';
-import { seedSubjectTrackTopics } from './seeders/05-subject-track-topic.seeder';
-import { seedJobRoleSubjects } from './seeders/06-job-role-subject.seeder';
-import { seedCertificationTracks } from './seeders/07-certification-track.seeder';
-import { seedCertificationTrackSubjectTracks } from './seeders/08-certification-track-subject-track.seeder';
+import { seedCore } from './seeders/01-core.seeder';
+import { seedCurriculum } from './seeders/02-curriculum.seeder';
+import { seedPrograms } from './seeders/03-programs.seeder';
+import { seedQuestions } from './seeders/04-question.seeder';
 
-// Subjects, JobRoles, and Topics already exist in the DB — we only seed new entities.
-// NOTE: SubjectTrack seeder matches subjects by slug. If your existing subjects have
-// different slugs than those defined in 04-subject-track.seeder.ts, update the
-// `subjectSlug` values there to match your DB.
-// Similarly update TRACK_TOPIC_MAP in 05-subject-track-topic.seeder.ts to use
-// your actual topic slugs.
+// Idempotent — every seeder matches by slug (or unique natural key) and skips
+// records that already exist, so this is safe to re-run against a seeded DB.
 
 async function main() {
   try {
@@ -25,23 +16,17 @@ async function main() {
     console.log('Syncing permissions...');
     await seedPermissions(AppDataSource);
 
-    console.log('Fetching existing data from DB...');
-    const subjects = await AppDataSource.getRepository(Subject).find();
-    const topics   = await AppDataSource.getRepository(Topic).find();
+    console.log('\nSeeding core (job roles, subjects)...');
+    const { jobRoles, subjects } = await seedCore(AppDataSource);
 
-    console.log('Seeding job roles...');
-    const jobRoles = await seedJobRoles(AppDataSource);
-    console.log(`  ${subjects.length} subjects | ${jobRoles.length} job roles | ${topics.length} topics\n`);
+    console.log('\nSeeding curriculum (topics, subject tracks)...');
+    const { topics, subjectTracks } = await seedCurriculum(AppDataSource, subjects);
 
-    console.log('Seeding new entities...');
-    await seedSubjectTracks(AppDataSource, subjects);
-    // Load ALL subject tracks from DB — includes tracks from import:curriculum (Tailwind, DCA, etc.)
-    const subjectTracks = await AppDataSource.getRepository(SubjectTrack).find();
-    await seedSubjectTrackTopics(AppDataSource, subjectTracks, topics);
-    await seedJobRoleSubjects(AppDataSource, jobRoles, subjects);
+    console.log('\nSeeding programs (job-role subjects, certification tracks)...');
+    await seedPrograms(AppDataSource, jobRoles, subjects, subjectTracks);
 
-    const certTracks = await seedCertificationTracks(AppDataSource, jobRoles);
-    await seedCertificationTrackSubjectTracks(AppDataSource, certTracks, subjectTracks);
+    console.log('\nSeeding questions...');
+    await seedQuestions(AppDataSource, subjects, topics);
 
     console.log('\nDone.');
   } catch (err) {
