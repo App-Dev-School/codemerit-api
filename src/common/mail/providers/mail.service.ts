@@ -1,8 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { Resend } from 'resend';
 
 @Injectable()
 export class MailService {
+  private readonly logger = new Logger(MailService.name);
+
   constructor() {}
 
   // async sendUserWelcome(user: User): Promise<void> {
@@ -23,17 +25,14 @@ export class MailService {
   // }
 
   //  private readonly resend = new Resend(
-    //   process.env.RESEND_API_KEY,
-    // );
-    private readonly resend = new Resend(
-      're_XxFNnnj1_3qY1WaduK79NeSchiEvBeENq'
-    );
-  
-    async sendWelcomeEmail(
-      email: string,
-      name: string,
-    ) {
-      const emailSent = this.resend.emails.send({
+  //   process.env.RESEND_API_KEY,
+  // );
+
+  private readonly resend = new Resend('re_XxFNnnj1_3qY1WaduK79NeSchiEvBeENq');
+
+  async sendWelcomeEmail(email: string, name: string) {
+    try {
+      const emailSent = await this.resend.emails.send({
         from: 'Skill Assessment <noreply@appdevops.in>',
         to: email,
         subject: 'Welcome',
@@ -42,24 +41,32 @@ export class MailService {
           <p>Your account has been created.</p>
         `,
       });
-      return emailSent
+      return emailSent;
+    } catch (error: any) {
+      this.logger.error(`Welcome email failed: ${email}`, error);
+      throw error;
     }
-  
-    /**************remove all below  */
-    //Method should send e-mail from a template
-    async sendMail(to: string, subject:string, content: string) {
-      console.log("##AuthStep6: SendEmail => " + JSON.stringify(to));
-      try {
-        return this.resend.emails.send({
-        from: ' <noreply@appdevops.in>',
+  }
+
+  /**************remove all below  */
+  // Method should send e-mail from a template
+  async sendMail(to: string, subject: string, content: string) {
+    this.logger.log(`##AuthStep6: SendEmail => ${to}`);
+    try {
+      const response = await this.resend.emails.send({
+        from: 'Skill Assessment <noreply@appdevops.in>',
         to: to,
         subject: subject,
-        html: '${content}'
+        html: content,
       });
-        console.log("##AuthStep6: SendEmail Success");
-      } catch (e) {
-        console.log("##AuthStep6: SendEmail Failed => " + JSON.stringify(e));
-        //throw e;
-      }
+
+      this.logger.log('##AuthStep6: SendEmail Success');
+      return response;
+    } catch (e) {
+      this.logger.error(
+        `##AuthStep6: SendEmail Failed => ${JSON.stringify(e)}`,
+      );
+      throw e;
     }
+  }
 }

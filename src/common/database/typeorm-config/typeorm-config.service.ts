@@ -1,3 +1,4 @@
+import { Activity } from 'src/common/typeorm/entities/activity.entity';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm';
@@ -83,6 +84,7 @@ export class TypeormConfigService implements TypeOrmOptionsFactory {
         UserPermission,
         ApiUsage,
         Notification,
+        Activity,
         SkillMetric,
         Interview,
         InterviewStatusHistory,

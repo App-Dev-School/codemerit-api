@@ -8,6 +8,7 @@ import { SkillRating } from 'src/common/typeorm/entities/skill-rating.entity';
 import { InterviewController } from './interview.controller';
 import { InterviewService } from './providers/interview.service';
 import { UsersModule } from 'src/core/users/users.module';
+import { ActivityModule } from '../activity/activity.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { UsersModule } from 'src/core/users/users.module';
       SkillRating,
     ]),
     UsersModule,
+    ActivityModule,
   ],
   controllers: [InterviewController],
   providers: [InterviewService],
