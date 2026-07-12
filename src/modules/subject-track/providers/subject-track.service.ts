@@ -3,8 +3,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { AppCustomException } from 'src/common/exceptions/app-custom-exception.filter';
 import { SubjectTrack } from 'src/common/typeorm/entities/subject-track.entity';
 import { SubjectTrackTopic } from 'src/common/typeorm/entities/subject-track-topic.entity';
+import { Topic } from 'src/common/typeorm/entities/topic.entity';
 import { generateSlug, generateUniqueSlug } from 'src/common/utils/slugify.util';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { CreateSubjectTrackDto } from '../dtos/create-subject-track.dto';
 import { LinkTopicsDto } from '../dtos/link-topics.dto';
 import { SubjectTrackResponseDto } from '../dtos/subject-track-response.dto';
@@ -17,6 +18,8 @@ export class SubjectTrackService {
     private trackRepo: Repository<SubjectTrack>,
     @InjectRepository(SubjectTrackTopic)
     private sttRepo: Repository<SubjectTrackTopic>,
+    @InjectRepository(Topic)
+    private topicRepo: Repository<Topic>,
   ) {}
 
   async create(dto: CreateSubjectTrackDto): Promise<SubjectTrackResponseDto> {
@@ -67,7 +70,23 @@ export class SubjectTrackService {
   }
 
   async linkTopics(id: number, dto: LinkTopicsDto): Promise<SubjectTrackResponseDto> {
-    await this.assertExists(id);
+    const track = await this.assertExists(id);
+
+    const topics = await this.topicRepo.find({ where: { id: In(dto.topicIds) } });
+    const topicById = new Map(topics.map((t) => [t.id, t]));
+    for (const topicId of dto.topicIds) {
+      const topic = topicById.get(topicId);
+      if (!topic) {
+        throw new AppCustomException(HttpStatus.NOT_FOUND, `Topic ID ${topicId} not found`);
+      }
+      if (topic.subjectId !== track.subjectId) {
+        throw new AppCustomException(
+          HttpStatus.BAD_REQUEST,
+          `Topic ID ${topicId} belongs to a different subject than this SubjectTrack`,
+        );
+      }
+    }
+
     for (const topicId of dto.topicIds) {
       const exists = await this.sttRepo.findOne({
         where: { subjectTrackId: id, topicId },
