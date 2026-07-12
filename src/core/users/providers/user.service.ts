@@ -82,6 +82,9 @@ export class UserService {
 
     try {
       const user = this.userRepo.create(data as Partial<User>);
+      if (data.dreamRole) {
+        user.designation = data.dreamRole;
+      }
       const pass = generate6DigitNumber();
       user.password = await bcrypt.hash(pass, 10);
       const fullname = user.firstName + ' ' + user.lastName;
@@ -117,6 +120,12 @@ export class UserService {
       if (data.about) {
         profile.about = data.about;
       }
+      if (data.subjectTrackId) {
+        profile.subjectTrackId = Number(data.subjectTrackId);
+      }
+      if (data.yearsExperience !== undefined && data.yearsExperience !== null) {
+        profile.experience = Number(data.yearsExperience);
+      }
       if (data.linkedinUrl) {
         profile.linkedinUrl = data.linkedinUrl;
       }
@@ -128,6 +137,25 @@ export class UserService {
       }
       profile.auth_provider = 'Native';
       await queryRunner.manager.save(profile);
+
+      const jobRoleId = Number(data.techRoleId || data.jobRoleId);
+      if (jobRoleId) {
+        const jobRole = await queryRunner.manager.findOne(JobRole, {
+          where: { id: jobRoleId },
+        });
+
+        if (!jobRole) {
+          throw new AppCustomException(HttpStatus.NOT_FOUND, 'Job role not found.');
+        }
+
+        const userJobRole = queryRunner.manager.create(UserJobRole, {
+          userId: savedUser.id,
+          jobRoleId,
+          createdBy: savedUser.id,
+        });
+        await queryRunner.manager.save(UserJobRole, userJobRole);
+      }
+
       await queryRunner.commitTransaction();
       //save otp
       try {
