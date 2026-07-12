@@ -1,0 +1,187 @@
+[
+  {
+    "slug": "js-modern-es6-essentials",
+    "title": "Modern JavaScript (ES6+) Essentials",
+    "subjectSlug": "javascript",
+    "topicSlug": "modern-javascript-es6-essentials",
+    "level": 2,
+    "sections": [
+      {
+        "title": "Why ES6+ Matters",
+        "description": "<p>ES6 (2015) and later versions introduced syntax that makes JavaScript shorter, safer, and easier to reason about. You will see these patterns in almost every modern codebase, so treat them as the default way to write JS, not an optional extra.</p>"
+      },
+      {
+        "title": "Destructuring & Spread",
+        "description": "<p>Pull values out of arrays/objects in one line, and copy or merge them without mutating the original.</p><pre><code>const user = { name: 'Ana', age: 28, role: 'admin' };\nconst { name, ...rest } = user;\n\nconst numbers = [1, 2, 3];\nconst copy = [...numbers, 4]; // [1, 2, 3, 4] — numbers is untouched</code></pre>"
+      },
+      {
+        "title": "Arrow Functions & Template Literals",
+        "description": "<p>Arrow functions inherit <code>this</code> from their surrounding scope instead of rebinding it — this is why they are preferred for callbacks. Template literals let you interpolate expressions directly into strings.</p><pre><code>const greet = (name) => `Hello, ${name}!`;\n\nclass Timer {\n  constructor() { this.seconds = 0; }\n  start() {\n    setInterval(() => { this.seconds++; }, 1000); // \"this\" still refers to Timer\n  }\n}</code></pre>"
+      }
+    ]
+  },
+  {
+    "slug": "js-working-with-the-dom",
+    "title": "Working with the DOM",
+    "subjectSlug": "javascript",
+    "topicSlug": "working-with-dom",
+    "level": 1,
+    "sections": [
+      {
+        "title": "Selecting Elements",
+        "description": "<p><code>document.querySelector</code> and <code>querySelectorAll</code> accept any CSS selector, so you rarely need the older <code>getElementById</code>/<code>getElementsByClassName</code> APIs.</p><pre><code>const card = document.querySelector('.card');\nconst buttons = document.querySelectorAll('button.primary');</code></pre>"
+      },
+      {
+        "title": "Updating Content & Attributes",
+        "description": "<p>Prefer <code>textContent</code> over <code>innerHTML</code> when inserting plain text — it is faster and avoids accidental HTML/script injection.</p><pre><code>card.textContent = 'Updated title';\ncard.setAttribute('data-state', 'active');\ncard.classList.toggle('is-open');</code></pre>"
+      },
+      {
+        "title": "Creating & Inserting Nodes",
+        "description": "<p>Build elements in memory before attaching them to the page — this avoids multiple expensive reflows.</p><pre><code>const li = document.createElement('li');\nli.textContent = 'New item';\ndocument.querySelector('ul').appendChild(li);</code></pre>"
+      }
+    ]
+  },
+  {
+    "slug": "js-basic-error-handling",
+    "title": "Basic Error Handling",
+    "subjectSlug": "javascript",
+    "topicSlug": "basic-error-handling",
+    "level": 2,
+    "sections": [
+      {
+        "title": "try / catch / finally",
+        "description": "<p>Wrap code that can fail in <code>try</code>, handle the failure in <code>catch</code>, and use <code>finally</code> for cleanup that must run either way.</p><pre><code>try {\n  const data = JSON.parse(rawInput);\n  process(data);\n} catch (err) {\n  console.error('Invalid JSON:', err.message);\n} finally {\n  hideLoadingSpinner();\n}</code></pre>"
+      },
+      {
+        "title": "Throwing Custom Errors",
+        "description": "<p>Throw an <code>Error</code> (or a subclass of it) rather than a plain string — it carries a stack trace and a consistent <code>.message</code> shape.</p><pre><code>class ValidationError extends Error {\n  constructor(field) {\n    super(`Invalid value for field: ${field}`);\n    this.name = 'ValidationError';\n  }\n}\n\nif (!email.includes('@')) throw new ValidationError('email');</code></pre>"
+      },
+      {
+        "title": "Handling Async Errors",
+        "description": "<p><code>try/catch</code> works with <code>await</code> directly — no <code>.catch()</code> chaining needed.</p><pre><code>async function loadUser(id) {\n  try {\n    const res = await fetch(`/api/users/${id}`);\n    if (!res.ok) throw new Error(`Request failed: ${res.status}`);\n    return await res.json();\n  } catch (err) {\n    console.error('Failed to load user', err);\n    return null;\n  }\n}</code></pre>"
+      }
+    ]
+  },
+  {
+    "slug": "react-components-and-props",
+    "title": "Components and Props",
+    "subjectSlug": "react",
+    "topicSlug": "components-and-props",
+    "level": 1,
+    "sections": [
+      {
+        "title": "Function Components",
+        "description": "<p>A React component is just a function that returns JSX. Props are the read-only arguments passed in from the parent.</p><pre><code>function UserCard({ name, role }) {\n  return (\n    &lt;div className=\"rounded-lg border p-4\"&gt;\n      &lt;h3 className=\"font-semibold\"&gt;{name}&lt;/h3&gt;\n      &lt;p className=\"text-sm text-gray-500\"&gt;{role}&lt;/p&gt;\n    &lt;/div&gt;\n  );\n}</code></pre>"
+      },
+      {
+        "title": "Props Are Read-Only",
+        "description": "<p>Never mutate a prop inside the component that receives it — treat it the same way you would treat a function argument in any pure function. If the UI needs to change, that change should come from the parent re-rendering with new props, or from local state.</p><pre><code>// Wrong — mutating a prop directly\nfunction Bad({ items }) {\n  items.push('new'); // mutates the parent's array\n  return &lt;List items={items} /&gt;;\n}\n\n// Right — derive a new array instead\nfunction Good({ items }) {\n  const withExtra = [...items, 'new'];\n  return &lt;List items={withExtra} /&gt;;\n}</code></pre>"
+      },
+      {
+        "title": "Composing Components",
+        "description": "<p>Break UI into small components and compose them via <code>children</code> or nested JSX — this keeps each piece focused and reusable.</p><pre><code>function Panel({ title, children }) {\n  return (\n    &lt;section className=\"rounded-lg shadow p-4\"&gt;\n      &lt;h2&gt;{title}&lt;/h2&gt;\n      {children}\n    &lt;/section&gt;\n  );\n}\n\n&lt;Panel title=\"Profile\"&gt;\n  &lt;UserCard name=\"Ana\" role=\"Admin\" /&gt;\n&lt;/Panel&gt;</code></pre>"
+      }
+    ]
+  },
+  {
+    "slug": "react-hooks-deep-dive",
+    "title": "React Hooks Deep Dive",
+    "subjectSlug": "react",
+    "topicSlug": "react-hooks-deep-dive",
+    "level": 2,
+    "sections": [
+      {
+        "title": "useState",
+        "description": "<p>Calling the state setter schedules a re-render with the new value — it does not mutate the variable in place. When the next state depends on the previous one, pass a function to avoid stale-closure bugs.</p><pre><code>const [count, setCount] = useState(0);\n\n// Safe under rapid clicks — always reads the latest state\nsetCount((prev) => prev + 1);</code></pre>"
+      },
+      {
+        "title": "useEffect",
+        "description": "<p>The dependency array controls when the effect re-runs. An empty array means \"run once on mount.\" Always return a cleanup function for subscriptions, timers, or listeners.</p><pre><code>useEffect(() => {\n  const id = setInterval(() => setTick((t) => t + 1), 1000);\n  return () => clearInterval(id); // cleanup on unmount\n}, []);</code></pre>"
+      },
+      {
+        "title": "useMemo & useCallback",
+        "description": "<p>Both hooks skip recomputing a value/function unless their dependencies change — use them for expensive calculations or to keep a stable reference passed into a memoized child component.</p><pre><code>const sorted = useMemo(\n  () => items.slice().sort((a, b) => a.price - b.price),\n  [items],\n);\n\nconst handleClick = useCallback(() => {\n  onSelect(item.id);\n}, [item.id, onSelect]);</code></pre>"
+      }
+    ]
+  },
+  {
+    "slug": "react-custom-hooks",
+    "title": "Custom Hooks",
+    "subjectSlug": "react",
+    "topicSlug": "custom-hooks",
+    "level": 2,
+    "sections": [
+      {
+        "title": "What Makes a Hook Custom",
+        "description": "<p>A custom hook is just a function whose name starts with <code>use</code> and that calls other hooks internally. It lets you extract and reuse stateful logic across components without changing your component tree.</p>"
+      },
+      {
+        "title": "Example: useLocalStorage",
+        "description": "<pre><code>function useLocalStorage(key, initialValue) {\n  const [value, setValue] = useState(() => {\n    const stored = localStorage.getItem(key);\n    return stored ? JSON.parse(stored) : initialValue;\n  });\n\n  useEffect(() => {\n    localStorage.setItem(key, JSON.stringify(value));\n  }, [key, value]);\n\n  return [value, setValue];\n}</code></pre>"
+      },
+      {
+        "title": "Using It",
+        "description": "<p>The consuming component uses it exactly like <code>useState</code> — the persistence logic is completely hidden.</p><pre><code>function ThemeToggle() {\n  const [theme, setTheme] = useLocalStorage('theme', 'light');\n  return (\n    &lt;button onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}&gt;\n      {theme}\n    &lt;/button&gt;\n  );\n}</code></pre>"
+      }
+    ]
+  },
+  {
+    "slug": "git-fundamentals",
+    "title": "Git Fundamentals",
+    "subjectSlug": "git",
+    "topicSlug": "git-fundamentals",
+    "level": 1,
+    "sections": [
+      {
+        "title": "The Three States",
+        "description": "<p>Git tracks files through three states: <strong>working directory</strong> (your edits), <strong>staging area</strong> (changes marked for the next commit), and the <strong>repository</strong> (committed history).</p><pre><code>git status          # see what changed and where\ngit add file.js      # working directory → staging area\ngit commit -m \"msg\"  # staging area → repository</code></pre>"
+      },
+      {
+        "title": "Reading History",
+        "description": "<p>Every commit has a hash, author, and message — this is what lets you inspect, diff, and revert to any past state.</p><pre><code>git log --oneline --graph\ngit show &lt;commit-hash&gt;\ngit diff HEAD~1 HEAD</code></pre>"
+      }
+    ]
+  },
+  {
+    "slug": "git-branching-and-merging",
+    "title": "Branching & Merging",
+    "subjectSlug": "git",
+    "topicSlug": "branching-merging",
+    "level": 1,
+    "sections": [
+      {
+        "title": "Creating & Switching Branches",
+        "description": "<p>A branch is just a movable pointer to a commit — creating one is instant and cheap, so branch freely for any change of scope.</p><pre><code>git branch feature/login       # create\ngit switch feature/login       # switch\ngit switch -c feature/signup   # create + switch in one step</code></pre>"
+      },
+      {
+        "title": "Merging",
+        "description": "<p>A <strong>fast-forward</strong> merge just moves the branch pointer forward when there is no divergent history. A <strong>three-way merge</strong> creates a new commit that joins two diverged histories.</p><pre><code>git switch main\ngit merge feature/login\n\n# if conflicts appear, Git marks them inline:\n# &lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD\n# your change\n# =======\n# their change\n# &gt;&gt;&gt;&gt;&gt;&gt;&gt; feature/login</code></pre>"
+      },
+      {
+        "title": "Deleting a Merged Branch",
+        "description": "<p>Once a branch is merged, it has served its purpose — delete it to keep the branch list meaningful.</p><pre><code>git branch -d feature/login   # safe delete — refuses if not merged\ngit branch -D feature/login   # force delete</code></pre>"
+      }
+    ]
+  },
+  {
+    "slug": "git-rebasing-and-interactive-rebase",
+    "title": "Rebasing and Interactive Rebase",
+    "subjectSlug": "git",
+    "topicSlug": "rebasing-and-interactive-rebase",
+    "level": 3,
+    "sections": [
+      {
+        "title": "Rebase vs Merge",
+        "description": "<p>Rebasing replays your commits on top of another branch's latest state instead of creating a merge commit — the result is a linear history, at the cost of rewriting commit hashes. Never rebase commits that have already been pushed and shared with others.</p><pre><code>git switch feature/login\ngit rebase main</code></pre>"
+      },
+      {
+        "title": "Interactive Rebase",
+        "description": "<p>Interactive rebase lets you edit, reorder, squash, or drop commits before they are shared — useful for cleaning up a messy branch into a small number of meaningful commits.</p><pre><code>git rebase -i HEAD~4\n\n# opens an editor:\npick a1b2c3d Add login form\nsquash e4f5g6h Fix typo\nsquash h7i8j9k Fix another typo\npick k1l2m3n Add validation</code></pre>"
+      },
+      {
+        "title": "Recovering From a Bad Rebase",
+        "description": "<p><code>git reflog</code> records every position <code>HEAD</code> has been at — it is your safety net if a rebase goes wrong.</p><pre><code>git reflog\ngit reset --hard HEAD@{3}   # restore to the state before the rebase</code></pre>"
+      }
+    ]
+  }
+]

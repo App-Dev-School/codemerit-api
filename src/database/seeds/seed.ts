@@ -4,6 +4,7 @@ import { seedCore } from './seeders/01-core.seeder';
 import { seedCurriculum } from './seeders/02-curriculum.seeder';
 import { seedPrograms } from './seeders/03-programs.seeder';
 import { seedQuestions } from './seeders/04-question.seeder';
+import { seedLessons } from './seeders/05-lesson.seeder';
 
 // Idempotent — every seeder matches by slug (or unique natural key) and skips
 // records that already exist, so this is safe to re-run against a seeded DB.
@@ -27,6 +28,9 @@ async function main() {
 
     console.log('\nSeeding questions...');
     await seedQuestions(AppDataSource, subjects, topics);
+
+    console.log('\nSeeding lessons...');
+    await seedLessons(AppDataSource, subjects, topics);
 
     console.log('\nDone.');
   } catch (err) {
