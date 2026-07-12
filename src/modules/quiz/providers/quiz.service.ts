@@ -11,6 +11,7 @@ import { Quiz } from 'src/common/typeorm/entities/quiz.entity';
 import { QuizSettings } from 'src/common/typeorm/entities/quiz-settings.entity';
 import { QuizTypeEnum } from 'src/common/enum/quiz-type.enum';
 import { Subject } from 'src/common/typeorm/entities/subject.entity';
+import { MailService } from 'src/common/mail/providers/mail.service';
 
 import {
   generate6DigitNumber,
@@ -58,6 +59,7 @@ export class QuizService {
     private readonly notificationService: NotificationService,
     private readonly dataSource: DataSource,
     private readonly activityService: ActivityService,
+    private readonly mailService: MailService,
   ) {}
 
   async fetchQuizBySlug(slug: string): Promise<any> {
@@ -390,12 +392,20 @@ export class QuizService {
         //Send a temp mail
         console.log('QuizBuilder sending email');
         try {
-        this.mailService.sendMail('javacheartofmine@gmail.com', "Quiz Attempted from CodeMerit", "Quiz Attempted by userId: "+submitQuizDto?.userId+" with score: "+submitQuizDto?.score);
-      } catch (error) {
-        console.log('CMRegistration Error sending e-mail2 => ', error);
-      }
+          this.mailService.sendMail(
+            'javacheartofmine@gmail.com',
+            'Quiz Attempted from CodeMerit',
+            'Quiz Attempted by userId: ' +
+              submitQuizDto?.userId +
+              ' with score: ' +
+              submitQuizDto?.score,
+          );
+        } catch (error) {
+          console.log('CMRegistration Error sending e-mail2 => ', error);
+        }
 
-      return questionResult;
+        return questionResult;
+      }
     } catch (error) {
       console.log('QuizBuilder #6: Exception', error);
       throw new AppCustomException(
