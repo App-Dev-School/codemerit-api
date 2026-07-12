@@ -28,6 +28,8 @@ The seeder is the **authoritative source of truth** — it fully reproduces the 
 4. Programs          — job-role↔subject links + certification tracks + cert↔track links (03-programs.seeder.ts ← data/03-programs.seed.json)
         ↓
 5. Questions         — questions + options + topic links, upserted by slug (04-question.seeder.ts ← data/04-questions.seed.json)
+        ↓
+6. Lessons           — lessons + sections, upserted by slug (05-lesson.seeder.ts ← data/05-lessons.seed.json)
 ```
 
 Every step matches by a natural key (slug, or a unique composite key for join tables) and **skips** records that already exist — nothing is ever cleared or overwritten. Running `npm run seed` twice in a row is a no-op the second time.
@@ -65,13 +67,15 @@ src/database/
     │   ├── 01-core.seed.json           Job roles, subjects
     │   ├── 02-curriculum.seed.json     Topics, subject tracks, track↔topic links
     │   ├── 03-programs.seed.json       Job-role↔subject links, certification tracks, cert↔track links
-    │   └── 04-questions.seed.json      Questions, options, topic links
+    │   ├── 04-questions.seed.json      Questions, options, topic links
+    │   └── 05-lessons.seed.json        Lessons + rich-text sections (slider notes)
     └── seeders/
         ├── 00-permission.seeder.ts     Code-driven from UserPermissionEnum (not from a JSON snapshot)
         ├── 01-core.seeder.ts
         ├── 02-curriculum.seeder.ts
         ├── 03-programs.seeder.ts
-        └── 04-question.seeder.ts
+        ├── 04-question.seeder.ts
+        └── 05-lesson.seeder.ts
 ```
 
 ---
@@ -89,6 +93,13 @@ src/database/
 | CertificationTrack | `(jobRoleId, title)` |
 | CertificationTrackSubjectTrack | `(certificationTrackId, subjectTrackId)` |
 | Question | `slug` (global unique, max 48 chars) |
+| Lesson | `slug` (global unique) |
+
+### Lessons
+
+A `Lesson` is a short slider of concise notes about one subject/topic — each `LessonSection.description` is rendered as raw HTML client-side (no markdown parsing), so use `<p>`, `<code>`, `<pre><code>...</code></pre>` for code snippets, etc. directly. `Lesson.userId` (author) is required and not nullable; the seeder resolves it at seed time by looking up a user with `role='Admin'` rather than hardcoding an id — if no Admin user exists yet, lesson seeding is skipped with a warning (everything else still seeds).
+
+The current `05-lessons.seed.json` is a starter set (3 lessons each for JavaScript, React, and Git) meant as a content template — add more entries in the same shape (`slug`, `title`, `subjectSlug`, `topicSlug`, `level`, `sections: [{ title, description }]`) to expand coverage, or author lessons via the `POST /apis/lesson/create` API and pull them into the snapshot with `npm run seed:snapshot`.
 
 ### Credentials & environment
 

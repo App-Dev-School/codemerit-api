@@ -1921,27 +1921,6 @@
       "isPublished": true
     },
     {
-      "jobRoleSlug": "angular-developer",
-      "title": "Angular Starter",
-      "description": "You have taken your first real steps in Angular. You understand how Angular applications are structured, build components with templates, use property and event binding, and navigate between routes.",
-      "sortOrder": 2,
-      "isPublished": true
-    },
-    {
-      "jobRoleSlug": "angular-developer",
-      "title": "Angular Developer",
-      "description": "Angular is your framework. You build modular applications with components, injectable services, reactive forms, HTTP client integration, and clean routing architectures. You are productive in the Angular ecosystem.",
-      "sortOrder": 3,
-      "isPublished": true
-    },
-    {
-      "jobRoleSlug": "angular-developer",
-      "title": "Angular Expert",
-      "description": "You architect Angular applications at scale. Change detection strategies, lazy loading, custom directives, advanced RxJS patterns, performance optimisation, and NgRx state management — Angular holds no secrets from you.",
-      "sortOrder": 4,
-      "isPublished": true
-    },
-    {
       "jobRoleSlug": "nodejs-developer",
       "title": "JavaScript Programmer",
       "description": "Node.js is JavaScript on the server — and your JavaScript is solid. Closures, async/await, Promises, modules, and the event-driven model are things you understand deeply, not just use.",
@@ -2064,21 +2043,21 @@
       "jobRoleSlug": "angular-developer",
       "title": "Angular Beginner",
       "description": "You build real Angular applications. Components, data binding, services, dependency injection, routing, forms, and HTTP — you understand the framework and can create functional apps from scratch.",
-      "sortOrder": 6,
+      "sortOrder": 2,
       "isPublished": true
     },
     {
       "jobRoleSlug": "angular-developer",
       "title": "Angular Intermediate Developer",
       "description": "You write production-quality Angular. Custom directives, advanced forms, lazy loading, content projection, animations, NgRx, and Angular Signals — you build scalable, well-structured Angular applications.",
-      "sortOrder": 7,
+      "sortOrder": 3,
       "isPublished": true
     },
     {
       "jobRoleSlug": "angular-developer",
       "title": "Angular Pro Developer",
       "description": "Angular is your expertise. SSR, performance optimisation, security, testing, dynamic components, PWA, i18n, CDK, and advanced RxJS — you architect Angular at enterprise scale.",
-      "sortOrder": 8,
+      "sortOrder": 4,
       "isPublished": true
     },
     {
@@ -2120,21 +2099,21 @@
       "jobRoleSlug": "cloud-engineer",
       "title": "Cloud Foundations",
       "description": "You understand cloud concepts without being tied to a single vendor. You can design provider-neutral infrastructure using service models, networking, storage, security, and operational best practices.",
-      "sortOrder": 4,
+      "sortOrder": 1,
       "isPublished": true
     },
     {
       "jobRoleSlug": "cloud-engineer",
       "title": "Cloud Operations",
       "description": "You can operate cloud systems reliably with CI/CD delivery, monitoring, cost control, and incident-aware practices that work across provider-agnostic environments.",
-      "sortOrder": 5,
+      "sortOrder": 2,
       "isPublished": true
     },
     {
       "jobRoleSlug": "cloud-engineer",
       "title": "Cloud Infrastructure Specialist",
       "description": "You design and manage production-grade cloud platforms, with container orchestration, infrastructure as code, and resilient operational workflows.",
-      "sortOrder": 6,
+      "sortOrder": 3,
       "isPublished": true
     }
   ],
@@ -2613,61 +2592,6 @@
       "certTrackJobRoleSlug": "angular-developer",
       "certTrackTitle": "JavaScript Programmer",
       "subjectTrackSlug": "js-advanced"
-    },
-    {
-      "certTrackJobRoleSlug": "angular-developer",
-      "certTrackTitle": "Angular Starter",
-      "subjectTrackSlug": "js-foundations"
-    },
-    {
-      "certTrackJobRoleSlug": "angular-developer",
-      "certTrackTitle": "Angular Starter",
-      "subjectTrackSlug": "typescript-essentials"
-    },
-    {
-      "certTrackJobRoleSlug": "angular-developer",
-      "certTrackTitle": "Angular Developer",
-      "subjectTrackSlug": "js-foundations"
-    },
-    {
-      "certTrackJobRoleSlug": "angular-developer",
-      "certTrackTitle": "Angular Developer",
-      "subjectTrackSlug": "js-advanced"
-    },
-    {
-      "certTrackJobRoleSlug": "angular-developer",
-      "certTrackTitle": "Angular Developer",
-      "subjectTrackSlug": "typescript-essentials"
-    },
-    {
-      "certTrackJobRoleSlug": "angular-developer",
-      "certTrackTitle": "Angular Expert",
-      "subjectTrackSlug": "js-foundations"
-    },
-    {
-      "certTrackJobRoleSlug": "angular-developer",
-      "certTrackTitle": "Angular Expert",
-      "subjectTrackSlug": "js-advanced"
-    },
-    {
-      "certTrackJobRoleSlug": "angular-developer",
-      "certTrackTitle": "Angular Expert",
-      "subjectTrackSlug": "typescript-essentials"
-    },
-    {
-      "certTrackJobRoleSlug": "angular-developer",
-      "certTrackTitle": "Angular Expert",
-      "subjectTrackSlug": "advanced-type-system"
-    },
-    {
-      "certTrackJobRoleSlug": "angular-developer",
-      "certTrackTitle": "Angular Expert",
-      "subjectTrackSlug": "typescript-at-scale"
-    },
-    {
-      "certTrackJobRoleSlug": "angular-developer",
-      "certTrackTitle": "Angular Expert",
-      "subjectTrackSlug": "ngrx-foundations"
     },
     {
       "certTrackJobRoleSlug": "angular-developer",
