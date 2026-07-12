@@ -10,5 +10,7 @@ export interface IProfile {
   takenInterview?: boolean;
   level1Assessment?: boolean;
   level2Assessment?: boolean;
+  experience?: number;
+  subjectTrackId?: number;
   userId: number;
 }

@@ -1,5 +1,6 @@
-import { Entity, Column, JoinColumn, OneToOne } from 'typeorm';
+import { Entity, Column, JoinColumn, OneToOne, ManyToOne } from 'typeorm';
 import { User } from './user.entity';
+import { SubjectTrack } from './subject-track.entity';
 import { AbstractEntity } from './abstract.entity';
 import { IProfile } from '../interface/profile.interface';
 
@@ -74,6 +75,25 @@ export class Profile extends AbstractEntity implements IProfile {
     default: false,
   })
   level2Assessment: boolean;
+
+  @Column({
+    type: 'int',
+    nullable: true,
+    default: null,
+  })
+  experience: number;
+
+  @Column({
+    type: 'int',
+    nullable: true,
+    default: null,
+    name: 'subject_track_id',
+  })
+  subjectTrackId: number;
+
+  @ManyToOne(() => SubjectTrack, { nullable: true })
+  @JoinColumn({ name: 'subject_track_id', referencedColumnName: 'id' })
+  subjectTrack: SubjectTrack;
 
   @Column({
     type: 'integer',

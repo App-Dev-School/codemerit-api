@@ -44,6 +44,26 @@ export class CreateUserDto {
 
   @ApiPropertyOptional()
   @IsOptional()
+  dreamRole?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  techRoleId?: number;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  jobRoleId?: number;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  subjectTrackId?: number;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  yearsExperience?: number;
+
+  @ApiPropertyOptional()
+  @IsOptional()
   city?: string;
 
   @ApiPropertyOptional()
