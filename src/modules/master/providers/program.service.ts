@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { JobRole } from 'src/common/typeorm/entities/job-role.entity';
 import { SubjectTrack } from 'src/common/typeorm/entities/subject-track.entity';
 import { User } from 'src/common/typeorm/entities/user.entity';
-import { generateScore } from 'src/common/utils/common-functions';
+import { generateScore, getAggregateUserLevel } from 'src/common/utils/common-functions';
 import { DataSource, Repository } from 'typeorm';
 import { MeritService } from './merit.service';
 import { SubjectStatsService } from './subject-stats.service';
@@ -243,12 +243,28 @@ export class ProgramService {
       const coverage = numTrivia > 0 ? +((attempted / numTrivia) * 100).toFixed(1) : 0;
       const accuracy = attempted > 0 ? +(correct * 100 / attempted).toFixed(1) : 0;
       const score = +generateScore(attempted, correct, wrong).toFixed(0);
+      const attemptedEasy = +raw.attemptedEasy || 0;
+      const attemptedMedium = +raw.attemptedMedium || 0;
+      const attemptedHard = +raw.attemptedHard || 0;
+      const correctEasy = +raw.correctEasy || 0;
+      const correctMedium = +raw.correctMedium || 0;
+      const correctHard = +raw.correctHard || 0;
       subjectsByJobRole.get(jrId)!.push({
         id: +rs.subjectId, title: rs.sTitle, slug: rs.sSlug, color: rs.sColor,
         image: rs.sImage, tag: rs.tag, sortOrder: +rs.sortOrder,
         isSubscribed: raw.isSubscribed === 1 || raw.isSubscribed === '1',
         numQuestions: +raw.numQuestions || 0, numTrivia,
         attempted, correct, wrong, skipped, accuracy, coverage, score,
+        attemptedEasy, attemptedMedium, attemptedHard,
+        correctEasy, correctMedium, correctHard,
+        wrongEasy: +raw.wrongEasy || 0,
+        wrongMedium: +raw.wrongMedium || 0,
+        wrongHard: +raw.wrongHard || 0,
+        userLevel: getAggregateUserLevel(
+          attemptedEasy, correctEasy,
+          attemptedMedium, correctMedium,
+          attemptedHard, correctHard,
+        ),
       });
     }
 
@@ -390,10 +406,26 @@ export class ProgramService {
       };
 
       if (userId) {
+        const attemptedEasy = +raw.attemptedEasy || 0;
+        const attemptedMedium = +raw.attemptedMedium || 0;
+        const attemptedHard = +raw.attemptedHard || 0;
+        const correctEasy = +raw.correctEasy || 0;
+        const correctMedium = +raw.correctMedium || 0;
+        const correctHard = +raw.correctHard || 0;
         Object.assign(card, {
           isSubscribed: raw.isSubscribed === 1 || raw.isSubscribed === '1',
           attempted, correct, wrong, skipped,
           accuracy, coverage, score,
+          attemptedEasy, attemptedMedium, attemptedHard,
+          correctEasy, correctMedium, correctHard,
+          wrongEasy: +raw.wrongEasy || 0,
+          wrongMedium: +raw.wrongMedium || 0,
+          wrongHard: +raw.wrongHard || 0,
+          userLevel: getAggregateUserLevel(
+            attemptedEasy, correctEasy,
+            attemptedMedium, correctMedium,
+            attemptedHard, correctHard,
+          ),
           userRank: subjectMerits.userRanks.get(+rs.subjectId) ?? null,
         });
       }

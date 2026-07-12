@@ -11,7 +11,7 @@ import { QuestionAttempt } from 'src/common/typeorm/entities/question-attempt.en
 import { Subject } from 'src/common/typeorm/entities/subject.entity';
 import { SubjectTrack } from 'src/common/typeorm/entities/subject-track.entity';
 import { UserSubject } from 'src/common/typeorm/entities/user-subject.entity';
-import { generateScore } from 'src/common/utils/common-functions';
+import { generateScore, getAggregateUserLevel } from 'src/common/utils/common-functions';
 import { DataSource, In, Repository } from 'typeorm';
 import { MeritService } from './merit.service';
 import { TopicAnalysisService } from './topic-analysis.service';
@@ -103,6 +103,18 @@ export class SubjectStatsService {
         .addSelect(
           'SUM(CASE WHEN qa.isCorrect = 0 AND qa.selectedOption IS NOT NULL THEN 1 ELSE 0 END)',
           'wrong',
+        )
+        .addSelect(
+          'SUM(CASE WHEN q.level = :easy AND qa.isCorrect = 0 AND qa.selectedOption IS NOT NULL THEN 1 ELSE 0 END)',
+          'wrongEasy',
+        )
+        .addSelect(
+          'SUM(CASE WHEN q.level = :medium AND qa.isCorrect = 0 AND qa.selectedOption IS NOT NULL THEN 1 ELSE 0 END)',
+          'wrongMedium',
+        )
+        .addSelect(
+          'SUM(CASE WHEN q.level = :hard AND qa.isCorrect = 0 AND qa.selectedOption IS NOT NULL THEN 1 ELSE 0 END)',
+          'wrongHard',
         )
         .addSelect('SUM(CASE WHEN qa.isSkipped = 1 THEN 1 ELSE 0 END)', 'skipped')
         .addSelect('CASE WHEN us.userId IS NOT NULL THEN 1 ELSE 0 END', 'isSubscribed')
@@ -217,6 +229,14 @@ export class SubjectStatsService {
       correctMedium: +raw.correctMedium || 0,
       correctHard: +raw.correctHard || 0,
       wrong,
+      wrongEasy: +raw.wrongEasy || 0,
+      wrongMedium: +raw.wrongMedium || 0,
+      wrongHard: +raw.wrongHard || 0,
+      userLevel: getAggregateUserLevel(
+        +raw.attemptedEasy || 0, +raw.correctEasy || 0,
+        +raw.attemptedMedium || 0, +raw.correctMedium || 0,
+        +raw.attemptedHard || 0, +raw.correctHard || 0,
+      ),
       skipped,
       accuracy,
       coverage,
@@ -356,13 +376,15 @@ export class SubjectStatsService {
       .leftJoin('lesson_section', 'ls', 'ls.lessonId = l.id')
       .where('l.subjectId = :subjectId', { subjectId })
       .groupBy('l.id')
+      .addGroupBy('t.id')
       .orderBy('t.order', 'ASC')
       .addOrderBy('l.id', 'ASC');
 
     if (userId) {
       qb.leftJoin('user_lesson_tracker', 'ult', 'ult.lessonId = l.id AND ult.userId = :userId', { userId })
         .addSelect('ult.status', 'status')
-        .addSelect('ult.views', 'views');
+        .addSelect('ult.views', 'views')
+        .addGroupBy('ult.id');
     }
 
     const rows = await qb.getRawMany();

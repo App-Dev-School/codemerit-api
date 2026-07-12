@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { generateScore } from 'src/common/utils/common-functions';
+import { generateScore, getAggregateUserLevel } from 'src/common/utils/common-functions';
 import { DataSource } from 'typeorm';
 import { MeritService } from './merit.service';
 
@@ -128,6 +128,15 @@ export class SubjectTrackAnalysisService {
         const accuracy = allAttempts > 0 ? +(correct * 100 / allAttempts).toFixed(1) : 0;
         const score = +generateScore(allAttempts, correct, wrong).toFixed(0);
         const isCompleted = coverage >= TOPIC_DONE;
+        const attemptedEasy = +ts.attemptedEasy || 0;
+        const attemptedMedium = +ts.attemptedMedium || 0;
+        const attemptedHard = +ts.attemptedHard || 0;
+        const correctEasy = +ts.correctEasy || 0;
+        const correctMedium = +ts.correctMedium || 0;
+        const correctHard = +ts.correctHard || 0;
+        const wrongEasy = +ts.wrongEasy || 0;
+        const wrongMedium = +ts.wrongMedium || 0;
+        const wrongHard = +ts.wrongHard || 0;
 
         return {
           id: tid,
@@ -141,6 +150,16 @@ export class SubjectTrackAnalysisService {
           accuracy,
           coverage,
           score,
+          attemptedEasy,
+          attemptedMedium,
+          attemptedHard,
+          correctEasy,
+          correctMedium,
+          correctHard,
+          wrongEasy,
+          wrongMedium,
+          wrongHard,
+          userLevel: ts.userLevel,
           isStarted: allAttempts > 0,
           isCompleted,
         };
@@ -157,6 +176,15 @@ export class SubjectTrackAnalysisService {
       const stCoverage = stNumTrivia > 0 ? +((stAttempted / stNumTrivia) * 100).toFixed(1) : 0;
       const stAccuracy = stAllAttempts > 0 ? +(stCorrect * 100 / stAllAttempts).toFixed(1) : 0;
       const stScore = +generateScore(stAllAttempts, stCorrect, stWrong).toFixed(0);
+      const stAttemptedEasy = topics.reduce((s: number, t: any) => s + (t.attemptedEasy || 0), 0);
+      const stAttemptedMedium = topics.reduce((s: number, t: any) => s + (t.attemptedMedium || 0), 0);
+      const stAttemptedHard = topics.reduce((s: number, t: any) => s + (t.attemptedHard || 0), 0);
+      const stCorrectEasy = topics.reduce((s: number, t: any) => s + (t.correctEasy || 0), 0);
+      const stCorrectMedium = topics.reduce((s: number, t: any) => s + (t.correctMedium || 0), 0);
+      const stCorrectHard = topics.reduce((s: number, t: any) => s + (t.correctHard || 0), 0);
+      const stWrongEasy = topics.reduce((s: number, t: any) => s + (t.wrongEasy || 0), 0);
+      const stWrongMedium = topics.reduce((s: number, t: any) => s + (t.wrongMedium || 0), 0);
+      const stWrongHard = topics.reduce((s: number, t: any) => s + (t.wrongHard || 0), 0);
       const totalTopics = topics.length;
       const completedTopics = topics.filter((t: any) => t.isCompleted).length;
       const progressPercent = totalTopics > 0 ? +((completedTopics / totalTopics) * 100).toFixed(0) : 0;
@@ -172,6 +200,20 @@ export class SubjectTrackAnalysisService {
         coverage: stCoverage,
         accuracy: stAccuracy,
         score: stScore,
+        attemptedEasy: stAttemptedEasy,
+        attemptedMedium: stAttemptedMedium,
+        attemptedHard: stAttemptedHard,
+        correctEasy: stCorrectEasy,
+        correctMedium: stCorrectMedium,
+        correctHard: stCorrectHard,
+        wrongEasy: stWrongEasy,
+        wrongMedium: stWrongMedium,
+        wrongHard: stWrongHard,
+        userLevel: getAggregateUserLevel(
+          stAttemptedEasy, stCorrectEasy,
+          stAttemptedMedium, stCorrectMedium,
+          stAttemptedHard, stCorrectHard,
+        ),
         isStarted: stAllAttempts > 0,
         completedTopics,
         progressPercent,

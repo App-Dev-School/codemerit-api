@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
+import { DifficultyLevelEnum } from 'src/common/enum/difficulty-lavel.enum';
 import { QuestionStatusEnum } from 'src/common/enum/question-status.enum';
 import { QuestionTypeEnum } from 'src/common/enum/question-type.enum';
 import { Topic } from 'src/common/typeorm/entities/topic.entity';
 import { User } from 'src/common/typeorm/entities/user.entity';
-import { generateScore } from 'src/common/utils/common-functions';
+import { generateScore, getAggregateUserLevel } from 'src/common/utils/common-functions';
 import { GetUserRequestDto } from 'src/core/auth/dto/get-user-request.dto';
 import { UserRoleEnum } from 'src/core/users/enums/user-roles.enum';
 import { DataSource } from 'typeorm';
@@ -56,17 +57,20 @@ export class TopicAnalysisService {
       .addSelect('COUNT(DISTINCT q.id)', 'totalQuestions')
       .addSelect('COUNT(DISTINCT qTr.id)', 'numTrivia')
       .addSelect(
-        `COUNT(DISTINCT CASE WHEN qTr.level = 'Easy' THEN qTr.id END)`,
+        `COUNT(DISTINCT CASE WHEN qTr.level = :easy THEN qTr.id END)`,
         'numBasicTrivia',
       )
       .addSelect(
-        `COUNT(DISTINCT CASE WHEN qTr.level = 'Intermediate' THEN qTr.id END)`,
+        `COUNT(DISTINCT CASE WHEN qTr.level = :medium THEN qTr.id END)`,
         'numIntTrivia',
       )
       .addSelect(
-        `COUNT(DISTINCT CASE WHEN qTr.level = 'Advanced' THEN qTr.id END)`,
+        `COUNT(DISTINCT CASE WHEN qTr.level = :hard THEN qTr.id END)`,
         'numAdvTrivia',
-      );
+      )
+      .setParameter('easy', DifficultyLevelEnum.Easy)
+      .setParameter('medium', DifficultyLevelEnum.Intermediate)
+      .setParameter('hard', DifficultyLevelEnum.Advanced);
     // Now handle attempts separately
     if (userId) {
       qb.leftJoin(
@@ -95,12 +99,57 @@ export class TopicAnalysisService {
         .addSelect(
           'COUNT(DISTINCT userAttempts.questionId)',
           'myDistinctQuestions',
+        )
+        .addSelect(
+          'COALESCE(SUM(CASE WHEN q.level = :easy THEN userAttempts.attempts ELSE 0 END), 0)',
+          'attemptedEasy',
+        )
+        .addSelect(
+          'COALESCE(SUM(CASE WHEN q.level = :medium THEN userAttempts.attempts ELSE 0 END), 0)',
+          'attemptedMedium',
+        )
+        .addSelect(
+          'COALESCE(SUM(CASE WHEN q.level = :hard THEN userAttempts.attempts ELSE 0 END), 0)',
+          'attemptedHard',
+        )
+        .addSelect(
+          'COALESCE(SUM(CASE WHEN q.level = :easy THEN userAttempts.correct ELSE 0 END), 0)',
+          'correctEasy',
+        )
+        .addSelect(
+          'COALESCE(SUM(CASE WHEN q.level = :medium THEN userAttempts.correct ELSE 0 END), 0)',
+          'correctMedium',
+        )
+        .addSelect(
+          'COALESCE(SUM(CASE WHEN q.level = :hard THEN userAttempts.correct ELSE 0 END), 0)',
+          'correctHard',
+        )
+        .addSelect(
+          'COALESCE(SUM(CASE WHEN q.level = :easy THEN userAttempts.wrong ELSE 0 END), 0)',
+          'wrongEasy',
+        )
+        .addSelect(
+          'COALESCE(SUM(CASE WHEN q.level = :medium THEN userAttempts.wrong ELSE 0 END), 0)',
+          'wrongMedium',
+        )
+        .addSelect(
+          'COALESCE(SUM(CASE WHEN q.level = :hard THEN userAttempts.wrong ELSE 0 END), 0)',
+          'wrongHard',
         );
     } else {
       qb.addSelect('0', 'numMyAttempts')
         .addSelect('0', 'myCorrect')
         .addSelect('0', 'myWrong')
-        .addSelect('0', 'myDistinctQuestions');
+        .addSelect('0', 'myDistinctQuestions')
+        .addSelect('0', 'attemptedEasy')
+        .addSelect('0', 'attemptedMedium')
+        .addSelect('0', 'attemptedHard')
+        .addSelect('0', 'correctEasy')
+        .addSelect('0', 'correctMedium')
+        .addSelect('0', 'correctHard')
+        .addSelect('0', 'wrongEasy')
+        .addSelect('0', 'wrongMedium')
+        .addSelect('0', 'wrongHard');
     }
 
     qb.groupBy('t.id');
@@ -133,6 +182,20 @@ export class TopicAnalysisService {
     const myCorrect = +raw.myCorrect || 0;
     const myWrong = +raw.myWrong || 0;
     const myDistinctQuestions = +raw.myDistinctQuestions || 0;
+    const attemptedEasy = +raw.attemptedEasy || 0;
+    const attemptedMedium = +raw.attemptedMedium || 0;
+    const attemptedHard = +raw.attemptedHard || 0;
+    const correctEasy = +raw.correctEasy || 0;
+    const correctMedium = +raw.correctMedium || 0;
+    const correctHard = +raw.correctHard || 0;
+    const wrongEasy = +raw.wrongEasy || 0;
+    const wrongMedium = +raw.wrongMedium || 0;
+    const wrongHard = +raw.wrongHard || 0;
+    const userLevel = getAggregateUserLevel(
+      attemptedEasy, correctEasy,
+      attemptedMedium, correctMedium,
+      attemptedHard, correctHard,
+    );
 
     const avgAccuracy =
       numMyAttempts > 0
@@ -163,6 +226,16 @@ export class TopicAnalysisService {
       myUniqueAttempts: myDistinctQuestions,
       correct: myCorrect,
       wrong: myWrong,
+      attemptedEasy,
+      attemptedMedium,
+      attemptedHard,
+      correctEasy,
+      correctMedium,
+      correctHard,
+      wrongEasy,
+      wrongMedium,
+      wrongHard,
+      userLevel,
       avgAccuracy,
       score,
       isStarted,
