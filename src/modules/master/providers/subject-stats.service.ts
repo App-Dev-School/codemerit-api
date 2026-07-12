@@ -336,6 +336,10 @@ export class SubjectStatsService {
           .map((st: any) => ({
             id: st.id, title: st.title, slug: st.slug, totalTopics: st.totalTopics,
             progressPercent: st.progressPercent, score: st.score, isCompleted: st.isCompleted,
+            attemptedEasy: st.attemptedEasy, attemptedMedium: st.attemptedMedium, attemptedHard: st.attemptedHard,
+            correctEasy: st.correctEasy, correctMedium: st.correctMedium, correctHard: st.correctHard,
+            wrongEasy: st.wrongEasy, wrongMedium: st.wrongMedium, wrongHard: st.wrongHard,
+            userLevel: st.userLevel,
           }));
 
         const card: any = {
