@@ -40,11 +40,6 @@ export class UpdateUserProfileDto {
   @IsBoolean()
   selfRatingDone?: boolean;
 
-  @ApiPropertyOptional({ example: false, default: false })
-  @IsOptional()
-  @IsBoolean()
-  playedQuiz?: boolean;
-
   @ApiPropertyOptional({ example: true, default: false })
   @IsOptional()
   @IsBoolean()

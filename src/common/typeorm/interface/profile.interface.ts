@@ -6,7 +6,6 @@ export interface IProfile {
   linkedinId?: string;
   auth_provider?: string;
   selfRatingDone?: boolean;
-  playedQuiz?: boolean;
   takenInterview?: boolean;
   level1Assessment?: boolean;
   level2Assessment?: boolean;

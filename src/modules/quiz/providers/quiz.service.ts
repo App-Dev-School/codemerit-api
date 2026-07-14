@@ -33,7 +33,14 @@ import { PublishedQuizFilterDto } from '../dtos/published-quiz.dto';
 import { User } from 'src/common/typeorm/entities/user.entity';
 import { DifficultyLevelEnum } from 'src/common/enum/difficulty-lavel.enum';
 import { JobRoleSubject } from 'src/common/typeorm/entities/job-role-subject.entity';
+import { Profile } from 'src/common/typeorm/entities/profile.entity';
 import { MailService } from 'src/common/mail/providers/mail.service';
+import { AchievementService } from 'src/modules/achievement/providers/achievement.service';
+import { NewlyEarnedDto } from 'src/modules/achievement/dtos/newly-earned.dto';
+
+// Marks a Quiz (Quiz.tag) as the one-time, system-generated initial skill check,
+// distinguishing it from every other UserQuiz a user creates for themselves.
+const INITIAL_ASSESSMENT_TAG = 'initial_assessment';
 
 @Injectable()
 export class QuizService {
@@ -50,11 +57,14 @@ export class QuizService {
     private quizTopicRepo: Repository<QuizTopic>,
     @InjectRepository(QuizResult)
     private quizResultRepository: Repository<QuizResult>,
+    @InjectRepository(Profile)
+    private profileRepository: Repository<Profile>,
     private readonly userQuestionService: UserQuestionService,
     private readonly questionService: QuestionService,
     private readonly masterService: MasterService,
     private readonly notificationService: NotificationService,
     private readonly mailService: MailService,
+    private readonly achievementService: AchievementService,
     private readonly dataSource: DataSource,
   ) {}
 
@@ -169,7 +179,7 @@ export class QuizService {
     } else if (requestedNumQuestions && requestedNumQuestions > 0) {
       ids.numQuestions = requestedNumQuestions;
     } else {
-      ids.numQuestions = 10;
+      ids.numQuestions = 20;
     }
 
     console.log('QuizBuilder @Input:', ids);
@@ -304,11 +314,117 @@ export class QuizService {
     }
   }
 
+  /**
+   * One-time, system-generated skill check for a newly registered user, scoped to
+   * every subject under their job role. Idempotent — calling this again after one
+   * already exists just returns it rather than generating a second one. Takeable
+   * once: a QuizSettings row with maxAttempts=1 is created directly here rather than
+   * via createQuiz()'s own settings step, since that step only ever runs for
+   * quizType=Standard — changing that condition would affect every other UserQuiz
+   * caller, not just this one.
+   */
+  async createInitialAssessmentQuiz(
+    userId: number,
+    firstName: string,
+    jobRoleId: number,
+  ): Promise<{ message: string; quiz: Quiz }> {
+    const existing = await this.quizRepository.findOne({
+      where: { createdBy: userId, tag: INITIAL_ASSESSMENT_TAG },
+      relations: ['settings'],
+    });
+    if (existing) {
+      return { message: 'Initial assessment already generated.', quiz: existing };
+    }
+
+    const subjectRows = await this.dataSource
+      .createQueryBuilder()
+      .select('jrs.subjectId', 'subjectId')
+      .from('job_role_subject', 'jrs')
+      .where('jrs.jobRoleId = :jobRoleId', { jobRoleId })
+      .getRawMany();
+    const subjectIds = subjectRows.map((r) => +r.subjectId);
+    if (!subjectIds.length) {
+      throw new AppCustomException(
+        HttpStatus.BAD_REQUEST,
+        'This job role has no subjects configured yet — cannot generate an initial assessment.',
+      );
+    }
+
+    const jobRoleRow = await this.dataSource
+      .createQueryBuilder()
+      .select('jr.title', 'title')
+      .from('job_role', 'jr')
+      .where('jr.id = :jobRoleId', { jobRoleId })
+      .getRawOne();
+    const jobRoleTitle = jobRoleRow?.title ?? 'Career Track';
+
+    const createQuizDto: CreateQuizDto = {
+      userId,
+      quizType: QuizTypeEnum.UserQuiz,
+      subjectIds: subjectIds.join(','),
+      numQuestions: 20,
+      title: `Initial Assessment - ${jobRoleTitle} - ${firstName}`,
+      tag: INITIAL_ASSESSMENT_TAG,
+      category: 'InitialAssessment',
+    } as CreateQuizDto;
+
+    // createQuiz() is declared as Promise<Quiz> but actually resolves
+    // { message, quiz } at runtime (pre-existing mismatch — see how
+    // quiz.controller.ts's own create-quiz route already works around it).
+    const created: any = await this.createQuiz(createQuizDto, userId);
+    const quiz: Quiz = created.quiz;
+
+    // createQuiz() only fails if it finds zero questions — fewer than the
+    // requested 20 (e.g. a job role whose subjects only have 12 available) is
+    // allowed and already succeeds. Reflect the ACTUAL count here rather than
+    // hardcoding 20, since that's what really got saved as QuizQuestion rows.
+    const actualQuestionCount = await this.quizQuestionRepo.count({
+      where: { quizId: quiz.id },
+    });
+
+    const quizSettings = this.quizSettingsRepository.create({
+      quizId: quiz.id,
+      numQuestions: actualQuestionCount,
+      maxAttempts: 1,
+    });
+    quiz.settings = await this.quizSettingsRepository.save(quizSettings);
+
+    return { message: 'Initial assessment generated successfully.', quiz };
+  }
+
   //Generate a server level feedback utility
-  //Process any achievement
-  async submitQuiz(submitQuizDto: SubmitQuizDto): Promise<QuizResult> {
+  async submitQuiz(
+    submitQuizDto: SubmitQuizDto,
+  ): Promise<QuizResult & { newlyEarned?: NewlyEarnedDto | null }> {
+    // Enforce QuizSettings.maxAttempts (stored but previously never checked anywhere) —
+    // without this, XP/leaderboard rank can be farmed for free by simply resubmitting
+    // the same quiz. Quizzes without a settings row are left unrestricted (unchanged
+    // behavior for legacy/ad-hoc quizzes that predate QuizSettings).
+    const settings = await this.quizSettingsRepository.findOne({
+      where: { quizId: submitQuizDto?.quizId },
+      select: ['maxAttempts'],
+    });
+    if (settings?.maxAttempts) {
+      const priorAttempts = await this.quizResultRepository.count({
+        where: { quizId: submitQuizDto?.quizId, userId: submitQuizDto?.userId },
+      });
+      if (priorAttempts >= settings.maxAttempts) {
+        throw new AppCustomException(
+          HttpStatus.FORBIDDEN,
+          `Maximum attempts (${settings.maxAttempts}) reached for this quiz.`,
+        );
+      }
+    }
+
+    let questionResult: QuizResult;
+    // Populated inside the transaction with the *actual* saved QuestionAttempt ids —
+    // the achievement layer needs these to tell "the correct answer I just saved"
+    // apart from "a correct answer this user already had on record for this question"
+    // (see EvaluateAfterQuizAttempt.id).
+    let savedAttempts: { id: number; questionId: number; isCorrect: boolean; isSkipped: boolean; hintUsed: boolean }[] = [];
+    let isInitialAssessment = false;
     try {
-      return this.dataSource.transaction(async (manager) => {
+      questionResult = await this.dataSource.transaction(async (manager) => {
         const result = manager.create(QuizResult, {
           quizId: submitQuizDto?.quizId,
           userId: submitQuizDto?.userId,
@@ -321,12 +437,13 @@ export class QuizService {
           score: submitQuizDto?.score,
         });
 
-        const questionResult = await manager.save(QuizResult, result);
+        const savedResult = await manager.save(QuizResult, result);
 
         const quiz = await manager.findOne(Quiz, {
           where: { id: submitQuizDto?.quizId },
-          select: ['id', 'title'],
+          select: ['id', 'title', 'tag'],
         });
+        isInitialAssessment = quiz?.tag === INITIAL_ASSESSMENT_TAG;
 
         await this.notificationService.notifyQuizCompleted(
           submitQuizDto?.userId,
@@ -348,16 +465,17 @@ export class QuizService {
             isCorrect: attempt?.isCorrect,
             answer: attempt?.answer,
           });
-          await manager.save(QuestionAttempt, questionAttempt);
+          const saved = await manager.save(QuestionAttempt, questionAttempt);
+          savedAttempts.push({
+            id: saved.id,
+            questionId: attempt.questionId,
+            isCorrect: attempt?.isCorrect,
+            isSkipped: attempt?.isSkipped,
+            hintUsed: attempt?.hintUsed,
+          });
         }
 
-        //Send a temp mail
-        try {
-        this.mailService.sendMail('javacheartofmine@gmail.com', "Quiz Attempted from CodeMerit", "Quiz Attempted by userId: "+submitQuizDto?.userId+" with score: "+submitQuizDto?.score);
-      } catch (error) {
-        console.log('CMRegistration Error sending e-mail2 => ', error);
-      }
-        return questionResult;
+        return savedResult;
       });
     } catch (error) {
       console.log('QuizBuilder #6: Exception', error);
@@ -366,6 +484,35 @@ export class QuizService {
         'Failed to submit quiz result.',
       );
     }
+
+    // Achievement evaluation (XP, streak, badges, certificates) runs after the
+    // QuestionAttempt/QuizResult transaction has already committed, and must never
+    // fail the quiz submission itself — those rows are the ground truth the rest
+    // of the app derives everything from, so losing them over a badge-rule bug
+    // would be strictly worse than just missing a badge this one time.
+    let newlyEarned: NewlyEarnedDto | null = null;
+    try {
+      newlyEarned = await this.achievementService.evaluateAfterQuiz({
+        userId: submitQuizDto?.userId,
+        score: submitQuizDto?.score ?? 0,
+        attempts: savedAttempts,
+      });
+    } catch (error) {
+      console.log('QuizBuilder #6: Achievement evaluation error', error);
+    }
+
+    if (isInitialAssessment) {
+      try {
+        await this.profileRepository.update(
+          { userId: submitQuizDto?.userId },
+          { level1Assessment: true },
+        );
+      } catch (error) {
+        console.log('QuizBuilder #6: Failed to flip level1Assessment', error);
+      }
+    }
+
+    return { ...questionResult, newlyEarned };
   }
 
 

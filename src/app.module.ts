@@ -4,6 +4,7 @@ import { DatabaseModule } from './common/database/database.module';
 import { databaseConfig } from './config/database-config';
 import { appConfig } from './config/app-config';
 import { jwtConfig } from './config/jwt-config';
+import { mailConfig } from './config/mail-config';
 import { LoggerModule } from './common/services/logger.module';
 import { CoreModule } from './core/core.module';
 import { DomainModule } from './modules/domain.module';
@@ -34,8 +35,9 @@ import { ThrottlerModule } from '@nestjs/throttler';
     MasterModule,
     CoreModule,
     ConfigModule.forRoot({
-      load: [appConfig, databaseConfig, jwtConfig],
+      load: [appConfig, databaseConfig, jwtConfig, mailConfig],
       isGlobal: true,
+      envFilePath: '.env'
     }),
     LoggerModule,
     DatabaseModule,

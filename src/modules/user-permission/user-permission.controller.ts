@@ -20,6 +20,8 @@ import { UserRoleEnum } from 'src/core/users/enums/user-roles.enum';
 export class UserPermissionController {
   constructor(private readonly service: UserPermissionService) {}
 
+  @UseGuards(RolesGuard)
+  @Roles(UserRoleEnum.ADMIN)
   @Post('grant')
   @ApiOperation({
     summary: 'Save user wise permission',
@@ -49,6 +51,8 @@ export class UserPermissionController {
     return new ApiResponse(`No permission list available.`, null);
   }
 
+  @UseGuards(RolesGuard)
+  @Roles(UserRoleEnum.ADMIN)
   @Delete('revoke')
   @ApiOperation({
     summary: 'Revoke user wise permission',

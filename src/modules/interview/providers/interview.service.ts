@@ -11,6 +11,7 @@ import { Interview } from 'src/common/typeorm/entities/interview.entity';
 import { JobRole } from 'src/common/typeorm/entities/job-role.entity';
 import { InterviewStatusHistory } from 'src/common/typeorm/entities/interview-status-history.entity';
 import { InterviewStatusEnum } from 'src/common/enum/interview-status.enum';
+import { RatingTypeEnum } from 'src/common/enum/rating-type.enum';
 import { UserService } from 'src/core/users/providers/user.service';
 import { CreateInterviewDto } from '../dtos/create-interview.dto';
 import { UpdateInterviewDto } from '../dtos/update-interview.dto';
@@ -237,6 +238,8 @@ export class InterviewService {
       assessmentSession.userId = interview.userId;
       assessmentSession.interviewId = interview.id;
       assessmentSession.ratedBy = currentUserId;
+      assessmentSession.ratingType = RatingTypeEnum.INTERVIEW;
+      assessmentSession.assessmentTitle = interview.title;
 
       const savedAssessment = await manager.save(
         AssessmentSession,

@@ -18,6 +18,11 @@ import { Quiz } from './quiz.entity';
 // subject/topic/subject-track stats (WHERE userId = ? GROUP BY questionId) —
 // without it MySQL falls back to a filesort/temp table for the GROUP BY.
 @Index(['userId', 'questionId'])
+// Speeds up mastery-leaderboard queries (MeritService), which scan ALL users
+// scoped by question — the index above doesn't help there since it doesn't bind
+// userId up front. questionId-leading lets MySQL drive from the (small) question
+// set for a subject/track and index-only-lookup matching attempts.
+@Index(['questionId', 'isCorrect', 'userId'])
 @Entity()
 export class QuestionAttempt extends AbstractEntity implements IQuestionAttempt {
 

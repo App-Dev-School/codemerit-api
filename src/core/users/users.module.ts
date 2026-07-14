@@ -4,6 +4,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Profile } from 'src/common/typeorm/entities/profile.entity';
 import { UserOtp } from 'src/common/typeorm/entities/user-otp.entity';
 import { User } from 'src/common/typeorm/entities/user.entity';
+import { QuizResult } from 'src/common/typeorm/entities/quiz-result.entity';
+import { Certificate } from 'src/common/typeorm/entities/certificate.entity';
+import { UserStreak } from 'src/common/typeorm/entities/user-streak.entity';
 import { UserOtpService } from './providers/user-otp.service';
 import { UserPerformanceService } from './providers/user-performance.service';
 import { UserProfileService } from './providers/user-profile.service';
@@ -17,15 +20,19 @@ import { MasterModule } from 'src/modules/master/master.module';
 import { MailModule } from 'src/common/mail/mail.module';
 import { UserPermissionModule } from 'src/modules/user-permission/user-permission.module';
 import { ActivityModule } from 'src/modules/activity/activity.module';
+import { QuizModule } from 'src/modules/quiz/quiz.module';
+import { AchievementModule } from 'src/modules/achievement/achievement.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, Profile, UserOtp, UserJobRole, JobRole]),
+    TypeOrmModule.forFeature([User, Profile, UserOtp, UserJobRole, JobRole, QuizResult, Certificate, UserStreak]),
     NotificationModule,
     MasterModule,
     MailModule,
     UserPermissionModule,
     ActivityModule,
+    QuizModule,
+    AchievementModule,
   ],
   providers: [
     UserService,
