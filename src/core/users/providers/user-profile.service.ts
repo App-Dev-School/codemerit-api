@@ -2,6 +2,7 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EntityManager, Repository } from 'typeorm';
 import { Profile } from 'src/common/typeorm/entities/profile.entity';
+import { QuizResult } from 'src/common/typeorm/entities/quiz-result.entity';
 import { AppCustomException } from 'src/common/exceptions/app-custom-exception.filter';
 
 @Injectable()
@@ -9,6 +10,8 @@ export class UserProfileService {
   constructor(
     @InjectRepository(Profile)
     private profileRepository: Repository<Profile>,
+    @InjectRepository(QuizResult)
+    private quizResultRepository: Repository<QuizResult>,
   ) {}
 
   async createEmpty(manager: EntityManager): Promise<Profile> {
@@ -26,8 +29,10 @@ export class UserProfileService {
     return this.profileRepository.findOne({ where: { id } });
   }
 
-  async findOneByUserId(id: number): Promise<Profile | undefined> {
-    return this.profileRepository.findOne({
+  async findOneByUserId(
+    id: number,
+  ): Promise<(Profile & { playedQuiz: boolean }) | undefined> {
+    const profile = await this.profileRepository.findOne({
       where: { userId: id },
       select: [
         'id',
@@ -37,12 +42,21 @@ export class UserProfileService {
         'linkedinId',
         'auth_provider',
         'selfRatingDone',
-        'playedQuiz',
         'takenInterview',
         'level1Assessment',
         'level2Assessment',
       ],
     });
+    if (!profile) return undefined;
+
+    // playedQuiz is derived live from QuizResult rather than stored — a stored
+    // flag would either need updating on every quiz submission everywhere (not
+    // just the initial assessment) or drift out of sync with the actual truth,
+    // which QuizResult already holds authoritatively.
+    const playedQuiz =
+      (await this.quizResultRepository.count({ where: { userId: id } })) > 0;
+
+    return { ...profile, playedQuiz };
   }
 
   async findAll(): Promise<Profile[]> {

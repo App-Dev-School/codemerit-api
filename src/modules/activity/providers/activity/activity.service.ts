@@ -45,4 +45,12 @@ export class ActivityService {
       throw error;
     }
   }
+
+  async findByUserId(userId: number, limit = 20): Promise<Activity[]> {
+    return this.activityRepository.find({
+      where: { userId },
+      order: { createdAt: 'DESC' },
+      take: limit,
+    });
+  }
 }

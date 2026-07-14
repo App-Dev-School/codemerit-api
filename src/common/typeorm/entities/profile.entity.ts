@@ -56,12 +56,6 @@ export class Profile extends AbstractEntity implements IProfile {
     type: 'boolean',
     default: false,
   })
-  playedQuiz: boolean;
-
-  @Column({
-    type: 'boolean',
-    default: false,
-  })
   takenInterview: boolean;
 
   @Column({

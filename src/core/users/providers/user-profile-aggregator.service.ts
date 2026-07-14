@@ -1,11 +1,16 @@
 import { Injectable } from '@nestjs/common';
-import { DataSource } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { RatingTypeEnum } from 'src/common/enum/rating-type.enum';
 import { AssessmentSession } from 'src/common/typeorm/entities/assessment-session.entity';
 import { QuizResult } from 'src/common/typeorm/entities/quiz-result.entity';
+import { UserStreak } from 'src/common/typeorm/entities/user-streak.entity';
 import { ApiUsageService } from 'src/common/services/api-usage.service';
 import { SubjectAnalysisService } from 'src/modules/master/providers/subject-analysis.service';
 import { UserPermissionService } from 'src/modules/user-permission/providers/user-permission.service';
+import { AchievementService } from 'src/modules/achievement/providers/achievement.service';
+import { computeLevel } from 'src/modules/achievement/constants/gamification.constants';
+import { ActivityService } from 'src/modules/activity/providers/activity/activity.service';
 import { UserService } from './user.service';
 
 @Injectable()
@@ -15,20 +20,37 @@ export class UserProfileAggregatorService {
     private readonly userPermissionService: UserPermissionService,
     private readonly subjectAnalysisService: SubjectAnalysisService,
     private readonly apiUsageService: ApiUsageService,
+    private readonly achievementService: AchievementService,
+    private readonly activityService: ActivityService,
+    @InjectRepository(UserStreak)
+    private readonly userStreakRepository: Repository<UserStreak>,
     private readonly dataSource: DataSource,
   ) {}
 
   async getFullProfile(username: string) {
     const user = await this.userService.findByUsername(username);
 
-    const [courseStats, permissions, quizData, assessmentData, apiUsageRow] =
-      await Promise.all([
-        this.subjectAnalysisService.getJobSubjectDashboards(user.id, false),
-        this.userPermissionService.getPermissionsForProfile(user.id),
-        this.getRecentQuizzes(user.id),
-        this.getAssessmentSessions(user.id),
-        this.apiUsageService.findByUserId(user.id),
-      ]);
+    const [
+      courseStats,
+      permissions,
+      quizData,
+      assessmentData,
+      apiUsageRow,
+      certificates,
+      badgeData,
+      activities,
+      streak,
+    ] = await Promise.all([
+      this.subjectAnalysisService.getJobSubjectDashboards(user.id, false),
+      this.userPermissionService.getPermissionsForProfile(user.id),
+      this.getRecentQuizzes(user.id),
+      this.getAssessmentSessions(user.id),
+      this.apiUsageService.findByUserId(user.id),
+      this.getCertificates(user.id),
+      this.achievementService.getUserBadges(user.id),
+      this.activityService.findByUserId(user.id, 20),
+      this.userStreakRepository.findOne({ where: { userId: user.id } }),
+    ]);
 
     return {
       ...user,
@@ -41,7 +63,58 @@ export class UserProfileAggregatorService {
       },
       self_assessments: assessmentData.self_assessments,
       external_assessments: assessmentData.external_assessments,
+      certificates,
+      badges: badgeData.earned,
+      activities: activities.map((a) => ({
+        id: a.id,
+        title: a.title,
+        message: a.message,
+        dataId: a.dataId ?? null,
+        dataType: a.dataType ?? null,
+        createdAt: a.createdAt,
+      })),
+      gamification: {
+        points: user.points ?? 0,
+        level: computeLevel(user.points ?? 0),
+        streak: {
+          current: streak?.currentStreak ?? 0,
+          longest: streak?.longestStreak ?? 0,
+        },
+      },
     };
+  }
+
+  private async getCertificates(userId: number) {
+    const rows = await this.dataSource
+      .createQueryBuilder()
+      .select('c.certificateNumber', 'certificateNumber')
+      .addSelect('c.status', 'status')
+      .addSelect('c.issuedAt', 'issuedAt')
+      .addSelect('c.expiresAt', 'expiresAt')
+      .addSelect('c.pdfUrl', 'pdfUrl')
+      .addSelect('c.verificationCode', 'verificationCode')
+      .addSelect('ct.id', 'certificationTrackId')
+      .addSelect('ct.title', 'certificationTrackTitle')
+      .addSelect('jr.id', 'jobRoleId')
+      .addSelect('jr.title', 'jobRoleTitle')
+      .addSelect('jr.slug', 'jobRoleSlug')
+      .from('certificate', 'c')
+      .innerJoin('certification_track', 'ct', 'ct.id = c.certificationTrackId')
+      .innerJoin('job_role', 'jr', 'jr.id = ct.jobRoleId')
+      .where('c.userId = :userId', { userId })
+      .orderBy('c.issuedAt', 'DESC')
+      .getRawMany();
+
+    return rows.map((r) => ({
+      certificateNumber: r.certificateNumber,
+      status: r.status,
+      issuedAt: r.issuedAt,
+      expiresAt: r.expiresAt,
+      pdfUrl: r.pdfUrl,
+      verificationCode: r.verificationCode,
+      certificationTrack: { id: +r.certificationTrackId, title: r.certificationTrackTitle },
+      jobRole: { id: +r.jobRoleId, title: r.jobRoleTitle, slug: r.jobRoleSlug },
+    }));
   }
 
   private async getRecentQuizzes(userId: number) {

@@ -613,4 +613,14 @@ export class UserService {
 
     return saved;
   }
+
+  /** The job role a user enrolled in first (i.e. the one set at registration, if
+   * any) — used to scope the one-time initial assessment quiz. */
+  async getEarliestJobRoleId(userId: number): Promise<number | null> {
+    const enrollment = await this.userJobRoleRepo.findOne({
+      where: { userId },
+      order: { createdAt: 'ASC' },
+    });
+    return enrollment?.jobRoleId ?? null;
+  }
 }
