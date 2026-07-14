@@ -64,11 +64,26 @@ export class QuizController {
     summary: 'Submit Quiz',
     description: 'Accepts submission from a user and captures attempt details.',
   })
+  @UseGuards(AuthGuard('jwt'))
   @Post('submit')
   async submitQuiz(
     @Body() submitQuizDto: SubmitQuizDto,
+    @Request() req: any,
   ): Promise<ApiResponse<any>> {
-    const result = await this.quizService.submitQuiz(submitQuizDto);
+    if (!req?.user?.id) {
+      throw new AppCustomException(
+        HttpStatus.UNAUTHORIZED,
+        'User not authenticated.',
+      );
+    }
+
+    // Never trust a client-supplied userId — the achievement layer (XP, badges,
+    // certificates) makes forging another user's submission a real fraud vector,
+    // not just a data-quality nuisance. Always attribute to the authenticated caller.
+    const result = await this.quizService.submitQuiz({
+      ...submitQuizDto,
+      userId: req.user.id,
+    });
     return new ApiResponse(`Quiz submitted successfully.`, result);
   }
 

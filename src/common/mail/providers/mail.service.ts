@@ -1,72 +1,118 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { Resend } from 'resend';
+import { UserOtpTagsEnum } from 'src/core/users/enums/user-otp-Tags.enum';
+import {
+  accountVerifiedTemplate,
+  badgeEarnedTemplate,
+  certificateIssuedTemplate,
+  levelUpTemplate,
+  otpTemplate,
+  passwordChangedTemplate,
+  registrationWelcomeTemplate,
+  roleEnrolledTemplate,
+  streakMilestoneTemplate,
+  EmailTemplate,
+} from '../templates/mail-templates';
 
 @Injectable()
 export class MailService {
   private readonly logger = new Logger(MailService.name);
+  private readonly resend: Resend;
+  private readonly fromAddress: string;
+  private readonly frontendUrl: string;
 
-  constructor() {}
+  constructor(private readonly configService: ConfigService) {
+    this.resend = new Resend(this.configService.get<string>('mail.resendApiKey'));
+    const fromName = this.configService.get<string>('mail.fromName');
+    const fromEmail = this.configService.get<string>('mail.fromEmail');
+    this.fromAddress = `${fromName} <${fromEmail}>`;
+    this.frontendUrl = this.configService.get<string>('mail.frontendUrl');
+  }
 
-  // async sendUserWelcome(user: User): Promise<void> {
-  //   await this.mailerService.sendMail({
-  //     to: user.email,
-  //     // override default from
-  //     from: '"Onbaording Team" <support@nestjs-blog.com>',
-  //     subject: 'Welcome to NestJs Blog',
-  //     // `.ejs` extension is appended automatically to template
-  //     template: './welcome',
-  //     // Context is available in email template
-  //     context: {
-  //       name: user.firstName,
-  //       email: user.email,
-  //       loginUrl: 'http://localhost:3000',
-  //     },
-  //   });
-  // }
-
-  //  private readonly resend = new Resend(
-  //   process.env.RESEND_API_KEY,
-  // );
-
-  private readonly resend = new Resend('re_XxFNnnj1_3qY1WaduK79NeSchiEvBeENq');
-
-  async sendWelcomeEmail(email: string, name: string) {
+  private async dispatch(to: string, template: EmailTemplate): Promise<void> {
+    const html = template.html.replace(/\{\{FRONTEND_URL\}\}/g, this.frontendUrl);
     try {
-      const emailSent = await this.resend.emails.send({
-        from: 'Skill Assessment <noreply@appdevops.in>',
-        to: email,
-        subject: 'Welcome',
-        html: `
-          <h1>Welcome ${name}</h1>
-          <p>Your account has been created.</p>
-        `,
+      await this.resend.emails.send({
+        from: this.fromAddress,
+        to,
+        subject: template.subject,
+        html,
       });
-      return emailSent;
-    } catch (error: any) {
-      this.logger.error(`Welcome email failed: ${email}`, error);
-      throw error;
+    } catch (error) {
+      this.logger.error(
+        `Email send failed (${template.subject}) => ${to}: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   }
 
-  /**************remove all below  */
-  // Method should send e-mail from a template
-  async sendMail(to: string, subject: string, content: string) {
-    this.logger.log(`##AuthStep6: SendEmail => ${to}`);
-    try {
-      const response = await this.resend.emails.send({
-        from: 'Skill Assessment <noreply@appdevops.in>',
-        to: to,
-        subject: subject,
-        html: content,
-      });
+  async sendRegistrationWelcomeEmail(
+    to: string,
+    name: string,
+    otp: string,
+  ): Promise<void> {
+    await this.dispatch(to, registrationWelcomeTemplate(name, otp));
+  }
 
-      this.logger.log('##AuthStep6: SendEmail Success');
-      return response;
-    } catch (e) {
-      this.logger.error(
-        `##AuthStep6: SendEmail Failed => ${JSON.stringify(e)}`,
-      );
-      throw e;
-    }
+  async sendOtpEmail(
+    to: string,
+    name: string,
+    otp: string,
+    tag: UserOtpTagsEnum,
+  ): Promise<void> {
+    await this.dispatch(to, otpTemplate(name, otp, tag));
+  }
+
+  async sendAccountVerifiedEmail(to: string, name: string): Promise<void> {
+    await this.dispatch(to, accountVerifiedTemplate(name));
+  }
+
+  async sendPasswordChangedEmail(to: string, name: string): Promise<void> {
+    await this.dispatch(to, passwordChangedTemplate(name));
+  }
+
+  async sendRoleEnrolledEmail(
+    to: string,
+    name: string,
+    jobRoleTitle: string,
+  ): Promise<void> {
+    await this.dispatch(to, roleEnrolledTemplate(name, jobRoleTitle));
+  }
+
+  async sendCertificateIssuedEmail(
+    to: string,
+    name: string,
+    trackTitle: string,
+    certificateNumber: string,
+  ): Promise<void> {
+    await this.dispatch(
+      to,
+      certificateIssuedTemplate(name, trackTitle, certificateNumber),
+    );
+  }
+
+  async sendBadgeEarnedEmail(
+    to: string,
+    name: string,
+    badgeName: string,
+  ): Promise<void> {
+    await this.dispatch(to, badgeEarnedTemplate(name, badgeName));
+  }
+
+  async sendStreakMilestoneEmail(
+    to: string,
+    name: string,
+    days: number,
+  ): Promise<void> {
+    await this.dispatch(to, streakMilestoneTemplate(name, days));
+  }
+
+  async sendLevelUpEmail(
+    to: string,
+    name: string,
+    level: number,
+    levelTitle: string,
+  ): Promise<void> {
+    await this.dispatch(to, levelUpTemplate(name, level, levelTitle));
   }
 }

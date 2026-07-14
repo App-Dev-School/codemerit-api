@@ -30,7 +30,7 @@ export class CreateSkillRatingDto {
   @IsInt()
   skillId: number;
 
-  @ApiProperty({ example: 7, minimum: 1, maximum: 10 })
+  @ApiProperty({ example: 4, minimum: 0, maximum: 5 })
   @IsInt()
   @Min(0)
   @Max(5)

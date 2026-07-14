@@ -34,6 +34,8 @@ import { User } from 'src/common/typeorm/entities/user.entity';
 import { DifficultyLevelEnum } from 'src/common/enum/difficulty-lavel.enum';
 import { JobRoleSubject } from 'src/common/typeorm/entities/job-role-subject.entity';
 import { MailService } from 'src/common/mail/providers/mail.service';
+import { AchievementService } from 'src/modules/achievement/providers/achievement.service';
+import { NewlyEarnedDto } from 'src/modules/achievement/dtos/newly-earned.dto';
 
 @Injectable()
 export class QuizService {
@@ -55,6 +57,7 @@ export class QuizService {
     private readonly masterService: MasterService,
     private readonly notificationService: NotificationService,
     private readonly mailService: MailService,
+    private readonly achievementService: AchievementService,
     private readonly dataSource: DataSource,
   ) {}
 
@@ -169,7 +172,7 @@ export class QuizService {
     } else if (requestedNumQuestions && requestedNumQuestions > 0) {
       ids.numQuestions = requestedNumQuestions;
     } else {
-      ids.numQuestions = 10;
+      ids.numQuestions = 20;
     }
 
     console.log('QuizBuilder @Input:', ids);
@@ -305,10 +308,37 @@ export class QuizService {
   }
 
   //Generate a server level feedback utility
-  //Process any achievement
-  async submitQuiz(submitQuizDto: SubmitQuizDto): Promise<QuizResult> {
+  async submitQuiz(
+    submitQuizDto: SubmitQuizDto,
+  ): Promise<QuizResult & { newlyEarned?: NewlyEarnedDto | null }> {
+    // Enforce QuizSettings.maxAttempts (stored but previously never checked anywhere) —
+    // without this, XP/leaderboard rank can be farmed for free by simply resubmitting
+    // the same quiz. Quizzes without a settings row are left unrestricted (unchanged
+    // behavior for legacy/ad-hoc quizzes that predate QuizSettings).
+    const settings = await this.quizSettingsRepository.findOne({
+      where: { quizId: submitQuizDto?.quizId },
+      select: ['maxAttempts'],
+    });
+    if (settings?.maxAttempts) {
+      const priorAttempts = await this.quizResultRepository.count({
+        where: { quizId: submitQuizDto?.quizId, userId: submitQuizDto?.userId },
+      });
+      if (priorAttempts >= settings.maxAttempts) {
+        throw new AppCustomException(
+          HttpStatus.FORBIDDEN,
+          `Maximum attempts (${settings.maxAttempts}) reached for this quiz.`,
+        );
+      }
+    }
+
+    let questionResult: QuizResult;
+    // Populated inside the transaction with the *actual* saved QuestionAttempt ids —
+    // the achievement layer needs these to tell "the correct answer I just saved"
+    // apart from "a correct answer this user already had on record for this question"
+    // (see EvaluateAfterQuizAttempt.id).
+    let savedAttempts: { id: number; questionId: number; isCorrect: boolean; isSkipped: boolean; hintUsed: boolean }[] = [];
     try {
-      return this.dataSource.transaction(async (manager) => {
+      questionResult = await this.dataSource.transaction(async (manager) => {
         const result = manager.create(QuizResult, {
           quizId: submitQuizDto?.quizId,
           userId: submitQuizDto?.userId,
@@ -321,7 +351,7 @@ export class QuizService {
           score: submitQuizDto?.score,
         });
 
-        const questionResult = await manager.save(QuizResult, result);
+        const savedResult = await manager.save(QuizResult, result);
 
         const quiz = await manager.findOne(Quiz, {
           where: { id: submitQuizDto?.quizId },
@@ -348,16 +378,17 @@ export class QuizService {
             isCorrect: attempt?.isCorrect,
             answer: attempt?.answer,
           });
-          await manager.save(QuestionAttempt, questionAttempt);
+          const saved = await manager.save(QuestionAttempt, questionAttempt);
+          savedAttempts.push({
+            id: saved.id,
+            questionId: attempt.questionId,
+            isCorrect: attempt?.isCorrect,
+            isSkipped: attempt?.isSkipped,
+            hintUsed: attempt?.hintUsed,
+          });
         }
 
-        //Send a temp mail
-        try {
-        this.mailService.sendMail('javacheartofmine@gmail.com', "Quiz Attempted from CodeMerit", "Quiz Attempted by userId: "+submitQuizDto?.userId+" with score: "+submitQuizDto?.score);
-      } catch (error) {
-        console.log('CMRegistration Error sending e-mail2 => ', error);
-      }
-        return questionResult;
+        return savedResult;
       });
     } catch (error) {
       console.log('QuizBuilder #6: Exception', error);
@@ -366,6 +397,24 @@ export class QuizService {
         'Failed to submit quiz result.',
       );
     }
+
+    // Achievement evaluation (XP, streak, badges, certificates) runs after the
+    // QuestionAttempt/QuizResult transaction has already committed, and must never
+    // fail the quiz submission itself — those rows are the ground truth the rest
+    // of the app derives everything from, so losing them over a badge-rule bug
+    // would be strictly worse than just missing a badge this one time.
+    let newlyEarned: NewlyEarnedDto | null = null;
+    try {
+      newlyEarned = await this.achievementService.evaluateAfterQuiz({
+        userId: submitQuizDto?.userId,
+        score: submitQuizDto?.score ?? 0,
+        attempts: savedAttempts,
+      });
+    } catch (error) {
+      console.log('QuizBuilder #6: Achievement evaluation error', error);
+    }
+
+    return { ...questionResult, newlyEarned };
   }
 
 

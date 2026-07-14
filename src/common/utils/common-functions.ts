@@ -28,6 +28,48 @@ export const generateScore = (
   return Math.max(0, Math.min(100, Number(normalized.toFixed(1))));
 };
 
+export interface AttemptMetricsInput {
+  numTrivia: number;
+  attempted: number;        // distinct questions with a recorded (latest) attempt
+  correct: number;          // distinct questions currently correct (latest attempt per question)
+  wrong: number;            // distinct questions currently wrong (latest attempt per question)
+  journeyAttempts: number;  // every attempt ever, retries included
+  journeyCorrect: number;   // every correct attempt ever, retries included
+  journeyWrong: number;     // every wrong attempt ever, retries included
+}
+
+export interface AttemptMetrics {
+  coverage: number;         // % of numTrivia ever attempted, regardless of correctness
+  correctCoverage: number;  // % of numTrivia currently answered correctly — the only one
+                             // of these that should ever gate completion/certification
+  currentAccuracy: number;  // correct / attempted — "what you currently know"
+  score: number;            // generateScore() over current-standing counts
+  journeyAccuracy: number;  // correct / attempted across ALL-time attempts — "how rough was the path"
+  journeyScore: number;     // generateScore() over all-time counts
+}
+
+/**
+ * The single source of truth for every "how is this user doing" number shown at
+ * subject/topic/subjectTrack level. Before this existed, this exact formula was
+ * independently reimplemented in four different services — which is exactly how a
+ * subject's `wrong` count and the sum of its subjectTracks' `wrong` counts drifted
+ * out of sync, and how a certificate could be earned without answering anything
+ * correctly (see docs/Auto-Certification-and-Gamification-Layer.md §12-13). Every
+ * caller of this function gets the same fix, forever, instead of once per copy.
+ */
+export function computeAttemptMetrics(input: AttemptMetricsInput): AttemptMetrics {
+  const { numTrivia, attempted, correct, wrong, journeyAttempts, journeyCorrect, journeyWrong } = input;
+
+  const coverage = numTrivia > 0 ? +((attempted / numTrivia) * 100).toFixed(1) : 0;
+  const correctCoverage = numTrivia > 0 ? +((correct / numTrivia) * 100).toFixed(1) : 0;
+  const currentAccuracy = attempted > 0 ? +((correct * 100) / attempted).toFixed(1) : 0;
+  const score = +generateScore(attempted, correct, wrong).toFixed(0);
+  const journeyAccuracy = journeyAttempts > 0 ? +((journeyCorrect * 100) / journeyAttempts).toFixed(1) : 0;
+  const journeyScore = +generateScore(journeyAttempts, journeyCorrect, journeyWrong).toFixed(0);
+
+  return { coverage, correctCoverage, currentAccuracy, score, journeyAccuracy, journeyScore };
+}
+
 export type AggregateUserLevel =
   | 'Not Started'
   | 'Novice'

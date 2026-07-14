@@ -4,6 +4,10 @@ import { ConfigService } from '@nestjs/config';
 import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm';
 import { ApiUsage } from 'src/common/typeorm/entities/api-usage.entity';
 import { AssessmentSession } from 'src/common/typeorm/entities/assessment-session.entity';
+import { Badge } from 'src/common/typeorm/entities/badge.entity';
+import { UserBadge } from 'src/common/typeorm/entities/user-badge.entity';
+import { UserStreak } from 'src/common/typeorm/entities/user-streak.entity';
+import { UserXpLog } from 'src/common/typeorm/entities/user-xp-log.entity';
 import { Certificate } from 'src/common/typeorm/entities/certificate.entity';
 import { CertificationTrack } from 'src/common/typeorm/entities/certification-track.entity';
 import { InterviewStatusHistory } from 'src/common/typeorm/entities/interview-status-history.entity';
@@ -47,14 +51,19 @@ export class TypeormConfigService implements TypeOrmOptionsFactory {
     const databaseConfig = this.configService.get(
       'database',
     ) as IDatabaseConfig;
-
     return {
-      type: databaseConfig.type as 'mysql',
-      host: databaseConfig.host,
-      port: databaseConfig.port,
-      username: databaseConfig.username,
-      password: databaseConfig.password,
-      database: databaseConfig.database,
+      // type: databaseConfig.type as 'mysql',
+      // host: databaseConfig.host,
+      // port: databaseConfig.port,
+      // username: databaseConfig.username,
+      // password: databaseConfig.password,
+      // database: databaseConfig.database,
+      type: 'mysql',
+      host: 'localhost',
+      port: 3306,
+      username: 'codemerituser',
+      password: 'GwjU067FL8hcmjQkXjaM',
+      database: 'codemeritdb',
       entities: [
         User,
         Profile,
@@ -93,6 +102,10 @@ export class TypeormConfigService implements TypeOrmOptionsFactory {
         CertificationTrackSubjectTrack,
         SubjectTrackTopic,
         Certificate,
+        Badge,
+        UserBadge,
+        UserStreak,
+        UserXpLog,
       ],
       // entities: [__dirname + '/../**/*.entity.{ts,js}'],
       // entities: ['src/**/*.entity.ts'],

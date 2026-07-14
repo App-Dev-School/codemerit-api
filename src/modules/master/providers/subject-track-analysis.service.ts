@@ -1,10 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { generateScore, getAggregateUserLevel } from 'src/common/utils/common-functions';
+import { TOPIC_DONE, TRACK_DONE } from 'src/common/constants/completion-thresholds';
+import { computeAttemptMetrics, getAggregateUserLevel } from 'src/common/utils/common-functions';
 import { DataSource } from 'typeorm';
 import { MeritService } from './merit.service';
-
-const TOPIC_DONE = 70;   // coverage % to mark a topic complete
-const TRACK_DONE = 70;   // % of topics done to mark a subject track complete
 
 /**
  * Rolls up topic-level stats (from TopicAnalysisService) into SubjectTrack-level
@@ -120,14 +118,24 @@ export class SubjectTrackAnalysisService {
       const topics = topicIds.map((tid) => {
         const ts = topicStatsMap.get(tid) ?? {};
         const numTrivia = +ts.numTrivia || 0;
-        const attempted = +ts.myUniqueAttempts || 0;
-        const allAttempts = +ts.myAllAttempts || 0;
+        const attempted = +ts.attempted || 0;
+        const allAttempts = +ts.journeyAttempts || 0;
         const correct = +ts.correct || 0;
         const wrong = +ts.wrong || 0;
-        const coverage = numTrivia > 0 ? +((attempted / numTrivia) * 100).toFixed(1) : 0;
-        const accuracy = allAttempts > 0 ? +(correct * 100 / allAttempts).toFixed(1) : 0;
-        const score = +generateScore(allAttempts, correct, wrong).toFixed(0);
-        const isCompleted = coverage >= TOPIC_DONE;
+        const journeyCorrect = +ts.journeyCorrect || 0;
+        const journeyWrong = +ts.journeyWrong || 0;
+        // computeAttemptMetrics() is the one shared implementation of this formula —
+        // recomputed here (not just passed through from ts.correctCoverage) so there is
+        // exactly one code path to this number, not "trust the upstream value."
+        const { coverage, correctCoverage, currentAccuracy, score, journeyAccuracy, journeyScore } =
+          computeAttemptMetrics({
+            numTrivia, attempted, correct, wrong,
+            journeyAttempts: allAttempts, journeyCorrect, journeyWrong,
+          });
+        // Completion requires correctness, not just exposure — coverage (above) only
+        // measures "have you touched this," which must never gate completion/certificate
+        // issuance on its own (a topic "completed" by guessing wrong isn't completed).
+        const isCompleted = correctCoverage >= TOPIC_DONE;
         const attemptedEasy = +ts.attemptedEasy || 0;
         const attemptedMedium = +ts.attemptedMedium || 0;
         const attemptedHard = +ts.attemptedHard || 0;
@@ -145,10 +153,16 @@ export class SubjectTrackAnalysisService {
           label: ts.label,
           numTrivia,
           attempted,
+          journeyAttempts: allAttempts,
           correct,
           wrong,
-          accuracy,
+          journeyCorrect,
+          journeyWrong,
+          journeyAccuracy,
+          journeyScore,
+          currentAccuracy,
           coverage,
+          correctCoverage,
           score,
           attemptedEasy,
           attemptedMedium,
@@ -168,14 +182,20 @@ export class SubjectTrackAnalysisService {
       const stNumTrivia = topics.reduce((s: number, t: any) => s + (t.numTrivia || 0), 0);
       const stAttempted = topics.reduce((s: number, t: any) => s + (t.attempted || 0), 0);
       const stAllAttempts = topicIds.reduce(
-        (s: number, tid: number) => s + (+(topicStatsMap.get(tid)?.myAllAttempts) || 0),
+        (s: number, tid: number) => s + (+(topicStatsMap.get(tid)?.journeyAttempts) || 0),
         0,
       );
       const stCorrect = topics.reduce((s: number, t: any) => s + (t.correct || 0), 0);
       const stWrong = topics.reduce((s: number, t: any) => s + (t.wrong || 0), 0);
-      const stCoverage = stNumTrivia > 0 ? +((stAttempted / stNumTrivia) * 100).toFixed(1) : 0;
-      const stAccuracy = stAllAttempts > 0 ? +(stCorrect * 100 / stAllAttempts).toFixed(1) : 0;
-      const stScore = +generateScore(stAllAttempts, stCorrect, stWrong).toFixed(0);
+      const stJourneyCorrect = topics.reduce((s: number, t: any) => s + (t.journeyCorrect || 0), 0);
+      const stJourneyWrong = topics.reduce((s: number, t: any) => s + (t.journeyWrong || 0), 0);
+      const {
+        coverage: stCoverage, currentAccuracy: stAccuracy, score: stScore,
+        journeyAccuracy: stJourneyAccuracy, journeyScore: stJourneyScore,
+      } = computeAttemptMetrics({
+        numTrivia: stNumTrivia, attempted: stAttempted, correct: stCorrect, wrong: stWrong,
+        journeyAttempts: stAllAttempts, journeyCorrect: stJourneyCorrect, journeyWrong: stJourneyWrong,
+      });
       const stAttemptedEasy = topics.reduce((s: number, t: any) => s + (t.attemptedEasy || 0), 0);
       const stAttemptedMedium = topics.reduce((s: number, t: any) => s + (t.attemptedMedium || 0), 0);
       const stAttemptedHard = topics.reduce((s: number, t: any) => s + (t.attemptedHard || 0), 0);
@@ -195,10 +215,15 @@ export class SubjectTrackAnalysisService {
         totalTopics,
         numTrivia: stNumTrivia,
         attempted: stAttempted,
+        journeyAttempts: stAllAttempts,
         correct: stCorrect,
         wrong: stWrong,
+        journeyCorrect: stJourneyCorrect,
+        journeyWrong: stJourneyWrong,
+        journeyAccuracy: stJourneyAccuracy,
+        journeyScore: stJourneyScore,
         coverage: stCoverage,
-        accuracy: stAccuracy,
+        currentAccuracy: stAccuracy,
         score: stScore,
         attemptedEasy: stAttemptedEasy,
         attemptedMedium: stAttemptedMedium,
@@ -244,9 +269,45 @@ export class SubjectTrackAnalysisService {
     if (!stRows.length) return [];
 
     const stIds = [...new Set(stRows.map((r) => +r.stId))];
-    const stMerits = await this.meritService.getSubjectTrackMeritsWithRanks(stIds, userId);
+    const stMerits = await this.meritService.getSubjectTrackMasteryLeaderboards(stIds, userId);
     const stMap = this.buildSubjectTrackMap(stRows, topicStatsMap, stMerits, userId);
 
     return stIds.map((id) => stMap.get(id)).filter(Boolean).sort((a: any, b: any) => a.sortOrder - b.sortOrder);
+  }
+
+  /** CertificationTrack IDs that include at least one SubjectTrack under any of these subjects. */
+  async getCertificationTrackIdsForSubjects(subjectIds: number[]): Promise<number[]> {
+    if (!subjectIds.length) return [];
+    const rows = await this.dataSource
+      .createQueryBuilder()
+      .select('DISTINCT ct.id', 'ctId')
+      .from('certification_track', 'ct')
+      .innerJoin('certification_track_subject_track', 'ctst', 'ctst.certificationTrackId = ct.id')
+      .innerJoin('subject_track', 'st', 'st.id = ctst.subjectTrackId AND st.subjectId IN (:...subjectIds)', { subjectIds })
+      .where('ct.isPublished = 1')
+      .getRawMany();
+    return rows.map((r) => +r.ctId);
+  }
+
+  /**
+   * Full (cert, subjectTrack) hierarchy for the given CertificationTrack IDs — same row
+   * shape as ProgramService.fetchCertTrackHierarchy, just keyed by certificationTrackIds
+   * instead of jobRoleIds (used by achievement evaluation, which is scoped to the
+   * subject(s) just attempted rather than a whole job role).
+   */
+  async fetchCertTrackSubjectTrackHierarchy(certificationTrackIds: number[]): Promise<any[]> {
+    if (!certificationTrackIds.length) return [];
+    return this.dataSource
+      .createQueryBuilder()
+      .select('ct.id', 'ctId')
+      .addSelect('ct.title', 'ctTitle')
+      .addSelect('ct.jobRoleId', 'ctJobRoleId')
+      .addSelect('st.id', 'stId')
+      .from('certification_track', 'ct')
+      .innerJoin('certification_track_subject_track', 'ctst', 'ctst.certificationTrackId = ct.id')
+      .innerJoin('subject_track', 'st', 'st.id = ctst.subjectTrackId AND st.isPublished = 1')
+      .where('ct.id IN (:...certificationTrackIds)', { certificationTrackIds })
+      .andWhere('ct.isPublished = 1')
+      .getRawMany();
   }
 }
