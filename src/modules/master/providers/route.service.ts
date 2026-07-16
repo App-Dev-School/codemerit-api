@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { IUserPermissionDto } from 'src/common/dto/user-permission.dto';
+import { UserPermissionEnum } from 'src/common/policies/user-permission.enum';
 import { lmsRoutes } from '../routes/lms.routes';
 import { welcomeRoutes } from '../routes/welcome.routes';
 import { quizRoutes } from '../routes/quiz.routes';
@@ -54,9 +55,8 @@ export class RouteService {
       ...adminRoutes,
     ];
 
-    console.log("userPermissions", userPermissions);
     const permissionNames = userPermissions.map((p) => p.permissionName);
-    if (permissionNames.includes('LMS Manager')) {
+    if (permissionNames.includes(UserPermissionEnum.LmsManager)) {
       routes = [...routes, ...lmsRoutes, ...quizRoutes, ...smeRoutes];
     }
     routes = [...routes,

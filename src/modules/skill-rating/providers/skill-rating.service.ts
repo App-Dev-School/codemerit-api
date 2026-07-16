@@ -163,7 +163,7 @@ export class SkillRatingService {
       id: session.id,
       userId: session.user?.id,
       userName: `${session.user?.firstName} ${session.user?.lastName}`,
-      assessmentTitle: session.notes || 'Assessment',
+      assessmentTitle: session.assessmentTitle || 'Assessment',
       notes: session.notes,
       ratedById: session.ratedBy,
       ratedByName:

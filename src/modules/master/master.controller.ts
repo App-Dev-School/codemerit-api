@@ -18,6 +18,7 @@ import { MasterService } from './providers/master.service';
 import { TopicAnalysisService } from './providers/topic-analysis.service';
 import { SubjectStatsService } from './providers/subject-stats.service';
 import { ProgramService } from './providers/program.service';
+import { MeritService } from './providers/merit.service';
 
 @Controller('apis/master')
 export class MasterController {
@@ -27,6 +28,7 @@ export class MasterController {
     private readonly programService: ProgramService,
     private readonly topicAnalysisProvider: TopicAnalysisService,
     private readonly userPermissionService: UserPermissionService,
+    private readonly meritService: MeritService,
   ) {}
 
   @Public()
@@ -59,9 +61,9 @@ export class MasterController {
   ) {
     const subjectIdNum = subjectId ? parseInt(subjectId, 10) : undefined;
     if (subjectIdNum && subjectIdNum > 0) {
-      return this.topicAnalysisProvider.getTopicStatsBySubject(subjectIdNum, req.user, false);
+      return this.topicAnalysisProvider.getTopicStatsBySubject(subjectIdNum, req.user);
     }
-    return this.topicAnalysisProvider.getAllTopicStats(req.user, false);
+    return this.topicAnalysisProvider.getAllTopicStats(req.user);
   }
 
   @UseGuards(AuthGuard('jwt'))
@@ -91,5 +93,17 @@ export class MasterController {
   async getProgramDetails(@Param('programSlug') programSlug: string, @Request() req: any) {
     const userId = req.user?.id;
     return this.programService.getProgramDetails(programSlug, userId);
+  }
+
+  @Public()
+  @UseGuards(OptionalJwtAuthGuard)
+  @Get('leaderboard')
+  async getGlobalLeaderboard(
+    @Query('period') period: 'all-time' | 'weekly' | 'monthly' = 'all-time',
+    @Request() req?: any,
+  ) {
+    const userId = req?.user?.id;
+    const resolvedPeriod = ['weekly', 'monthly'].includes(period) ? period : 'all-time';
+    return this.meritService.getGlobalXpLeaderboard(userId, 10, resolvedPeriod);
   }
 }

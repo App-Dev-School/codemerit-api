@@ -111,17 +111,15 @@ export class UserService {
       //Send e-mail
       try {
         if (savedUser.accountStatus === AccountStatusEnum.ACTIVE) {
-          await this.mailService.sendWelcomeEmail(
+          await this.mailService.sendAccountVerifiedEmail(
             savedUser.email,
             savedUser.firstName,
           );
         } else {
-          await this.mailService.sendMail(
+          await this.mailService.sendRegistrationWelcomeEmail(
             savedUser.email,
-            'CodeMerit Registration Successful',
-            'You are registered successfully with CodeMerit. Use ' +
-              pass +
-              ' as the OTP to activate your account.',
+            savedUser.firstName,
+            pass,
           );
         }
       } catch (error) {
@@ -182,6 +180,7 @@ export class UserService {
             savedUser?.email,
             pass,
             UserOtpTagsEnum.ACC_VERIFY,
+            true,
           );
           console.log('CMRegistration Send otp => ', otp);
         } catch (error) {
@@ -193,7 +192,9 @@ export class UserService {
       return userResponse;
     } catch (err) {
       await queryRunner.rollbackTransaction();
-      throw new InternalServerErrorException(err.message);
+      throw new InternalServerErrorException(
+        err instanceof Error ? err.message : String(err),
+      );
     } finally {
       await queryRunner.release();
     }
@@ -372,6 +373,7 @@ export class UserService {
     email: string,
     pass: string,
     tag: UserOtpTagsEnum,
+    isNewRegistration = false,
   ): Promise<string | null> {
     const user: User = await this.findByEmail(email);
     if (!user) {
@@ -395,11 +397,20 @@ export class UserService {
     const result = await this.userOtpService.create(userOtp);
     //check if limit not exceeded for sending OTP. If exceeded, do not send e-mail and return error message
     try {
-      this.mailService.sendMail(
-        email,
-        'OTP received from CodeMerit',
-        'Use ' + pass + ' as the OTP from CodeMerit.',
-      );
+      if (isNewRegistration) {
+        await this.mailService.sendRegistrationWelcomeEmail(
+          email,
+          user.firstName,
+          userOtp.otp,
+        );
+      } else {
+        await this.mailService.sendOtpEmail(
+          email,
+          user.firstName,
+          userOtp.otp,
+          tag,
+        );
+      }
     } catch (error) {
       console.log('CMRegistration Error sending e-mail => ', error);
     }
@@ -450,6 +461,16 @@ export class UserService {
             user.id,
             user.firstName,
           );
+          try {
+            await this.mailService.sendAccountVerifiedEmail(
+              user.email,
+              user.firstName,
+            );
+          } catch (err) {
+            this.logger.error(
+              `Failed to send account-verified e-mail: ${err instanceof Error ? err.message : String(err)}`,
+            );
+          }
         }
       }
       if (accountVerificationDto.tag == UserOtpTagsEnum.PWD_RECOVER) {
@@ -460,6 +481,16 @@ export class UserService {
         msg = 'Successfully change your password.';
         if (userRs) {
           isPasswordChange = true;
+          try {
+            await this.mailService.sendPasswordChangedEmail(
+              user.email,
+              user.firstName,
+            );
+          } catch (err) {
+            this.logger.error(
+              `Failed to send password-changed e-mail: ${err instanceof Error ? err.message : String(err)}`,
+            );
+          }
         }
       }
 
@@ -611,5 +642,15 @@ export class UserService {
     );
 
     return saved;
+  }
+
+  /** The job role a user enrolled in first (i.e. the one set at registration, if
+   * any) — used to scope the one-time initial assessment quiz. */
+  async getEarliestJobRoleId(userId: number): Promise<number | null> {
+    const enrollment = await this.userJobRoleRepo.findOne({
+      where: { userId },
+      order: { createdAt: 'ASC' },
+    });
+    return enrollment?.jobRoleId ?? null;
   }
 }

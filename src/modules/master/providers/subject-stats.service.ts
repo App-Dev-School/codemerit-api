@@ -11,7 +11,7 @@ import { QuestionAttempt } from 'src/common/typeorm/entities/question-attempt.en
 import { Subject } from 'src/common/typeorm/entities/subject.entity';
 import { SubjectTrack } from 'src/common/typeorm/entities/subject-track.entity';
 import { UserSubject } from 'src/common/typeorm/entities/user-subject.entity';
-import { generateScore, getAggregateUserLevel } from 'src/common/utils/common-functions';
+import { computeAttemptMetrics, getAggregateUserLevel } from 'src/common/utils/common-functions';
 import { DataSource, In, Repository } from 'typeorm';
 import { MeritService } from './merit.service';
 import { TopicAnalysisService } from './topic-analysis.service';
@@ -120,12 +120,39 @@ export class SubjectStatsService {
         .addSelect('CASE WHEN us.userId IS NOT NULL THEN 1 ELSE 0 END', 'isSubscribed')
         .leftJoin('user_subject', 'us', 'us.subjectId = s.id AND us.userId = :userId', { userId })
         .setParameter('userId', userId);
+
+      // "Journey" totals — every attempt ever, retries included — separate from the
+      // latest-attempt-only fields above. See TopicAnalysisService for the same split;
+      // this is the subject-level equivalent so journeyAccuracy is available everywhere.
+      qb.leftJoin(
+        (subQ) => {
+          return subQ
+            .select('qa3.questionId', 'questionId')
+            .addSelect('COUNT(*)', 'attempts')
+            .addSelect('SUM(CASE WHEN qa3.isCorrect = 1 THEN 1 ELSE 0 END)', 'correct')
+            .addSelect(
+              'SUM(CASE WHEN qa3.isCorrect = 0 AND qa3.selectedOption IS NOT NULL THEN 1 ELSE 0 END)',
+              'wrong',
+            )
+            .from('question_attempt', 'qa3')
+            .where('qa3.userId = :userId', { userId })
+            .groupBy('qa3.questionId');
+        },
+        'rawAttempts',
+        'rawAttempts.questionId = q.id',
+      )
+        .addSelect('COALESCE(SUM(rawAttempts.attempts), 0)', 'journeyAttempts')
+        .addSelect('COALESCE(SUM(rawAttempts.correct), 0)', 'journeyCorrect')
+        .addSelect('COALESCE(SUM(rawAttempts.wrong), 0)', 'journeyWrong');
     } else {
       qb.addSelect('0', 'attempted')
         .addSelect('0', 'correct')
         .addSelect('0', 'wrong')
         .addSelect('0', 'skipped')
-        .addSelect('false', 'isSubscribed');
+        .addSelect('false', 'isSubscribed')
+        .addSelect('0', 'journeyAttempts')
+        .addSelect('0', 'journeyCorrect')
+        .addSelect('0', 'journeyWrong');
     }
 
     if (subjectId) return qb.getRawOne();
@@ -173,7 +200,7 @@ export class SubjectStatsService {
     const [raw, syllabus, subjectMerits, popularTopicsMap, ratings, lessons, relatedJobRoles] = await Promise.all([
       this.getSubjectStats(subjectId, userId),
       this.topicAnalyzer.getTopicStatsBySubject(subjectId, userId),
-      this.meritService.getSubjectMeritsWithRanks([subjectId], userId),
+      this.meritService.getSubjectMasteryLeaderboards([subjectId], userId),
       this.meritService.getPopularTopicsBySubject([subjectId]),
       userId ? this.getSubjectRatings(subjectId, userId) : Promise.resolve([]),
       this.getSubjectLessons(subjectId, userId),
@@ -202,9 +229,14 @@ export class SubjectStatsService {
     const wrong = +raw.wrong || 0;
     const skipped = +raw.skipped || 0;
     const numTrivia = +raw.numTrivia || 0;
-    const coverage = numTrivia > 0 ? +((attempted / numTrivia) * 100).toFixed(1) : 0;
-    const accuracy = attempted > 0 ? +(correct * 100 / attempted).toFixed(1) : 0;
-    const score = +generateScore(attempted, correct, wrong).toFixed(0);
+    const journeyAttempts = +raw.journeyAttempts || 0;
+    const journeyCorrect = +raw.journeyCorrect || 0;
+    const journeyWrong = +raw.journeyWrong || 0;
+    // computeAttemptMetrics() is the one shared implementation of this formula —
+    // every level (subject/topic/subjectTrack) calls it instead of reimplementing it.
+    const { coverage, currentAccuracy, score, journeyAccuracy, journeyScore } = computeAttemptMetrics({
+      numTrivia, attempted, correct, wrong, journeyAttempts, journeyCorrect, journeyWrong,
+    });
 
     return {
       id: +raw.subjectId,
@@ -238,9 +270,14 @@ export class SubjectStatsService {
         +raw.attemptedHard || 0, +raw.correctHard || 0,
       ),
       skipped,
-      accuracy,
+      currentAccuracy,
       coverage,
       score,
+      journeyAttempts,
+      journeyCorrect,
+      journeyWrong,
+      journeyAccuracy,
+      journeyScore,
       userRank: subjectMerits.userRanks.get(subjectId) ?? null,
       syllabus,
       subjectTracks,
@@ -444,6 +481,7 @@ export class SubjectStatsService {
       .leftJoinAndSelect('session.skillRatings', 'rating')
       .leftJoinAndSelect('session.rater', 'rater')
       .where('session.userId = :userId', { userId })
+      .andWhere('rating.skillId = :subjectId', { subjectId })
       .orderBy('session.id', 'DESC')
       .addOrderBy('rating.id', 'DESC')
       .getMany();

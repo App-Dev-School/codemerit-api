@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { CERT_ACHIEVED } from 'src/common/constants/completion-thresholds';
 import { JobRole } from 'src/common/typeorm/entities/job-role.entity';
 import { SubjectTrack } from 'src/common/typeorm/entities/subject-track.entity';
 import { User } from 'src/common/typeorm/entities/user.entity';
@@ -9,9 +10,6 @@ import { MeritService } from './merit.service';
 import { SubjectStatsService } from './subject-stats.service';
 import { TopicAnalysisService } from './topic-analysis.service';
 import { SubjectTrackAnalysisService } from './subject-track-analysis.service';
-
-// ─── Completion thresholds ────────────────────────────────────────────────────
-const CERT_ACHIEVED = 80;     // % of subject tracks done to achieve a cert
 
 @Injectable()
 export class ProgramService {
@@ -28,6 +26,41 @@ export class ProgramService {
     private readonly meritService: MeritService,
     private readonly subjectTrackAnalyzer: SubjectTrackAnalysisService,
   ) {}
+
+  // ─── "Next best action" surfacing ─────────────────────────────────────────────
+
+  /**
+   * Given a job role's (or program's) already-assembled certificationTracks
+   * cards (each with progressPercent/isAchieved and subjectTracks with their
+   * own progressPercent/isCompleted), picks the single closest-to-completion
+   * not-yet-achieved cert track, and within it the closest-to-completion
+   * not-yet-completed subject track — so a dashboard can surface a concrete
+   * "you're closest to earning X, do Y next" instead of a static list.
+   */
+  private pickNextBestAction(certificationTracks: any[]): {
+    nextCertificationTrack: any | null;
+    nextSubjectTrack: any | null;
+  } {
+    const inProgress = certificationTracks
+      .filter((ct) => !ct.isAchieved)
+      .sort((a, b) => (b.progressPercent ?? 0) - (a.progressPercent ?? 0));
+
+    const nextCt = inProgress[0] ?? null;
+    if (!nextCt) return { nextCertificationTrack: null, nextSubjectTrack: null };
+
+    const incompleteTracks = (nextCt.subjectTracks ?? [])
+      .filter((st: any) => !st.isCompleted)
+      .sort((a: any, b: any) => (b.progressPercent ?? 0) - (a.progressPercent ?? 0));
+
+    return {
+      nextCertificationTrack: {
+        id: nextCt.id, title: nextCt.title, progressPercent: nextCt.progressPercent,
+      },
+      nextSubjectTrack: incompleteTracks[0]
+        ? { id: incompleteTracks[0].id, title: incompleteTracks[0].title, progressPercent: incompleteTracks[0].progressPercent }
+        : null,
+    };
+  }
 
   // ─── Shared Private Fetchers ──────────────────────────────────────────────────
 
@@ -210,7 +243,7 @@ export class ProgramService {
       : [];
     const topicStatsMap = new Map<number, any>(topicStatsList.map((t) => [t.id, t]));
 
-    const stMerits = await this.meritService.getSubjectTrackMeritsWithRanks(certStIds, userId);
+    const stMerits = await this.meritService.getSubjectTrackMasteryLeaderboards(certStIds, userId);
     const stMap = this.subjectTrackAnalyzer.buildSubjectTrackMap(stRowsForCerts, topicStatsMap, stMerits, userId);
 
     // Index certRows by jobRole
@@ -303,10 +336,13 @@ export class ProgramService {
         };
       });
 
+      const { nextCertificationTrack, nextSubjectTrack } = this.pickNextBestAction(certificationTracks);
+
       return {
         id: +jr.id, title: jr.title, slug: jr.slug, image: jr.image,
         color: jr.color, description: jr.description,
         readinessScore, subjects, certificationTracks,
+        nextCertificationTrack, nextSubjectTrack,
       };
     });
 
@@ -341,15 +377,18 @@ export class ProgramService {
         jobRole: { id: jobRole.id, title: jobRole.title, slug: jobRole.slug, image: jobRole.image, color: jobRole.color, description: jobRole.description, body: (jobRole as any).body, scope: (jobRole as any).scope },
         subjects: [],
         certificationTracks: [],
+        meritList: [],
+        userRank: null,
       };
     }
 
-    const [stRows, certRows, subjectStatsMap, subjectMerits, popularTopicsMap] = await Promise.all([
+    const [stRows, certRows, subjectStatsMap, subjectMerits, popularTopicsMap, jobRoleMerit] = await Promise.all([
       this.subjectTrackAnalyzer.fetchSubjectTracksWithTopics(subjectIds),
       this.fetchCertTrackHierarchy([jobRoleId]),
       this.subjectStats.getSubjectStatsMap(userId),
-      this.meritService.getSubjectMeritsWithRanks(subjectIds, userId),
+      this.meritService.getSubjectMasteryLeaderboards(subjectIds, userId),
       this.meritService.getPopularTopicsBySubject(subjectIds),
+      this.meritService.getJobRoleMasteryLeaderboard(subjectIds, userId),
     ]);
 
     // Topic stats — fetched regardless of auth so title/slug/numTrivia are always populated;
@@ -362,7 +401,7 @@ export class ProgramService {
 
     // SubjectTrack merits
     const allStIds = [...new Set(stRows.map((r) => +r.stId))];
-    const stMerits = await this.meritService.getSubjectTrackMeritsWithRanks(allStIds, userId);
+    const stMerits = await this.meritService.getSubjectTrackMasteryLeaderboards(allStIds, userId);
 
     // Build the central subjectTrack map (shared by subjects and cert views)
     const stMap = this.subjectTrackAnalyzer.buildSubjectTrackMap(stRows, topicStatsMap, stMerits, userId);
@@ -480,6 +519,10 @@ export class ProgramService {
         return certCard;
       });
 
+    const nextBestAction = userId
+      ? this.pickNextBestAction(certificationTracks)
+      : { nextCertificationTrack: null, nextSubjectTrack: null };
+
     return {
       jobRole: {
         id: jobRole.id, title: jobRole.title, slug: jobRole.slug,
@@ -488,6 +531,9 @@ export class ProgramService {
       },
       subjects,
       certificationTracks,
+      meritList: jobRoleMerit.meritList,
+      userRank: jobRoleMerit.userRank,
+      ...nextBestAction,
     };
   }
 }

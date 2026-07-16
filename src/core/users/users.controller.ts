@@ -5,12 +5,15 @@ import {
   Get,
   Param,
   ParseIntPipe,
+  Post,
   Put,
   Query,
   Request,
   UseGuards,
 } from '@nestjs/common';
 import { ApiResponse } from 'src/common/utils/api-response';
+import { AppCustomException } from 'src/common/exceptions/app-custom-exception.filter';
+import { QuizService } from 'src/modules/quiz/providers/quiz.service';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { UpdateUserProfileDto } from './dtos/update-user-profile.dto';
@@ -26,6 +29,7 @@ export class UsersController {
     private readonly usersService: UserService,
     private readonly userProfileService: UserProfileService,
     private readonly userProfileAggregatorService: UserProfileAggregatorService,
+    private readonly quizService: QuizService,
   ) {}
   @Get('me')
   async getProfile(@Request() req): Promise<ApiResponse<any>> {
@@ -34,6 +38,25 @@ export class UsersController {
       return new ApiResponse('User Found', result);
     }
     return new ApiResponse('User not found', result);
+  }
+
+  @Post('initial-assessment')
+  async generateInitialAssessment(@Request() req): Promise<ApiResponse<any>> {
+    const userId = req.user.id;
+    const user = await this.usersService.findOne(userId);
+    const jobRoleId = await this.usersService.getEarliestJobRoleId(userId);
+    if (!jobRoleId) {
+      throw new AppCustomException(
+        400,
+        'No job role selected — cannot generate an initial assessment.',
+      );
+    }
+    const result = await this.quizService.createInitialAssessmentQuiz(
+      userId,
+      user.firstName,
+      jobRoleId,
+    );
+    return new ApiResponse(result.message, result.quiz);
   }
 
   //View Profile API for Admin

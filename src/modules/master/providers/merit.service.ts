@@ -1,225 +1,188 @@
 import { Injectable } from '@nestjs/common';
 import { QuestionStatusEnum } from 'src/common/enum/question-status.enum';
 import { QuestionTypeEnum } from 'src/common/enum/question-type.enum';
-import { generateScore } from 'src/common/utils/common-functions';
 import { DataSource } from 'typeorm';
 
 @Injectable()
 export class MeritService {
   constructor(private readonly dataSource: DataSource) {}
 
-  // ─── Subject Merit Lists ──────────────────────────────────────────────────────
-
-  private async computeSubjectScores(subjectIds: number[]) {
-    const [triviaRows, scoreRows] = await Promise.all([
-      this.dataSource
-        .createQueryBuilder()
-        .select('q.subjectId', 'subjectId')
-        .addSelect('COUNT(DISTINCT q.id)', 'numTrivia')
-        .from('question', 'q')
-        .where('q.subjectId IN (:...subjectIds)', { subjectIds })
-        .andWhere('q.questionType = :trivia', { trivia: QuestionTypeEnum.Trivia })
-        .andWhere('q.status = :active', { active: QuestionStatusEnum.Active })
-        .groupBy('q.subjectId')
-        .getRawMany(),
-
-      this.dataSource
-        .createQueryBuilder()
-        .select('q.subjectId', 'subjectId')
-        .addSelect('u.id', 'userId')
-        .addSelect("CONCAT(u.firstName, ' ', u.lastName)", 'name')
-        .addSelect('u.username', 'username')
-        .addSelect('u.image', 'image')
-        .addSelect('jr.title', 'designationName')
-        .addSelect('COUNT(la.questionId)', 'totalAttempts')
-        .addSelect('SUM(CASE WHEN qa.isCorrect = 1 THEN 1 ELSE 0 END)', 'totalCorrect')
-        .addSelect(
-          'SUM(CASE WHEN qa.isCorrect = 0 AND qa.selectedOption IS NOT NULL THEN 1 ELSE 0 END)',
-          'totalWrong',
-        )
-        .from(
-          (subQ) =>
-            subQ
-              .select('qa2.userId', 'userId')
-              .addSelect('qa2.questionId', 'questionId')
-              .addSelect('MAX(qa2.id)', 'maxId')
-              .from('question_attempt', 'qa2')
-              .groupBy('qa2.userId')
-              .addGroupBy('qa2.questionId'),
-          'la',
-        )
-        .innerJoin('question_attempt', 'qa', 'qa.id = la.maxId')
-        .innerJoin('user', 'u', 'u.id = la.userId')
-        .leftJoin('job_role', 'jr', 'jr.id = u.designation')
-        .innerJoin('question', 'q', 'q.id = la.questionId')
-        .where('q.subjectId IN (:...subjectIds)', { subjectIds })
-        .andWhere('q.questionType = :trivia', { trivia: QuestionTypeEnum.Trivia })
-        .andWhere('q.status = :active', { active: QuestionStatusEnum.Active })
-        .groupBy('q.subjectId')
-        .addGroupBy('u.id')
-        .getRawMany(),
-    ]);
-
-    const triviaMap = new Map<number, number>(triviaRows.map((r) => [+r.subjectId, +r.numTrivia]));
-    return { triviaMap, rows: scoreRows };
+  /**
+   * Dense-rank a list already sorted descending by score (ties share a rank, e.g.
+   * 1,1,3 not 1,1,2). The one implementation of this — was previously copy-pasted
+   * three times in this file (subject merits, subject-track merits, XP leaderboard).
+   */
+  private assignDenseRanks<T>(
+    sortedDescending: T[],
+    getScore: (item: T) => number,
+  ): (T & { rank: number })[] {
+    let prev: number | null = null;
+    let rank = 0;
+    let seen = 0;
+    return sortedDescending.map((item) => {
+      seen++;
+      const score = getScore(item);
+      if (prev === null || score < prev) rank = seen;
+      prev = score;
+      return { ...item, rank };
+    });
   }
 
-  async getSubjectMeritsWithRanks(
+  // ─── Mastery-based leaderboards (subject / subject-track / job-role) ─────────
+  //
+  // "Leader" = whoever has answered the most DISTINCT questions correctly, ever —
+  // the same "first correct answer, permanent credit" philosophy already used for
+  // XP (see AchievementService.awardXpAndLevel). This replaced an older formula
+  // (generateScore(attempts,correct,wrong)*0.8 + coverage*0.2, based on each
+  // question's *latest* attempt) that was duplicated across four separate methods
+  // in this codebase — this is the one remaining implementation. Trivia/Active
+  // questions only, matching the numTrivia/coverage convention used everywhere
+  // else on these dashboards.
+
+  private shapeAndRankMasteryRows(
+    rows: any[],
+    userId?: number,
+    limit = 10,
+  ): { meritList: any[]; userRank: number | null } {
+    const shaped = rows
+      .map((r) => ({
+        userId: +r.userId, name: r.name, username: r.username,
+        image: r.image, designationName: r.designationName,
+        masteryCount: +r.masteryCount || 0,
+      }))
+      .sort((a, b) => b.masteryCount - a.masteryCount);
+    const ranked = this.assignDenseRanks(shaped, (m) => m.masteryCount);
+    return {
+      meritList: ranked.slice(0, limit),
+      userRank: userId != null ? ranked.find((m) => m.userId === userId)?.rank ?? null : null,
+    };
+  }
+
+  /** Leaders within one or more subjects, bucketed per subject. */
+  async getSubjectMasteryLeaderboards(
     subjectIds: number[],
     userId?: number,
     limit = 10,
   ): Promise<{ meritLists: Map<number, any[]>; userRanks: Map<number, number | null> }> {
     if (!subjectIds.length) return { meritLists: new Map(), userRanks: new Map() };
 
-    const { triviaMap, rows } = await this.computeSubjectScores(subjectIds);
+    const rows = await this.dataSource
+      .createQueryBuilder()
+      .select('q.subjectId', 'subjectId')
+      .addSelect('u.id', 'userId')
+      .addSelect("CONCAT(u.firstName, ' ', u.lastName)", 'name')
+      .addSelect('u.username', 'username')
+      .addSelect('u.image', 'image')
+      .addSelect('jr.title', 'designationName')
+      .addSelect('COUNT(DISTINCT qa.questionId)', 'masteryCount')
+      .from('question_attempt', 'qa')
+      .innerJoin(
+        'question', 'q',
+        'q.id = qa.questionId AND q.subjectId IN (:...subjectIds) AND q.status = :active AND q.questionType = :trivia',
+        { subjectIds, active: QuestionStatusEnum.Active, trivia: QuestionTypeEnum.Trivia },
+      )
+      .innerJoin('user', 'u', 'u.id = qa.userId')
+      .leftJoin('job_role', 'jr', 'jr.id = u.designation')
+      .where('qa.isCorrect = 1')
+      .groupBy('q.subjectId')
+      .addGroupBy('u.id')
+      .getRawMany();
 
     const buckets = new Map<number, any[]>();
     for (const row of rows) {
       const subjectId = +row.subjectId;
-      const numTrivia = triviaMap.get(subjectId) || 0;
-      const totalAttempts = +row.totalAttempts || 0;
-      const totalCorrect = +row.totalCorrect || 0;
-      const totalWrong = +row.totalWrong || 0;
-      const coverage = numTrivia > 0 ? (totalAttempts / numTrivia) * 100 : 0;
-      const baseScore = generateScore(totalAttempts, totalCorrect, totalWrong);
-      const score = +(baseScore * 0.8 + coverage * 0.2).toFixed(1);
-      const accuracy = totalAttempts > 0 ? +((totalCorrect / totalAttempts) * 100).toFixed(1) : 0;
       const arr = buckets.get(subjectId) || [];
-      arr.push({
-        userId: +row.userId, name: row.name, username: row.username,
-        image: row.image, designationName: row.designationName,
-        totalAttempts, totalCorrect, totalWrong,
-        accuracy, coverage: +coverage.toFixed(1), score,
-      });
+      arr.push(row);
       buckets.set(subjectId, arr);
     }
 
     const meritLists = new Map<number, any[]>();
     const userRanks = new Map<number, number | null>();
-
     for (const [subjectId, arr] of buckets) {
-      arr.sort((a, b) => b.score - a.score);
-      let prev: number | null = null, rank = 0, seen = 0;
-      const ranked = arr.map((m) => {
-        seen++;
-        if (prev === null || m.score < prev) rank = seen;
-        prev = m.score;
-        return { ...m, rank };
-      });
-      meritLists.set(subjectId, ranked.slice(0, limit));
-      if (userId != null) {
-        userRanks.set(subjectId, ranked.find((m) => m.userId === userId)?.rank ?? null);
-      }
+      const { meritList, userRank } = this.shapeAndRankMasteryRows(arr, userId, limit);
+      meritLists.set(subjectId, meritList);
+      userRanks.set(subjectId, userRank);
     }
-
     return { meritLists, userRanks };
   }
 
-  // ─── SubjectTrack Merit Lists ─────────────────────────────────────────────────
-
-  async getSubjectTrackMeritsWithRanks(
+  /** Leaders within one or more subject tracks, bucketed per subject track. */
+  async getSubjectTrackMasteryLeaderboards(
     subjectTrackIds: number[],
     userId?: number,
     limit = 10,
   ): Promise<{ meritLists: Map<number, any[]>; userRanks: Map<number, number | null> }> {
     if (!subjectTrackIds.length) return { meritLists: new Map(), userRanks: new Map() };
 
-    const [triviaRows, scoreRows] = await Promise.all([
-      this.dataSource
-        .createQueryBuilder()
-        .select('stt.subjectTrackId', 'subjectTrackId')
-        .addSelect('COUNT(DISTINCT q.id)', 'numTrivia')
-        .from('subject_track_topic', 'stt')
-        .innerJoin('question_topic', 'qt', 'qt.topicId = stt.topicId')
-        .innerJoin('question', 'q', 'q.id = qt.questionId AND q.status = :active AND q.questionType = :trivia', {
-          active: QuestionStatusEnum.Active, trivia: QuestionTypeEnum.Trivia,
-        })
-        .where('stt.subjectTrackId IN (:...subjectTrackIds)', { subjectTrackIds })
-        .groupBy('stt.subjectTrackId')
-        .getRawMany(),
-
-      this.dataSource
-        .createQueryBuilder()
-        .select('stt.subjectTrackId', 'subjectTrackId')
-        .addSelect('u.id', 'userId')
-        .addSelect("CONCAT(u.firstName, ' ', u.lastName)", 'name')
-        .addSelect('u.username', 'username')
-        .addSelect('u.image', 'image')
-        .addSelect('jr.title', 'designationName')
-        .addSelect('COUNT(DISTINCT la.questionId)', 'uniqueAttempts')
-        .addSelect('SUM(CASE WHEN qa.isCorrect = 1 THEN 1 ELSE 0 END)', 'totalCorrect')
-        .addSelect(
-          'SUM(CASE WHEN qa.isCorrect = 0 AND qa.selectedOption IS NOT NULL THEN 1 ELSE 0 END)',
-          'totalWrong',
-        )
-        .from('subject_track_topic', 'stt')
-        .innerJoin('question_topic', 'qt', 'qt.topicId = stt.topicId')
-        .innerJoin('question', 'q', 'q.id = qt.questionId AND q.status = :active', {
-          active: QuestionStatusEnum.Active,
-        })
-        .innerJoin(
-          (subQ) =>
-            subQ
-              .select('qa2.userId', 'userId')
-              .addSelect('qa2.questionId', 'questionId')
-              .addSelect('MAX(qa2.id)', 'maxId')
-              .from('question_attempt', 'qa2')
-              .groupBy('qa2.userId')
-              .addGroupBy('qa2.questionId'),
-          'la',
-          'la.questionId = q.id',
-        )
-        .innerJoin('question_attempt', 'qa', 'qa.id = la.maxId')
-        .innerJoin('user', 'u', 'u.id = la.userId')
-        .leftJoin('job_role', 'jr', 'jr.id = u.designation')
-        .where('stt.subjectTrackId IN (:...subjectTrackIds)', { subjectTrackIds })
-        .groupBy('stt.subjectTrackId')
-        .addGroupBy('u.id')
-        .getRawMany(),
-    ]);
-
-    const triviaMap = new Map<number, number>(triviaRows.map((r) => [+r.subjectTrackId, +r.numTrivia]));
+    const rows = await this.dataSource
+      .createQueryBuilder()
+      .select('stt.subjectTrackId', 'subjectTrackId')
+      .addSelect('u.id', 'userId')
+      .addSelect("CONCAT(u.firstName, ' ', u.lastName)", 'name')
+      .addSelect('u.username', 'username')
+      .addSelect('u.image', 'image')
+      .addSelect('jr.title', 'designationName')
+      .addSelect('COUNT(DISTINCT qa.questionId)', 'masteryCount')
+      .from('subject_track_topic', 'stt')
+      .innerJoin('question_topic', 'qt', 'qt.topicId = stt.topicId')
+      .innerJoin('question', 'q', 'q.id = qt.questionId AND q.status = :active AND q.questionType = :trivia', {
+        active: QuestionStatusEnum.Active, trivia: QuestionTypeEnum.Trivia,
+      })
+      .innerJoin('question_attempt', 'qa', 'qa.questionId = q.id AND qa.isCorrect = 1')
+      .innerJoin('user', 'u', 'u.id = qa.userId')
+      .leftJoin('job_role', 'jr', 'jr.id = u.designation')
+      .where('stt.subjectTrackId IN (:...subjectTrackIds)', { subjectTrackIds })
+      .groupBy('stt.subjectTrackId')
+      .addGroupBy('u.id')
+      .getRawMany();
 
     const buckets = new Map<number, any[]>();
-    for (const row of scoreRows) {
+    for (const row of rows) {
       const stId = +row.subjectTrackId;
-      const numTrivia = triviaMap.get(stId) || 0;
-      const uniqueAttempts = +row.uniqueAttempts || 0;
-      const totalCorrect = +row.totalCorrect || 0;
-      const totalWrong = +row.totalWrong || 0;
-      const coverage = numTrivia > 0 ? (uniqueAttempts / numTrivia) * 100 : 0;
-      const baseScore = generateScore(uniqueAttempts, totalCorrect, totalWrong);
-      const score = +(baseScore * 0.8 + coverage * 0.2).toFixed(1);
-      const accuracy = uniqueAttempts > 0 ? +((totalCorrect / uniqueAttempts) * 100).toFixed(1) : 0;
       const arr = buckets.get(stId) || [];
-      arr.push({
-        userId: +row.userId, name: row.name, username: row.username,
-        image: row.image, designationName: row.designationName,
-        uniqueAttempts, totalCorrect, totalWrong,
-        accuracy, coverage: +coverage.toFixed(1), score,
-      });
+      arr.push(row);
       buckets.set(stId, arr);
     }
 
     const meritLists = new Map<number, any[]>();
     const userRanks = new Map<number, number | null>();
-
     for (const [stId, arr] of buckets) {
-      arr.sort((a, b) => b.score - a.score);
-      let prev: number | null = null, rank = 0, seen = 0;
-      const ranked = arr.map((m) => {
-        seen++;
-        if (prev === null || m.score < prev) rank = seen;
-        prev = m.score;
-        return { ...m, rank };
-      });
-      meritLists.set(stId, ranked.slice(0, limit));
-      if (userId != null) {
-        userRanks.set(stId, ranked.find((m) => m.userId === userId)?.rank ?? null);
-      }
+      const { meritList, userRank } = this.shapeAndRankMasteryRows(arr, userId, limit);
+      meritLists.set(stId, meritList);
+      userRanks.set(stId, userRank);
     }
-
     return { meritLists, userRanks };
+  }
+
+  /** Leaders across an entire job role — i.e. all of its subjects combined, not bucketed. */
+  async getJobRoleMasteryLeaderboard(
+    subjectIds: number[],
+    userId?: number,
+    limit = 10,
+  ): Promise<{ meritList: any[]; userRank: number | null }> {
+    if (!subjectIds.length) return { meritList: [], userRank: null };
+
+    const rows = await this.dataSource
+      .createQueryBuilder()
+      .select('u.id', 'userId')
+      .addSelect("CONCAT(u.firstName, ' ', u.lastName)", 'name')
+      .addSelect('u.username', 'username')
+      .addSelect('u.image', 'image')
+      .addSelect('jr.title', 'designationName')
+      .addSelect('COUNT(DISTINCT qa.questionId)', 'masteryCount')
+      .from('question_attempt', 'qa')
+      .innerJoin(
+        'question', 'q',
+        'q.id = qa.questionId AND q.subjectId IN (:...subjectIds) AND q.status = :active AND q.questionType = :trivia',
+        { subjectIds, active: QuestionStatusEnum.Active, trivia: QuestionTypeEnum.Trivia },
+      )
+      .innerJoin('user', 'u', 'u.id = qa.userId')
+      .leftJoin('job_role', 'jr', 'jr.id = u.designation')
+      .where('qa.isCorrect = 1')
+      .groupBy('u.id')
+      .getRawMany();
+
+    return this.shapeAndRankMasteryRows(rows, userId, limit);
   }
 
   // ─── Popular Topics ───────────────────────────────────────────────────────────
@@ -279,5 +242,81 @@ export class MeritService {
       subjectId: +r.subjectId, subjectName: r.subjectName,
       totalAttempts: +r.totalAttempts,
     }));
+  }
+
+  // ─── Global XP Leaderboard ─────────────────────────────────────────────────────
+
+  /** Most recent Monday 00:00 (local server time) — matches UserStreak's own day-boundary convention. */
+  private startOfWeek(now = new Date()): Date {
+    const date = new Date(now);
+    date.setHours(0, 0, 0, 0);
+    const daysSinceMonday = (date.getDay() + 6) % 7; // getDay(): 0=Sun,1=Mon,...,6=Sat
+    date.setDate(date.getDate() - daysSinceMonday);
+    return date;
+  }
+
+  private startOfMonth(now = new Date()): Date {
+    const date = new Date(now);
+    date.setHours(0, 0, 0, 0);
+    date.setDate(1);
+    return date;
+  }
+
+  /**
+   * Leaderboard by XP, either all-time (User.points, unbounded) or windowed to the
+   * current week/month (summed from UserXpLog, which exists only so this can be
+   * computed — User.points itself has no history to slice by date). Windowing
+   * makes rank achievable for new users too, instead of competing against everyone's
+   * entire lifetime total forever.
+   */
+  async getGlobalXpLeaderboard(
+    userId?: number,
+    limit = 10,
+    period: 'all-time' | 'weekly' | 'monthly' = 'all-time',
+  ): Promise<{ leaderboard: any[]; userRank: number | null; period: string; periodStart: string | null }> {
+    let rows: any[];
+    let periodStart: Date | null = null;
+
+    if (period === 'all-time') {
+      rows = await this.dataSource
+        .createQueryBuilder()
+        .select('u.id', 'userId')
+        .addSelect("CONCAT(u.firstName, ' ', u.lastName)", 'name')
+        .addSelect('u.username', 'username')
+        .addSelect('u.image', 'image')
+        .addSelect('u.points', 'points')
+        .from('user', 'u')
+        .where('u.points > 0')
+        .orderBy('u.points', 'DESC')
+        .getRawMany();
+    } else {
+      periodStart = period === 'weekly' ? this.startOfWeek() : this.startOfMonth();
+      rows = await this.dataSource
+        .createQueryBuilder()
+        .select('u.id', 'userId')
+        .addSelect("CONCAT(u.firstName, ' ', u.lastName)", 'name')
+        .addSelect('u.username', 'username')
+        .addSelect('u.image', 'image')
+        .addSelect('SUM(xl.xpAwarded)', 'points')
+        .from('user', 'u')
+        .innerJoin('user_xp_log', 'xl', 'xl.userId = u.id AND xl.createdAt >= :periodStart', { periodStart })
+        .groupBy('u.id')
+        .orderBy('SUM(xl.xpAwarded)', 'DESC')
+        .getRawMany();
+    }
+
+    // Rows are already ordered DESC by the query itself.
+    const shaped = rows.map((r) => ({
+      userId: +r.userId, name: r.name, username: r.username,
+      image: r.image, points: +r.points || 0,
+    }));
+    const ranked = this.assignDenseRanks(shaped, (r) => r.points);
+
+    return {
+      leaderboard: ranked.slice(0, limit),
+      userRank: userId != null ? ranked.find((r) => r.userId === userId)?.rank ?? null : null,
+      period,
+      periodStart: periodStart ? periodStart.toISOString() : null,
+    };
   }
 }

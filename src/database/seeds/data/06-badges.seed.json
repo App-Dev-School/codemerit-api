@@ -1,0 +1,60 @@
+{
+  "badges": [
+    {
+      "code": "first_quiz",
+      "name": "First Steps",
+      "description": "Completed your very first quiz on CodeMerit.",
+      "content": "Welcome aboard! You just completed your first quiz.",
+      "iconUrl": "/assets/badges/first-quiz.svg",
+      "points": 20
+    },
+    {
+      "code": "perfect_score",
+      "name": "Perfect Score",
+      "description": "Answered every question correctly in a single quiz.",
+      "content": "Flawless! You scored 100% on a quiz.",
+      "iconUrl": "/assets/badges/perfect-score.svg",
+      "points": 30
+    },
+    {
+      "code": "subject_mastered",
+      "name": "Subject Master",
+      "description": "Reached full topic coverage across an entire subject.",
+      "content": "You've mastered every topic in a subject.",
+      "iconUrl": "/assets/badges/subject-mastered.svg",
+      "points": 50
+    },
+    {
+      "code": "streak_7",
+      "name": "7-Day Streak",
+      "description": "Practiced 7 days in a row.",
+      "content": "A full week of consistent practice!",
+      "iconUrl": "/assets/badges/streak-7.svg",
+      "points": 25
+    },
+    {
+      "code": "streak_30",
+      "name": "30-Day Streak",
+      "description": "Practiced 30 days in a row.",
+      "content": "A whole month without missing a day!",
+      "iconUrl": "/assets/badges/streak-30.svg",
+      "points": 75
+    },
+    {
+      "code": "streak_100",
+      "name": "100-Day Streak",
+      "description": "Practiced 100 days in a row.",
+      "content": "100 days of dedication!",
+      "iconUrl": "/assets/badges/streak-100.svg",
+      "points": 150
+    },
+    {
+      "code": "cert_earned",
+      "name": "Certified Professional",
+      "description": "Earned your first certification track certificate.",
+      "content": "Congratulations on earning your first certificate!",
+      "iconUrl": "/assets/badges/cert-earned.svg",
+      "points": 50
+    }
+  ]
+}

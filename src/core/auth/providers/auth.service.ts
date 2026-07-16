@@ -79,21 +79,10 @@ export class AuthService {
   }
 
   async login(user: User) {
-    //temporary logic. To be updated after e-mail integration
-    //Auto ACC_VERIFY without notification + test email
     if (user.accountStatus != AccountStatusEnum.ACTIVE) {
-      //Enable instant verification. Do not throw error if password is validated
-      /*
-      throw new HttpException(
-        'Please verify your account to sign in.',
-        HttpStatus.NOT_ACCEPTABLE,
-      );
-      */
-      const msg = 'Your account is now verified.';
-      //Do - Send a notification to the user
-      const updateStatus = this.usersService.updateUserAccountStatus(
-        user?.id,
-        AccountStatusEnum.ACTIVE,
+      throw new AppCustomException(
+        HttpStatus.FORBIDDEN,
+        'Please verify your account using the OTP sent to your e-mail before signing in.',
       );
     }
     const payload: any = {

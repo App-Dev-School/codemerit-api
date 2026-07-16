@@ -13,6 +13,9 @@ export class Badge {
   @PrimaryGeneratedColumn({ type: 'int' })
   id: number;
 
+  @Column({ type: 'varchar', length: 50, unique: true, nullable: false })
+  code: string;
+
   @IsNotEmpty()
   @IsString()
   @MinLength(2)
@@ -35,6 +38,9 @@ export class Badge {
   @IsString()
   @Column({ type: 'varchar', length: 1000 })
   iconUrl: string;
+
+  @Column({ type: 'int', default: 0 })
+  points: number;
 
   @CreateDateColumn()
   createdAt: Date;

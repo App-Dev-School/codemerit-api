@@ -35,13 +35,7 @@ export class NotificationService {
       notifySMS: dto.notifySMS ?? false,
     });
 
-    const saved = await this.notificationRepo.save(notification);
-
-    if (saved.notifyEmail) {
-      await this.emailService.sendNotificationEmail(saved);
-    }
-
-    return saved;
+    return this.notificationRepo.save(notification);
   }
 
   async notifyRoleEnrolled(
@@ -64,7 +58,9 @@ export class NotificationService {
       notifySMS: false,
       createdBy: userId,
     });
-    return this.notificationRepo.save(entity);
+    const saved = await this.notificationRepo.save(entity);
+    await this.emailService.sendRoleEnrolledEmail(userId, jobRole);
+    return saved;
   }
 
   async notifyAccountVerified(
@@ -106,6 +102,97 @@ export class NotificationService {
       createdBy: userId,
     });
     return this.notificationRepo.save(entity);
+  }
+
+  async notifyCertificateIssued(
+    userId: number,
+    trackTitle: string,
+    certificateNumber: string,
+    certificationTrackId = 0,
+  ): Promise<Notification> {
+    const entity = this.notificationRepo.create({
+      userId,
+      title: 'Certificate Earned',
+      message: this.format(NOTIFICATION_MESSAGES.CERTIFICATE_ISSUED, {
+        trackTitle,
+        certificateNumber,
+      }),
+      dataId: certificationTrackId,
+      dataTitle: trackTitle,
+      isRead: false,
+      notifyEmail: false,
+      notifySMS: false,
+      createdBy: userId,
+    });
+    const saved = await this.notificationRepo.save(entity);
+    await this.emailService.sendCertificateIssuedEmail(
+      userId,
+      trackTitle,
+      certificateNumber,
+    );
+    return saved;
+  }
+
+  async notifyBadgeEarned(
+    userId: number,
+    badgeName: string,
+    badgeId = 0,
+  ): Promise<Notification> {
+    const entity = this.notificationRepo.create({
+      userId,
+      title: 'Badge Earned',
+      message: this.format(NOTIFICATION_MESSAGES.BADGE_EARNED, { badgeName }),
+      dataId: badgeId,
+      dataTitle: badgeName,
+      isRead: false,
+      notifyEmail: false,
+      notifySMS: false,
+      createdBy: userId,
+    });
+    const saved = await this.notificationRepo.save(entity);
+    await this.emailService.sendBadgeEarnedEmail(userId, badgeName);
+    return saved;
+  }
+
+  async notifyStreakMilestone(
+    userId: number,
+    days: number,
+  ): Promise<Notification> {
+    const entity = this.notificationRepo.create({
+      userId,
+      title: 'Streak Milestone',
+      message: this.format(NOTIFICATION_MESSAGES.STREAK_MILESTONE, { days }),
+      dataId: days,
+      dataTitle: `${days}-Day Streak`,
+      isRead: false,
+      notifyEmail: false,
+      notifySMS: false,
+      createdBy: userId,
+    });
+    const saved = await this.notificationRepo.save(entity);
+    await this.emailService.sendStreakMilestoneEmail(userId, days);
+    return saved;
+  }
+
+  async notifyLevelUp(
+    userId: number,
+    level: number,
+    levelTitle: string,
+  ): Promise<Notification> {
+    const entity = this.notificationRepo.create({
+      userId,
+      title: 'Level Up',
+      message: this.format(NOTIFICATION_MESSAGES.LEVEL_UP, { level, levelTitle }),
+      dataId: level,
+      dataTitle: levelTitle,
+      isRead: false,
+      notifyEmail: false,
+      notifySMS: false,
+      createdBy: userId,
+    });
+    const saved = await this.notificationRepo.save(entity);
+    await this.emailService.sendLevelUpEmail(userId, level, levelTitle);
+    return saved;
   }
 
   async findByUserId(userId = 0, limit = 50): Promise<Notification[]> {

@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
+import { TOPIC_DONE } from 'src/common/constants/completion-thresholds';
 import { DifficultyLevelEnum } from 'src/common/enum/difficulty-lavel.enum';
 import { QuestionStatusEnum } from 'src/common/enum/question-status.enum';
 import { QuestionTypeEnum } from 'src/common/enum/question-type.enum';
 import { Topic } from 'src/common/typeorm/entities/topic.entity';
-import { User } from 'src/common/typeorm/entities/user.entity';
-import { generateScore, getAggregateUserLevel } from 'src/common/utils/common-functions';
+import { computeAttemptMetrics, getAggregateUserLevel } from 'src/common/utils/common-functions';
 import { GetUserRequestDto } from 'src/core/auth/dto/get-user-request.dto';
 import { UserRoleEnum } from 'src/core/users/enums/user-roles.enum';
 import { DataSource } from 'typeorm';
@@ -73,15 +73,17 @@ export class TopicAnalysisService {
       .setParameter('hard', DifficultyLevelEnum.Advanced);
     // Now handle attempts separately
     if (userId) {
+      // Raw historical totals (every attempt ever, retries included) — the "journey"
+      // stats. Never used for accuracy/completion/score/leaderboard (that's the
+      // latest-attempt join below) — these exist purely so a user's full effort/struggle
+      // is still visible somewhere, since the mastery-based fields intentionally can't
+      // distinguish "got it right first try" from "got it right on attempt #12."
       qb.leftJoin(
         (subQ) => {
           return subQ
             .select('qa.questionId', 'questionId')
             .addSelect('COUNT(*)', 'attempts')
-            .addSelect(
-              'SUM(CASE WHEN qa.isCorrect = 1 THEN 1 ELSE 0 END)',
-              'correct',
-            )
+            .addSelect('SUM(CASE WHEN qa.isCorrect = 1 THEN 1 ELSE 0 END)', 'correct')
             .addSelect(
               'SUM(CASE WHEN qa.isCorrect = 0 AND qa.selectedOption IS NOT NULL THEN 1 ELSE 0 END)',
               'wrong',
@@ -90,54 +92,63 @@ export class TopicAnalysisService {
             .where('qa.userId = :userId', { userId })
             .groupBy('qa.questionId');
         },
-        'userAttempts',
-        'userAttempts.questionId = q.id',
+        'rawAttempts',
+        'rawAttempts.questionId = q.id',
       )
-        .addSelect('COALESCE(SUM(userAttempts.attempts), 0)', 'numMyAttempts')
-        .addSelect('COALESCE(SUM(userAttempts.correct), 0)', 'myCorrect')
-        .addSelect('COALESCE(SUM(userAttempts.wrong), 0)', 'myWrong')
+        .addSelect('COALESCE(SUM(rawAttempts.attempts), 0)', 'numMyAttempts')
+        .addSelect('COALESCE(SUM(rawAttempts.correct), 0)', 'journeyCorrect')
+        .addSelect('COALESCE(SUM(rawAttempts.wrong), 0)', 'journeyWrong');
+
+      // Latest attempt per (user, question) — mirrors SubjectStatsService's approach so
+      // correct/wrong/coverage mean "current standing," not raw historical totals. A
+      // question resubmitted via a new quiz after being answered wrong before only
+      // counts here as whatever its MOST RECENT attempt was, so this can't be inflated
+      // by retrying (nor deflated by an old mistake that's since been corrected).
+      const latestAttemptSub = this.dataSource
+        .createQueryBuilder()
+        .subQuery()
+        .select('qa2.questionId', 'questionId')
+        .addSelect('MAX(qa2.id)', 'maxId')
+        .from('question_attempt', 'qa2')
+        .where('qa2.userId = :userId', { userId })
+        .groupBy('qa2.questionId')
+        .getQuery();
+
+      qb.leftJoin(`(${latestAttemptSub})`, 'la', 'la.questionId = q.id')
+        .leftJoin('question_attempt', 'qa', 'qa.id = la.maxId')
+        .addSelect('COUNT(DISTINCT qa.questionId)', 'myDistinctQuestions')
+        // No separate "distinct correct questions" count needed: question_topic is
+        // unique on (questionId, topicId), so within one topic's grouped rows each
+        // question contributes at most one latest-attempt row — myCorrect (a SUM of
+        // isCorrect flags) is therefore already equal to a distinct-correct-question
+        // count, same as myDistinctQuestions already is for "attempted."
+        .addSelect('SUM(CASE WHEN qa.isCorrect = 1 THEN 1 ELSE 0 END)', 'myCorrect')
         .addSelect(
-          'COUNT(DISTINCT userAttempts.questionId)',
-          'myDistinctQuestions',
+          'SUM(CASE WHEN qa.isCorrect = 0 AND qa.selectedOption IS NOT NULL THEN 1 ELSE 0 END)',
+          'myWrong',
         )
+        .addSelect('SUM(CASE WHEN q.level = :easy AND qa.id IS NOT NULL THEN 1 ELSE 0 END)', 'attemptedEasy')
+        .addSelect('SUM(CASE WHEN q.level = :medium AND qa.id IS NOT NULL THEN 1 ELSE 0 END)', 'attemptedMedium')
+        .addSelect('SUM(CASE WHEN q.level = :hard AND qa.id IS NOT NULL THEN 1 ELSE 0 END)', 'attemptedHard')
+        .addSelect('SUM(CASE WHEN q.level = :easy AND qa.isCorrect = 1 THEN 1 ELSE 0 END)', 'correctEasy')
+        .addSelect('SUM(CASE WHEN q.level = :medium AND qa.isCorrect = 1 THEN 1 ELSE 0 END)', 'correctMedium')
+        .addSelect('SUM(CASE WHEN q.level = :hard AND qa.isCorrect = 1 THEN 1 ELSE 0 END)', 'correctHard')
         .addSelect(
-          'COALESCE(SUM(CASE WHEN q.level = :easy THEN userAttempts.attempts ELSE 0 END), 0)',
-          'attemptedEasy',
-        )
-        .addSelect(
-          'COALESCE(SUM(CASE WHEN q.level = :medium THEN userAttempts.attempts ELSE 0 END), 0)',
-          'attemptedMedium',
-        )
-        .addSelect(
-          'COALESCE(SUM(CASE WHEN q.level = :hard THEN userAttempts.attempts ELSE 0 END), 0)',
-          'attemptedHard',
-        )
-        .addSelect(
-          'COALESCE(SUM(CASE WHEN q.level = :easy THEN userAttempts.correct ELSE 0 END), 0)',
-          'correctEasy',
-        )
-        .addSelect(
-          'COALESCE(SUM(CASE WHEN q.level = :medium THEN userAttempts.correct ELSE 0 END), 0)',
-          'correctMedium',
-        )
-        .addSelect(
-          'COALESCE(SUM(CASE WHEN q.level = :hard THEN userAttempts.correct ELSE 0 END), 0)',
-          'correctHard',
-        )
-        .addSelect(
-          'COALESCE(SUM(CASE WHEN q.level = :easy THEN userAttempts.wrong ELSE 0 END), 0)',
+          'SUM(CASE WHEN q.level = :easy AND qa.isCorrect = 0 AND qa.selectedOption IS NOT NULL THEN 1 ELSE 0 END)',
           'wrongEasy',
         )
         .addSelect(
-          'COALESCE(SUM(CASE WHEN q.level = :medium THEN userAttempts.wrong ELSE 0 END), 0)',
+          'SUM(CASE WHEN q.level = :medium AND qa.isCorrect = 0 AND qa.selectedOption IS NOT NULL THEN 1 ELSE 0 END)',
           'wrongMedium',
         )
         .addSelect(
-          'COALESCE(SUM(CASE WHEN q.level = :hard THEN userAttempts.wrong ELSE 0 END), 0)',
+          'SUM(CASE WHEN q.level = :hard AND qa.isCorrect = 0 AND qa.selectedOption IS NOT NULL THEN 1 ELSE 0 END)',
           'wrongHard',
         );
     } else {
       qb.addSelect('0', 'numMyAttempts')
+        .addSelect('0', 'journeyCorrect')
+        .addSelect('0', 'journeyWrong')
         .addSelect('0', 'myCorrect')
         .addSelect('0', 'myWrong')
         .addSelect('0', 'myDistinctQuestions')
@@ -176,9 +187,10 @@ export class TopicAnalysisService {
   private mapTopicRow(raw: any) {
     const numLessons = 0;
     const numTrivia = +raw.numTrivia || 0;
-    const totalQuestions = +raw.totalQuestions || 0;
     const totalAttempts = +raw.totalAttempts || 0;
     const numMyAttempts = +raw.numMyAttempts || 0;
+    const journeyCorrect = +raw.journeyCorrect || 0;
+    const journeyWrong = +raw.journeyWrong || 0;
     const myCorrect = +raw.myCorrect || 0;
     const myWrong = +raw.myWrong || 0;
     const myDistinctQuestions = +raw.myDistinctQuestions || 0;
@@ -197,15 +209,23 @@ export class TopicAnalysisService {
       attemptedHard, correctHard,
     );
 
-    const avgAccuracy =
-      numMyAttempts > 0
-        ? Number((myCorrect / numMyAttempts) * 100).toFixed(0)
-        : 0;
-    //const baseScore = numMyAttempts > 0 ? ((myCorrect /numMyAttempts) * 100) : 0;
-    const baseScore = generateScore(numMyAttempts, myCorrect, myWrong);
-    const score = Number(baseScore).toFixed(0);
     const isStarted = numMyAttempts > 0;
-    const isCompleted = numTrivia > 0 && myDistinctQuestions >= totalQuestions;
+    // Completion requires actually answering correctly, not just attempting — coverage
+    // must never gate completion/certification on its own (see TOPIC_DONE's usage in
+    // SubjectTrackAnalysisService for the same rule). computeAttemptMetrics() is the one
+    // shared implementation of this whole formula — see its doc comment for why.
+    const {
+      coverage, correctCoverage, currentAccuracy, score, journeyAccuracy, journeyScore,
+    } = computeAttemptMetrics({
+      numTrivia,
+      attempted: myDistinctQuestions,
+      correct: myCorrect,
+      wrong: myWrong,
+      journeyAttempts: numMyAttempts,
+      journeyCorrect,
+      journeyWrong,
+    });
+    const isCompleted = correctCoverage >= TOPIC_DONE;
 
     const topicsList = {
       id: +raw.topicId,
@@ -217,15 +237,21 @@ export class TopicAnalysisService {
       subjectId: +raw.subjectId,
       subjectName: raw?.subjectName,
       numTrivia,
-      numBasicTrivia: raw?.numBasicTrivia,
-      numIntTrivia: raw?.numIntTrivia,
-      numAdvTrivia: raw?.numAdvTrivia,
+      numBasicTrivia: +raw?.numBasicTrivia || 0,
+      numIntTrivia: +raw?.numIntTrivia || 0,
+      numAdvTrivia: +raw?.numAdvTrivia || 0,
       numLessons,
       totalAttempts,
-      myAllAttempts: numMyAttempts,
-      myUniqueAttempts: myDistinctQuestions,
+      // Named to match subject/subjectTrack level exactly (previously myAllAttempts/
+      // myUniqueAttempts here specifically) — same two concepts, one name each, everywhere.
+      journeyAttempts: numMyAttempts,
+      attempted: myDistinctQuestions,
       correct: myCorrect,
       wrong: myWrong,
+      journeyCorrect,
+      journeyWrong,
+      journeyAccuracy,
+      journeyScore,
       attemptedEasy,
       attemptedMedium,
       attemptedHard,
@@ -236,49 +262,19 @@ export class TopicAnalysisService {
       wrongMedium,
       wrongHard,
       userLevel,
-      avgAccuracy,
+      currentAccuracy,
       score,
       isStarted,
       isCompleted,
       meritList: null,
-      coverage: Number((myDistinctQuestions / numTrivia) * 100).toFixed(0),
+      coverage,
+      correctCoverage,
     };
     return topicsList;
   }
 
-  /** Get stats for a SINGLE topic (fast, filtered server-side). */
-  async getTopicStatsById(
-    topicId: number,
-    user?: GetUserRequestDto | number,
-    fullData = false,
-  ) {
-    const userId = typeof user === 'number' ? user : user?.id;
-    const qb = this.buildTopicStatsBaseQB(userId, user).where(
-      't.id = :topicId',
-      {
-        topicId,
-      },
-    );
-
-    const raw = await qb.getRawOne();
-    if (!raw) return null;
-    console.log('@@@0Topic Stats fetched', raw);
-    const stats: any = this.mapTopicRow(raw);
-
-    if (fullData) {
-      // Single-topic leaderboard
-      stats.meritList = await this.getTopicMeritList(topicId, 10);
-    }
-
-    return stats;
-  }
-
   /** Get stats for ALL topics under ONE subject (single grouped query). */
-  async getTopicStatsBySubject(
-    subjectId: number,
-    user?: GetUserRequestDto | number,
-    fullData = false,
-  ) {
+  async getTopicStatsBySubject(subjectId: number, user?: GetUserRequestDto | number) {
     const userId = typeof user === 'number' ? user : user?.id;
     const qb = this.buildTopicStatsBaseQB(userId, user).where(
       't.subjectId = :subjectId',
@@ -286,22 +282,12 @@ export class TopicAnalysisService {
     );
 
     const raws = await qb.getRawMany();
-    const topics = raws.map((r) => this.mapTopicRow(r));
-
-    if (fullData && topics.length) {
-      const topicIds = topics.map((t) => t.id);
-      const meritLists = await this.getTopicMeritListForTopics(topicIds, 10);
-      for (const t of topics) {
-        t.meritList = meritLists.get(t.id) || [];
-      }
-    }
-    return topics;
+    return raws.map((r) => this.mapTopicRow(r));
   }
 
   /** Get stats for ALL topics. Optionally pass pagination. */
   async getAllTopicStats(
     user?: GetUserRequestDto | number,
-    fullData = false,
     offset = 0,
     limit = 300,
   ) {
@@ -311,16 +297,7 @@ export class TopicAnalysisService {
       .limit(limit);
 
     const raws = await qb.getRawMany();
-    const topics = raws.map((r) => this.mapTopicRow(r));
-
-    if (fullData && topics.length) {
-      const topicIds = topics.map((t) => t.id);
-      const meritLists = await this.getTopicMeritListForTopics(topicIds, 10);
-      for (const t of topics) {
-        t.meritList = meritLists.get(t.id) || [];
-      }
-    }
-    return topics;
+    return raws.map((r) => this.mapTopicRow(r));
   }
 
   /** Get stats for a specific set of topic IDs — used by the career dashboard. */
@@ -334,146 +311,4 @@ export class TopicAnalysisService {
     return raws.map((r) => this.mapTopicRow(r));
   }
 
-  /** 🏆 Single-topic merit list (all question types in the topic). */
-  private async getTopicMeritList(topicId: number, limit = 10) {
-    const raw = await this.dataSource
-      .createQueryBuilder()
-      .from(User, 'u')
-      .innerJoin('question_attempt', 'qa', 'qa.userId = u.id')
-      .innerJoin('question', 'q', 'q.id = qa.questionId')
-      .innerJoin('question_topic', 'qt', 'qt.questionId = q.id')
-      .leftJoin('job_role', 'jr', 'jr.id = u.designation')
-      .where('qt.topicId = :topicId', { topicId })
-      .select('u.id', 'userId')
-      .addSelect("CONCAT(u.firstName, ' ', u.lastName)", 'name')
-      .addSelect('u.username', 'username')
-      .addSelect('u.image', 'image') // keep if you have this column
-      .addSelect('jr.title', 'designationName')
-      .addSelect('COUNT(qa.id)', 'totalAttempts')
-      .addSelect(
-        'SUM(CASE WHEN qa.isCorrect = true THEN 1 ELSE 0 END)',
-        'totalCorrect',
-      )
-      .addSelect(
-        'ROUND(100.0 * SUM(CASE WHEN qa.isCorrect = true THEN 1 ELSE 0 END) / NULLIF(COUNT(qa.id),0), 2)',
-        'accuracyPct',
-      )
-      .groupBy('u.id')
-      .orderBy('totalCorrect', 'DESC')
-      .addOrderBy('totalAttempts', 'DESC')
-      .limit(limit)
-      .getRawMany();
-
-    return raw
-      .map((r) => {
-        const totalCorrect = +r.totalCorrect || 0;
-        const totalAttempts = +r.totalAttempts || 0;
-        const avgAccuracy =
-          totalAttempts > 0 ? totalCorrect / totalAttempts : 0;
-        const score =
-          totalCorrect * 0.5 + totalAttempts * 0.2 + avgAccuracy * 100 * 0.3;
-
-        return {
-          id: +r.userId,
-          name: r.name,
-          username: r.username,
-          image: r.image,
-          designationName: r.designationName,
-          totalCorrect,
-          totalAttempts,
-          avgAccuracy,
-          score,
-        };
-      })
-      .sort((a, b) => b.score - a.score)
-      .slice(0, limit);
-  }
-
-  /**
-   * 🧮 Batched merit list for MANY topics using a window function (MySQL 8+).
-   * Returns a Map<topicId, MeritRow[]> limited per-topic.
-   */
-  private async getTopicMeritListForTopics(
-    topicIds: number[],
-    limitPerTopic = 10,
-  ) {
-    if (!topicIds.length) return new Map<number, any[]>();
-
-    // Window function to pick top-N per topic
-    const rows = await this.dataSource
-      .createQueryBuilder()
-      .from((qb) => {
-        return qb
-          .from('question_topic', 'qt')
-          .innerJoin('question', 'q', 'q.id = qt.questionId')
-          .innerJoin('question_attempt', 'qa', 'qa.questionId = q.id')
-          .innerJoin('user', 'u', 'u.id = qa.userId')
-          .leftJoin('job_role', 'jr', 'jr.id = u.designation')
-          .where('qt.topicId IN (:...topicIds)', { topicIds })
-          .select('qt.topicId', 'topicId')
-          .addSelect('u.id', 'userId')
-          .addSelect("CONCAT(u.firstName, ' ', u.lastName)", 'name')
-          .addSelect('u.username', 'username')
-          .addSelect('u.image', 'image')
-          .addSelect('jr.title', 'designationName')
-          .addSelect('COUNT(qa.id)', 'totalAttempts')
-          .addSelect(
-            'SUM(CASE WHEN qa.isCorrect = true THEN 1 ELSE 0 END)',
-            'totalCorrect',
-          )
-          .groupBy('qt.topicId')
-          .addGroupBy('u.id');
-      }, 'x')
-      .addSelect('x.topicId', 'topicId')
-      .addSelect('x.userId', 'userId')
-      .addSelect('x.name', 'name')
-      .addSelect('x.username', 'username')
-      .addSelect('x.image', 'image')
-      .addSelect('x.designationName', 'designationName')
-      .addSelect('x.totalAttempts', 'totalAttempts')
-      .addSelect('x.totalCorrect', 'totalCorrect')
-      .addSelect(
-        // compute rank by a proxy of score: correct desc, attempts desc, accuracy desc
-        `ROW_NUMBER() OVER (
-         PARTITION BY x.topicId
-         ORDER BY x.totalCorrect DESC, x.totalAttempts DESC
-       )`,
-        'rn',
-      )
-      .where('1 = 1') // wrapper needs a where to add selects in TypeORM
-      .getRawMany();
-
-    // post-process: compute true score and filter top-N per topic
-    const buckets = new Map<number, any[]>();
-    for (const r of rows) {
-      const topicId = +r.topicId;
-      const totalCorrect = +r.totalCorrect || 0;
-      const totalAttempts = +r.totalAttempts || 0;
-      const avgAccuracy = totalAttempts > 0 ? totalCorrect / totalAttempts : 0;
-      const score =
-        totalCorrect * 0.5 + totalAttempts * 0.2 + avgAccuracy * 100 * 0.3;
-
-      const arr = buckets.get(topicId) || [];
-      arr.push({
-        id: +r.userId,
-        name: r.name,
-        username: r.username,
-        image: r.image,
-        designationName: r.designationName,
-        totalCorrect,
-        totalAttempts,
-        avgAccuracy,
-        score,
-      });
-      buckets.set(topicId, arr);
-    }
-
-    // sort by score and cap per-topic
-    for (const [topicId, arr] of buckets) {
-      arr.sort((a, b) => b.score - a.score);
-      buckets.set(topicId, arr.slice(0, limitPerTopic));
-    }
-
-    return buckets;
-  }
 }

@@ -1,7 +1,9 @@
 import 'dotenv/config';
 import { DataSource } from 'typeorm';
+import { Activity } from 'src/common/typeorm/entities/activity.entity';
 import { ApiUsage } from 'src/common/typeorm/entities/api-usage.entity';
 import { AssessmentSession } from 'src/common/typeorm/entities/assessment-session.entity';
+import { Badge } from 'src/common/typeorm/entities/badge.entity';
 import { Certificate } from 'src/common/typeorm/entities/certificate.entity';
 import { CertificationTrack } from 'src/common/typeorm/entities/certification-track.entity';
 import { CertificationTrackSubjectTrack } from 'src/common/typeorm/entities/certification-track-subject-track.entity';
@@ -36,6 +38,9 @@ import { UserLessonTracker } from 'src/common/typeorm/entities/user-lesson-track
 import { UserOtp } from 'src/common/typeorm/entities/user-otp.entity';
 import { UserPermission } from 'src/common/typeorm/entities/user-permission.entity';
 import { UserSubject } from 'src/common/typeorm/entities/user-subject.entity';
+import { UserBadge } from 'src/common/typeorm/entities/user-badge.entity';
+import { UserStreak } from 'src/common/typeorm/entities/user-streak.entity';
+import { UserXpLog } from 'src/common/typeorm/entities/user-xp-log.entity';
 
 export const AppDataSource = new DataSource({
   type: 'mysql',
@@ -52,6 +57,7 @@ export const AppDataSource = new DataSource({
     Permission, UserPermission, ApiUsage, Notification, SkillMetric,
     Interview, InterviewStatusHistory, CertificationTrack, SubjectTrack,
     CertificationTrackSubjectTrack, SubjectTrackTopic, Certificate,
+    Activity, Badge, UserBadge, UserStreak, UserXpLog,
   ],
   synchronize: false,
 });
