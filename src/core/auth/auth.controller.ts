@@ -4,6 +4,8 @@ import {
   Body,
   Request,
   UseGuards,
+  HttpCode,
+  HttpStatus,
   Query,
   BadRequestException,
   UsePipes,
@@ -19,6 +21,10 @@ import { UserOtpTagsEnum } from '../users/enums/user-otp-Tags.enum';
 import { ApiResponse } from 'src/common/utils/api-response';
 import { LoginDto } from './dto/login.dto';
 import { SendOtpDto } from './dto/send-otp.dto';
+import { User } from 'src/common/typeorm/entities/user.entity';
+import { LoginResponseDto } from './dto/login-response.dto';
+import { LinkedinCallbackDto } from 'src/modules/auth/dtos/linkedin-callback.dto';
+import { GoogleCallbackDto } from 'src/modules/auth/dtos/google-callback.dto';
 
 @Public()
 @Controller('auth')
@@ -28,13 +34,39 @@ export class AuthController {
     private usersService: UserService,
   ) {}
 
+  @Post('linkedin/callback')
+  @HttpCode(HttpStatus.OK)
+  async linkedinCallback(
+    @Body() linkedinCallbackDto: LinkedinCallbackDto,
+  ): Promise<ApiResponse<any>> {
+    const result = await this.authService.handleLinkedinCallback(
+      linkedinCallbackDto.code,
+    );
+    return new ApiResponse('LinkedIn authentication evaluated', result);
+  }
+
+  @Post('google/callback')
+  @HttpCode(HttpStatus.OK)
+  async googleCallback(
+    @Body() googleCallbackDto: GoogleCallbackDto,
+  ): Promise<ApiResponse<any>> {
+    const result = await this.authService.handleGoogleCallback(
+      googleCallbackDto.token,
+    );
+    return new ApiResponse('Google authentication evaluated', result);
+  }
+
   @Post('register')
   async signup(
     @Body() createUserDto: CreateUserDto,
   ): Promise<ApiResponse<any>> {
     const result = await this.authService.signup(createUserDto);
-    if(createUserDto.flow && createUserDto.flow === 'QuickRegistration'){
-      const resultWithToken = await this.authService.autoLogin(result);
+    if (
+      createUserDto.flow &&
+      createUserDto.flow === 'QuickRegistration' &&
+      !(result instanceof LoginResponseDto || 'token' in result)
+    ) {
+      const resultWithToken = await this.authService.autoLogin(result as User);
       return new ApiResponse('Succesfully Registered', resultWithToken);
     }
     return new ApiResponse('Succesfully Registered', result);

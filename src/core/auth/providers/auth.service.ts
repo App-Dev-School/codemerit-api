@@ -18,9 +18,29 @@ import { TopicAnalysisService } from 'src/modules/master/providers/topic-analysi
 import { SubjectAnalysisService } from 'src/modules/master/providers/subject-analysis.service';
 import { ApiUsageService } from 'src/common/services/api-usage.service';
 import { MasterService } from 'src/modules/master/providers/master.service';
+import { BadRequestException } from '@nestjs/common';
+import { OAuth2Client } from 'google-auth-library';
+import axios from 'axios';
+import * as crypto from 'crypto';
+import { DataSource } from 'typeorm';
+import { UserRoleEnum } from 'src/core/users/enums/user-roles.enum';
+
+interface LinkedInProfile {
+  sub: string;
+  email: string;
+  given_name: string;
+  picture: string;
+}
 
 @Injectable()
 export class AuthService {
+  private readonly linkedinClientId = process.env.LINKEDIN_CLIENT_ID;
+  private readonly linkedinClientSecret = process.env.LINKEDIN_CLIENT_SECRET;
+  private readonly linkedinRedirectUri = process.env.LINKEDIN_REDIRECT_URI;
+
+  private readonly googleClient = new OAuth2Client(
+    process.env.GOOGLE_CLIENT_ID,
+  );
   constructor(
     private readonly usersService: UserService,
     private readonly jwtService: JwtService,
@@ -30,8 +50,10 @@ export class AuthService {
     private readonly subjectAnalyzer: SubjectAnalysisService,
     private readonly topicAnalysisProvider: TopicAnalysisService,
     private readonly apiUsageService: ApiUsageService,
+
     @InjectRepository(UserJobRole)
     private userJobRoleRepo: Repository<UserJobRole>,
+    private readonly dataSource: DataSource,
   ) {}
 
   async validateUser(email: string, pass: string) {
@@ -157,6 +179,119 @@ export class AuthService {
       //profile,
     });
     return response;
+  }
+  async handleGoogleCallback(idToken: string) {
+    try {
+      const ticket = await this.googleClient.verifyIdToken({
+        idToken,
+        audience: process.env.GOOGLE_CLIENT_ID,
+      });
+
+      const payload = ticket.getPayload();
+
+      if (!payload) {
+        throw new BadRequestException('Invalid Google token.');
+      }
+
+      const { sub, email, given_name, picture } = payload;
+      const [firstName, ...lastNameParts] = (given_name || '')
+        .trim()
+        .split(' ');
+      const lastName = lastNameParts.join(' ');
+
+      const existingUser = await this.usersService.findByEmail(email);
+
+      if (existingUser) {
+        return this.login(existingUser);
+      }
+
+      return {
+        status: 'new_user',
+        socialProfile: {
+          auth_provider: 'Google',
+          googleId: sub,
+          email,
+          firstName,
+          lastName,
+          image: picture || '',
+          username: `go_${sub.substring(0, 15)}`,
+          password: crypto.randomBytes(16).toString('hex'),
+          accountStatus: AccountStatusEnum.ACTIVE,
+          role: UserRoleEnum.USER,
+        },
+      };
+    } catch (error: any) {
+      throw new BadRequestException(
+        `Google authentication failed: ${error.message}`,
+      );
+    }
+  }
+
+  async handleLinkedinCallback(code: string) {
+    const accessToken = await this.exchangeCodeForToken(code);
+    const profile = await this.fetchLinkedInProfile(accessToken);
+
+    const [firstName, ...lastNameParts] = (profile.given_name || '')
+      .trim()
+      .split(' ');
+    const lastName = lastNameParts.join(' ');
+
+    const existingUser = await this.usersService.findByEmail(profile.email);
+
+    if (existingUser) {
+      return this.login(existingUser);
+    }
+
+    return {
+      status: 'new_user',
+      socialProfile: {
+        auth_provider: 'LinkedIn',
+        linkedinId: profile.sub,
+        email: profile.email,
+        firstName,
+        lastName,
+        image: profile.picture || '',
+        username: `lnk_${profile.sub.substring(0, 15)}`,
+        password: crypto.randomBytes(16).toString('hex'),
+        accountStatus: AccountStatusEnum.ACTIVE,
+        role: UserRoleEnum.USER,
+      },
+    };
+  }
+
+  private async exchangeCodeForToken(code: string): Promise<string> {
+    const tokenUrl = 'https://www.linkedin.com/oauth/v2/accessToken';
+
+    const params = new URLSearchParams({
+      grant_type: 'authorization_code',
+      code,
+      client_id: this.linkedinClientId,
+      client_secret: this.linkedinClientSecret,
+      redirect_uri: this.linkedinRedirectUri,
+    });
+
+    const response = await axios.post(tokenUrl, params.toString(), {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    });
+
+    return response.data.access_token;
+  }
+
+  private async fetchLinkedInProfile(
+    accessToken: string,
+  ): Promise<LinkedInProfile> {
+    const response = await axios.get<LinkedInProfile>(
+      'https://api.linkedin.com/v2/userinfo',
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      },
+    );
+
+    return response.data;
   }
 
   async signup(createUserDto: CreateUserDto) {

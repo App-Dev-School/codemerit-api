@@ -82,6 +82,12 @@ export class UserService {
 
     try {
       const user = this.userRepo.create(data as Partial<User>);
+      if (
+        data.auth_provider === 'Google' ||
+        data.auth_provider === 'LinkedIn'
+      ) {
+        user.accountStatus = AccountStatusEnum.ACTIVE;
+      }
       if (data.dreamRole) {
         user.designation = data.dreamRole;
       }
@@ -102,6 +108,23 @@ export class UserService {
         );
       }
       const savedUser = await queryRunner.manager.save(user);
+      //Send e-mail
+      try {
+        if (savedUser.accountStatus === AccountStatusEnum.ACTIVE) {
+          await this.mailService.sendAccountVerifiedEmail(
+            savedUser.email,
+            savedUser.firstName,
+          );
+        } else {
+          await this.mailService.sendRegistrationWelcomeEmail(
+            savedUser.email,
+            savedUser.firstName,
+            pass,
+          );
+        }
+      } catch (error) {
+        console.log('CMRegistration Error sending e-mail => ', error);
+      }
       const profile = new Profile();
       profile.userId = savedUser.id;
       //validate on client
@@ -123,7 +146,9 @@ export class UserService {
       if (data.linkedinId) {
         profile.linkedinId = data.linkedinId;
       }
-      profile.auth_provider = 'Native';
+      console.log('auth_provider =>', data.auth_provider);
+
+      profile.auth_provider = data.auth_provider || 'Native';
       await queryRunner.manager.save(profile);
 
       const jobRoleId = Number(data.techRoleId || data.jobRoleId);
@@ -133,7 +158,10 @@ export class UserService {
         });
 
         if (!jobRole) {
-          throw new AppCustomException(HttpStatus.NOT_FOUND, 'Job role not found.');
+          throw new AppCustomException(
+            HttpStatus.NOT_FOUND,
+            'Job role not found.',
+          );
         }
 
         const userJobRole = queryRunner.manager.create(UserJobRole, {
@@ -145,17 +173,19 @@ export class UserService {
       }
 
       await queryRunner.commitTransaction();
-      //save otp
-      try {
-        const otp = await this.sendOtp(
-          savedUser?.email,
-          pass,
-          UserOtpTagsEnum.ACC_VERIFY,
-          true,
-        );
-        console.log('CMRegistration Send otp => ', otp);
-      } catch (error) {
-        console.log('CMRegistration Send otp exception => ', error);
+      // Send OTP only for Native registration
+      if (user.accountStatus === AccountStatusEnum.PENDING) {
+        try {
+          const otp = await this.sendOtp(
+            savedUser?.email,
+            pass,
+            UserOtpTagsEnum.ACC_VERIFY,
+            true,
+          );
+          console.log('CMRegistration Send otp => ', otp);
+        } catch (error) {
+          console.log('CMRegistration Send otp exception => ', error);
+        }
       }
 
       const userResponse = this.findOne(savedUser?.id);
