@@ -69,7 +69,7 @@ export class CreateUserDto {
   @ApiPropertyOptional()
   @IsOptional()
   country?: string;
-  
+
   @ApiPropertyOptional()
   @IsOptional()
   about: string;
@@ -82,6 +82,9 @@ export class CreateUserDto {
   @ApiPropertyOptional()
   @IsOptional()
   googleId?: string;
+  @ApiPropertyOptional()
+  @IsOptional()
+  auth_provider?: string;
 
   @ApiPropertyOptional()
   @IsOptional()
