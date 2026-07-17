@@ -105,7 +105,7 @@ export class User extends AbstractEntity implements IUser {
 
   @Column({
     type: 'varchar',
-    length: 100,
+    length: 500,
     nullable: true,
     default: null,
   })

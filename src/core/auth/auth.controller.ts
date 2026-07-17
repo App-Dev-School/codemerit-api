@@ -51,7 +51,7 @@ export class AuthController {
     @Body() googleCallbackDto: GoogleCallbackDto,
   ): Promise<ApiResponse<any>> {
     const result = await this.authService.handleGoogleCallback(
-      googleCallbackDto.token,
+      googleCallbackDto.idToken,
     );
     return new ApiResponse('Google authentication evaluated', result);
   }
