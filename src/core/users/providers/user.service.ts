@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
+import * as crypto from 'crypto';
 import { validate } from 'class-validator';
 import { AppCustomException } from 'src/common/exceptions/app-custom-exception.filter';
 import { Profile } from 'src/common/typeorm/entities/profile.entity';
@@ -82,16 +83,24 @@ export class UserService {
 
     try {
       const user = this.userRepo.create(data as Partial<User>);
-      if (
-        data.auth_provider === 'Google' ||
-        data.auth_provider === 'LinkedIn'
-      ) {
-        user.accountStatus = AccountStatusEnum.ACTIVE;
+      if (data.image) {
+        user.image = data.image;
       }
+
+      const isSocialLogin =
+        data.auth_provider === 'Google' || data.auth_provider === 'LinkedIn';
+
+      user.accountStatus = isSocialLogin
+        ? AccountStatusEnum.ACTIVE
+        : AccountStatusEnum.PENDING;
+
       if (data.dreamRole) {
         user.designation = data.dreamRole;
       }
-      const pass = generate6DigitNumber();
+      const pass = isSocialLogin
+        ? crypto.randomBytes(32).toString('hex')
+        : generate6DigitNumber();
+
       user.password = await bcrypt.hash(pass, 10);
       const fullname = user.firstName + ' ' + user.lastName;
       let username = generateSlug(fullname);
@@ -146,7 +155,6 @@ export class UserService {
       if (data.linkedinId) {
         profile.linkedinId = data.linkedinId;
       }
-      console.log('auth_provider =>', data.auth_provider);
 
       profile.auth_provider = data.auth_provider || 'Native';
       await queryRunner.manager.save(profile);
@@ -174,7 +182,7 @@ export class UserService {
 
       await queryRunner.commitTransaction();
       // Send OTP only for Native registration
-      if (user.accountStatus === AccountStatusEnum.PENDING) {
+      if (!isSocialLogin) {
         try {
           const otp = await this.sendOtp(
             savedUser?.email,
