@@ -73,15 +73,23 @@ export class CreateUserDto {
   @ApiPropertyOptional()
   @IsOptional()
   about: string;
+
   @ApiPropertyOptional()
   @IsOptional()
   linkedinUrl?: string;
+
   @ApiPropertyOptional()
   @IsOptional()
   linkedinId?: string;
+
   @ApiPropertyOptional()
   @IsOptional()
   googleId?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  image?: string;
+
   @ApiPropertyOptional()
   @IsOptional()
   auth_provider?: string;

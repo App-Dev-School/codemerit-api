@@ -72,6 +72,38 @@ export class UserProfileService {
     return this.profileRepository.save(user);
   }
 
+  async updateSocialProfile(
+    userId: number,
+    data: {
+      googleId?: string;
+      linkedinId?: string;
+      auth_provider: string;
+    },
+  ): Promise<Profile> {
+    const profile = await this.profileRepository.findOne({
+      where: { userId },
+    });
+
+    if (!profile) {
+      throw new AppCustomException(
+        HttpStatus.BAD_REQUEST,
+        'Profile not found.',
+      );
+    }
+
+    if (data.googleId) {
+      profile.googleId = data.googleId;
+    }
+
+    if (data.linkedinId) {
+      profile.linkedinId = data.linkedinId;
+    }
+
+    profile.auth_provider = data.auth_provider;
+
+    return this.profileRepository.save(profile);
+  }
+
   async remove(id: number): Promise<void> {
     await this.profileRepository.delete(id);
   }

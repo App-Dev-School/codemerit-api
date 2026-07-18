@@ -11,5 +11,5 @@ import { Type } from 'class-transformer';
 export class GoogleCallbackDto {
   @IsNotEmpty()
   @IsString()
-  token: string;
+  idToken: string;
 }

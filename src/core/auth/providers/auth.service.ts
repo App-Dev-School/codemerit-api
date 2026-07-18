@@ -21,7 +21,6 @@ import { MasterService } from 'src/modules/master/providers/master.service';
 import { BadRequestException } from '@nestjs/common';
 import { OAuth2Client } from 'google-auth-library';
 import axios from 'axios';
-import * as crypto from 'crypto';
 import { DataSource } from 'typeorm';
 import { UserRoleEnum } from 'src/core/users/enums/user-roles.enum';
 
@@ -194,6 +193,13 @@ export class AuthService {
       }
 
       const { sub, email, given_name, picture } = payload;
+
+      if (!email) {
+        throw new BadRequestException(
+          'Google account does not contain an email.',
+        );
+      }
+
       const [firstName, ...lastNameParts] = (given_name || '')
         .trim()
         .split(' ');
@@ -202,24 +208,31 @@ export class AuthService {
       const existingUser = await this.usersService.findByEmail(email);
 
       if (existingUser) {
-        return this.login(existingUser);
+        await this.userProfileService.updateSocialProfile(existingUser.id, {
+          googleId: sub,
+          auth_provider: 'Google',
+        });
+
+        if (existingUser.accountStatus !== AccountStatusEnum.ACTIVE) {
+          await this.usersService.updateUser(existingUser.id, {
+            accountStatus: AccountStatusEnum.ACTIVE,
+          });
+        }
+
+        const updatedUser = await this.usersService.findByEmail(email);
+        return this.login(updatedUser);
       }
 
-      return {
-        status: 'new_user',
-        socialProfile: {
-          auth_provider: 'Google',
-          googleId: sub,
-          email,
-          firstName,
-          lastName,
-          image: picture || '',
-          username: `go_${sub.substring(0, 15)}`,
-          password: crypto.randomBytes(16).toString('hex'),
-          accountStatus: AccountStatusEnum.ACTIVE,
-          role: UserRoleEnum.USER,
-        },
-      };
+      const user = await this.usersService.create({
+        firstName,
+        lastName,
+        email,
+        image: picture || '',
+        googleId: sub,
+        auth_provider: 'Google',
+      });
+
+      return this.login(user);
     } catch (error: any) {
       throw new BadRequestException(
         `Google authentication failed: ${error.message}`,
@@ -239,24 +252,31 @@ export class AuthService {
     const existingUser = await this.usersService.findByEmail(profile.email);
 
     if (existingUser) {
-      return this.login(existingUser);
+      await this.userProfileService.updateSocialProfile(existingUser.id, {
+        linkedinId: profile.sub,
+        auth_provider: 'LinkedIn',
+      });
+
+      if (existingUser.accountStatus !== AccountStatusEnum.ACTIVE) {
+        await this.usersService.updateUser(existingUser.id, {
+          accountStatus: AccountStatusEnum.ACTIVE,
+        });
+      }
+
+      const updatedUser = await this.usersService.findByEmail(profile.email);
+      return this.login(updatedUser);
     }
 
-    return {
-      status: 'new_user',
-      socialProfile: {
-        auth_provider: 'LinkedIn',
-        linkedinId: profile.sub,
-        email: profile.email,
-        firstName,
-        lastName,
-        image: profile.picture || '',
-        username: `lnk_${profile.sub.substring(0, 15)}`,
-        password: crypto.randomBytes(16).toString('hex'),
-        accountStatus: AccountStatusEnum.ACTIVE,
-        role: UserRoleEnum.USER,
-      },
-    };
+    const user = await this.usersService.create({
+      firstName,
+      lastName,
+      email: profile.email,
+      image: profile.picture || '',
+      linkedinId: profile.sub,
+      auth_provider: 'LinkedIn',
+    });
+
+    return this.login(user);
   }
 
   private async exchangeCodeForToken(code: string): Promise<string> {
