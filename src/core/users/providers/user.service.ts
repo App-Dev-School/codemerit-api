@@ -33,6 +33,7 @@ import { NotificationService } from 'src/modules/notification/providers/notifica
 import { JobRole } from 'src/common/typeorm/entities/job-role.entity';
 import { MailService } from 'src/common/mail/providers/mail.service';
 import { ActivityService } from 'src/modules/activity/providers/activity/activity.service';
+import { UserPermissionService } from 'src/modules/user-permission/providers/user-permission.service';
 
 @Injectable()
 export class UserService {
@@ -53,6 +54,7 @@ export class UserService {
     private readonly notificationService: NotificationService,
     private readonly dataSource: DataSource,
     private readonly activityService: ActivityService,
+    private readonly userPermissionService: UserPermissionService,
   ) {}
 
   async create(data: Partial<CreateUserDto>): Promise<User> {
@@ -268,10 +270,14 @@ export class UserService {
     if (!user) {
       throw new AppCustomException(HttpStatus.BAD_REQUEST, 'User not Found.');
     }
-    const profile = await this.userProfileService.findOneByUserId(user?.id);
+    const [profile, permissions] = await Promise.all([
+      this.userProfileService.findOneByUserId(user?.id),
+      this.userPermissionService.getPermissionsForProfile(user.id),
+    ]);
     const userProfileResponse: UserProfileResponseDto = {
       ...user,
       profile,
+      permissions,
     };
 
     return userProfileResponse;

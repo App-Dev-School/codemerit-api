@@ -4,6 +4,8 @@ export enum UserPermissionTitleEnum {
   Question = 'question',
   SubjectTrack = 'subject-track',
   CertificationTrack = 'certification-track',
+  JobRole = 'job-role',
+  Badge = 'badge',
 }
 export enum UserPermissionEnum {
   TopicGet = 'Topic:Get',
@@ -20,4 +22,5 @@ export enum UserPermissionEnum {
   CertificationTrackCreate = 'CertificationTrack:Create',
   CertificationTrackUpdate = 'CertificationTrack:Update',
   CertificationTrackDelete = 'CertificationTrack:Delete',
+  BadgeGrant = 'Badge:Grant',
 }

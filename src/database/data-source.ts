@@ -4,6 +4,7 @@ import { Activity } from 'src/common/typeorm/entities/activity.entity';
 import { ApiUsage } from 'src/common/typeorm/entities/api-usage.entity';
 import { AssessmentSession } from 'src/common/typeorm/entities/assessment-session.entity';
 import { Badge } from 'src/common/typeorm/entities/badge.entity';
+import { BadgeRule } from 'src/common/typeorm/entities/badge-rule.entity';
 import { Certificate } from 'src/common/typeorm/entities/certificate.entity';
 import { CertificationTrack } from 'src/common/typeorm/entities/certification-track.entity';
 import { CertificationTrackSubjectTrack } from 'src/common/typeorm/entities/certification-track-subject-track.entity';
@@ -57,7 +58,7 @@ export const AppDataSource = new DataSource({
     Permission, UserPermission, ApiUsage, Notification, SkillMetric,
     Interview, InterviewStatusHistory, CertificationTrack, SubjectTrack,
     CertificationTrackSubjectTrack, SubjectTrackTopic, Certificate,
-    Activity, Badge, UserBadge, UserStreak, UserXpLog,
+    Activity, Badge, BadgeRule, UserBadge, UserStreak, UserXpLog,
   ],
   synchronize: false,
 });

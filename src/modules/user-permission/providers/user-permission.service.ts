@@ -8,6 +8,8 @@ import { Permission } from 'src/common/typeorm/entities/permission.entity';
 import { Subject } from 'src/common/typeorm/entities/subject.entity';
 import { Topic } from 'src/common/typeorm/entities/topic.entity';
 import { User } from 'src/common/typeorm/entities/user.entity';
+import { JobRole } from 'src/common/typeorm/entities/job-role.entity';
+import { Badge } from 'src/common/typeorm/entities/badge.entity';
 
 @Injectable()
 export class UserPermissionService {
@@ -22,6 +24,10 @@ export class UserPermissionService {
     private topicRepo: Repository<Topic>,
     @InjectRepository(User)
     private userRepo: Repository<User>,
+    @InjectRepository(JobRole)
+    private jobRoleRepo: Repository<JobRole>,
+    @InjectRepository(Badge)
+    private badgeRepo: Repository<Badge>,
   ) {}
 
   async grantPermission(dto: GrantPermissionDto) {
@@ -108,6 +114,7 @@ export class UserPermissionService {
         id: p.id,
         permission: p.permission,
         description: p.description,
+        isVisible: p.isVisible,
       });
     }
 
@@ -126,6 +133,7 @@ export class UserPermissionService {
         'userPermission.resourceType as resourceType',
         'userPermission.resourceId as resourceId',
         'permission.permission AS permissionName',
+        'permission.isVisible AS isVisible',
       ])
       .getRawMany();
   }
@@ -176,30 +184,42 @@ export class UserPermissionService {
 
     if (!rows.length) return [];
 
-    const subjectIds = rows
-      .filter((r) => String(r.resourceType || '').toLowerCase() === 'subject' && r.resourceId)
-      .map((r) => Number(r.resourceId));
-    const topicIds = rows
-      .filter((r) => String(r.resourceType || '').toLowerCase() === 'topic' && r.resourceId)
-      .map((r) => Number(r.resourceId));
+    const idsFor = (type: string) =>
+      rows
+        .filter((r) => String(r.resourceType || '').toLowerCase() === type && r.resourceId)
+        .map((r) => Number(r.resourceId));
+    const subjectIds = idsFor('subject');
+    const topicIds = idsFor('topic');
+    const jobRoleIds = idsFor('job-role');
+    const badgeIds = idsFor('badge');
 
-    const [subjects, topics] = await Promise.all([
+    const [subjects, topics, jobRoles, badges] = await Promise.all([
       subjectIds.length
         ? this.subjectRepo.find({ where: { id: In(subjectIds) }, select: ['id', 'title'] })
         : Promise.resolve([]),
       topicIds.length
         ? this.topicRepo.find({ where: { id: In(topicIds) }, select: ['id', 'title'] })
         : Promise.resolve([]),
+      jobRoleIds.length
+        ? this.jobRoleRepo.find({ where: { id: In(jobRoleIds) }, select: ['id', 'title'] })
+        : Promise.resolve([]),
+      badgeIds.length
+        ? this.badgeRepo.find({ where: { id: In(badgeIds) }, select: ['id', 'name'] })
+        : Promise.resolve([]),
     ]);
 
     const subjectMap = new Map(subjects.map((s) => [s.id, s.title]));
     const topicMap = new Map(topics.map((t) => [t.id, t.title]));
+    const jobRoleMap = new Map(jobRoles.map((j) => [j.id, j.title]));
+    const badgeMap = new Map(badges.map((b) => [b.id, b.name]));
 
     return rows.map((r) => {
       const type = String(r.resourceType || '').toLowerCase();
       let resourceName = '';
       if (type === 'subject' && r.resourceId) resourceName = subjectMap.get(Number(r.resourceId)) || '';
       else if (type === 'topic' && r.resourceId) resourceName = topicMap.get(Number(r.resourceId)) || '';
+      else if (type === 'job-role' && r.resourceId) resourceName = jobRoleMap.get(Number(r.resourceId)) || '';
+      else if (type === 'badge' && r.resourceId) resourceName = badgeMap.get(Number(r.resourceId)) || '';
 
       return {
         id: r.id,
@@ -213,9 +233,11 @@ export class UserPermissionService {
   }
 
   private async buildPermissionResponse(userPermissions: UserPermission[]) {
-    const [subjects, topics] = await Promise.all([
+    const [subjects, topics, jobRoles, badges] = await Promise.all([
       this.subjectRepo.find(),
       this.topicRepo.find(),
+      this.jobRoleRepo.find(),
+      this.badgeRepo.find(),
     ]);
 
     return userPermissions.map((up) => {
@@ -230,6 +252,12 @@ export class UserPermissionService {
       } else if (normalizedResourceType === 'topic' && up.resourceId) {
         const topic = topics.find((t) => t.id === up.resourceId);
         resourceName = topic?.title || '';
+      } else if (normalizedResourceType === 'job-role' && up.resourceId) {
+        const jobRole = jobRoles.find((j) => j.id === up.resourceId);
+        resourceName = jobRole?.title || '';
+      } else if (normalizedResourceType === 'badge' && up.resourceId) {
+        const badge = badges.find((b) => b.id === up.resourceId);
+        resourceName = badge?.name || '';
       }
 
       return {

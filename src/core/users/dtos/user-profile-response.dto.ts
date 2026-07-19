@@ -18,4 +18,6 @@ export interface UserProfileResponseDto {
   points?: number;
   accountStatus?: AccountStatusEnum;
   profile: Profile;
+  /** The caller's own permission grants (only populated on the self "/users/me" lookup). */
+  permissions?: unknown[];
 }

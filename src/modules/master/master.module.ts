@@ -20,6 +20,7 @@ import { MeritService } from './providers/merit.service';
 import { SubjectStatsService } from './providers/subject-stats.service';
 import { ProgramService } from './providers/program.service';
 import { SubjectTrackAnalysisService } from './providers/subject-track-analysis.service';
+import { BadgeQueryModule } from '../achievement/badge-query.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { SubjectTrackAnalysisService } from './providers/subject-track-analysis.
       Topic, UserSubject, UserPermission, SubjectTrack, CertificationTrack,
     ]),
     UserPermissionModule,
+    BadgeQueryModule,
   ],
   controllers: [MasterController],
   providers: [

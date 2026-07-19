@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CERT_ACHIEVED } from 'src/common/constants/completion-thresholds';
+import { BadgeScopeEnum } from 'src/common/enum/badge-scope.enum';
 import { JobRole } from 'src/common/typeorm/entities/job-role.entity';
 import { SubjectTrack } from 'src/common/typeorm/entities/subject-track.entity';
 import { User } from 'src/common/typeorm/entities/user.entity';
@@ -10,6 +11,7 @@ import { MeritService } from './merit.service';
 import { SubjectStatsService } from './subject-stats.service';
 import { TopicAnalysisService } from './topic-analysis.service';
 import { SubjectTrackAnalysisService } from './subject-track-analysis.service';
+import { BadgeQueryService, ScopedBadgeDto } from '../../achievement/providers/badge-query.service';
 
 @Injectable()
 export class ProgramService {
@@ -25,6 +27,7 @@ export class ProgramService {
     private readonly topicAnalyzer: TopicAnalysisService,
     private readonly meritService: MeritService,
     private readonly subjectTrackAnalyzer: SubjectTrackAnalysisService,
+    private readonly badgeQueryService: BadgeQueryService,
   ) {}
 
   // ─── "Next best action" surfacing ─────────────────────────────────────────────
@@ -372,6 +375,12 @@ export class ProgramService {
     const roleSubjectRows = await this.fetchRoleSubjects([jobRoleId]);
     const subjectIds = roleSubjectRows.map((rs) => +rs.subjectId);
 
+    const badges = await this.badgeQueryService.getUserBadgesForScope(
+      BadgeScopeEnum.JOBROLE,
+      jobRoleId,
+      userId,
+    );
+
     if (!subjectIds.length) {
       return {
         jobRole: { id: jobRole.id, title: jobRole.title, slug: jobRole.slug, image: jobRole.image, color: jobRole.color, description: jobRole.description, body: (jobRole as any).body, scope: (jobRole as any).scope },
@@ -379,16 +388,18 @@ export class ProgramService {
         certificationTracks: [],
         meritList: [],
         userRank: null,
+        badges,
       };
     }
 
-    const [stRows, certRows, subjectStatsMap, subjectMerits, popularTopicsMap, jobRoleMerit] = await Promise.all([
+    const [stRows, certRows, subjectStatsMap, subjectMerits, popularTopicsMap, jobRoleMerit, subjectBadgesMap] = await Promise.all([
       this.subjectTrackAnalyzer.fetchSubjectTracksWithTopics(subjectIds),
       this.fetchCertTrackHierarchy([jobRoleId]),
       this.subjectStats.getSubjectStatsMap(userId),
       this.meritService.getSubjectMasteryLeaderboards(subjectIds, userId),
       this.meritService.getPopularTopicsBySubject(subjectIds),
       this.meritService.getJobRoleMasteryLeaderboard(subjectIds, userId),
+      this.badgeQueryService.getUserBadgesGroupedBySubject(subjectIds, userId),
     ]);
 
     // Topic stats — fetched regardless of auth so title/slug/numTrivia are always populated;
@@ -442,6 +453,9 @@ export class ProgramService {
         meritList: subjectMerits.meritLists.get(+rs.subjectId) ?? [],
         popularTopics: popularTopicsMap.get(+rs.subjectId) ?? [],
         subjectTracks,
+        // This subject's own badges (Subject-scoped, scopeId === this card's id) — always an
+        // array, empty for anonymous requests, same convention as the top-level `badges` field.
+        badges: subjectBadgesMap.get(+rs.subjectId) ?? [],
       };
 
       if (userId) {
@@ -534,6 +548,9 @@ export class ProgramService {
       meritList: jobRoleMerit.meritList,
       userRank: jobRoleMerit.userRank,
       ...nextBestAction,
+      // Badges scoped to this job role, each tagged `unlocked` — empty array (not omitted) for
+      // anonymous requests, matching the early-return path above.
+      badges,
     };
   }
 }

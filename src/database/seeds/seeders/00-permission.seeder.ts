@@ -7,6 +7,7 @@ const SUBJECT_TRACK_GROUP = 'Subject Track Manager';
 const CERTIFICATION_TRACK_GROUP = 'Certification Manager';
 const QUESTION_AUTHOR_GROUP = 'Question Author';
 const TOPIC_ACCESS_GROUP = 'Topic Access';
+const BADGE_GROUP = 'Badge Manager';
 
 type PermissionMeta = { description: string; group: string };
 
@@ -25,6 +26,7 @@ const PERMISSION_META: Record<UserPermissionEnum, PermissionMeta> = {
   [UserPermissionEnum.CertificationTrackCreate]: { description: 'Create certification tracks',                              group: CERTIFICATION_TRACK_GROUP },
   [UserPermissionEnum.CertificationTrackUpdate]: { description: 'Update certification tracks and manage subject track links', group: CERTIFICATION_TRACK_GROUP },
   [UserPermissionEnum.CertificationTrackDelete]: { description: 'Delete certification tracks',                              group: CERTIFICATION_TRACK_GROUP },
+  [UserPermissionEnum.BadgeGrant]:               { description: 'Grant badges to learners (e.g. during an interview)',      group: BADGE_GROUP },
 };
 
 export async function seedPermissions(dataSource: DataSource): Promise<Permission[]> {
