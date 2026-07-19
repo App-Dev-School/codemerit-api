@@ -31,7 +31,7 @@ export class JobRoleSubject extends AbstractEntity implements IJobSubject {
   })
   tag: SubjectTagEnum;
 
-  @Column({ type: 'varchar', length: 30, nullable: true, default: null })
+  @Column({ type: 'varchar', length: 100, nullable: true, default: null })
   note: string;
 
   @CreateDateColumn({ name: 'createdAt' })

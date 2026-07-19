@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { BadgeScopeEnum } from 'src/common/enum/badge-scope.enum';
 import { DifficultyLevelEnum } from 'src/common/enum/difficulty-lavel.enum';
 import { QuestionStatusEnum } from 'src/common/enum/question-status.enum';
 import { QuestionTypeEnum } from 'src/common/enum/question-type.enum';
@@ -16,6 +17,7 @@ import { DataSource, In, Repository } from 'typeorm';
 import { MeritService } from './merit.service';
 import { TopicAnalysisService } from './topic-analysis.service';
 import { SubjectTrackAnalysisService } from './subject-track-analysis.service';
+import { BadgeQueryService } from '../../achievement/providers/badge-query.service';
 
 @Injectable()
 export class SubjectStatsService {
@@ -33,6 +35,7 @@ export class SubjectStatsService {
     private readonly topicAnalyzer: TopicAnalysisService,
     private readonly meritService: MeritService,
     private readonly subjectTrackAnalyzer: SubjectTrackAnalysisService,
+    private readonly badgeQueryService: BadgeQueryService,
   ) {}
 
   // ─── Subject Track Counts ─────────────────────────────────────────────────────
@@ -197,7 +200,7 @@ export class SubjectStatsService {
 
     const subjectId = subject.id;
 
-    const [raw, syllabus, subjectMerits, popularTopicsMap, ratings, lessons, relatedJobRoles] = await Promise.all([
+    const [raw, syllabus, subjectMerits, popularTopicsMap, ratings, lessons, relatedJobRoles, badges] = await Promise.all([
       this.getSubjectStats(subjectId, userId),
       this.topicAnalyzer.getTopicStatsBySubject(subjectId, userId),
       this.meritService.getSubjectMasteryLeaderboards([subjectId], userId),
@@ -205,6 +208,7 @@ export class SubjectStatsService {
       userId ? this.getSubjectRatings(subjectId, userId) : Promise.resolve([]),
       this.getSubjectLessons(subjectId, userId),
       this.getRelatedJobRoles(subjectId),
+      this.badgeQueryService.getUserBadgesForScope(BadgeScopeEnum.SUBJECT, subjectId, userId),
     ]);
 
     if (!raw) return null;
@@ -287,6 +291,9 @@ export class SubjectStatsService {
       meritList: subjectMerits.meritLists.get(subjectId) ?? [],
       popularTopics: popularTopicsMap.get(subjectId) ?? [],
       subjectRatings: ratings,
+      // Badges scoped to this subject, each tagged `unlocked` — omitted (empty array) for
+      // anonymous requests, same as `subjectRatings` above.
+      badges,
     };
   }
 

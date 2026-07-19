@@ -5,6 +5,7 @@ import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm';
 import { ApiUsage } from 'src/common/typeorm/entities/api-usage.entity';
 import { AssessmentSession } from 'src/common/typeorm/entities/assessment-session.entity';
 import { Badge } from 'src/common/typeorm/entities/badge.entity';
+import { BadgeRule } from 'src/common/typeorm/entities/badge-rule.entity';
 import { UserBadge } from 'src/common/typeorm/entities/user-badge.entity';
 import { UserStreak } from 'src/common/typeorm/entities/user-streak.entity';
 import { UserXpLog } from 'src/common/typeorm/entities/user-xp-log.entity';
@@ -103,6 +104,7 @@ export class TypeormConfigService implements TypeOrmOptionsFactory {
         SubjectTrackTopic,
         Certificate,
         Badge,
+        BadgeRule,
         UserBadge,
         UserStreak,
         UserXpLog,

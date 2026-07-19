@@ -22,6 +22,7 @@ import { UserPermissionModule } from 'src/modules/user-permission/user-permissio
 import { ActivityModule } from 'src/modules/activity/activity.module';
 import { QuizModule } from 'src/modules/quiz/quiz.module';
 import { AchievementModule } from 'src/modules/achievement/achievement.module';
+import { BadgeQueryModule } from 'src/modules/achievement/badge-query.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { AchievementModule } from 'src/modules/achievement/achievement.module';
     ActivityModule,
     QuizModule,
     AchievementModule,
+    BadgeQueryModule,
   ],
   providers: [
     UserService,

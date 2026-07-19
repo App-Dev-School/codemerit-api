@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Badge } from 'src/common/typeorm/entities/badge.entity';
+import { BadgeRule } from 'src/common/typeorm/entities/badge-rule.entity';
 import { Certificate } from 'src/common/typeorm/entities/certificate.entity';
 import { CertificationTrack } from 'src/common/typeorm/entities/certification-track.entity';
 import { Question } from 'src/common/typeorm/entities/question.entity';
@@ -14,6 +15,7 @@ import { ActivityModule } from '../activity/activity.module';
 import { MasterModule } from '../master/master.module';
 import { NotificationModule } from '../notification/notification.module';
 import { AchievementController } from './achievement.controller';
+import { BadgeQueryModule } from './badge-query.module';
 import { AchievementService } from './providers/achievement.service';
 
 @Module({
@@ -24,6 +26,7 @@ import { AchievementService } from './providers/achievement.service';
       Certificate,
       CertificationTrack,
       Badge,
+      BadgeRule,
       UserBadge,
       UserStreak,
       UserXpLog,
@@ -33,6 +36,7 @@ import { AchievementService } from './providers/achievement.service';
     MasterModule,
     NotificationModule,
     ActivityModule,
+    BadgeQueryModule,
   ],
   controllers: [AchievementController],
   providers: [AchievementService],

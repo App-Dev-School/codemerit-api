@@ -9,6 +9,8 @@ import { ApiUsageService } from 'src/common/services/api-usage.service';
 import { SubjectAnalysisService } from 'src/modules/master/providers/subject-analysis.service';
 import { UserPermissionService } from 'src/modules/user-permission/providers/user-permission.service';
 import { AchievementService } from 'src/modules/achievement/providers/achievement.service';
+import { BadgeQueryService } from 'src/modules/achievement/providers/badge-query.service';
+import { BadgeScopeEnum } from 'src/common/enum/badge-scope.enum';
 import { computeLevel } from 'src/modules/achievement/constants/gamification.constants';
 import { ActivityService } from 'src/modules/activity/providers/activity/activity.service';
 import { UserService } from './user.service';
@@ -21,6 +23,7 @@ export class UserProfileAggregatorService {
     private readonly subjectAnalysisService: SubjectAnalysisService,
     private readonly apiUsageService: ApiUsageService,
     private readonly achievementService: AchievementService,
+    private readonly badgeQueryService: BadgeQueryService,
     private readonly activityService: ActivityService,
     @InjectRepository(UserStreak)
     private readonly userStreakRepository: Repository<UserStreak>,
@@ -38,6 +41,7 @@ export class UserProfileAggregatorService {
       apiUsageRow,
       certificates,
       badgeData,
+      globalBadges,
       activities,
       streak,
     ] = await Promise.all([
@@ -48,6 +52,7 @@ export class UserProfileAggregatorService {
       this.apiUsageService.findByUserId(user.id),
       this.getCertificates(user.id),
       this.achievementService.getUserBadges(user.id),
+      this.badgeQueryService.getUserBadgesForScope(BadgeScopeEnum.GLOBAL, undefined, user.id),
       this.activityService.findByUserId(user.id, 20),
       this.userStreakRepository.findOne({ where: { userId: user.id } }),
     ]);
@@ -65,6 +70,10 @@ export class UserProfileAggregatorService {
       external_assessments: assessmentData.external_assessments,
       certificates,
       badges: badgeData.earned,
+      // Platform-wide (non-subject/job-role/topic) badges — earned + locked, unlocked-tagged and
+      // sortOrder-ordered, same shape subjectDashboard/programDetails embed for their own scopes.
+      // Distinct from `badges` above, which is earned-only and mixes every scope together.
+      globalBadges,
       activities: activities.map((a) => ({
         id: a.id,
         title: a.title,
