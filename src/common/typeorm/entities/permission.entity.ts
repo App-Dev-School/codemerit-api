@@ -23,6 +23,11 @@ export class Permission implements IPermission {
   @Column({ type: 'boolean', default: true })
   isVisible: boolean;
 
+  // Whether users can see this in their self-service request list and request it
+  // (with a comment) rather than only being granted it directly by an admin.
+  @Column({ type: 'boolean', default: false })
+  isRequestable: boolean;
+
   @Column({ name: 'createdBy', default: null, select: false })
   createdBy: number;
 

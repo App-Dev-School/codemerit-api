@@ -16,6 +16,17 @@ export class PermissionsService {
         private userPermissionRepo: Repository<UserPermission>,
     ) { }
 
+    /** For unscoped "Role:" permissions (LmsManager, SME, LearningAdmin, ...) — checked by
+     * permission name alone, same as the manual `.some()` checks in lms/question/lesson
+     * controllers, since these grants carry no resourceType/resourceId. */
+    async hasGlobalPermission(userId: number, permission: string): Promise<boolean> {
+        const result = await this.userPermissionRepo.findOne({
+            where: { userId, permission: { permission } },
+            relations: ['permission'],
+        });
+        return Boolean(result);
+    }
+
     async findOneByUser(userId: number, permission: string, resourceType: UserPermissionTitleEnum, resourceId: number) {
         // Match exact resourceId OR a global grant (resourceId IS NULL) for the same permission+type
         const result = await this.userPermissionRepo.findOne({

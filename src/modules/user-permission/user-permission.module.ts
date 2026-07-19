@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserPermissionService } from './providers/user-permission.service';
 import { UserPermissionController } from './user-permission.controller';
 import { Permission } from 'src/common/typeorm/entities/permission.entity';
+import { PermissionRequest } from 'src/common/typeorm/entities/permission-request.entity';
 import { UserPermission } from 'src/common/typeorm/entities/user-permission.entity';
 import { Subject } from 'src/common/typeorm/entities/subject.entity';
 import { Topic } from 'src/common/typeorm/entities/topic.entity';
@@ -12,7 +13,7 @@ import { Badge } from 'src/common/typeorm/entities/badge.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Permission, UserPermission, Subject, Topic, User, JobRole, Badge]),
+    TypeOrmModule.forFeature([Permission, PermissionRequest, UserPermission, Subject, Topic, User, JobRole, Badge]),
   ],
   providers: [UserPermissionService],
   controllers: [UserPermissionController],

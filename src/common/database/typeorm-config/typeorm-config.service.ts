@@ -22,6 +22,7 @@ import { LessonSection } from 'src/common/typeorm/entities/lesson-section.entity
 import { Lesson } from 'src/common/typeorm/entities/lesson.entity';
 import { Notification } from 'src/common/typeorm/entities/notification.entity';
 import { Permission } from 'src/common/typeorm/entities/permission.entity';
+import { PermissionRequest } from 'src/common/typeorm/entities/permission-request.entity';
 import { Profile } from 'src/common/typeorm/entities/profile.entity';
 import { QuestionTopic } from 'src/common/typeorm/entities/quesion-topic.entity';
 import { QuestionAttempt } from 'src/common/typeorm/entities/question-attempt.entity';
@@ -91,6 +92,7 @@ export class TypeormConfigService implements TypeOrmOptionsFactory {
         LessonSection,
         UserLessonTracker,
         Permission,
+        PermissionRequest,
         UserPermission,
         ApiUsage,
         Notification,

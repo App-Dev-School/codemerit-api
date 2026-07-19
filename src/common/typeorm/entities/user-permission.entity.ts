@@ -18,11 +18,14 @@ export class UserPermission implements IUserPermission {
   @Column()
   permissionId: number;
 
-  @Column()
-  resourceType?: string; // e.g. 'Subject' | 'Topic'
+  // Values must match UserPermissionTitleEnum exactly (lowercase, e.g. 'subject-track') —
+  // scoped permission lookups compare this with strict equality. NULL means "global" grant,
+  // not scoped to any specific resource.
+  @Column({ type: 'varchar', length: 50, nullable: true, default: null })
+  resourceType?: string | null;
 
-  @Column()
-  resourceId?: number; // e.g. 12
+  @Column({ type: 'int', nullable: true, default: null })
+  resourceId?: number | null;
 
   @Column()
   userId: number;

@@ -5,6 +5,7 @@ export interface IPermission {
   permission: string;
   description: string;
   isVisible: boolean;
+  isRequestable: boolean;
   createdBy: number;
   createdAt: Date;
 }
