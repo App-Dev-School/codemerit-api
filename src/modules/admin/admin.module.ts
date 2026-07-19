@@ -2,6 +2,11 @@
 import { Module } from '@nestjs/common';
 import { AdminController } from './admin.controller';
 import { AdminService } from './providers/admin.service';
+import { AdminPeopleService } from './providers/admin-people.service';
+import { AdminContentService } from './providers/admin-content.service';
+import { AdminEngagementService } from './providers/admin-engagement.service';
+import { AdminAchievementsService } from './providers/admin-achievements.service';
+import { AdminTrendsService } from './providers/admin-trends.service';
 import { User } from 'src/common/typeorm/entities/user.entity';
 import { Question } from 'src/common/typeorm/entities/question.entity';
 import { QuestionAttempt } from 'src/common/typeorm/entities/question-attempt.entity';
@@ -12,6 +17,14 @@ import { Quiz } from 'src/common/typeorm/entities/quiz.entity';
 import { QuizResult } from 'src/common/typeorm/entities/quiz-result.entity';
 import { Lesson } from 'src/common/typeorm/entities/lesson.entity';
 import { UserLessonTracker } from 'src/common/typeorm/entities/user-lesson-tracker.entity';
+import { JobRole } from 'src/common/typeorm/entities/job-role.entity';
+import { CertificationTrack } from 'src/common/typeorm/entities/certification-track.entity';
+import { SubjectTrack } from 'src/common/typeorm/entities/subject-track.entity';
+import { Certificate } from 'src/common/typeorm/entities/certificate.entity';
+import { Badge } from 'src/common/typeorm/entities/badge.entity';
+import { UserBadge } from 'src/common/typeorm/entities/user-badge.entity';
+import { UserStreak } from 'src/common/typeorm/entities/user-streak.entity';
+import { Activity } from 'src/common/typeorm/entities/activity.entity';
 
 @Module({
   imports: [
@@ -25,9 +38,24 @@ import { UserLessonTracker } from 'src/common/typeorm/entities/user-lesson-track
       QuizResult,
       Lesson,
       UserLessonTracker,
+      JobRole,
+      CertificationTrack,
+      SubjectTrack,
+      Certificate,
+      Badge,
+      UserBadge,
+      UserStreak,
+      Activity,
     ]),
   ],
-  providers: [AdminService],
+  providers: [
+    AdminService,
+    AdminPeopleService,
+    AdminContentService,
+    AdminEngagementService,
+    AdminAchievementsService,
+    AdminTrendsService,
+  ],
   controllers: [AdminController],
   exports: [AdminService],
 })

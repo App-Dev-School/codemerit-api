@@ -23,4 +23,5 @@ export enum UserPermissionEnum {
   CertificationTrackUpdate = 'CertificationTrack:Update',
   CertificationTrackDelete = 'CertificationTrack:Delete',
   BadgeGrant = 'Badge:Grant',
+  Sme = 'SME',
 }

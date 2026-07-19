@@ -11,98 +11,193 @@ export interface WeeklySeriesItem {
   count: number;
 }
 
-export interface DailyTimeSeries {
-  users: DailySeriesItem[];
-  questions: DailySeriesItem[];
-  quizzes: DailySeriesItem[];
-  attempts: DailySeriesItem[];
+export interface TrendSeries {
+  users: DailySeriesItem[] | WeeklySeriesItem[];
+  questions: DailySeriesItem[] | WeeklySeriesItem[];
+  quizzes: DailySeriesItem[] | WeeklySeriesItem[];
+  attempts: DailySeriesItem[] | WeeklySeriesItem[];
+  certificates: DailySeriesItem[] | WeeklySeriesItem[];
+  badges: DailySeriesItem[] | WeeklySeriesItem[];
 }
 
-export interface WeeklyTimeSeries {
-  users: WeeklySeriesItem[];
-  questions: WeeklySeriesItem[];
-  quizzes: WeeklySeriesItem[];
-  attempts: WeeklySeriesItem[];
-}
-
-export interface TimeSeriesStats {
-  daily: DailyTimeSeries;
-  weekly: WeeklyTimeSeries;
+export interface TrendsStats {
+  daily: TrendSeries;
+  weekly: TrendSeries;
 }
 
 // ---------------------
-// Entity Metrics
+// Overview
 // ---------------------
-export interface AttemptStats {
+export interface OverviewStats {
+  totalUsers: number;
+  activeUsers: number;
+  newUsersToday: number;
+  totalPrograms: number;
+  totalCertificationTracks: number;
+  totalSubjectTracks: number;
+  totalSubjects: number;
+  totalTopics: number;
+  totalQuestions: number;
+  totalQuizzes: number;
+  totalLessons: number;
+  totalQuizAttempts: number;
+  totalQuestionAttempts: number;
+  certificatesIssued: number;
+  badgesAwarded: number;
+}
+
+// ---------------------
+// People
+// ---------------------
+export interface PeopleStats {
+  users: {
+    total: number;
+    active: number;
+    pending: number;
+    blocked: number;
+    admins: number;
+    moderators: number;
+    learners: number;
+    withDesignation: number;
+  };
+  growth: {
+    newToday: number;
+    newThisWeek: number;
+    newThisMonth: number;
+  };
+  streaks: {
+    usersWithActiveStreak: number;
+    avgCurrentStreak: number;
+    longestStreakEver: number;
+  };
+  topLearners: {
+    id: number;
+    name: string;
+    image: string | null;
+    level: string | null;
+    points: number;
+  }[];
+}
+
+// ---------------------
+// Content (LMS structure)
+// ---------------------
+export interface PublishedStats {
   total: number;
-  totalCorrect: number;
-  totalWrong: number;
-  totalSkipped: number;
-  distinctUsers: number;
+  published: number;
+  draft: number;
 }
 
 export interface QuestionStats {
   total: number;
-  totalTrivia: number;
-  totalGeneral: number;
-  totalTriviaActive: number;
-  totalGeneralActive: number;
-  totalTriviaPending: number;
-  totalGeneralPending: number;
+  byType: {
+    trivia: { total: number; active: number; pending: number };
+    general: { total: number; active: number; pending: number };
+  };
+  byLevel: {
+    easy: number;
+    intermediate: number;
+    advanced: number;
+  };
 }
 
-export interface UserStats {
-  total: number;
-  totalActive: number;
-  totalPending: number;
-  totalBlocked: number;
-  totalWithDesignation: number;
-  totalModerators: number;
+export interface ContentStats {
+  programs: PublishedStats;
+  certificationTracks: PublishedStats;
+  subjectTracks: PublishedStats;
+  subjects: PublishedStats;
+  topics: PublishedStats;
+  questions: QuestionStats;
+  lessons: { total: number };
+  moderationQueue: {
+    pendingQuestions: number;
+    unpublishedSubjects: number;
+    unpublishedTopics: number;
+    unpublishedSubjectTracks: number;
+    unpublishedCertificationTracks: number;
+  };
 }
 
-export interface TopicStats {
-  total: number;
-  totalActive: number;
-  totalPending: number;
+// ---------------------
+// Engagement
+// ---------------------
+export interface EngagementStats {
+  quizzes: {
+    total: number;
+    published: number;
+    draft: number;
+    byType: { userQuiz: number; standard: number };
+    playedQuizzes: number;
+    totalPlays: number;
+    avgPlaysPerQuiz: number;
+    avgScore: number;
+    topQuizzes: { id: number; title: string; plays: number }[];
+  };
+  questionAttempts: {
+    total: number;
+    correct: number;
+    wrong: number;
+    skipped: number;
+    distinctUsers: number;
+    accuracyPercent: number;
+  };
+  lessons: {
+    totalViews: number;
+    totalPending: number;
+    totalCompleted: number;
+    completionRate: number;
+  };
 }
 
-export interface SubjectStats {
-  total: number;
-  totalActive: number;
-  totalInactive: number;
+// ---------------------
+// Achievements
+// ---------------------
+export interface AchievementStats {
+  certificates: {
+    totalIssued: number;
+    totalRevoked: number;
+    totalExpired: number;
+    uniqueHolders: number;
+    issuedThisWeek: number;
+    issuedThisMonth: number;
+    topCertificationTracks: { id: number; title: string; issuedCount: number }[];
+  };
+  badges: {
+    totalAvailable: number;
+    totalAwarded: number;
+    uniqueEarners: number;
+    byScope: { global: number; subject: number; jobRole: number; topic: number };
+    topBadges: { code: string; name: string; scopeType: string | null; earnCount: number }[];
+    rareBadges: { code: string; name: string; scopeType: string; earnCount: number }[];
+  };
 }
 
-export interface QuizStats {
-  total: number;
-  totalActive: number;
-  totalInactive: number;
-  playedQuizzes: number;
-  totalPlays: number;
-  avgPlaysPerQuiz: number;
-  avgScore: number;
+// ---------------------
+// Recent Activity
+// ---------------------
+export interface RecentActivityItem {
+  id: number;
+  title: string;
+  message: string;
+  userId: number;
+  userName: string | null;
+  dataType: string | null;
+  dataId: number | null;
+  createdAt: Date;
 }
 
 // ---------------------
 // Combined Dashboard Data
 // ---------------------
 export interface AdminDashboardData {
-  attempts: AttemptStats;
-  questions: QuestionStats;
-  users: UserStats;
-  topics: TopicStats;
-  subjects: SubjectStats;
-  quizzes: QuizStats;
-  timeSeries: TimeSeriesStats;
+  overview: OverviewStats;
+  people: PeopleStats;
+  content: ContentStats;
+  engagement: EngagementStats;
+  achievements: AchievementStats;
+  recentActivity: RecentActivityItem[];
+  trends: TrendsStats;
 }
-
-// ---------------------
-// Nested Response DTOs
-// ---------------------
-// export interface AdminDashboardInnerResponse {
-//   error: boolean;
-//   message: string;
-//   data: AdminDashboardData;
-// }
 
 export interface AdminDashboardResponse {
   error: boolean;
