@@ -383,6 +383,90 @@ export class UserService {
     }
   }
 
+  async changePassword(
+    id: number,
+    currentPassword: string,
+    newPassword: string,
+  ): Promise<boolean> {
+    if (currentPassword === newPassword) {
+      throw new AppCustomException(
+        HttpStatus.BAD_REQUEST,
+        'New password must be different from current password.',
+      );
+    }
+
+    const user = await this.userRepo.findOne({
+      where: { id },
+      select: ['id', 'email', 'firstName', 'password'],
+    });
+
+    if (!user) {
+      throw new AppCustomException(HttpStatus.BAD_REQUEST, 'User not found.');
+    }
+
+    const isCurrentPasswordValid = await bcrypt.compare(
+      currentPassword,
+      user.password,
+    );
+
+    if (!isCurrentPasswordValid) {
+      throw new AppCustomException(
+        HttpStatus.BAD_REQUEST,
+        'Incorrect current password.',
+      );
+    }
+
+    const isSameAsStoredPassword = await bcrypt.compare(
+      newPassword,
+      user.password,
+    );
+
+    if (isSameAsStoredPassword) {
+      throw new AppCustomException(
+        HttpStatus.BAD_REQUEST,
+        'New password must be different from current password.',
+      );
+    }
+
+    const result = await this.updateUserPassword(id, newPassword);
+
+    if (result) {
+      try {
+        await this.mailService.sendPasswordChangedEmail(
+          user.email,
+          user.firstName,
+        );
+      } catch (err) {
+        this.logger.error(
+          `Failed to send password-changed e-mail: ${err instanceof Error ? err.message : String(err)}`,
+        );
+      }
+
+      try {
+        await this.activityService.createActivity(
+          user.id,
+          'Password Changed',
+          'Your account password was updated successfully.',
+          user.id,
+          'USER',
+        );
+      } catch (err) {
+        if (err instanceof Error) {
+          this.logger.error(
+            `Failed to log password change activity: ${err.message}`,
+            err.stack,
+          );
+        } else {
+          this.logger.error(
+            `Failed to log password change activity: ${String(err)}`,
+          );
+        }
+      }
+    }
+
+    return result;
+  }
+
   async sendOtp(
     email: string,
     pass: string,

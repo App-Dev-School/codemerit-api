@@ -18,6 +18,7 @@ import { Roles } from '../auth/decorators/roles.decorator';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { UpdateUserProfileDto } from './dtos/update-user-profile.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
+import { ChangePasswordDto } from './dtos/change-password.dto';
 import { UserRoleEnum } from './enums/user-roles.enum';
 import { UserProfileService } from './providers/user-profile.service';
 import { UserProfileAggregatorService } from './providers/user-profile-aggregator.service';
@@ -119,6 +120,19 @@ export class UsersController {
       dto.jobRoleId,
     );
     return new ApiResponse('User enrolled in job role successfully.', result);
+  }
+
+  @Put('change-password')
+  async changePassword(
+    @Request() req,
+    @Body() dto: ChangePasswordDto,
+  ): Promise<ApiResponse<any>> {
+    const result = await this.usersService.changePassword(
+      req.user.id,
+      dto.currentPassword,
+      dto.newPassword,
+    );
+    return new ApiResponse('Password updated successfully.', result);
   }
 
   // @Get(':userId')
